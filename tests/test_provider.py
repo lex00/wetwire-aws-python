@@ -3,9 +3,9 @@
 import pytest
 
 from wetwire_aws import CloudFormationProvider
-from wetwire_aws.resources.s3 import Bucket
+from wetwire_aws.decorator import get_aws_registry, wetwire_aws
 from wetwire_aws.resources.iam import Role
-from wetwire_aws.decorator import wetwire_aws, get_aws_registry
+from wetwire_aws.resources.s3 import Bucket
 
 
 @pytest.fixture(autouse=True)

@@ -1,21 +1,21 @@
 """Tests for individual lint rules."""
 
-import pytest
 from unittest.mock import patch
 
+import pytest
+
 from wetwire_aws.linter import (
-    lint_code,
-    fix_code,
-    LintIssue,
-    StringShouldBeParameterType,
-    RefShouldBePseudoParameter,
-    StringShouldBeEnum,
     DictShouldBeIntrinsic,
-    UnnecessaryToDict,
-    RefShouldBeNoParens,
+    DuplicateResource,
     ExplicitResourceImport,
     FileTooLarge,
-    DuplicateResource,
+    RefShouldBeNoParens,
+    RefShouldBePseudoParameter,
+    StringShouldBeEnum,
+    StringShouldBeParameterType,
+    UnnecessaryToDict,
+    fix_code,
+    lint_code,
 )
 
 

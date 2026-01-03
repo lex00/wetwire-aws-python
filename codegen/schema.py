@@ -11,7 +11,6 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-
 # Python reserved keywords that need escaping
 PYTHON_KEYWORDS: dict[str, str] = {
     # Keywords that conflict with Python builtins/keywords

@@ -12,9 +12,11 @@ from datetime import UTC, datetime
 from codegen.config import GENERATOR_VERSION, SOURCES, SPECS_DIR
 from codegen.fetcher import (
     FetchManifest,
-    fetch_http as _fetch_http,
     get_package_version,
     is_manifest_fresh,
+)
+from codegen.fetcher import (
+    fetch_http as _fetch_http,
 )
 
 

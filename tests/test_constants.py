@@ -11,7 +11,7 @@ import pytest
 def _enums_available():
     """Check if enum constants are available."""
     try:
-        from wetwire_aws.resources.lambda_ import Runtime
+        from wetwire_aws.resources.lambda_ import Runtime  # noqa: F401
         return True
     except ImportError:
         return False
