@@ -1,0 +1,27 @@
+"""Compute resources: TransformFunction, TransformFunctionPermissions."""
+
+from . import *  # noqa: F403
+
+
+class TransformFunctionCode:
+    resource: lambda_.Function.Code
+    zip_file = {
+        'Rain::Embed': 'handler.py',
+    }
+
+
+class TransformFunction:
+    resource: lambda_.Function
+    description = 'Support for the PyPlate CloudFormation macro'
+    code = TransformFunctionCode
+    handler = 'index.handler'
+    runtime = lambda_.Runtime.PYTHON3_11
+    role = TransformExecutionRole.Arn
+    timeout = LambdaTimeout
+
+
+class TransformFunctionPermissions:
+    resource: lambda_.Permission
+    action = 'lambda:InvokeFunction'
+    function_name = TransformFunction.Arn
+    principal = 'cloudformation.amazonaws.com'

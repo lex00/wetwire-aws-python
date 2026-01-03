@@ -1,0 +1,32 @@
+"""Storage resources: S3Bucket."""
+
+from . import *  # noqa: F403
+
+
+class S3BucketServerSideEncryptionByDefault:
+    resource: s3express.DirectoryBucket.ServerSideEncryptionByDefault
+    sse_algorithm = s3.ServerSideEncryption.AES256
+
+
+class S3BucketServerSideEncryptionRule:
+    resource: s3express.DirectoryBucket.ServerSideEncryptionRule
+    server_side_encryption_by_default = S3BucketServerSideEncryptionByDefault
+
+
+class S3BucketBucketEncryption:
+    resource: s3express.DirectoryBucket.BucketEncryption
+    server_side_encryption_configuration = [S3BucketServerSideEncryptionRule]
+
+
+class S3BucketPublicAccessBlockConfiguration:
+    resource: s3objectlambda.AccessPoint.PublicAccessBlockConfiguration
+    block_public_acls = True
+    block_public_policy = True
+    ignore_public_acls = True
+    restrict_public_buckets = True
+
+
+class S3Bucket:
+    resource: s3.Bucket
+    bucket_encryption = S3BucketBucketEncryption
+    public_access_block_configuration = S3BucketPublicAccessBlockConfiguration
