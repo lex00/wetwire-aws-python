@@ -40,7 +40,6 @@ NUM_WORKERS = os.cpu_count() or 4
 
 # Mapping from CloudFormation service names to botocore service names
 CF_TO_BOTOCORE_SERVICE = {
-    "lambda_": "lambda",
     "apigateway": "apigateway",
     "apigatewayv2": "apigatewayv2",
     "applicationautoscaling": "application-autoscaling",
@@ -272,13 +271,13 @@ def generate_property_type_class(
     Within a submodule, all types are in the same namespace, so no qualified refs needed.
     """
     # Reserved names that conflict with imports
-    RESERVED_NAMES = {"PropertyType", "Tag"}
+    reserved_names = {"PropertyType", "Tag"}
 
     lines = []
     name = class_name if class_name else nested.name
 
     # Rename classes that conflict with imports
-    if name in RESERVED_NAMES:
+    if name in reserved_names:
         name = f"{name}Definition"
 
     lines.append("@dataclass")
@@ -332,13 +331,13 @@ def generate_resource_class(
     If submodule_name is provided, property types are referenced via that submodule.
     """
     # Reserved names that conflict with imports
-    RESERVED_NAMES = {"PropertyType", "Tag", "CloudFormationResource"}
+    reserved_names = {"PropertyType", "Tag", "CloudFormationResource"}
 
     lines = []
     class_name = resource.name
 
     # Rename classes that conflict with imports
-    if class_name in RESERVED_NAMES:
+    if class_name in reserved_names:
         class_name = f"{class_name}Resource"
 
     lines.append("@dataclass")
@@ -450,7 +449,7 @@ def generate_service_package(
     Returns a dict of {filename: content} for all files to be written.
     """
     output_dir = output_dir or RESOURCES_DIR
-    package_dir = output_dir / service
+    _ = output_dir / service  # noqa: F841
 
     files: dict[str, str] = {}
 
