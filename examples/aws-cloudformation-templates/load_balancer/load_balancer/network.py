@@ -1,0 +1,92 @@
+"""Network resources: TargetGroup, LoadBalancerSecurityGroup, LoadBalancerEgress, LoadBalancer, LoadBalancerListener."""
+
+from . import *  # noqa: F403
+
+
+class TargetGroupListenerAttribute:
+    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+    key = 'deregistration_delay.timeout_seconds'
+    value = '10'
+
+
+class TargetGroupListenerAttribute1:
+    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+    key = 'stickiness.enabled'
+    value = 'false'
+
+
+class TargetGroup:
+    resource: elasticloadbalancingv2.TargetGroup
+    port = 80
+    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
+    target_group_attributes = [TargetGroupListenerAttribute, TargetGroupListenerAttribute1]
+    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
+    vpc_id = VPCId
+
+
+class LoadBalancerSecurityGroupEgress:
+    resource: ec2.SecurityGroup.Egress
+    cidr_ip = '0.0.0.0/0'
+    description = 'Allow from anyone on port 443'
+    from_port = 443
+    ip_protocol = 'tcp'
+    to_port = 443
+
+
+class LoadBalancerSecurityGroup:
+    resource: ec2.SecurityGroup
+    group_description = 'Automatically created Security Group for ELB'
+    security_group_ingress = [LoadBalancerSecurityGroupEgress]
+    vpc_id = VPCId
+
+
+class LoadBalancerEgress:
+    resource: ec2.SecurityGroupEgress
+    description = 'Load balancer to target'
+    destination_security_group_id = DestinationSecurityGroupId
+    from_port = 80
+    group_id = LoadBalancerSecurityGroup.GroupId
+    ip_protocol = 'tcp'
+    to_port = 80
+
+
+class LoadBalancerListenerAttribute:
+    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+    key = 'deletion_protection.enabled'
+    value = False
+
+
+class LoadBalancerListenerAttribute1:
+    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+    key = 'routing.http.drop_invalid_header_fields.enabled'
+    value = True
+
+
+class LoadBalancer:
+    resource: elasticloadbalancingv2.LoadBalancer
+    load_balancer_attributes = [LoadBalancerListenerAttribute, LoadBalancerListenerAttribute1]
+    scheme = 'internet-facing'
+    security_groups = [LoadBalancerSecurityGroup.GroupId]
+    subnets = [PublicSubnet1, PublicSubnet2]
+    type_ = 'application'
+
+
+class LoadBalancerListenerAction:
+    resource: elasticloadbalancingv2.Listener.Action
+    target_group_arn = TargetGroup
+    type_ = 'forward'
+
+
+class LoadBalancerListenerCertificate:
+    resource: elasticloadbalancingv2.Listener.Certificate
+    certificate_arn = CertificateArn
+
+
+class LoadBalancerListener:
+    resource: elasticloadbalancingv2.Listener
+    default_actions = [LoadBalancerListenerAction]
+    load_balancer_arn = LoadBalancer
+    port = 443
+    protocol = elasticloadbalancingv2.ProtocolEnum.HTTPS
+    certificates = [LoadBalancerListenerCertificate]
+    ssl_policy = 'ELBSecurityPolicy-TLS13-1-2-2021-06'

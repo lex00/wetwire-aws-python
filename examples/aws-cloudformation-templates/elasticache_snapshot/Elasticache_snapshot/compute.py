@@ -1,0 +1,32 @@
+"""Compute resources: EnableShapshot, LambdaExecutePermission."""
+
+from . import *  # noqa: F403
+
+
+class EnableShapshotCode:
+    resource: lambda_.Function.Code
+    zip_file = {
+        'Rain::Embed': 'elastic-code.js',
+    }
+
+
+class EnableShapshot:
+    resource: lambda_.Function
+    code = EnableShapshotCode
+    handler = 'index.handler'
+    memory_size = 128
+    role = IamRoleLambda.Arn
+    runtime = lambda_.Runtime.NODEJS20_X
+    timeout = 30
+    depends_on = [IamRoleLambda]
+    condition = 'EnableBackups'
+    deletion_policy = 'Delete'
+
+
+class LambdaExecutePermission:
+    resource: lambda_.Permission
+    action = 'lambda:InvokeFunction'
+    function_name = EnableShapshot.Arn
+    principal = 'elasticache.amazonaws.com'
+    source_account = Sub('${AWS::AccountId}')
+    condition = 'EnableBackups'
