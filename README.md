@@ -54,4 +54,4 @@ See [Developer Guide](docs/DEVELOPERS.md) for details.
 
 ## License
 
-Apache 2.0
+Apache 2.0 - See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.
