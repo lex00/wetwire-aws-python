@@ -1,5 +1,10 @@
 # wetwire-aws
 
+[![CI](https://github.com/lex00/wetwire-aws-python/actions/workflows/ci.yml/badge.svg)](https://github.com/lex00/wetwire-aws-python/actions/workflows/ci.yml)
+[![PyPI Version](https://img.shields.io/pypi/v/wetwire-aws.svg)](https://pypi.org/project/wetwire-aws/)
+[![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 AWS CloudFormation synthesis using Python dataclasses.
 
 ## Installation
