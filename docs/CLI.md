@@ -455,6 +455,16 @@ Runner: I'll create an encrypted S3 bucket for you.
 What's next? (type done to exit):
 ```
 
+### Using with AI Agents
+
+If you're using an AI coding assistant (Claude Code, Cursor, etc.), you can have it run design mode for you. Copy this prompt:
+
+```
+Run `wetwire-aws design` in the current directory. When prompted, help me create [DESCRIBE YOUR INFRASTRUCTURE]. Answer the runner's clarifying questions based on AWS best practices. Continue until the build succeeds.
+```
+
+Replace `[DESCRIBE YOUR INFRASTRUCTURE]` with what you want to build, e.g., "an S3 bucket with versioning and encryption" or "a Lambda function triggered by API Gateway".
+
 ---
 
 ## test
