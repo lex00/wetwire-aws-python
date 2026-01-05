@@ -62,9 +62,10 @@ def _get_resource_type(cls: type[Any]) -> type[Any] | str | None:
 
 
 # Create the @wetwire_aws decorator using the factory
+# Note: We don't pass resource_field since we use inheritance-based detection
+# via get_resource_type instead of the `resource:` annotation pattern.
 wetwire_aws = create_decorator(
     registry=cf_registry,
-    resource_field=None,  # No longer using resource: annotation
     get_resource_type=_get_resource_type,
 )
 
