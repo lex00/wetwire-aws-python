@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced name sanitization: handles hyphens and invalid Python identifiers
   - `Port-1ICMP` → `PortNeg1ICMP` (hyphen before digit becomes "Neg")
   - `my-resource` → `myResource` (hyphen between letters capitalizes next)
+- WAW019 linter rule: detects explicit `Ref("...")` patterns (prefer direct variable refs)
+- WAW020 linter rule: detects explicit `GetAtt("...", "...")` patterns (prefer `Resource.Attr`)
 
 ### Fixed
 
