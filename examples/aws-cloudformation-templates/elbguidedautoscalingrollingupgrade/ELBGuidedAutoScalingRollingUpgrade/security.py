@@ -33,14 +33,12 @@ class DescribeHealthRolePolicy:
     policy_document = DescribeHealthRolePolicies0PolicyDocument
 
 
-class DescribeHealthRole:
-    resource: iam.Role
+class DescribeHealthRole(iam.Role):
     assume_role_policy_document = DescribeHealthRoleAssumeRolePolicyDocument
     path = '/'
     policies = [DescribeHealthRolePolicy]
 
 
-class WebServerInstanceProfile:
-    resource: iam.InstanceProfile
+class WebServerInstanceProfile(iam.InstanceProfile):
     path = '/'
     roles = [DescribeHealthRole]

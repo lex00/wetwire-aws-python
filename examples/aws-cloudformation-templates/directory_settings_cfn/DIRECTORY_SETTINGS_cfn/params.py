@@ -9,10 +9,10 @@ class CreateDirectoryConsoleDelegatedAccessRoles:
     resource: Parameter
     type = STRING
     description = 'Create sample IAM ROLES that can be used to delegate users/groups access to certain areas of the AWS Management Console. User/Group assignment to these IAM roles has to be done manually via Directory Services -> Directory -> Application Management Tab.'
-    default = False
+    default = 'No'
     allowed_values = [
-    True,
-    False,
+    'Yes',
+    'No',
 ]
 
 
@@ -22,10 +22,10 @@ class CreateDirectoryAlias:
     resource: Parameter
     type = STRING
     description = 'Create an alias for the directory. The alias is used to construct the access URL for the directory, such as http://<alias>.awsapps.com. NOTE, after an alias has been created, it cannot be deleted or reused. Hence if a different alias already exists, then you must use the existing alias (also shown in CloudFormation error).'
-    default = False
+    default = 'No'
     allowed_values = [
-    True,
-    False,
+    'Yes',
+    'No',
 ]
 
 
@@ -73,10 +73,10 @@ class EnableDirectorySSO:
     resource: Parameter
     type = STRING
     description = 'Enable single sign-on for a directory. Single sign-on allows users in your directory to access certain AWS services from a computer joined to the directory without having to enter their credentials separately. If true, "DirectoryAlias" must also be true, & "DirectoryAlias" parameter input required.'
-    default = False
+    default = 'No'
     allowed_values = [
-    True,
-    False,
+    'Yes',
+    'No',
 ]
 
 
@@ -176,7 +176,7 @@ class SecurityGroups:
 class DirectoryConsoleDelegatedAccessRolesConditionCondition:
     resource: TemplateCondition
     logical_id = 'DirectoryConsoleDelegatedAccessRolesCondition'
-    expression = Equals(CreateDirectoryConsoleDelegatedAccessRoles, True)
+    expression = Equals(CreateDirectoryConsoleDelegatedAccessRoles, 'Yes')
 
 
 class DirectoryMonitoringSNSTopicKMSKeyConditionCondition:

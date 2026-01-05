@@ -1,15 +1,13 @@
-"""Network resources: EIP1, EIP2, loadBalancer, FirstEIP, TargetGroup, Listener, SecondEIP."""
+"""Network resources: EIP1, EIP2, loadBalancer, TargetGroup, Listener, FirstEIP, SecondEIP."""
 
 from . import *  # noqa: F403
 
 
-class EIP1:
-    resource: ec2.EIP
+class EIP1(ec2.EIP):
     domain = 'vpc'
 
 
-class EIP2:
-    resource: ec2.EIP
+class EIP2(ec2.EIP):
     domain = 'vpc'
 
 
@@ -25,17 +23,11 @@ class loadBalancerSubnetMapping1:
     subnet_id = Select(0, Subnet2)
 
 
-class loadBalancer:
-    resource: elasticloadbalancingv2.LoadBalancer
+class loadBalancer(elasticloadbalancingv2.LoadBalancer):
     subnet_mappings = [loadBalancerSubnetMapping, loadBalancerSubnetMapping1]
     type_ = ELBType
     ip_address_type = ELBIpAddressType
     depends_on = [EIP2, EIP1]
-
-
-class FirstEIP:
-    resource: ec2.EIP
-    domain = 'vpc'
 
 
 class TargetGroupTargetGroupAttribute:
@@ -44,8 +36,7 @@ class TargetGroupTargetGroupAttribute:
     value = '20'
 
 
-class TargetGroup:
-    resource: elasticloadbalancingv2.TargetGroup
+class TargetGroup(elasticloadbalancingv2.TargetGroup):
     name = 'MyTargets'
     port = 10
     protocol = elasticloadbalancingv2.ProtocolEnum.TCP
@@ -59,14 +50,16 @@ class ListenerAction:
     target_group_arn = TargetGroup
 
 
-class Listener:
-    resource: elasticloadbalancingv2.Listener
+class Listener(elasticloadbalancingv2.Listener):
     default_actions = [ListenerAction]
     load_balancer_arn = loadBalancer
     port = '80'
     protocol = elasticloadbalancingv2.ProtocolEnum.TCP
 
 
-class SecondEIP:
-    resource: ec2.EIP
+class FirstEIP(ec2.EIP):
+    domain = 'vpc'
+
+
+class SecondEIP(ec2.EIP):
     domain = 'vpc'

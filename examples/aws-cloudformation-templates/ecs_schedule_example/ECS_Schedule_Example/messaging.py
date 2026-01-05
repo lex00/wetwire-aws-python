@@ -17,8 +17,7 @@ class ECSScheduledTaskTarget:
     ecs_parameters = ECSScheduledTaskEcsParameters
 
 
-class ECSScheduledTask:
-    resource: events.Rule
+class ECSScheduledTask(events.Rule):
     description = 'Creating a Schedule with CloudFormation as an example'
     schedule_expression = If("CronRate", CronSchedule, RateSchedule)
     state = events.RuleState.ENABLED

@@ -9,8 +9,7 @@ class NotificationTopicSubscription:
     protocol = 'email'
 
 
-class NotificationTopic:
-    resource: sns.Topic
+class NotificationTopic(sns.Topic):
     display_name = Sub('${AWS::StackName}-NotificationTopic')
     subscription = [NotificationTopicSubscription]
     kms_master_key_id = KmsKeyArn

@@ -1,10 +1,9 @@
-"""Network resources: EcsSecurityGroup, ECSALB, ECSTG, ALBListener, EcsSecurityGroupSSHinbound, ECSALBListenerRule, EcsSecurityGroupALBports, EcsSecurityGroupHTTPinbound."""
+"""Network resources: EcsSecurityGroup, ECSALB, ECSTG, ALBListener, EcsSecurityGroupSSHinbound, EcsSecurityGroupHTTPinbound, ECSALBListenerRule, EcsSecurityGroupALBports."""
 
 from . import *  # noqa: F403
 
 
-class EcsSecurityGroup:
-    resource: ec2.SecurityGroup
+class EcsSecurityGroup(ec2.SecurityGroup):
     group_description = 'ECS Security Group'
     vpc_id = VpcId
 
@@ -15,8 +14,7 @@ class ECSALBTargetGroupAttribute:
     value = '30'
 
 
-class ECSALB:
-    resource: elasticloadbalancingv2.LoadBalancer
+class ECSALB(elasticloadbalancingv2.LoadBalancer):
     name = 'ECSALB'
     scheme = 'internet-facing'
     load_balancer_attributes = [ECSALBTargetGroupAttribute]
@@ -24,8 +22,7 @@ class ECSALB:
     security_groups = [EcsSecurityGroup]
 
 
-class ECSTG:
-    resource: elasticloadbalancingv2.TargetGroup
+class ECSTG(elasticloadbalancingv2.TargetGroup):
     health_check_interval_seconds = 10
     health_check_path = '/'
     health_check_protocol = 'HTTP'
@@ -45,8 +42,7 @@ class ALBListenerAction:
     target_group_arn = ECSTG
 
 
-class ALBListener:
-    resource: elasticloadbalancingv2.Listener
+class ALBListener(elasticloadbalancingv2.Listener):
     default_actions = [ALBListenerAction]
     load_balancer_arn = ECSALB
     port = '80'
@@ -54,13 +50,20 @@ class ALBListener:
     depends_on = [ECSServiceRole]
 
 
-class EcsSecurityGroupSSHinbound:
-    resource: ec2.SecurityGroupIngress
+class EcsSecurityGroupSSHinbound(ec2.SecurityGroupIngress):
     group_id = EcsSecurityGroup
     ip_protocol = 'tcp'
     from_port = '22'
     to_port = '22'
     cidr_ip = '192.168.1.0/0'
+
+
+class EcsSecurityGroupHTTPinbound(ec2.SecurityGroupIngress):
+    group_id = EcsSecurityGroup
+    ip_protocol = 'tcp'
+    from_port = '80'
+    to_port = '80'
+    cidr_ip = '0.0.0.0/0'
 
 
 class ECSALBListenerRuleAction:
@@ -75,8 +78,7 @@ class ECSALBListenerRuleRuleCondition:
     values = ['/']
 
 
-class ECSALBListenerRule:
-    resource: elasticloadbalancingv2.ListenerRule
+class ECSALBListenerRule(elasticloadbalancingv2.ListenerRule):
     actions = [ECSALBListenerRuleAction]
     conditions = [ECSALBListenerRuleRuleCondition]
     listener_arn = ALBListener
@@ -84,19 +86,9 @@ class ECSALBListenerRule:
     depends_on = [ALBListener]
 
 
-class EcsSecurityGroupALBports:
-    resource: ec2.SecurityGroupIngress
+class EcsSecurityGroupALBports(ec2.SecurityGroupIngress):
     group_id = EcsSecurityGroup
     ip_protocol = 'tcp'
     from_port = '31000'
     to_port = '61000'
     source_security_group_id = EcsSecurityGroup
-
-
-class EcsSecurityGroupHTTPinbound:
-    resource: ec2.SecurityGroupIngress
-    group_id = EcsSecurityGroup
-    ip_protocol = 'tcp'
-    from_port = '80'
-    to_port = '80'
-    cidr_ip = '0.0.0.0/0'

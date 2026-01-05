@@ -12,8 +12,7 @@ def lambda_handler(event,context):
 """
 
 
-class S3TriggerLambdaFunction:
-    resource: lambda_.Function
+class S3TriggerLambdaFunction(lambda_.Function):
     code = S3TriggerLambdaFunctionCode
     handler = 'index.lambda_handler'
     role = LambdaIAMRole.Arn
@@ -21,8 +20,7 @@ class S3TriggerLambdaFunction:
     timeout = 30
 
 
-class LambdaInvokePermission:
-    resource: lambda_.Permission
+class LambdaInvokePermission(lambda_.Permission):
     function_name = S3TriggerLambdaFunction.Arn
     action = 'lambda:InvokeFunction'
     principal = 's3.amazonaws.com'

@@ -9,8 +9,7 @@ class NeptuneDBSGAssociationParameter:
     value = Sub('${AWS::StackName}-neptune-sg')
 
 
-class NeptuneDBSG:
-    resource: ec2.SecurityGroup
+class NeptuneDBSG(ec2.SecurityGroup):
     group_description = 'SG of Neptune DB'
     vpc_id = ImportValue(Sub('${VPCStack}-VPCID'))
     tags = [NeptuneDBSGAssociationParameter]

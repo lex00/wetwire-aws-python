@@ -22,8 +22,7 @@ class ADConnectorLambdaFunctionCapacityProviderVpcConfig:
     security_group_ids = [ADConnectorDomainMembersSG]
 
 
-class ADConnectorLambdaFunction:
-    resource: lambda_.Function
+class ADConnectorLambdaFunction(lambda_.Function):
     function_name = LambdaFunctionName
     handler = 'adconnector_custom_resource.lambda_handler'
     role = ADConnectorLambdaRole.Arn

@@ -37,8 +37,7 @@ class LambdaIAMRolePolicy:
     policy_document = LambdaIAMRolePolicies0PolicyDocument
 
 
-class LambdaIAMRole:
-    resource: iam.Role
+class LambdaIAMRole(iam.Role):
     assume_role_policy_document = LambdaIAMRoleAssumeRolePolicyDocument
     path = '/'
     policies = [LambdaIAMRolePolicy]

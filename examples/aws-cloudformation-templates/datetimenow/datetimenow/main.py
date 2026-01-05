@@ -3,9 +3,8 @@
 from . import *  # noqa: F403
 
 
-class TransformFunction:
+class TransformFunction(CloudFormationResource):
     # Unknown resource type: AWS::Serverless::Function
-    resource: CloudFormationResource
     runtime = lambda_.Runtime.PYTHON3_11
     handler = 'index.handler'
     memory_size = 128

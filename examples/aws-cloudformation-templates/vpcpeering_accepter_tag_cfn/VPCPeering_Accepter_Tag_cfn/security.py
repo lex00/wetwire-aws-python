@@ -65,8 +65,7 @@ class TagVpcPeeringConnectionsLambdaRolePolicy1:
     policy_document = TagVpcPeeringConnectionsLambdaRolePolicies1PolicyDocument
 
 
-class TagVpcPeeringConnectionsLambdaRole:
-    resource: iam.Role
+class TagVpcPeeringConnectionsLambdaRole(iam.Role):
     role_name = Sub('${LambdaFunctionName}-LambdaRole')
     description = 'Rights to Tag VPC Peering Connection'
     assume_role_policy_document = TagVpcPeeringConnectionsLambdaRoleAssumeRolePolicyDocument

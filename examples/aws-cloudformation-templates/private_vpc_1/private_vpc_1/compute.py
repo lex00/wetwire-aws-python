@@ -3,8 +3,8 @@
 from . import *  # noqa: F403
 
 
-class ECSCluster:
-    resource: ecs.Cluster
+class ECSCluster(ecs.Cluster):
+    pass
 
 
 class ContainerInstancesIamInstanceProfile:
@@ -25,8 +25,7 @@ yum install -y aws-cfn-bootstrap
 """))
 
 
-class ContainerInstances:
-    resource: ec2.LaunchTemplate
+class ContainerInstances(ec2.LaunchTemplate):
     launch_template_data = ContainerInstancesLaunchTemplateData
 
 
@@ -36,8 +35,7 @@ class ECSAutoScalingGroupLaunchTemplateSpecification:
     version = ContainerInstances.LatestVersionNumber
 
 
-class ECSAutoScalingGroup:
-    resource: autoscaling.AutoScalingGroup
+class ECSAutoScalingGroup(autoscaling.AutoScalingGroup):
     vpc_zone_identifier = [PrivateSubnetOne, PrivateSubnetTwo]
     launch_template = ECSAutoScalingGroupLaunchTemplateSpecification
     min_size = 1

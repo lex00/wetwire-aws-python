@@ -33,8 +33,7 @@ class S3BucketDestinationDeleteMarkerReplication:
     status = s3.BucketVersioningStatus.ENABLED
 
 
-class S3BucketDestination:
-    resource: s3.Bucket
+class S3BucketDestination(s3.Bucket):
     bucket_name = Sub('${AWS::StackName}-${AWS::AccountId}-bucket')
     bucket_encryption = S3BucketDestinationBucketEncryption
     public_access_block_configuration = S3BucketDestinationPublicAccessBlockConfiguration
@@ -81,7 +80,6 @@ class S3BucketDestinationPolicyPolicyDocument:
     statement = [S3BucketDestinationPolicyAllowStatement0, S3BucketDestinationPolicyDenyStatement1]
 
 
-class S3BucketDestinationPolicy:
-    resource: s3.BucketPolicy
+class S3BucketDestinationPolicy(s3.BucketPolicy):
     bucket = S3BucketDestination
     policy_document = S3BucketDestinationPolicyPolicyDocument

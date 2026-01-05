@@ -9,8 +9,7 @@ class MainDBTagFormat:
     value = 'Master Database'
 
 
-class MainDB:
-    resource: rds.DBInstance
+class MainDB(rds.DBInstance):
     db_name = DBName
     allocated_storage = DBAllocatedStorage
     backup_retention_period = 7
@@ -33,8 +32,7 @@ class ReplicaDBTagFormat:
     value = 'Read Replica Database'
 
 
-class ReplicaDB:
-    resource: rds.DBInstance
+class ReplicaDB(rds.DBInstance):
     source_db_instance_identifier = MainDB
     publicly_accessible = False
     db_instance_class = DBInstanceClass

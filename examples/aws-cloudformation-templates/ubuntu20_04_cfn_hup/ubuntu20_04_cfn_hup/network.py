@@ -11,7 +11,6 @@ class InstanceSecurityGroupEgress:
     cidr_ip = SSHLocation
 
 
-class InstanceSecurityGroup:
-    resource: ec2.SecurityGroup
+class InstanceSecurityGroup(ec2.SecurityGroup):
     group_description = 'Enable SSH access via port 22'
     security_group_ingress = [InstanceSecurityGroupEgress]

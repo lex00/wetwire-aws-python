@@ -16,16 +16,14 @@ def clear_registry():
     get_aws_registry().clear()
 
 
-# Define test wrapper classes at module level
+# Define test wrapper classes at module level using inheritance pattern
 @wetwire_aws
-class ProviderTestBucket:
-    resource: Bucket
+class ProviderTestBucket(Bucket):
     bucket_name = "test-bucket"
 
 
 @wetwire_aws
-class ProviderTestRole:
-    resource: Role
+class ProviderTestRole(Role):
     role_name = "test-role"
 
 
@@ -62,8 +60,7 @@ class TestCloudFormationProvider:
         """Test getting logical ID respects _logical_id attribute."""
 
         @wetwire_aws
-        class CustomLogicalIdResource:
-            resource: Bucket
+        class CustomLogicalIdResource(Bucket):
             bucket_name = "custom"
             _logical_id = "MyCustomBucket"
 

@@ -11,7 +11,6 @@ class EC2SecurityGroupEgress:
     cidr_ip = SSHLocation
 
 
-class EC2SecurityGroup:
-    resource: ec2.SecurityGroup
+class EC2SecurityGroup(ec2.SecurityGroup):
     group_description = 'SSH access'
     security_group_ingress = [EC2SecurityGroupEgress]

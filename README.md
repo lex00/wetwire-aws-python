@@ -19,15 +19,13 @@ setup_resources(__file__, __name__, globals())
 # infra.py
 from . import *
 
-class MyBucket:
-    resource: s3.Bucket
+class MyBucket(s3.Bucket):
     bucket_name = "my-data"
 
-class MyFunction:
-    resource: lambda_.Function
+class MyFunction(lambda_.Function):
     function_name = "processor"
     runtime = lambda_.Runtime.PYTHON3_12
-    role = MyRole.Arn  # Type-safe reference
+    role = MyRole.Arn  # Type-safe reference with IDE autocomplete
 ```
 
 ```bash

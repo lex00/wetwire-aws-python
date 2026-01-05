@@ -37,8 +37,7 @@ class LambdaEdgeIAMRolePolicy:
     policy_document = LambdaEdgeIAMRolePolicies0PolicyDocument
 
 
-class LambdaEdgeIAMRole:
-    resource: iam.Role
+class LambdaEdgeIAMRole(iam.Role):
     role_name = Sub('${AppName}-iam-lambda-edge-role-${Environment}')
     assume_role_policy_document = LambdaEdgeIAMRoleAssumeRolePolicyDocument
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole', 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess']
@@ -59,8 +58,7 @@ class AdministratorAccessIAMRoleAssumeRolePolicyDocument:
     statement = [AdministratorAccessIAMRoleAllowStatement0]
 
 
-class AdministratorAccessIAMRole:
-    resource: iam.Role
+class AdministratorAccessIAMRole(iam.Role):
     role_name = Sub('AdministratorAccess-${AppName}')
     managed_policy_arns = [Sub('arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess')]
     assume_role_policy_document = AdministratorAccessIAMRoleAssumeRolePolicyDocument
@@ -104,8 +102,7 @@ class LoggingBucketKMSKeyKeyPolicy:
     statement = [LoggingBucketKMSKeyAllowStatement0, LoggingBucketKMSKeyAllowStatement1]
 
 
-class LoggingBucketKMSKey:
-    resource: kms.Key
+class LoggingBucketKMSKey(kms.Key):
     description = 'Logging S3 Bucket KMS Key'
     enabled = True
     enable_key_rotation = True
@@ -113,7 +110,6 @@ class LoggingBucketKMSKey:
     depends_on = [AdministratorAccessIAMRole]
 
 
-class LoggingBucketKMSKeyAlias:
-    resource: kms.Alias
+class LoggingBucketKMSKeyAlias(kms.Alias):
     alias_name = Sub('alias/${AppName}/${Environment}/s3-logging-kms')
     target_key_id = LoggingBucketKMSKey

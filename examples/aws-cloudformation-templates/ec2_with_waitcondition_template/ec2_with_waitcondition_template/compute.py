@@ -57,8 +57,7 @@ class KWOSInstanceAssociationParameter8:
     value = MasterID
 
 
-class KWOSInstance:
-    resource: ec2.Instance
+class KWOSInstance(ec2.Instance):
     image_id = ImageId
     instance_type = InstanceType
     subnet_id = SubnetId

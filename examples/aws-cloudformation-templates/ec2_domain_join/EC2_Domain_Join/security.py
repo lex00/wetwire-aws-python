@@ -3,14 +3,12 @@
 from . import *  # noqa: F403
 
 
-class myInstanceProfile:
-    resource: iam.InstanceProfile
+class myInstanceProfile(iam.InstanceProfile):
     roles = ['DemoEC2SSMRole']
     instance_profile_name = 'myEC2SSMRole'
 
 
-class myssmdocument:
-    resource: ssm.Document
+class myssmdocument(ssm.Document):
     content = {
         'schemaVersion': '1.2',
         'description': 'Join instances to an AWS Directory Service domain.',
@@ -55,8 +53,7 @@ class myEC2SSMRoleAssumeRolePolicyDocument:
     statement = [myEC2SSMRoleAllowStatement0]
 
 
-class myEC2SSMRole:
-    resource: iam.Role
+class myEC2SSMRole(iam.Role):
     assume_role_policy_document = myEC2SSMRoleAssumeRolePolicyDocument
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM']
     role_name = 'DemoEC2SSMRole'

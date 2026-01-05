@@ -146,10 +146,10 @@ class CloudFormationTemplate:
         registry = cf_registry
         resources: dict[str, Any] = {}
 
-        from typing import get_type_hints
 
-        from dataclass_dsl import is_attr_ref, is_class_ref, topological_sort
+        from dataclass_dsl import is_attr_ref, is_class_ref
 
+        from wetwire_aws.base import CloudFormationResource
         from wetwire_aws.intrinsics.functions import GetAtt
         from wetwire_aws.intrinsics.functions import Ref as RefIntrinsic
         from wetwire_aws.intrinsics.refs import resolve_refs_from_annotations
@@ -157,24 +157,69 @@ class CloudFormationTemplate:
         # Get all wrapper classes
         all_wrappers = list(registry.get_all(scope_package))
 
-        # Topologically sort by dependencies (uses dataclass-dsl internally)
-        sorted_wrappers = topological_sort(all_wrappers)
+        # Custom dependency detection for inheritance pattern
+        # dataclass_dsl doesn't detect dependencies from class attributes
+        def get_wrapper_dependencies(cls: type) -> set[type]:
+            """Get dependencies from class attributes (AttrRef and class refs)."""
+            deps: set[type] = set()
+            for name, value in cls.__dict__.items():
+                if name.startswith("_"):
+                    continue
+                if is_attr_ref(value):
+                    deps.add(value.target)
+                elif is_class_ref(value):
+                    deps.add(value)
+                elif isinstance(value, type) and issubclass(value, CloudFormationResource):
+                    deps.add(value)
+            return deps
+
+        # Custom topological sort using our dependency detection
+        def custom_topological_sort(classes: list[type]) -> list[type]:
+            """Sort classes by dependencies (dependencies first)."""
+            class_set = set(classes)
+            sorted_result: list[type] = []
+            remaining = set(classes)
+
+            while remaining:
+                # Find classes whose dependencies are all satisfied
+                ready = [
+                    cls
+                    for cls in remaining
+                    if get_wrapper_dependencies(cls).intersection(class_set).issubset(
+                        set(sorted_result)
+                    )
+                ]
+
+                if not ready:
+                    # No progress - take any remaining class to break cycle
+                    ready = [next(iter(remaining))]
+
+                for cls in ready:
+                    sorted_result.append(cls)
+                    remaining.remove(cls)
+
+            return sorted_result
+
+        # Use custom sort instead of dataclass_dsl's topological_sort
+        sorted_wrappers = custom_topological_sort(all_wrappers)
 
         for wrapper_cls in sorted_wrappers:
             logical_name = wrapper_cls.__name__
 
-            # Get resource type from 'resource' annotation (resolve forward refs)
-            try:
-                hints = get_type_hints(wrapper_cls)
-                resource_type_cls = hints.get("resource")
-            except Exception:
-                # Fallback to raw annotations if get_type_hints fails
-                annotations = getattr(wrapper_cls, "__annotations__", {})
-                resource_type_cls = annotations.get("resource")
+            # Get resource type from base class inheritance
+            resource_type_cls = None
+            for base in wrapper_cls.__mro__[1:]:  # Skip the class itself
+                if (
+                    base is not CloudFormationResource
+                    and isinstance(base, type)
+                    and issubclass(base, CloudFormationResource)
+                    and hasattr(base, "_resource_type")
+                    and base._resource_type
+                ):
+                    resource_type_cls = base
+                    break
 
-            if resource_type_cls is None or not hasattr(
-                resource_type_cls, "_resource_type"
-            ):
+            if resource_type_cls is None:
                 continue
 
             # Create wrapper instance to get property values
@@ -183,11 +228,30 @@ class CloudFormationTemplate:
             # Resolve Ref[T] and Attr[T, "name"] annotations to intrinsics
             resolved_refs = resolve_refs_from_annotations(wrapper_instance)
 
-            # Collect properties from wrapper (excluding 'resource' and private attrs)
-            # Also exclude fields that are None (annotation-only placeholders)
+            # Collect properties from class attributes (inheritance pattern stores
+            # overridden values as class attributes, not instance attributes)
             props: dict[str, Any] = {}
-            for k, v in wrapper_instance.__dict__.items():
-                if k.startswith("_") or k == "resource" or v is None:
+
+            # Get field names from the resource type's dataclass fields
+            if hasattr(resource_type_cls, "__dataclass_fields__"):
+                field_names = set(resource_type_cls.__dataclass_fields__.keys())
+            else:
+                field_names = set()
+
+            # Check class attributes that override dataclass field defaults
+            for k in field_names:
+                if k.startswith("_"):
+                    continue
+                # Get from class dict to find overridden values
+                # Check wrapper class's own __dict__ first, then instance
+                if k in wrapper_cls.__dict__:
+                    v = wrapper_cls.__dict__[k]
+                elif k in wrapper_instance.__dict__:
+                    v = wrapper_instance.__dict__[k]
+                else:
+                    continue
+
+                if v is None:
                     continue
 
                 # Handle no-parens pattern: AttrRef markers (e.g., MyRole.Arn)

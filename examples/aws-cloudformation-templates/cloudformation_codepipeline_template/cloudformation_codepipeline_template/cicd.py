@@ -131,8 +131,7 @@ class PipelineStageDeclaration2:
     actions = [PipelineActionDeclaration2, PipelineActionDeclaration3]
 
 
-class Pipeline:
-    resource: codepipeline.Pipeline
+class Pipeline(codepipeline.Pipeline):
     name = Sub('${AWS::StackName}-Code-Pipeline')
     artifact_store = PipelineArtifactStore
     restart_execution_on_update = False

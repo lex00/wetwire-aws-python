@@ -3,9 +3,8 @@
 from . import *  # noqa: F403
 
 
-class ADConnectorResource:
+class ADConnectorResource(CloudFormationResource):
     # Unknown resource type: Custom::ADConnectorResource
-    resource: CloudFormationResource
     service_token = ADConnectorLambdaFunction.Arn
     adconnector_description = ADConnectorDescription
     adconnector_size = ADConnectorSize

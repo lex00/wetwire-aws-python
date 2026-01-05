@@ -10,6 +10,5 @@ class DBCredentialGenerateSecretString:
     require_each_included_type = True
 
 
-class DBCredential:
-    resource: secretsmanager.Secret
+class DBCredential(secretsmanager.Secret):
     generate_secret_string = DBCredentialGenerateSecretString

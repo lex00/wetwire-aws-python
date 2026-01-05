@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class LogsBucket:
-    resource: s3.Bucket
+class LogsBucket(s3.Bucket):
     access_control = 'Private'
     deletion_policy = 'Retain'
 
@@ -41,7 +40,6 @@ class LogsBucketPolicyPolicyDocument:
     statement = [LogsBucketPolicyAllowStatement0, LogsBucketPolicyDenyStatement1]
 
 
-class LogsBucketPolicy:
-    resource: s3.BucketPolicy
+class LogsBucketPolicy(s3.BucketPolicy):
     bucket = LogsBucket
     policy_document = LogsBucketPolicyPolicyDocument

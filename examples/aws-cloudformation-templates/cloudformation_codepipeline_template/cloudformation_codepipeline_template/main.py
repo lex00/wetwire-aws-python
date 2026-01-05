@@ -40,8 +40,7 @@ class EventRolePolicy:
     policy_document = EventRolePolicies0PolicyDocument
 
 
-class EventRole:
-    resource: iam.Role
+class EventRole(iam.Role):
     assume_role_policy_document = EventRoleAssumeRolePolicyDocument
     path = '/'
     policies = [EventRolePolicy]

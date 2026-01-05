@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class MyRDSParamGroup:
-    resource: rds.DBParameterGroup
+class MyRDSParamGroup(rds.DBParameterGroup):
     family = 'MySQL8.0'
     description = 'CloudFormation Sample Database Parameter Group'
     parameters = {
@@ -13,8 +12,7 @@ class MyRDSParamGroup:
     }
 
 
-class MyDB:
-    resource: rds.DBInstance
+class MyDB(rds.DBInstance):
     db_name = DBName
     allocated_storage = '5'
     db_instance_class = 'db.t3.small'

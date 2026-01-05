@@ -1,25 +1,6 @@
-"""Network resources: EC2InstanceSG, ALBExternalAccessSG, OriginALB, HTTPSTcpIn, Tcp8080Out, CloudFrontDistribution, Tcp8080In, HTTPTcpIn."""
+"""Network resources: ALBExternalAccessSG, OriginALB, EC2InstanceSG, Tcp8080In, HTTPSTcpIn, Tcp8080Out, HTTPTcpIn, CloudFrontDistribution."""
 
 from . import *  # noqa: F403
-
-
-class EC2InstanceSGAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = Sub('${AppName}-${Environment}-ec2-instance-SG')
-
-
-class EC2InstanceSGAssociationParameter1:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Environment'
-    value = Environment
-
-
-class EC2InstanceSG:
-    resource: ec2.SecurityGroup
-    group_description = 'EC2 Instance Security Group'
-    vpc_id = VpcId
-    tags = [EC2InstanceSGAssociationParameter, EC2InstanceSGAssociationParameter1]
 
 
 class ALBExternalAccessSGAssociationParameter:
@@ -34,8 +15,7 @@ class ALBExternalAccessSGAssociationParameter1:
     value = Environment
 
 
-class ALBExternalAccessSG:
-    resource: ec2.SecurityGroup
+class ALBExternalAccessSG(ec2.SecurityGroup):
     group_description = 'Allow external access to ALB'
     vpc_id = VpcId
     tags = [ALBExternalAccessSGAssociationParameter, ALBExternalAccessSGAssociationParameter1]
@@ -71,8 +51,7 @@ class OriginALBTargetGroupAttribute4:
     value = Environment
 
 
-class OriginALB:
-    resource: elasticloadbalancingv2.LoadBalancer
+class OriginALB(elasticloadbalancingv2.LoadBalancer):
     name = Sub('${AppName}-${Environment}-alb')
     scheme = ALBScheme
     type_ = ALBType
@@ -82,8 +61,33 @@ class OriginALB:
     tags = [OriginALBTargetGroupAttribute3, OriginALBTargetGroupAttribute4]
 
 
-class HTTPSTcpIn:
-    resource: ec2.SecurityGroupIngress
+class EC2InstanceSGAssociationParameter:
+    resource: ec2.Instance.AssociationParameter
+    key = 'Name'
+    value = Sub('${AppName}-${Environment}-ec2-instance-SG')
+
+
+class EC2InstanceSGAssociationParameter1:
+    resource: ec2.Instance.AssociationParameter
+    key = 'Environment'
+    value = Environment
+
+
+class EC2InstanceSG(ec2.SecurityGroup):
+    group_description = 'EC2 Instance Security Group'
+    vpc_id = VpcId
+    tags = [EC2InstanceSGAssociationParameter, EC2InstanceSGAssociationParameter1]
+
+
+class Tcp8080In(ec2.SecurityGroupIngress):
+    group_id = EC2InstanceSG
+    to_port = '8080'
+    ip_protocol = 'tcp'
+    from_port = '8080'
+    source_security_group_id = ALBExternalAccessSG
+
+
+class HTTPSTcpIn(ec2.SecurityGroupIngress):
     group_id = ALBExternalAccessSG
     to_port = 443
     ip_protocol = 'tcp'
@@ -91,13 +95,20 @@ class HTTPSTcpIn:
     cidr_ip = '0.0.0.0/0'
 
 
-class Tcp8080Out:
-    resource: ec2.SecurityGroupEgress
+class Tcp8080Out(ec2.SecurityGroupEgress):
     group_id = ALBExternalAccessSG
     to_port = 8080
     ip_protocol = 'tcp'
     from_port = 8080
     destination_security_group_id = EC2InstanceSG
+
+
+class HTTPTcpIn(ec2.SecurityGroupIngress):
+    group_id = ALBExternalAccessSG
+    to_port = 80
+    ip_protocol = 'tcp'
+    from_port = 80
+    cidr_ip = '0.0.0.0/0'
 
 
 class CloudFrontDistributionCustomOriginConfig:
@@ -174,25 +185,6 @@ class CloudFrontDistributionDistributionConfig:
     logging = CloudFrontDistributionLogging
 
 
-class CloudFrontDistribution:
-    resource: cloudfront.Distribution
+class CloudFrontDistribution(cloudfront.Distribution):
     distribution_config = CloudFrontDistributionDistributionConfig
     depends_on = [LoggingBucket, LambdaEdgeFunction]
-
-
-class Tcp8080In:
-    resource: ec2.SecurityGroupIngress
-    group_id = EC2InstanceSG
-    to_port = '8080'
-    ip_protocol = 'tcp'
-    from_port = '8080'
-    source_security_group_id = ALBExternalAccessSG
-
-
-class HTTPTcpIn:
-    resource: ec2.SecurityGroupIngress
-    group_id = ALBExternalAccessSG
-    to_port = 80
-    ip_protocol = 'tcp'
-    from_port = 80
-    cidr_ip = '0.0.0.0/0'

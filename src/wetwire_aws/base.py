@@ -9,48 +9,92 @@ Context is the base class for environment-specific configuration.
 from dataclasses import dataclass, field
 from typing import Annotated, Any, ClassVar
 
-from dataclass_dsl import ContextRef, Resource, is_attr_ref, is_class_ref
+from dataclass_dsl import AttrRef, ContextRef, Resource, is_attr_ref, is_class_ref
 from dataclass_dsl import PropertyType as PropertyTypeBase
+from dataclass_dsl._decorator import RefMeta
 from dataclass_dsl._loader import _ClassPlaceholder
+
+
+class ResourceMeta(RefMeta, type(Resource)):
+    """Metaclass for CloudFormationResource that provides attribute ref access.
+
+    This metaclass inherits from both RefMeta (for dataclass_dsl decorator compatibility)
+    and the metaclass of Resource (ABCMeta) to avoid metaclass conflicts.
+
+    It adds `__getattr__` for attribute refs, allowing `MyResource.Arn` syntax
+    to return an AttrRef marker that gets serialized to CloudFormation
+    `{"Fn::GetAtt": ["MyResource", "Arn"]}`.
+    """
+
+    def __getattr__(cls, name: str) -> AttrRef:
+        """Return an AttrRef marker for CloudFormation GetAtt references.
+
+        This enables the no-parens pattern: `role = MyRole.Arn`
+        """
+        # Don't intercept dunder attributes or private attributes
+        if name.startswith("_"):
+            raise AttributeError(
+                f"type object {cls.__name__!r} has no attribute {name!r}"
+            )
+        # Return an AttrRef marker for CloudFormation attributes
+        return AttrRef(cls, name)
 
 
 def _is_property_type_wrapper(cls: type) -> bool:
     """Check if a class is a PropertyType wrapper (not a Resource wrapper).
 
-    PropertyType wrappers have a `resource` annotation pointing to a PropertyType
-    subclass. Resource wrappers point to CloudFormationResource subclasses.
+    PropertyType wrappers inherit from a PropertyType subclass.
+    Resource wrappers inherit from CloudFormationResource subclasses.
 
     Args:
         cls: The class to check.
 
     Returns:
-        True if the class wraps a PropertyType, False otherwise.
+        True if the class inherits from a PropertyType, False otherwise.
     """
-    annotations = getattr(cls, "__annotations__", {})
-    resource_type = annotations.get("resource")
-    if resource_type is None:
-        return False
-    # Check if resource_type is a PropertyType (not a CloudFormationResource)
-    # PropertyType doesn't have _resource_type, CloudFormationResource does
-    return not hasattr(resource_type, "_resource_type")
+    for base in cls.__bases__:
+        if base is PropertyType:
+            continue
+        if isinstance(base, type) and issubclass(base, PropertyType):
+            # It's a PropertyType subclass, but make sure it's not a CloudFormationResource
+            if not issubclass(base, CloudFormationResource):
+                return True
+    return False
+
+
+def _get_property_type_base(cls: type) -> type | None:
+    """Get the PropertyType base class from a wrapper class.
+
+    Args:
+        cls: The wrapper class to inspect.
+
+    Returns:
+        The PropertyType subclass that cls inherits from, or None.
+    """
+    for base in cls.__bases__:
+        if base is PropertyType:
+            continue
+        if isinstance(base, type) and issubclass(base, PropertyType):
+            if not issubclass(base, CloudFormationResource):
+                return base
+    return None
 
 
 def _instantiate_property_type_wrapper(wrapper_cls: type) -> Any:
     """Create a PropertyType instance from a wrapper class.
 
-    Wrapper classes have a `resource:` annotation pointing to a PropertyType
-    subclass. This function extracts the property values from the wrapper
-    and creates an actual PropertyType instance.
+    Wrapper classes inherit from a PropertyType subclass. This function
+    extracts the property values from the wrapper and creates an actual
+    PropertyType instance.
 
     Args:
-        wrapper_cls: A class with `resource: SomePropertyType` annotation.
+        wrapper_cls: A class that inherits from a PropertyType.
 
     Returns:
         An instance of the PropertyType with values from the wrapper.
     """
-    # Get the PropertyType class from the wrapper's annotation
-    annotations = getattr(wrapper_cls, "__annotations__", {})
-    property_type_cls = annotations.get("resource")
+    # Get the PropertyType class from the wrapper's base classes
+    property_type_cls = _get_property_type_base(wrapper_cls)
     if property_type_cls is None:
         # Shouldn't happen if _is_property_type_wrapper was True
         return None
@@ -58,10 +102,10 @@ def _instantiate_property_type_wrapper(wrapper_cls: type) -> Any:
     # Create wrapper instance to get its property values
     wrapper_instance = wrapper_cls()
 
-    # Collect properties from wrapper (excluding 'resource' and private attrs)
+    # Collect properties from wrapper (excluding private attrs)
     props: dict[str, Any] = {}
     for k, v in wrapper_instance.__dict__.items():
-        if k.startswith("_") or k == "resource" or v is None:
+        if k.startswith("_") or v is None:
             continue
         # Recursively serialize nested values (handles nested wrappers, lists, etc.)
         props[k] = _serialize_value(v)
@@ -93,11 +137,13 @@ def _serialize_value(value: Any) -> Any:
 
         return GetAtt(value.target.__name__, value.attr).to_dict()
     # Handle no-parens pattern: class references (e.g., MyBucket)
-    # Also handle plain class types with resource annotation (undecorated wrappers)
+    # Also handle plain class types that inherit from CloudFormationResource or PropertyType
     if is_class_ref(value) or (
         isinstance(value, type)
-        and hasattr(value, "__annotations__")
-        and "resource" in getattr(value, "__annotations__", {})
+        and (
+            issubclass(value, CloudFormationResource)
+            or issubclass(value, PropertyType)
+        )
     ):
         # Check if this is a PropertyType wrapper - if so, instantiate and serialize
         if _is_property_type_wrapper(value):
@@ -297,7 +343,7 @@ class PolicyDocument:
 
 
 @dataclass
-class CloudFormationResource(Resource):
+class CloudFormationResource(Resource, metaclass=ResourceMeta):
     """
     Base class for all CloudFormation resource types.
 
@@ -306,6 +352,9 @@ class CloudFormationResource(Resource):
 
     Optional class variables:
     - _property_mappings: Dict mapping Python names to CF property names
+
+    The ResourceMeta metaclass provides `__getattr__` for attribute refs,
+    enabling the no-parens pattern: `role = MyRole.Arn`
     """
 
     _resource_type: ClassVar[str] = ""

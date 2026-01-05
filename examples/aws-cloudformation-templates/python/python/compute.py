@@ -10,8 +10,7 @@ class TransformFunctionCode:
     }
 
 
-class TransformFunction:
-    resource: lambda_.Function
+class TransformFunction(lambda_.Function):
     description = 'Support for the PyPlate CloudFormation macro'
     code = TransformFunctionCode
     handler = 'index.handler'
@@ -20,8 +19,7 @@ class TransformFunction:
     timeout = LambdaTimeout
 
 
-class TransformFunctionPermissions:
-    resource: lambda_.Permission
+class TransformFunctionPermissions(lambda_.Permission):
     action = 'lambda:InvokeFunction'
     function_name = TransformFunction.Arn
     principal = 'cloudformation.amazonaws.com'

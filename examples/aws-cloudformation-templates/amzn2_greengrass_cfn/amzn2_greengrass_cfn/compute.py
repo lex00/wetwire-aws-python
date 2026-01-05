@@ -1,129 +1,6 @@
-"""Compute resources: GGSampleFunction, GGSampleFunctionVersion, InstanceAZFunction, CreateThingFunction, GroupDeploymentResetFunction."""
+"""Compute resources: CreateThingFunction, InstanceAZFunction, GGSampleFunction, GGSampleFunctionVersion, GroupDeploymentResetFunction."""
 
 from . import *  # noqa: F403
-
-
-class GGSampleFunctionCode:
-    resource: lambda_.Function.Code
-    zip_file = """import os
-from threading import Timer
-import greengrasssdk
-
-
-counter = 0
-client = greengrasssdk.client('iot-data')
-
-
-def telemetry():
-    '''Publish incrementing value to telemetry topic every 2 seconds'''
-    global counter
-    counter += 1
-    client.publish(
-        topic='{}/telem'.format(os.environ['CORE_NAME']),
-        payload='Example telemetry counter, value: {}'.format(counter)
-    )
-    Timer(5, telemetry).start()
-# Call telemetry() to start telemetry publish
-telemetry()
-
-
-def function_handler(event, context):
-    '''Echo message on /in topic to /out topic'''
-    client.publish(
-        topic='{}/out'.format(os.environ['CORE_NAME']),
-        payload=event
-    )
-"""
-
-
-class GGSampleFunction:
-    resource: lambda_.Function
-    function_name = Join('_', [
-    CoreName,
-    'sample',
-])
-    description = 'Long running lambda that provides telemetry and pub/sub echo'
-    handler = 'index.function_handler'
-    runtime = lambda_.Runtime.PYTHON3_12
-    role = LambdaExecutionRole.Arn
-    timeout = 60
-    code = GGSampleFunctionCode
-
-
-class GGSampleFunctionVersion:
-    resource: lambda_.Version
-    function_name = GGSampleFunction.Arn
-
-
-class InstanceAZFunctionCode:
-    resource: lambda_.Function.Code
-    zip_file = """import sys
-import cfnresponse
-import boto3
-from botocore.exceptions import ClientError
-import json
-import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
-c = boto3.client('ec2')
-
-
-def handler(event, context):
-    responseData = {}
-    try:
-        logger.info('Received event: {}'.format(json.dumps(event)))
-        result = cfnresponse.FAILED
-        if event['RequestType'] == 'Create':
-            r = c.describe_reserved_instances_offerings(
-                Filters=[
-                    {
-                        'Name': 'scope',
-                        'Values': [
-                            'Availability Zone',
-                        ]
-                    },
-                ],
-                IncludeMarketplace=False,
-                InstanceType='t3.micro',
-            )
-            x = r['ReservedInstancesOfferings']
-            while 'NextToken' in r:
-                r = c.describe_reserved_instances_offerings(
-                    Filters=[
-                        {
-                            'Name': 'scope',
-                            'Values': [
-                                'Availability Zone',
-                            ]
-                        },
-                    ],
-                    IncludeMarketplace=False,
-                    InstanceType='t3.micro',
-                    NextToken=r['NextToken']
-                )
-                x.extend(r['ReservedInstancesOfferings'])
-            responseData['AvailabilityZone'] = set(d['AvailabilityZone'] for d in x).pop()
-            result = cfnresponse.SUCCESS
-        else:
-            result = cfnresponse.SUCCESS
-    except ClientError as e:
-        logger.error('Error: {}'.format(e))
-        result = cfnresponse.FAILED
-    logger.info('Returning response of: %s, with result of: %s' % (result, responseData))
-    sys.stdout.flush()
-    cfnresponse.send(event, context, result, responseData)
-"""
-
-
-class InstanceAZFunction:
-    resource: lambda_.Function
-    description = 'Queries account and region for supported AZ'
-    handler = 'index.handler'
-    runtime = lambda_.Runtime.PYTHON3_12
-    role = LambdaExecutionRole.Arn
-    timeout = 60
-    code = InstanceAZFunctionCode
 
 
 class CreateThingFunctionCode:
@@ -232,14 +109,133 @@ def handler(event, context):
 """
 
 
-class CreateThingFunction:
-    resource: lambda_.Function
+class CreateThingFunction(lambda_.Function):
     description = 'Create thing, certificate, and policy, return cert and private key'
     handler = 'index.handler'
     runtime = lambda_.Runtime.PYTHON3_12
     role = LambdaExecutionRole.Arn
     timeout = 60
     code = CreateThingFunctionCode
+
+
+class InstanceAZFunctionCode:
+    resource: lambda_.Function.Code
+    zip_file = """import sys
+import cfnresponse
+import boto3
+from botocore.exceptions import ClientError
+import json
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+c = boto3.client('ec2')
+
+
+def handler(event, context):
+    responseData = {}
+    try:
+        logger.info('Received event: {}'.format(json.dumps(event)))
+        result = cfnresponse.FAILED
+        if event['RequestType'] == 'Create':
+            r = c.describe_reserved_instances_offerings(
+                Filters=[
+                    {
+                        'Name': 'scope',
+                        'Values': [
+                            'Availability Zone',
+                        ]
+                    },
+                ],
+                IncludeMarketplace=False,
+                InstanceType='t3.micro',
+            )
+            x = r['ReservedInstancesOfferings']
+            while 'NextToken' in r:
+                r = c.describe_reserved_instances_offerings(
+                    Filters=[
+                        {
+                            'Name': 'scope',
+                            'Values': [
+                                'Availability Zone',
+                            ]
+                        },
+                    ],
+                    IncludeMarketplace=False,
+                    InstanceType='t3.micro',
+                    NextToken=r['NextToken']
+                )
+                x.extend(r['ReservedInstancesOfferings'])
+            responseData['AvailabilityZone'] = set(d['AvailabilityZone'] for d in x).pop()
+            result = cfnresponse.SUCCESS
+        else:
+            result = cfnresponse.SUCCESS
+    except ClientError as e:
+        logger.error('Error: {}'.format(e))
+        result = cfnresponse.FAILED
+    logger.info('Returning response of: %s, with result of: %s' % (result, responseData))
+    sys.stdout.flush()
+    cfnresponse.send(event, context, result, responseData)
+"""
+
+
+class InstanceAZFunction(lambda_.Function):
+    description = 'Queries account and region for supported AZ'
+    handler = 'index.handler'
+    runtime = lambda_.Runtime.PYTHON3_12
+    role = LambdaExecutionRole.Arn
+    timeout = 60
+    code = InstanceAZFunctionCode
+
+
+class GGSampleFunctionCode:
+    resource: lambda_.Function.Code
+    zip_file = """import os
+from threading import Timer
+import greengrasssdk
+
+
+counter = 0
+client = greengrasssdk.client('iot-data')
+
+
+def telemetry():
+    '''Publish incrementing value to telemetry topic every 2 seconds'''
+    global counter
+    counter += 1
+    client.publish(
+        topic='{}/telem'.format(os.environ['CORE_NAME']),
+        payload='Example telemetry counter, value: {}'.format(counter)
+    )
+    Timer(5, telemetry).start()
+# Call telemetry() to start telemetry publish
+telemetry()
+
+
+def function_handler(event, context):
+    '''Echo message on /in topic to /out topic'''
+    client.publish(
+        topic='{}/out'.format(os.environ['CORE_NAME']),
+        payload=event
+    )
+"""
+
+
+class GGSampleFunction(lambda_.Function):
+    function_name = Join('_', [
+    CoreName,
+    'sample',
+])
+    description = 'Long running lambda that provides telemetry and pub/sub echo'
+    handler = 'index.function_handler'
+    runtime = lambda_.Runtime.PYTHON3_12
+    role = LambdaExecutionRole.Arn
+    timeout = 60
+    code = GGSampleFunctionCode
+
+
+class GGSampleFunctionVersion(lambda_.Version):
+    function_name = GGSampleFunction.Arn
 
 
 class GroupDeploymentResetFunctionEnvironment:
@@ -256,8 +252,7 @@ class GroupDeploymentResetFunctionCode:
     }
 
 
-class GroupDeploymentResetFunction:
-    resource: lambda_.Function
+class GroupDeploymentResetFunction(lambda_.Function):
     description = 'Resets any deployments during stack delete and manages Greengrass service role needs'
     handler = 'index.handler'
     runtime = lambda_.Runtime.PYTHON3_12

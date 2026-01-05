@@ -33,13 +33,11 @@ class KmsKeyKeyPolicy:
     statement = [KmsKeyAllowStatement0, KmsKeyAllowStatement1]
 
 
-class KmsKey:
-    resource: kms.Key
+class KmsKey(kms.Key):
     enable_key_rotation = True
     key_policy = KmsKeyKeyPolicy
 
 
-class KmsKeyAlias:
-    resource: kms.Alias
+class KmsKeyAlias(kms.Alias):
     alias_name = Sub('alias/${AWS::StackName}-${AWS::AccountId}-kms-key')
     target_key_id = KmsKey

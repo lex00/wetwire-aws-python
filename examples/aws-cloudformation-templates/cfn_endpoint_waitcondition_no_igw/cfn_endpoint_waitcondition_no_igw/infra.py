@@ -3,5 +3,5 @@
 from . import *  # noqa: F403
 
 
-class PrivateWaitHandle:
-    resource: cloudformation.WaitConditionHandle
+class PrivateWaitHandle(cloudformation.WaitConditionHandle):
+    pass

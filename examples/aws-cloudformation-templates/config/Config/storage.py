@@ -26,7 +26,6 @@ class ConfigBucketPublicAccessBlockConfiguration:
     restrict_public_buckets = True
 
 
-class ConfigBucket:
-    resource: s3.Bucket
+class ConfigBucket(s3.Bucket):
     bucket_encryption = ConfigBucketBucketEncryption
     public_access_block_configuration = ConfigBucketPublicAccessBlockConfiguration

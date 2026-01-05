@@ -3,14 +3,12 @@
 from . import *  # noqa: F403
 
 
-class AuroraDBSubnetGroup:
-    resource: rds.DBSubnetGroup
+class AuroraDBSubnetGroup(rds.DBSubnetGroup):
     db_subnet_group_description = 'Subnets available for the Aurora SampleDB DB Instance'
     subnet_ids = [DBSubnet1, DBSubnet2]
 
 
-class AuroraCluster:
-    resource: rds.DBCluster
+class AuroraCluster(rds.DBCluster):
     database_name = 'dms_sample'
     backup_retention_period = 7
     db_subnet_group_name = AuroraDBSubnetGroup
@@ -27,8 +25,7 @@ class AuroraDBTagFormat:
     value = AWS_STACK_ID
 
 
-class AuroraDB:
-    resource: rds.DBInstance
+class AuroraDB(rds.DBInstance):
     db_cluster_identifier = AuroraCluster
     db_instance_class = 'db.t3.medium'
     db_instance_identifier = 'dms-sample'

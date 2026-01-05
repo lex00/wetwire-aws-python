@@ -8,8 +8,7 @@ class ConfigRecorderExclusionByResourceTypes:
     resource_types = ['AWS::EC2::Volume']
 
 
-class ConfigRecorder:
-    resource: config.ConfigurationRecorder
+class ConfigRecorder(config.ConfigurationRecorder):
     name = 'default'
     recording_group = ConfigRecorderExclusionByResourceTypes
     role_arn = ConfigRole.Arn
@@ -34,8 +33,7 @@ class ConfigRuleForVolumeAutoEnableIOSource:
     source_identifier = VolumeAutoEnableIOComplianceCheck.Arn
 
 
-class ConfigRuleForVolumeAutoEnableIO:
-    resource: config.ConfigRule
+class ConfigRuleForVolumeAutoEnableIO(config.ConfigRule):
     config_rule_name = 'ConfigRuleForVolumeAutoEnableIO'
     scope = ConfigRuleForVolumeAutoEnableIOScope
     source = ConfigRuleForVolumeAutoEnableIOSource
@@ -47,8 +45,7 @@ class DeliveryChannelConfigSnapshotDeliveryProperties:
     delivery_frequency = 'Six_Hours'
 
 
-class DeliveryChannel:
-    resource: config.DeliveryChannel
+class DeliveryChannel(config.DeliveryChannel):
     config_snapshot_delivery_properties = DeliveryChannelConfigSnapshotDeliveryProperties
     s3_bucket_name = ConfigBucket
     sns_topic_arn = ConfigTopic
@@ -66,8 +63,7 @@ class ConfigRuleForVolumeTagsSource:
     source_identifier = 'REQUIRED_TAGS'
 
 
-class ConfigRuleForVolumeTags:
-    resource: config.ConfigRule
+class ConfigRuleForVolumeTags(config.ConfigRule):
     input_parameters = {
         'tag1Key': 'CostCenter',
     }

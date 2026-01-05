@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class EC2Instance1:
-    resource: ec2.Instance
+class EC2Instance1(ec2.Instance):
     subnet_id = SubnetId
     security_group_ids = [InstanceSecurityGroup.GroupId]
     key_name = KeyName
@@ -22,8 +21,7 @@ yum update -y aws-cfn-bootstrap
 """))
 
 
-class EC2Instance2:
-    resource: ec2.Instance
+class EC2Instance2(ec2.Instance):
     subnet_id = SubnetId
     security_group_ids = [InstanceSecurityGroup.GroupId]
     key_name = KeyName

@@ -24,8 +24,7 @@ class LambdaFunctionEnvironment:
     }
 
 
-class LambdaFunction:
-    resource: lambda_.Function
+class LambdaFunction(lambda_.Function):
     function_name = Sub('lambda-function-${EnvName}')
     description = 'LambdaFunction using python3.12.'
     runtime = lambda_.Runtime.PYTHON3_12

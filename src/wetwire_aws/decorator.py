@@ -9,24 +9,62 @@ from typing import Any
 
 from dataclass_dsl import ResourceRegistry, create_decorator
 
+from wetwire_aws.base import CloudFormationResource, PropertyType
+
 # AWS-specific registry for CloudFormation resources
 cf_registry = ResourceRegistry()
 
 
+def _get_resource_class(cls: type[Any]) -> type[Any] | None:
+    """Extract CloudFormation resource class from base classes.
+
+    Looks for a base class that is a subclass of CloudFormationResource
+    (but not CloudFormationResource itself).
+
+    Args:
+        cls: The wrapper class to inspect.
+
+    Returns:
+        The CloudFormationResource subclass, or None if not found.
+    """
+    for base in cls.__bases__:
+        if base is not CloudFormationResource and isinstance(base, type):
+            if issubclass(base, CloudFormationResource):
+                return base
+    return None
+
+
+def _get_property_type_class(cls: type[Any]) -> type[Any] | None:
+    """Extract PropertyType class from base classes.
+
+    Looks for a base class that is a subclass of PropertyType
+    (but not PropertyType itself).
+
+    Args:
+        cls: The wrapper class to inspect.
+
+    Returns:
+        The PropertyType subclass, or None if not found.
+    """
+    for base in cls.__bases__:
+        if base is not PropertyType and isinstance(base, type):
+            if issubclass(base, PropertyType):
+                return base
+    return None
+
+
 def _get_resource_type(cls: type[Any]) -> type[Any] | str | None:
-    """Extract CF resource type from the 'resource' annotation."""
-    annotations = getattr(cls, "__annotations__", {})
-    resource_type = annotations.get("resource")
-    if resource_type is not None:
-        # Return the CF resource type string if available
-        return getattr(resource_type, "_resource_type", None)
+    """Extract CF resource type from base class inheritance."""
+    resource_class = _get_resource_class(cls)
+    if resource_class is not None:
+        return getattr(resource_class, "_resource_type", None)
     return None
 
 
 # Create the @wetwire_aws decorator using the factory
 wetwire_aws = create_decorator(
     registry=cf_registry,
-    resource_field="resource",
+    resource_field=None,  # No longer using resource: annotation
     get_resource_type=_get_resource_type,
 )
 

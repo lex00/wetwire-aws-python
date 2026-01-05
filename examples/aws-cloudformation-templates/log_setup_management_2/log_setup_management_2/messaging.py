@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class DeadLetterQueue:
-    resource: sqs.Queue
+class DeadLetterQueue(sqs.Queue):
     queue_name = Sub('${CentralEventBusName}-DLQ')
     kms_master_key_id = KmsKeyId
 
@@ -14,15 +13,13 @@ class CentralEventBusDeadLetterConfig:
     arn = DeadLetterQueue.Arn
 
 
-class CentralEventBus:
-    resource: events.EventBus
+class CentralEventBus(events.EventBus):
     description = 'A custom event bus in the central account to be used as a destination for events from a rule in target accounts'
     name = CentralEventBusName
     dead_letter_config = CentralEventBusDeadLetterConfig
 
 
-class CentralEventBusPolicy:
-    resource: events.EventBusPolicy
+class CentralEventBusPolicy(events.EventBusPolicy):
     event_bus_name = CentralEventBus
     statement_id = 'CentralEventBusPolicyStatement'
     statement = {
@@ -50,8 +47,7 @@ class CentralEventRuleTarget:
     dead_letter_config = CentralEventRuleDeadLetterConfig
 
 
-class CentralEventRule:
-    resource: events.Rule
+class CentralEventRule(events.Rule):
     name = 'CloudFormationLogs'
     event_bus_name = CentralEventBusName
     state = events.RuleState.ENABLED

@@ -67,8 +67,7 @@ class LambdaExecutionRolePolicy:
     policy_name = 'root'
 
 
-class LambdaExecutionRole:
-    resource: iam.Role
+class LambdaExecutionRole(iam.Role):
     assume_role_policy_document = LambdaExecutionRoleAssumeRolePolicyDocument
     policies = [LambdaExecutionRolePolicy]
 
@@ -113,7 +112,6 @@ class GreengrassResourceRolePolicy:
     policy_name = 'root'
 
 
-class GreengrassResourceRole:
-    resource: iam.Role
+class GreengrassResourceRole(iam.Role):
     assume_role_policy_document = GreengrassResourceRoleAssumeRolePolicyDocument
     policies = [GreengrassResourceRolePolicy]

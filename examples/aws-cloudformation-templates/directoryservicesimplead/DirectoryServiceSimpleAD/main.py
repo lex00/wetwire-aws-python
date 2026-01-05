@@ -9,8 +9,7 @@ class SimpleADVpcSettings:
     vpc_id = Select(0, VPCID)
 
 
-class SimpleAD:
-    resource: directoryservice.SimpleAD
+class SimpleAD(directoryservice.SimpleAD):
     create_alias = False
     enable_sso = False
     name = DomainName

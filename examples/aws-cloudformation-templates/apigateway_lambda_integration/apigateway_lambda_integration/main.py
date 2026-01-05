@@ -8,22 +8,19 @@ class RestApiEndpointConfiguration:
     types = [ApiType]
 
 
-class RestApi:
-    resource: apigateway.RestApi
+class RestApi(apigateway.RestApi):
     description = 'My Rest API'
     name = 'MyApi'
     endpoint_configuration = RestApiEndpointConfiguration
 
 
-class ApiResource:
-    resource: apigateway.Resource
+class ApiResource(apigateway.Resource):
     parent_id = RestApi.RootResourceId
     rest_api_id = RestApi
     path_part = '{city}'
 
 
-class RequestModel:
-    resource: apigateway.Model
+class RequestModel(apigateway.Model):
     content_type = 'application/json'
     name = 'MyModel'
     rest_api_id = RestApi
@@ -76,8 +73,7 @@ class ApiMethodIntegration:
     integration_responses = [ApiMethodIntegrationResponse]
 
 
-class ApiMethod:
-    resource: apigateway.Method
+class ApiMethod(apigateway.Method):
     http_method = 'ANY'
     authorization_type = 'NONE'
     request_parameters = {

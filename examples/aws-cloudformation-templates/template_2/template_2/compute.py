@@ -76,8 +76,7 @@ class LaunchTemplateLaunchTemplateData:
     tag_specifications = [LaunchTemplateTagSpecification, LaunchTemplateTagSpecification1, LaunchTemplateTagSpecification2]
 
 
-class LaunchTemplate:
-    resource: ec2.LaunchTemplate
+class LaunchTemplate(ec2.LaunchTemplate):
     launch_template_data = LaunchTemplateLaunchTemplateData
     launch_template_name = Sub('${AWS::StackName}-LaunchTemplate')
 
@@ -88,8 +87,7 @@ class ControlPlaneResourcesVpcConfig:
     subnet_ids = [PublicSubnet1, PublicSubnet2, PublicSubnet3, PrivateSubnet1, PrivateSubnet2, PrivateSubnet3]
 
 
-class ControlPlane:
-    resource: eks.Cluster
+class ControlPlane(eks.Cluster):
     name = Sub('${AWS::StackName}-cluster')
     resources_vpc_config = ControlPlaneResourcesVpcConfig
     role_arn = EKSClusterRole.Arn
@@ -108,8 +106,7 @@ class ManagedNodeGroupScalingConfig:
     min_size = 2
 
 
-class ManagedNodeGroup:
-    resource: eks.Nodegroup
+class ManagedNodeGroup(eks.Nodegroup):
     ami_type = 'AL2_x86_64'
     cluster_name = ControlPlane
     instance_types = [NodeGroupInstanceTypes]

@@ -31,8 +31,7 @@ class BucketPublicAccessBlockConfiguration:
     restrict_public_buckets = True
 
 
-class Bucket:
-    resource: s3.Bucket
+class Bucket(s3.Bucket):
     bucket_name = BucketName
     bucket_encryption = BucketBucketEncryption
     versioning_configuration = BucketDeleteMarkerReplication
@@ -81,7 +80,6 @@ class BucketPolicyPolicyDocument:
     statement = [BucketPolicyAllowStatement0, BucketPolicyAllowStatement1, BucketPolicyDenyStatement2]
 
 
-class BucketPolicy:
-    resource: s3.BucketPolicy
+class BucketPolicy(s3.BucketPolicy):
     bucket = Bucket
     policy_document = BucketPolicyPolicyDocument

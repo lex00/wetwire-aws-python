@@ -1,22 +1,19 @@
-"""Database resources: RedisParameterGroup, RedisSubnetGroup, RedisReplicationGroup."""
+"""Database resources: RedisSubnetGroup, RedisParameterGroup, RedisReplicationGroup."""
 
 from . import *  # noqa: F403
 
 
-class RedisParameterGroup:
-    resource: elasticache.ParameterGroup
-    cache_parameter_group_family = 'redis2.8'
-    description = 'RedisParameterGroup'
-
-
-class RedisSubnetGroup:
-    resource: elasticache.SubnetGroup
+class RedisSubnetGroup(elasticache.SubnetGroup):
     description = 'RedisSubnetGroup'
     subnet_ids = [PublicSubnetA, PublicSubnetB]
 
 
-class RedisReplicationGroup:
-    resource: elasticache.ReplicationGroup
+class RedisParameterGroup(elasticache.ParameterGroup):
+    cache_parameter_group_family = 'redis2.8'
+    description = 'RedisParameterGroup'
+
+
+class RedisReplicationGroup(elasticache.ReplicationGroup):
     automatic_failover_enabled = 'true'
     cache_node_type = RedisNodeType
     cache_parameter_group_name = RedisParameterGroup

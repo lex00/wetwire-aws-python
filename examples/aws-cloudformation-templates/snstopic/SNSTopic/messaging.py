@@ -3,12 +3,11 @@
 from . import *  # noqa: F403
 
 
-class SNSTopic:
-    resource: sns.Topic
+class SNSTopic(sns.Topic):
+    pass
 
 
-class SNSSubscription:
-    resource: sns.Subscription
+class SNSSubscription(sns.Subscription):
     endpoint = SubscriptionEndPoint
     protocol = SubscriptionProtocol
     topic_arn = SNSTopic

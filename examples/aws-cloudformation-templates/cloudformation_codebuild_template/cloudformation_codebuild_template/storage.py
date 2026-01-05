@@ -26,8 +26,7 @@ class PipelineS3BucketPublicAccessBlockConfiguration:
     restrict_public_buckets = True
 
 
-class PipelineS3Bucket:
-    resource: s3.Bucket
+class PipelineS3Bucket(s3.Bucket):
     bucket_name = Sub('${AWS::StackName}-bucket')
     bucket_encryption = PipelineS3BucketBucketEncryption
     public_access_block_configuration = PipelineS3BucketPublicAccessBlockConfiguration

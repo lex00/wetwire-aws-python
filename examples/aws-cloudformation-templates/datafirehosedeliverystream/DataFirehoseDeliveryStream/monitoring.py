@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class FirehoseLogGroup:
-    resource: logs.LogGroup
+class FirehoseLogGroup(logs.LogGroup):
     log_group_name = Join('', [
     '/aws/kinesisfirehose/',
     LogGroupName,
@@ -13,7 +12,6 @@ class FirehoseLogGroup:
     kms_key_id = If("CloudWatchLogsKMSKeyCondition", CloudWatchLogsKMSKey, AWS_NO_VALUE)
 
 
-class FirehoseLogStream:
-    resource: logs.LogStream
+class FirehoseLogStream(logs.LogStream):
     log_group_name = FirehoseLogGroup
     log_stream_name = LogStreamName

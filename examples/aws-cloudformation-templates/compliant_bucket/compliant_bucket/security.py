@@ -16,8 +16,7 @@ class ObjectStorageReplicationRoleAssumeRolePolicyDocument:
     statement = [ObjectStorageReplicationRoleAllowStatement0]
 
 
-class ObjectStorageReplicationRole:
-    resource: iam.Role
+class ObjectStorageReplicationRole(iam.Role):
     assume_role_policy_document = ObjectStorageReplicationRoleAssumeRolePolicyDocument
     path = '/'
 
@@ -56,8 +55,7 @@ class ObjectStorageReplicationPolicyPolicyDocument:
     statement = [ObjectStorageReplicationPolicyAllowStatement0, ObjectStorageReplicationPolicyAllowStatement1, ObjectStorageReplicationPolicyAllowStatement2]
 
 
-class ObjectStorageReplicationPolicy:
-    resource: iam.RolePolicy
+class ObjectStorageReplicationPolicy(iam.RolePolicy):
     policy_document = ObjectStorageReplicationPolicyPolicyDocument
     policy_name = 'bucket-replication-policy'
     role_name = ObjectStorageReplicationRole

@@ -39,8 +39,7 @@ class AppRunnerRolePolicy:
     policy_document = AppRunnerRolePolicies0PolicyDocument
 
 
-class AppRunnerRole:
-    resource: iam.Role
+class AppRunnerRole(iam.Role):
     assume_role_policy_document = AppRunnerRoleAssumeRolePolicyDocument
     path = '/'
     policies = [AppRunnerRolePolicy]

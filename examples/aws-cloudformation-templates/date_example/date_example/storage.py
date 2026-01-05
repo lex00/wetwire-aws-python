@@ -42,6 +42,5 @@ class S3BucketTagFilter3:
 })
 
 
-class S3Bucket:
-    resource: s3.Bucket
+class S3Bucket(s3.Bucket):
     tags = [S3BucketTagFilter, S3BucketTagFilter1, S3BucketTagFilter2, S3BucketTagFilter3]

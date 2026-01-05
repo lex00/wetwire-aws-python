@@ -3,18 +3,8 @@
 from . import *  # noqa: F403
 
 
-class Datastore:
-    resource: iotanalytics.Datastore
+class Datastore(iotanalytics.Datastore):
     datastore_name = Sub('${ProjectName}_datastore')
-    tags = [{
-        'Key': 'Project',
-        'Value': ProjectName,
-    }]
-
-
-class Channel:
-    resource: iotanalytics.Channel
-    channel_name = Sub('${ProjectName}_channel')
     tags = [{
         'Key': 'Project',
         'Value': ProjectName,
@@ -48,8 +38,7 @@ class SqlDatasetRetentionPeriod:
     number_of_days = 30
 
 
-class SqlDataset:
-    resource: iotanalytics.Dataset
+class SqlDataset(iotanalytics.Dataset):
     dataset_name = Sub('${ProjectName}_dataset')
     actions = [SqlDatasetAction]
     triggers = [SqlDatasetTrigger]
@@ -59,6 +48,14 @@ class SqlDataset:
         'Value': ProjectName,
     }]
     depends_on = [Datastore]
+
+
+class Channel(iotanalytics.Channel):
+    channel_name = Sub('${ProjectName}_channel')
+    tags = [{
+        'Key': 'Project',
+        'Value': ProjectName,
+    }]
 
 
 class PipelineChannel:
@@ -80,8 +77,7 @@ class PipelineActivity:
     datastore = PipelineDatastore
 
 
-class Pipeline:
-    resource: iotanalytics.Pipeline
+class Pipeline(iotanalytics.Pipeline):
     pipeline_name = Sub('${ProjectName}_pipeline')
     pipeline_activities = [PipelineActivity]
     tags = [{

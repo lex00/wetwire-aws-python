@@ -95,27 +95,28 @@ def generate_parameter_class(param: IRParameter, ctx: CodegenContext) -> str:
 
 
 def generate_resource_class(resource: IRResource, ctx: CodegenContext) -> str:
-    """Generate a resource wrapper class."""
+    """Generate a resource wrapper class using inheritance pattern."""
     ctx.current_resource_id = resource.logical_id
     lines = []
 
     # Resolve resource type
     resolved = resolve_resource_type(resource.resource_type)
 
+    # Build class declaration with inheritance
+    wrapper_class_name = sanitize_class_name(resource.logical_id)
+
     if resolved:
-        module, class_name = resolved
+        module, type_class_name = resolved
         ctx.current_module = module
 
-        # Always use qualified imports: resource: apprunner.Service
-        # This ensures the module is available via `from . import *`
-        # since __init__.py imports modules (not classes)
+        # Import the module for inheritance: class MyBucket(s3.Bucket)
         ctx.add_import("wetwire_aws.resources", module)
-        lines.append(f"    resource: {module}.{class_name}")
+        class_decl = f"class {wrapper_class_name}({module}.{type_class_name}):"
     else:
-        # Unknown resource type
-        lines.append(f"    # Unknown resource type: {resource.resource_type}")
-        lines.append("    resource: CloudFormationResource")
+        # Unknown resource type - use base class
         ctx.add_import("wetwire_aws.base", "CloudFormationResource")
+        class_decl = f"class {wrapper_class_name}(CloudFormationResource):"
+        lines.append(f"    # Unknown resource type: {resource.resource_type}")
 
     # Properties - use block mode for all values
     for prop in resource.properties.values():
@@ -150,8 +151,11 @@ def generate_resource_class(resource: IRResource, ctx: CodegenContext) -> str:
     if resource.deletion_policy:
         lines.append(f"    deletion_policy = {escape_string(resource.deletion_policy)}")
 
-    class_name = sanitize_class_name(resource.logical_id)
-    return f"class {class_name}:\n" + "\n".join(lines)
+    # Add 'pass' if no body to avoid syntax error
+    if not lines:
+        lines.append("    pass")
+
+    return f"{class_decl}\n" + "\n".join(lines)
 
 
 # =============================================================================

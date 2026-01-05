@@ -1,10 +1,9 @@
-"""Security resources: ADConnectorServiceAccountSecret, ADConnectorLambdaRole, ADConnectorLinuxEC2SeamlessDomainJoinSecret, ADConnectorLinuxEC2DomainJoinRole, ADConnectorWindowsEC2DomainJoinRole, ADConnectorLinuxEC2DomainJoinInstanceProfile, ADConnectorWindowsEC2DomainJoinInstanceProfile."""
+"""Security resources: ADConnectorServiceAccountSecret, ADConnectorLambdaRole, ADConnectorLinuxEC2SeamlessDomainJoinSecret, ADConnectorLinuxEC2DomainJoinRole, ADConnectorLinuxEC2DomainJoinInstanceProfile, ADConnectorWindowsEC2DomainJoinRole, ADConnectorWindowsEC2DomainJoinInstanceProfile."""
 
 from . import *  # noqa: F403
 
 
-class ADConnectorServiceAccountSecret:
-    resource: secretsmanager.Secret
+class ADConnectorServiceAccountSecret(secretsmanager.Secret):
     name = Sub('ADConnector-ServiceAccount-${DomainNetBiosName}-Domain')
     description = Sub('ADConnector Service Account for ${DomainNetBiosName} Domain')
     secret_string = Sub('{ "username" : "${DomainJoinUser}", "password" : "${DomainJoinUserPassword}" }')
@@ -132,8 +131,7 @@ class ADConnectorLambdaRolePolicy2:
     policy_document = ADConnectorLambdaRolePolicies2PolicyDocument
 
 
-class ADConnectorLambdaRole:
-    resource: iam.Role
+class ADConnectorLambdaRole(iam.Role):
     role_name = Sub('${LambdaFunctionName}-LambdaRole')
     description = 'Rights to Setup AD Connector'
     assume_role_policy_document = ADConnectorLambdaRoleAssumeRolePolicyDocument
@@ -155,8 +153,7 @@ class ADConnectorLambdaRole:
 }, AWS_NO_VALUE)]
 
 
-class ADConnectorLinuxEC2SeamlessDomainJoinSecret:
-    resource: secretsmanager.Secret
+class ADConnectorLinuxEC2SeamlessDomainJoinSecret(secretsmanager.Secret):
     name = Sub('aws/directory-services/${ADConnectorResource}/seamless-domain-join')
     description = Sub('AD Credentials for Seamless Domain Join Windows/Linux EC2 instances to ${DomainNetBiosName} Domain via AD Connector')
     secret_string = Sub('{ "awsSeamlessDomainUsername" : "${DomainJoinUser}", "awsSeamlessDomainPassword" : "${DomainJoinUserPassword}" }')
@@ -224,8 +221,7 @@ class ADConnectorLinuxEC2DomainJoinRolePolicy1:
     policy_document = ADConnectorLinuxEC2DomainJoinRolePolicies2PolicyDocument
 
 
-class ADConnectorLinuxEC2DomainJoinRole:
-    resource: iam.Role
+class ADConnectorLinuxEC2DomainJoinRole(iam.Role):
     role_name = Sub('${DomainNetBiosName}-LinuxEC2DomainJoinRole-ADConnector')
     description = Sub('IAM Role to Seamlessly Join Linux EC2 Instances to ${DomainNetBiosName} Domain via AD Connector')
     assume_role_policy_document = ADConnectorLinuxEC2DomainJoinRoleAssumeRolePolicyDocument
@@ -264,6 +260,13 @@ class ADConnectorLinuxEC2DomainJoinRole:
         }],
     },
 }, AWS_NO_VALUE)]
+    condition = 'LinuxEC2DomainJoinResourcesCondition'
+
+
+class ADConnectorLinuxEC2DomainJoinInstanceProfile(iam.InstanceProfile):
+    instance_profile_name = ADConnectorLinuxEC2DomainJoinRole
+    path = '/'
+    roles = [ADConnectorLinuxEC2DomainJoinRole]
     condition = 'LinuxEC2DomainJoinResourcesCondition'
 
 
@@ -306,8 +309,7 @@ class ADConnectorWindowsEC2DomainJoinRolePolicy:
     policy_document = ADConnectorWindowsEC2DomainJoinRolePolicies0PolicyDocument
 
 
-class ADConnectorWindowsEC2DomainJoinRole:
-    resource: iam.Role
+class ADConnectorWindowsEC2DomainJoinRole(iam.Role):
     role_name = Sub('${DomainNetBiosName}-ADConnector-WindowsEC2DomainJoinRole')
     description = Sub('IAM Role to Seamlessly Join Windows EC2 Instances to ${DomainDNSName} Domain via AD Connector')
     assume_role_policy_document = ADConnectorWindowsEC2DomainJoinRoleAssumeRolePolicyDocument
@@ -339,16 +341,7 @@ class ADConnectorWindowsEC2DomainJoinRole:
     condition = 'WindowsEC2DomainJoinResourcesCondition'
 
 
-class ADConnectorLinuxEC2DomainJoinInstanceProfile:
-    resource: iam.InstanceProfile
-    instance_profile_name = ADConnectorLinuxEC2DomainJoinRole
-    path = '/'
-    roles = [ADConnectorLinuxEC2DomainJoinRole]
-    condition = 'LinuxEC2DomainJoinResourcesCondition'
-
-
-class ADConnectorWindowsEC2DomainJoinInstanceProfile:
-    resource: iam.InstanceProfile
+class ADConnectorWindowsEC2DomainJoinInstanceProfile(iam.InstanceProfile):
     instance_profile_name = ADConnectorWindowsEC2DomainJoinRole
     path = '/'
     roles = [ADConnectorWindowsEC2DomainJoinRole]

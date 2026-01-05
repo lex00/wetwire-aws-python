@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class S3Bucket:
-    resource: s3.Bucket
+class S3Bucket(s3.Bucket):
     tags = """#!PyPlate
 output = []
 for tag in params['Tags']:

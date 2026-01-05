@@ -49,7 +49,6 @@ class CentralEventLogKeyKeyPolicy:
     statement = [CentralEventLogKeyAllowStatement0, CentralEventLogKeyAllowStatement1]
 
 
-class CentralEventLogKey:
-    resource: kms.Key
+class CentralEventLogKey(kms.Key):
     description = 'KMS key for log group'
     key_policy = CentralEventLogKeyKeyPolicy

@@ -3,9 +3,8 @@
 from . import *  # noqa: F403
 
 
-class ResourceFunction:
+class ResourceFunction(CloudFormationResource):
     # Unknown resource type: AWS::Serverless::Function
-    resource: CloudFormationResource
     runtime = lambda_.Runtime.PYTHON3_11
     code_uri = 'lambda'
     handler = 'resource.handler'
@@ -19,9 +18,8 @@ class MacroFunctionEnvironment:
     }
 
 
-class MacroFunction:
+class MacroFunction(CloudFormationResource):
     # Unknown resource type: AWS::Serverless::Function
-    resource: CloudFormationResource
     runtime = lambda_.Runtime.PYTHON3_11
     code_uri = 'lambda'
     handler = 'macro.handler'

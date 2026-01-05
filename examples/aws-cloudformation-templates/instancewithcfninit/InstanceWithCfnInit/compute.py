@@ -14,8 +14,7 @@ class InstanceBlockDeviceMapping:
     ebs = InstanceEbs
 
 
-class Instance:
-    resource: ec2.Instance
+class Instance(ec2.Instance):
     image_id = '{{resolve:ssm:/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-arm64}}'
     instance_type = 't4g.nano'
     key_name = 'sample'

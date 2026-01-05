@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class MyDeadLetterQueue:
-    resource: sqs.Queue
+class MyDeadLetterQueue(sqs.Queue):
     fifo_queue = 'true'
     queue_name = Join('', [
     QueueName,
@@ -15,8 +14,7 @@ class MyDeadLetterQueue:
     condition = 'CreateDeadLetterQueue'
 
 
-class SQSQueue:
-    resource: sqs.Queue
+class SQSQueue(sqs.Queue):
     content_based_deduplication = ContentBasedDeduplication
     fifo_queue = 'true'
     queue_name = Join('', [

@@ -3,9 +3,8 @@
 from . import *  # noqa: F403
 
 
-class TagVpcPeeringConnectionsResource:
+class TagVpcPeeringConnectionsResource(CloudFormationResource):
     # Unknown resource type: Custom::TagVpcPeeringConnection
-    resource: CloudFormationResource
     service_token = TagVpcPeeringConnectionsLambdaFunction.Arn
     resource = VPCPeeringConnectionId
     name = PeerName

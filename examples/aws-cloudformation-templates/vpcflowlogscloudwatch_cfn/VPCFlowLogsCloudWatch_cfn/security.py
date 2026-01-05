@@ -39,8 +39,7 @@ class VPCFlowLogsRolePolicy:
     policy_document = VPCFlowLogsRolePolicies0PolicyDocument
 
 
-class VPCFlowLogsRole:
-    resource: iam.Role
+class VPCFlowLogsRole(iam.Role):
     description = 'Rights to Publish VPC Flow Logs to CloudWatch Logs'
     assume_role_policy_document = VPCFlowLogsRoleAssumeRolePolicyDocument
     path = '/'

@@ -15,8 +15,7 @@ class EC2InstanceAssociationParameter:
     value = 'myInstance'
 
 
-class EC2Instance:
-    resource: ec2.Instance
+class EC2Instance(ec2.Instance):
     image_id = LatestAMI
     instance_type = InstanceType
     key_name = KeyName

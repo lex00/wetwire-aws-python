@@ -22,8 +22,7 @@ class DirectorySettingsLambdaFunctionCapacityProviderVpcConfig:
     security_group_ids = SecurityGroups
 
 
-class DirectorySettingsLambdaFunction:
-    resource: lambda_.Function
+class DirectorySettingsLambdaFunction(lambda_.Function):
     function_name = LambdaFunctionName
     handler = 'directory_settings_custom_resource.lambda_handler'
     role = DirectorySettingsLambdaRole.Arn

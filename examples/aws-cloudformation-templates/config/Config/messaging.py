@@ -3,8 +3,8 @@
 from . import *  # noqa: F403
 
 
-class ConfigTopic:
-    resource: sns.Topic
+class ConfigTopic(sns.Topic):
+    pass
 
 
 class ConfigTopicPolicyAllowStatement0:
@@ -21,7 +21,6 @@ class ConfigTopicPolicyPolicyDocument:
     statement = [ConfigTopicPolicyAllowStatement0]
 
 
-class ConfigTopicPolicy:
-    resource: sns.TopicPolicy
+class ConfigTopicPolicy(sns.TopicPolicy):
     policy_document = ConfigTopicPolicyPolicyDocument
     topics = [ConfigTopic]

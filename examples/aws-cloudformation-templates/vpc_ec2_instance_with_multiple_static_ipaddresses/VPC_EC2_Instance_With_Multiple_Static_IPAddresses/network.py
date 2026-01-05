@@ -1,4 +1,4 @@
-"""Network resources: SSHSecurityGroup, Eth0, EIP1, EIPAssoc1."""
+"""Network resources: SSHSecurityGroup, EIP1, Eth0, EIPAssoc1."""
 
 from . import *  # noqa: F403
 
@@ -11,11 +11,14 @@ class SSHSecurityGroupEgress:
     cidr_ip = SSHLocation
 
 
-class SSHSecurityGroup:
-    resource: ec2.SecurityGroup
+class SSHSecurityGroup(ec2.SecurityGroup):
     vpc_id = VpcId
     group_description = 'Enable SSH access via port 22'
     security_group_ingress = [SSHSecurityGroupEgress]
+
+
+class EIP1(ec2.EIP):
+    domain = 'vpc'
 
 
 class Eth0PrivateIpAddressSpecification:
@@ -42,8 +45,7 @@ class Eth0AssociationParameter1:
     value = 'eth0'
 
 
-class Eth0:
-    resource: ec2.NetworkInterface
+class Eth0(ec2.NetworkInterface):
     description = 'eth0'
     group_set = [SSHSecurityGroup]
     private_ip_addresses = [Eth0PrivateIpAddressSpecification, Eth0PrivateIpAddressSpecification1]
@@ -52,12 +54,6 @@ class Eth0:
     tags = [Eth0AssociationParameter, Eth0AssociationParameter1]
 
 
-class EIP1:
-    resource: ec2.EIP
-    domain = 'vpc'
-
-
-class EIPAssoc1:
-    resource: ec2.EIPAssociation
+class EIPAssoc1(ec2.EIPAssociation):
     network_interface_id = Eth0
     allocation_id = EIP1.AllocationId

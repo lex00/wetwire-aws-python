@@ -10,8 +10,7 @@ class LambdaFunctionCode:
     }
 
 
-class LambdaFunction:
-    resource: lambda_.Function
+class LambdaFunction(lambda_.Function):
     code = LambdaFunctionCode
     handler = 'index.lambda_handler'
     function_name = LambdaFunctionName
@@ -21,8 +20,7 @@ class LambdaFunction:
     role = LambdaIamRole.Arn
 
 
-class LambdaApiGatewayInvoke:
-    resource: lambda_.Permission
+class LambdaApiGatewayInvoke(lambda_.Permission):
     action = 'lambda:InvokeFunction'
     function_name = LambdaFunction.Arn
     principal = 'apigateway.amazonaws.com'

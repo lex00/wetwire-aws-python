@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class Transform:
-    resource: cloudformation.Macro
+class Transform(cloudformation.Macro):
     name = 'String'
     description = 'Provides various string processing functions'
     function_name = TransformFunction.Arn

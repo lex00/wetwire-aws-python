@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class VPCFlowLogsCloudWatchStack:
-    resource: cloudformation.Stack
+class VPCFlowLogsCloudWatchStack(cloudformation.Stack):
     template_url = Sub('https://${TemplatesS3BucketName}.s3.${TemplatesS3BucketRegion}.${AWS::URLSuffix}/templates/VPCFlowLogsCloudWatch.cfn.yaml')
     parameters = {
         'VPCFlowLogsCloudWatchKMSKey': VPCFlowLogsCloudWatchKMSKey,
@@ -17,8 +16,7 @@ class VPCFlowLogsCloudWatchStack:
     condition = 'VPCFlowLogsToCloudWatchCondition'
 
 
-class VPCFlowLogsS3Stack:
-    resource: cloudformation.Stack
+class VPCFlowLogsS3Stack(cloudformation.Stack):
     template_url = Sub('https://${TemplatesS3BucketName}.s3.${TemplatesS3BucketRegion}.${AWS::URLSuffix}/templates/VPCFlowLogsS3.cfn.yaml')
     parameters = {
         'S3AccessLogsBucketName': S3AccessLogsBucketName,

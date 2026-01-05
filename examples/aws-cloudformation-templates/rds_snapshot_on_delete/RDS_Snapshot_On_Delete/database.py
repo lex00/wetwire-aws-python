@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class MyDB:
-    resource: rds.DBInstance
+class MyDB(rds.DBInstance):
     db_name = 'MyDatabase'
     allocated_storage = '5'
     db_instance_class = 'db.t3.small'

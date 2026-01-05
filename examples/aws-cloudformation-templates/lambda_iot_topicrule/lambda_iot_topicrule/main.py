@@ -3,6 +3,21 @@
 from . import *  # noqa: F403
 
 
+class OpenIoTStarPolicyAllowStatement0:
+    resource: PolicyStatement
+    action = 'iot:*'
+    resource_arn = '*'
+
+
+class OpenIoTStarPolicyPolicyDocument:
+    resource: PolicyDocument
+    statement = [OpenIoTStarPolicyAllowStatement0]
+
+
+class OpenIoTStarPolicy(iot.Policy):
+    policy_document = OpenIoTStarPolicyPolicyDocument
+
+
 class IoTPolicyAllowStatement0:
     resource: PolicyStatement
     action = 'iot:Connect'
@@ -31,13 +46,11 @@ class IoTPolicyPolicyDocument:
     statement = [IoTPolicyAllowStatement0, IoTPolicyAllowStatement1, IoTPolicyAllowStatement2]
 
 
-class IoTPolicy:
-    resource: iot.Policy
+class IoTPolicy(iot.Policy):
     policy_document = IoTPolicyPolicyDocument
 
 
-class IoTPolicyPrincipalAttachment:
-    resource: iot.PolicyPrincipalAttachment
+class IoTPolicyPrincipalAttachment(iot.PolicyPrincipalAttachment):
     policy_name = IoTPolicy
     principal = CertificateARN
 
@@ -60,34 +73,15 @@ class IoTTopicRuleTopicRulePayload:
     rule_disabled = False
 
 
-class IoTTopicRule:
-    resource: iot.TopicRule
+class IoTTopicRule(iot.TopicRule):
     rule_name = AWS_STACK_NAME
     topic_rule_payload = IoTTopicRuleTopicRulePayload
 
 
-class IoTThing:
-    resource: iot.Thing
+class IoTThing(iot.Thing):
     thing_name = AWS_STACK_NAME
 
 
-class OpenIoTStarPolicyAllowStatement0:
-    resource: PolicyStatement
-    action = 'iot:*'
-    resource_arn = '*'
-
-
-class OpenIoTStarPolicyPolicyDocument:
-    resource: PolicyDocument
-    statement = [OpenIoTStarPolicyAllowStatement0]
-
-
-class OpenIoTStarPolicy:
-    resource: iot.Policy
-    policy_document = OpenIoTStarPolicyPolicyDocument
-
-
-class IoTThingPrincipalAttachment:
-    resource: iot.ThingPrincipalAttachment
+class IoTThingPrincipalAttachment(iot.ThingPrincipalAttachment):
     principal = CertificateARN
     thing_name = IoTThing

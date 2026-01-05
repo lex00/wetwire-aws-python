@@ -9,11 +9,10 @@ class EC2InstanceBlockDeviceMapping:
     virtual_name = 'ephemeral0'
 
 
-class EC2Instance:
-    resource: ec2.Instance
+class EC2Instance(ec2.Instance):
     instance_type = InstanceType
     subnet_id = Select(0, Subnets)
-    security_group_ids = [EC2SecurityGroup.GroupId]
+    security_groups = [EC2SecurityGroup]
     key_name = KeyName
     image_id = LatestAmiId
     block_device_mappings = [EC2InstanceBlockDeviceMapping]

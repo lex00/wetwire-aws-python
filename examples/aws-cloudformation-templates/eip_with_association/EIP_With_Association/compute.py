@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class EC2Instance:
-    resource: ec2.Instance
+class EC2Instance(ec2.Instance):
     user_data = Base64(Join('', [
     'IPAddress=',
     IPAddress,

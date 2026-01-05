@@ -18,8 +18,7 @@ class TaskDefinitionContainerDefinition:
     port_mappings = [TaskDefinitionPortMapping]
 
 
-class TaskDefinition:
-    resource: ecs.TaskDefinition
+class TaskDefinition(ecs.TaskDefinition):
     family = ServiceName
     cpu = ContainerCpu
     memory = ContainerMemory
@@ -67,8 +66,7 @@ class ServiceLoadBalancer:
     target_group_arn = TargetGroup
 
 
-class Service:
-    resource: ecs.Service
+class Service(ecs.Service):
     service_name = ServiceName
     cluster = ImportValue(Join(':', [
     StackName,
