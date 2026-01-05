@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-01-05
+
+### Added
+
+- `wetwire-aws design` command: AI-assisted interactive infrastructure design
+- `wetwire-aws test` command: automated persona-based testing with AI
+- CLI documentation for design and test commands
+- README section on AI-assisted design
+
 ## [1.1.0] - 2026-01-05
 
 ### Added
