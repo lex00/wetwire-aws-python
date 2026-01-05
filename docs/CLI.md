@@ -12,6 +12,8 @@ The `wetwire-aws` command provides tools for generating and validating CloudForm
 | `wetwire-aws lint` | Lint code for issues and auto-fix |
 | `wetwire-aws import` | Import CloudFormation templates to Python |
 | `wetwire-aws init` | Initialize a new project |
+| `wetwire-aws design` | AI-assisted infrastructure design |
+| `wetwire-aws test` | Automated persona-based testing |
 
 ```bash
 wetwire-aws --version  # Show version
@@ -400,6 +402,154 @@ The CLI uses dataclass-dsl for:
 - **Dependency detection**: `get_dependencies()` finds all referenced resources
 - **Topological sorting**: Resources are ordered by dependencies in output
 - **Validation**: Ensures all referenced resources exist
+
+---
+
+## design
+
+AI-assisted infrastructure design. Starts an interactive session where you describe infrastructure in natural language and the AI generates wetwire-aws Python code.
+
+**Requires:** `wetwire-core` package and an Anthropic API key in `ANTHROPIC_API_KEY`.
+
+```bash
+# Start interactive design session
+wetwire-aws design
+
+# Start with a prompt
+wetwire-aws design "Create a serverless API with Lambda and API Gateway"
+
+# Specify output directory
+wetwire-aws design -o ./myproject "Create an S3 bucket with encryption"
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `prompt` | Initial prompt describing what to build (optional, interactive if omitted) |
+| `-o, --output` | Output directory (default: current directory) |
+
+### How It Works
+
+The `design` command uses the `wetwire-core` runner agent to orchestrate an AI-driven workflow:
+
+1. **Conversation**: AI asks clarifying questions about your requirements
+2. **Code Generation**: Generates Python code using wetwire-aws patterns
+3. **Lint Cycle**: Runs `wetwire-aws lint` and auto-fixes issues
+4. **Build**: Runs `wetwire-aws build` to generate CloudFormation template
+5. **Iteration**: Ask for changes or additions, type `done` to exit
+
+Press `Ctrl+C` to stop the session at any time.
+
+### Example Session
+
+```
+$ wetwire-aws design "Create an encrypted S3 bucket"
+
+Runner: I'll create an encrypted S3 bucket for you.
+[init_package] Created package 's3_bucket' at ./s3_bucket
+[write_file] Wrote resources.py (450 bytes)
+[run_lint] PASS: Lint passed with no issues
+[run_build] OK: Build successful...
+
+What's next? (type done to exit):
+```
+
+---
+
+## test
+
+Run automated persona-based testing to evaluate AI code generation quality. Unlike `design`, this command uses an AI persona to simulate user responses instead of interactive input.
+
+**Requires:** `wetwire-core` package and an Anthropic API key in `ANTHROPIC_API_KEY`.
+
+```bash
+# Run with default persona (intermediate)
+wetwire-aws test "Create an S3 bucket with versioning"
+
+# Use a specific persona
+wetwire-aws test --persona beginner "Create a Lambda function"
+
+# Specify output directory
+wetwire-aws test -o ./output "Create encrypted bucket"
+```
+
+### Personas
+
+Personas simulate different user skill levels and communication styles:
+
+| Persona | Description |
+|---------|-------------|
+| `beginner` | New to AWS, asks many clarifying questions |
+| `intermediate` | Familiar with AWS basics (default) |
+| `expert` | Deep AWS knowledge, asks advanced questions |
+| `terse` | Gives minimal responses |
+| `verbose` | Provides detailed context |
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `prompt` | Infrastructure description to test (required) |
+| `-p, --persona` | Persona to use (default: `intermediate`) |
+| `-o, --output` | Output directory (default: current directory) |
+
+### How It Works
+
+The `test` command runs the same workflow as `design`, but replaces human input with AI-simulated responses:
+
+1. **AI Developer**: A second AI responds to clarifying questions based on the persona
+2. **Code Generation**: Runner agent generates wetwire-aws Python code
+3. **Lint Cycle**: Runs `wetwire-aws lint` with auto-fix
+4. **Build**: Generates CloudFormation template
+5. **Results**: Prints conversation summary and package path
+
+### Output
+
+Prints a conversation summary and the created package path:
+
+```
+Running test with persona: beginner
+Prompt: Create an S3 bucket
+
+--- Conversation Summary ---
+[DEVELOPER] Create an S3 bucket
+[RUNNER] I'll create an S3 bucket for you...
+[TOOL] [lint PASS] Lint passed with no issues
+[TOOL] [build OK] Build successful...
+
+Package created: ./s3_bucket
+```
+
+---
+
+## Dependencies
+
+### wetwire-core
+
+The `design` and `test` commands require [wetwire-core](https://github.com/lex00/wetwire-core-python), which provides:
+
+- **Runner Agent**: Orchestrates the AI-driven code generation workflow
+- **Developer Agent**: Simulates user personas for automated testing
+- **Conversation Handler**: Manages the Developer ↔ Runner conversation
+
+Install via pip:
+```bash
+pip install wetwire-core
+```
+
+Or add to your project:
+```bash
+uv add wetwire-core
+```
+
+### Anthropic API
+
+The `design` and `test` commands require an Anthropic API key:
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+```
 
 ---
 

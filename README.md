@@ -34,6 +34,20 @@ class MyFunction:
 wetwire-aws build --module myapp > template.json
 ```
 
+## AI-Assisted Design
+
+Create infrastructure interactively with AI:
+
+```bash
+# Interactive design session
+wetwire-aws design "Create an encrypted S3 bucket"
+
+# Automated testing with personas
+wetwire-aws test --persona beginner "Create a Lambda function"
+```
+
+Requires `wetwire-core` and `ANTHROPIC_API_KEY`. See [CLI Reference](docs/CLI.md#design) for details.
+
 ## Documentation
 
 - [Quick Start](docs/QUICK_START.md) - Full tutorial
