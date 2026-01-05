@@ -56,3 +56,42 @@ class TestCLI:
         )
         assert result.returncode != 0
         assert "No resources registered" in result.stderr
+
+    def test_design_help(self):
+        """Design command shows help."""
+        result = subprocess.run(
+            [sys.executable, "-m", "wetwire_aws.cli", "design", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
+        assert "wetwire-aws design" in result.stdout
+        assert "--output" in result.stdout
+
+    def test_test_help(self):
+        """Test command shows help."""
+        result = subprocess.run(
+            [sys.executable, "-m", "wetwire_aws.cli", "test", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
+        assert "wetwire-aws test" in result.stdout
+        assert "--persona" in result.stdout
+
+    def test_test_invalid_persona(self):
+        """Test command fails with invalid persona."""
+        import os
+
+        # Clear API key to avoid actual API calls
+        env = os.environ.copy()
+        env.pop("ANTHROPIC_API_KEY", None)
+
+        result = subprocess.run(
+            [sys.executable, "-m", "wetwire_aws.cli", "test", "--persona", "invalid", "test prompt"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        assert result.returncode != 0
+        assert "Unknown persona" in result.stderr
