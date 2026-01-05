@@ -17,6 +17,7 @@ from wetwire_aws.linter import (
     fix_code,
     lint_code,
 )
+from wetwire_aws.linter.rules import ExplicitGetAttIntrinsic, ExplicitRefIntrinsic
 
 
 # Fixture to mock enum availability for WAW003 tests
@@ -936,3 +937,96 @@ class MyBucket:
         assert len(issues) == 1
         assert issues[0].line == 11  # Line of second MyBucket definition
         assert "first defined at line 3" in issues[0].message
+
+
+class TestExplicitRefIntrinsic:
+    """Tests for WAW019: explicit Ref() intrinsic usage."""
+
+    def test_detects_ref_with_string_literal(self):
+        """Should detect Ref('MyBucket')."""
+        code = """
+bucket_ref = Ref("MyBucket")
+"""
+        issues = lint_code(code, rules=[ExplicitRefIntrinsic()])
+        assert len(issues) == 1
+        assert issues[0].rule_id == "WAW019"
+        assert "MyBucket" in issues[0].suggestion
+        assert 'Ref("MyBucket")' not in issues[0].suggestion
+
+    def test_ignores_pseudo_parameters(self):
+        """Should not flag Ref('AWS::Region') - handled by WAW002."""
+        code = """
+region = Ref("AWS::Region")
+"""
+        issues = lint_code(code, rules=[ExplicitRefIntrinsic()])
+        assert len(issues) == 0
+
+    def test_ignores_lowercase_ref(self):
+        """Should not flag ref() helper function - handled by WAW006."""
+        code = """
+bucket_ref = ref("MyBucket")
+"""
+        issues = lint_code(code, rules=[ExplicitRefIntrinsic()])
+        assert len(issues) == 0
+
+    def test_detects_ref_with_parameter_name(self):
+        """Should detect Ref('MyParameter')."""
+        code = """
+vpc_id = Ref("VpcIdParam")
+"""
+        issues = lint_code(code, rules=[ExplicitRefIntrinsic()])
+        assert len(issues) == 1
+        assert "VpcIdParam" in issues[0].suggestion
+
+    def test_fix_replaces_with_direct_ref(self):
+        """Should replace Ref('X') with X."""
+        code = '''bucket_ref = Ref("MyBucket")'''
+        fixed = fix_code(code, rules=[ExplicitRefIntrinsic()], add_imports=False)
+        assert "MyBucket" in fixed
+        assert 'Ref("MyBucket")' not in fixed
+
+
+class TestExplicitGetAttIntrinsic:
+    """Tests for WAW020: explicit GetAtt() intrinsic usage."""
+
+    def test_detects_getatt_with_string_literals(self):
+        """Should detect GetAtt('MyRole', 'Arn')."""
+        code = """
+role_arn = GetAtt("MyRole", "Arn")
+"""
+        issues = lint_code(code, rules=[ExplicitGetAttIntrinsic()])
+        assert len(issues) == 1
+        assert issues[0].rule_id == "WAW020"
+        assert "MyRole.Arn" in issues[0].suggestion
+
+    def test_detects_getatt_with_nested_attr(self):
+        """Should detect GetAtt('MyDB', 'Endpoint.Address')."""
+        code = """
+db_endpoint = GetAtt("MyDB", "Endpoint.Address")
+"""
+        issues = lint_code(code, rules=[ExplicitGetAttIntrinsic()])
+        assert len(issues) == 1
+        assert "MyDB.Endpoint.Address" in issues[0].suggestion
+
+    def test_ignores_lowercase_get_att(self):
+        """Should not flag get_att() helper function - handled by WAW006."""
+        code = """
+role_arn = get_att("MyRole", "Arn")
+"""
+        issues = lint_code(code, rules=[ExplicitGetAttIntrinsic()])
+        assert len(issues) == 0
+
+    def test_ignores_getatt_with_variable_resource(self):
+        """Should not flag GetAtt(resource_var, 'Arn') - may be intentional."""
+        code = """
+role_arn = GetAtt(role_resource, "Arn")
+"""
+        issues = lint_code(code, rules=[ExplicitGetAttIntrinsic()])
+        assert len(issues) == 0
+
+    def test_fix_replaces_with_attribute_access(self):
+        """Should replace GetAtt('X', 'Y') with X.Y."""
+        code = '''role_arn = GetAtt("MyRole", "Arn")'''
+        fixed = fix_code(code, rules=[ExplicitGetAttIntrinsic()], add_imports=False)
+        assert "MyRole.Arn" in fixed
+        assert 'GetAtt("MyRole"' not in fixed

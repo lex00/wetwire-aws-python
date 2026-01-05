@@ -217,6 +217,8 @@ wetwire-aws lint myapp/ --verbose
 | WAW016 | Use wrapper classes instead of inline policy statements | ❌ |
 | WAW017 | Use wrapper classes instead of inline property type dicts | ❌ |
 | WAW018 | Remove redundant relative imports with `from . import *` | ❌ |
+| WAW019 | Avoid explicit `Ref()` intrinsic - use direct variable references | ✅ |
+| WAW020 | Avoid explicit `GetAtt()` intrinsic - use `Resource.Attribute` access | ✅ |
 
 ### Example: Auto-fixing Code
 

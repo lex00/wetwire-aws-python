@@ -26,6 +26,8 @@ Rules:
     WAW016: Use wrapper classes instead of inline policy statements
     WAW017: Use wrapper classes instead of inline property type dicts
     WAW018: Remove redundant relative imports when using 'from . import *'
+    WAW019: Avoid explicit Ref() intrinsic - use direct variable references
+    WAW020: Avoid explicit GetAtt() intrinsic - use Resource.Attribute access
 
 Example:
     >>> from wetwire_aws.linter.rules import get_all_rules, LintContext
@@ -1895,6 +1897,137 @@ class InlinePolicyDocument(LintRule):
         return "Version" in keys and "Statement" in keys
 
 
+class ExplicitRefIntrinsic(LintRule):
+    """Detect explicit Ref() intrinsic function calls.
+
+    Using Ref("ResourceName") or Ref("ParameterName") explicitly is verbose.
+    The preferred style is to use direct variable references:
+    - For resources: use the bare class name (MyBucket)
+    - For parameters: use Param("Name") or the parameter class
+
+    Note: Some Ref() calls are necessary for pseudo-parameters like
+    Ref("AWS::Region"), but those should use constants (REGION).
+
+    Detects:
+    - Ref("MyBucket") or Ref("MyParameter")
+
+    Suggests:
+    - MyBucket (direct reference)
+    - Or use WAW002 for pseudo-parameters
+
+    This rule only flags Ref() calls with string literals. The ref() helper
+    function is handled by WAW006.
+    """
+
+    rule_id = "WAW019"
+    description = "Avoid explicit Ref() intrinsic - use direct variable references"
+
+    def check(self, context: LintContext) -> list[LintIssue]:
+        issues = []
+
+        for node in ast.walk(context.tree):
+            if isinstance(node, ast.Call):
+                func = node.func
+
+                # Check for Ref() call (capital R)
+                if isinstance(func, ast.Name) and func.id == "Ref":
+                    if node.args and isinstance(node.args[0], ast.Constant):
+                        target = node.args[0].value
+                        if isinstance(target, str):
+                            # Skip pseudo-parameters (handled by WAW002)
+                            if target.startswith("AWS::"):
+                                continue
+
+                            original = ast.get_source_segment(context.source, node)
+                            if original:
+                                issues.append(
+                                    LintIssue(
+                                        rule_id=self.rule_id,
+                                        message=(
+                                            f"Use {target} instead of Ref(\"{target}\") "
+                                            f"for direct variable reference"
+                                        ),
+                                        line=node.lineno,
+                                        column=node.col_offset,
+                                        original=original,
+                                        suggestion=target,
+                                        fix_imports=[],
+                                    )
+                                )
+
+        return issues
+
+
+class ExplicitGetAttIntrinsic(LintRule):
+    """Detect explicit GetAtt() intrinsic function calls.
+
+    Using GetAtt("ResourceName", "Attribute") explicitly is verbose.
+    The preferred style is to use attribute access: Resource.Attribute
+
+    Detects:
+    - GetAtt("MyBucket", "Arn")
+    - GetAtt("MyRole", "RoleId")
+
+    Suggests:
+    - MyBucket.Arn
+    - MyRole.RoleId
+
+    This rule only flags GetAtt() calls with string literals for the resource.
+    The get_att() helper function is handled by WAW006.
+    """
+
+    rule_id = "WAW020"
+    description = "Avoid explicit GetAtt() intrinsic - use Resource.Attribute access"
+
+    def check(self, context: LintContext) -> list[LintIssue]:
+        issues = []
+
+        for node in ast.walk(context.tree):
+            if isinstance(node, ast.Call):
+                func = node.func
+
+                # Check for GetAtt() call (capital G)
+                if isinstance(func, ast.Name) and func.id == "GetAtt":
+                    if len(node.args) >= 2:
+                        resource_arg = node.args[0]
+                        attr_arg = node.args[1]
+
+                        # Only flag when resource is a string literal
+                        if isinstance(resource_arg, ast.Constant):
+                            resource = resource_arg.value
+                            if isinstance(resource, str):
+                                # Extract attribute name
+                                attr = None
+                                if isinstance(attr_arg, ast.Constant):
+                                    attr = attr_arg.value
+                                elif isinstance(attr_arg, ast.Name):
+                                    attr = attr_arg.id
+
+                                if attr:
+                                    original = ast.get_source_segment(
+                                        context.source, node
+                                    )
+                                    suggestion = f"{resource}.{attr}"
+                                    if original:
+                                        issues.append(
+                                            LintIssue(
+                                                rule_id=self.rule_id,
+                                                message=(
+                                                    f"Use {suggestion} instead of "
+                                                    f"GetAtt(\"{resource}\", ...) "
+                                                    f"for attribute access"
+                                                ),
+                                                line=node.lineno,
+                                                column=node.col_offset,
+                                                original=original,
+                                                suggestion=suggestion,
+                                                fix_imports=[],
+                                            )
+                                        )
+
+        return issues
+
+
 # All available rules
 ALL_RULES: list[type[LintRule]] = [
     StringShouldBeParameterType,
@@ -1914,6 +2047,8 @@ ALL_RULES: list[type[LintRule]] = [
     InlinePolicyStatement,
     InlinePropertyType,
     RedundantRelativeImport,
+    ExplicitRefIntrinsic,
+    ExplicitGetAttIntrinsic,
 ]
 
 
