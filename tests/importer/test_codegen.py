@@ -5,6 +5,9 @@ from pathlib import Path
 import pytest
 
 from wetwire_aws.importer.codegen import generate_code, generate_package
+from wetwire_aws.importer.codegen.context import CodegenContext
+from wetwire_aws.importer.codegen.values import intrinsic_to_python
+from wetwire_aws.importer.ir import IntrinsicType, IRIntrinsic, IRTemplate
 from wetwire_aws.importer.parser import parse_template
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
@@ -256,3 +259,53 @@ class TestGeneratePackage:
         for filename, content in files.items():
             if filename.endswith(".py"):
                 compile(content, filename, "exec")
+
+
+class TestIntrinsicSimplifications:
+    """Tests for intrinsic function simplifications."""
+
+    @pytest.fixture
+    def ctx(self):
+        """Create a minimal context with a parameter and resource."""
+        template = IRTemplate(
+            description="Test",
+            parameters={"MyParam": None},
+            resources={"MyResource": None},
+        )
+        return CodegenContext(template)
+
+    def test_sub_single_param_becomes_direct_ref(self, ctx):
+        """Sub('${MyParam}') should become MyParam."""
+        intrinsic = IRIntrinsic(IntrinsicType.SUB, "${MyParam}")
+        result = intrinsic_to_python(intrinsic, ctx)
+        assert result == "MyParam"
+
+    def test_sub_single_resource_becomes_direct_ref(self, ctx):
+        """Sub('${MyResource}') should become MyResource."""
+        intrinsic = IRIntrinsic(IntrinsicType.SUB, "${MyResource}")
+        result = intrinsic_to_python(intrinsic, ctx)
+        assert result == "MyResource"
+
+    def test_sub_pseudo_param_becomes_constant(self, ctx):
+        """Sub('${AWS::Region}') should become AWS_REGION."""
+        intrinsic = IRIntrinsic(IntrinsicType.SUB, "${AWS::Region}")
+        result = intrinsic_to_python(intrinsic, ctx)
+        assert result == "AWS_REGION"
+
+    def test_sub_multi_var_stays_as_sub(self, ctx):
+        """Sub with multiple variables should stay as Sub."""
+        intrinsic = IRIntrinsic(IntrinsicType.SUB, "${MyParam}-${MyResource}")
+        result = intrinsic_to_python(intrinsic, ctx)
+        assert result.startswith("Sub(")
+
+    def test_unknown_ref_raises_error(self, ctx):
+        """Ref to unknown target should raise ValueError."""
+        intrinsic = IRIntrinsic(IntrinsicType.REF, "UnknownThing")
+        with pytest.raises(ValueError, match="Unknown Ref target"):
+            intrinsic_to_python(intrinsic, ctx)
+
+    def test_unknown_getatt_raises_error(self, ctx):
+        """GetAtt to unknown resource should raise ValueError."""
+        intrinsic = IRIntrinsic(IntrinsicType.GET_ATT, ("UnknownResource", "Arn"))
+        with pytest.raises(ValueError, match="Unknown GetAtt target"):
+            intrinsic_to_python(intrinsic, ctx)

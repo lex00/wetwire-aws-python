@@ -171,16 +171,14 @@ def intrinsic_to_python(
                 const_name = PSEUDO_PARAMETER_MAP[target]
                 ctx.add_intrinsic_import(const_name)
                 return const_name
-            ctx.add_intrinsic_import("Ref")
-            return f'Ref("{target}")'
+            raise ValueError(f"Unknown AWS pseudo-parameter: {target}")
         if target in ctx.template.parameters:
             # Parameters use bare class name - no parens pattern
             return _format_ref_target(target)
         if target in ctx.template.resources:
             # Resources use bare class name - setup_resources() handles forward refs
             return _format_ref_target(target)
-        ctx.add_intrinsic_import("Ref")
-        return f'Ref("{target}")'
+        raise ValueError(f"Unknown Ref target: {target}")
 
     if intrinsic.type == IntrinsicType.GET_ATT:
         logical_id, attr = intrinsic.args
@@ -188,8 +186,7 @@ def intrinsic_to_python(
             # Use no-parens pattern: ClassName.Attr
             # setup_resources() handles forward refs via placeholders
             return f"{_format_ref_target(logical_id)}.{attr}"
-        ctx.add_intrinsic_import("GetAtt")
-        return f'GetAtt("{logical_id}", "{attr}")'
+        raise ValueError(f"Unknown GetAtt target: {logical_id}")
 
     if intrinsic.type == IntrinsicType.SUB:
         if isinstance(intrinsic.args, str):
@@ -221,6 +218,22 @@ def intrinsic_to_python(
             if resource_id != ctx.current_resource_id:
                 # Use bare class name - setup_resources() handles forward refs
                 return _format_ref_target(resource_id)
+
+        # Check for single variable pattern: ${VarName} with no other text
+        if not variables:
+            match = re.fullmatch(r"\$\{([^}]+)\}", template_str)
+            if match:
+                var_name = match.group(1)
+                # Pseudo-param → constant
+                if var_name.startswith("AWS::") and var_name in PSEUDO_PARAMETER_MAP:
+                    const_name = PSEUDO_PARAMETER_MAP[var_name]
+                    ctx.add_intrinsic_import(const_name)
+                    return const_name
+                # Parameter/resource → direct reference
+                if var_name in ctx.template.parameters:
+                    return _format_ref_target(var_name)
+                if var_name in ctx.template.resources:
+                    return _format_ref_target(var_name)
 
         ctx.add_intrinsic_import("Sub")
         if variables:
