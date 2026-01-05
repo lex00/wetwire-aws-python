@@ -4,7 +4,7 @@ from . import *  # noqa: F403
 
 
 class VPCFlowLogsBucketPublicAccessBlockConfiguration:
-    resource: s3objectlambda.AccessPoint.PublicAccessBlockConfiguration
+    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
@@ -12,24 +12,24 @@ class VPCFlowLogsBucketPublicAccessBlockConfiguration:
 
 
 class VPCFlowLogsBucketServerSideEncryptionByDefault:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionByDefault
+    resource: s3.Bucket.ServerSideEncryptionByDefault
     sse_algorithm = If("VPCFlowLogsBucketKMSKeyCondition", 'aws:kms', 'AES256')
     kms_master_key_id = If("VPCFlowLogsBucketKMSKeyCondition", VPCFlowLogsBucketKMSKey, AWS_NO_VALUE)
 
 
 class VPCFlowLogsBucketServerSideEncryptionRule:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionRule
+    resource: s3.Bucket.ServerSideEncryptionRule
     server_side_encryption_by_default = VPCFlowLogsBucketServerSideEncryptionByDefault
     bucket_key_enabled = If("VPCFlowLogsBucketKMSKeyCondition", VPCFlowLogsBucketKeyEnabled, AWS_NO_VALUE)
 
 
 class VPCFlowLogsBucketBucketEncryption:
-    resource: s3express.DirectoryBucket.BucketEncryption
+    resource: s3.Bucket.BucketEncryption
     server_side_encryption_configuration = [VPCFlowLogsBucketServerSideEncryptionRule]
 
 
-class VPCFlowLogsBucketMetricsConfiguration:
-    resource: s3tables.TableBucket.MetricsConfiguration
+class VPCFlowLogsBucketDeleteMarkerReplication:
+    resource: s3.Bucket.DeleteMarkerReplication
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -41,7 +41,7 @@ class VPCFlowLogsBucket:
     logging_configuration = If("S3AccessLogsCondition", {
     'DestinationBucketName': S3AccessLogsBucketName,
 }, AWS_NO_VALUE)
-    versioning_configuration = VPCFlowLogsBucketMetricsConfiguration
+    versioning_configuration = VPCFlowLogsBucketDeleteMarkerReplication
     condition = 'VPCFlowLogsNewBucketCondition'
 
 

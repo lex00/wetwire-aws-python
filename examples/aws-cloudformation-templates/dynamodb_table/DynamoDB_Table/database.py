@@ -4,13 +4,13 @@ from . import *  # noqa: F403
 
 
 class myDynamoDBTableAttributeDefinition:
-    resource: dynamodb.GlobalTable.AttributeDefinition
+    resource: dynamodb.Table.AttributeDefinition
     attribute_name = HashKeyElementName
     attribute_type = HashKeyElementType
 
 
 class myDynamoDBTableKeySchema:
-    resource: dynamodb.GlobalTable.KeySchema
+    resource: dynamodb.Table.KeySchema
     attribute_name = HashKeyElementName
     key_type = dynamodb.KeyType.HASH
 
@@ -22,7 +22,7 @@ class myDynamoDBTableProvisionedThroughput:
 
 
 class myDynamoDBTablePointInTimeRecoverySpecification:
-    resource: dynamodb.GlobalTable.PointInTimeRecoverySpecification
+    resource: dynamodb.Table.PointInTimeRecoverySpecification
     point_in_time_recovery_enabled = True
 
 

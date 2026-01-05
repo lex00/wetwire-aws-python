@@ -28,7 +28,7 @@ class PeerRolePolicies0PolicyDocument:
 
 
 class PeerRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'AcceptVPCPeering'
     policy_document = PeerRolePolicies0PolicyDocument
 

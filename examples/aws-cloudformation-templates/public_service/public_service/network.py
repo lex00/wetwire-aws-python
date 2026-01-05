@@ -10,9 +10,8 @@ class TargetGroup:
     health_check_protocol = 'HTTP'
     health_check_timeout_seconds = 5
     healthy_threshold_count = 2
-    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
     name = ServiceName
-    port = ContainerPort
+    port = 80
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
     unhealthy_threshold_count = 2
     vpc_id = ImportValue(Join(':', [
@@ -22,7 +21,7 @@ class TargetGroup:
 
 
 class LoadBalancerRuleAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     target_group_arn = TargetGroup
     type_ = 'forward'
 

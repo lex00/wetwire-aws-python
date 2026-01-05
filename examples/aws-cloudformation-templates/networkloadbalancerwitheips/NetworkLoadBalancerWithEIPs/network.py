@@ -1,14 +1,9 @@
-"""Network resources: EIP1, FirstEIP, EIP2, loadBalancer, TargetGroup, Listener, SecondEIP."""
+"""Network resources: EIP1, EIP2, loadBalancer, FirstEIP, TargetGroup, Listener, SecondEIP."""
 
 from . import *  # noqa: F403
 
 
 class EIP1:
-    resource: ec2.EIP
-    domain = 'vpc'
-
-
-class FirstEIP:
     resource: ec2.EIP
     domain = 'vpc'
 
@@ -38,8 +33,13 @@ class loadBalancer:
     depends_on = [EIP2, EIP1]
 
 
-class TargetGroupListenerAttribute:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+class FirstEIP:
+    resource: ec2.EIP
+    domain = 'vpc'
+
+
+class TargetGroupTargetGroupAttribute:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
     key = 'deregistration_delay.timeout_seconds'
     value = '20'
 
@@ -49,12 +49,12 @@ class TargetGroup:
     name = 'MyTargets'
     port = 10
     protocol = elasticloadbalancingv2.ProtocolEnum.TCP
-    target_group_attributes = [TargetGroupListenerAttribute]
+    target_group_attributes = [TargetGroupTargetGroupAttribute]
     vpc_id = Select(0, VPC)
 
 
 class ListenerAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     type_ = 'forward'
     target_group_arn = TargetGroup
 

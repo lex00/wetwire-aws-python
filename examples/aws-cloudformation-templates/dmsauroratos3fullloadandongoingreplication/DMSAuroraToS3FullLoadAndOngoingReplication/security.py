@@ -1,4 +1,4 @@
-"""Security resources: DMSCloudwatchRole, S3TargetDMSRole, DMSVpcRole."""
+"""Security resources: DMSCloudwatchRole, DMSVpcRole, S3TargetDMSRole."""
 
 from . import *  # noqa: F403
 
@@ -23,6 +23,28 @@ class DMSCloudwatchRole:
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSCloudWatchLogsRole']
     path = '/'
     condition = 'NotExistsDMSCloudwatchRole'
+
+
+class DMSVpcRoleAllowStatement0:
+    resource: PolicyStatement
+    principal = {
+        'Service': ['dms.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class DMSVpcRoleAssumeRolePolicyDocument:
+    resource: PolicyDocument
+    statement = [DMSVpcRoleAllowStatement0]
+
+
+class DMSVpcRole:
+    resource: iam.Role
+    role_name = 'dms-vpc-role'
+    assume_role_policy_document = DMSVpcRoleAssumeRolePolicyDocument
+    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole']
+    path = '/'
+    condition = 'NotExistsDMSVPCRole'
 
 
 class S3TargetDMSRoleAllowStatement0:
@@ -62,7 +84,7 @@ class S3TargetDMSRolePolicies0PolicyDocument:
 
 
 class S3TargetDMSRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'S3AccessForDMSPolicy'
     policy_document = S3TargetDMSRolePolicies0PolicyDocument
 
@@ -74,25 +96,3 @@ class S3TargetDMSRole:
     path = '/'
     policies = [S3TargetDMSRolePolicy]
     depends_on = [S3Bucket]
-
-
-class DMSVpcRoleAllowStatement0:
-    resource: PolicyStatement
-    principal = {
-        'Service': ['dms.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class DMSVpcRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
-    statement = [DMSVpcRoleAllowStatement0]
-
-
-class DMSVpcRole:
-    resource: iam.Role
-    role_name = 'dms-vpc-role'
-    assume_role_policy_document = DMSVpcRoleAssumeRolePolicyDocument
-    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole']
-    path = '/'
-    condition = 'NotExistsDMSVPCRole'

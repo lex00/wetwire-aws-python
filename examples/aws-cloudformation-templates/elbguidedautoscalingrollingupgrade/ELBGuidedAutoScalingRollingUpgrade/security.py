@@ -28,7 +28,7 @@ class DescribeHealthRolePolicies0PolicyDocument:
 
 
 class DescribeHealthRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'describe-instance-health-policy'
     policy_document = DescribeHealthRolePolicies0PolicyDocument
 

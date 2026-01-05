@@ -8,15 +8,6 @@ class Api:
     name = AppName
 
 
-class ApiAuthorizer:
-    resource: apigateway.Authorizer
-    identity_source = 'method.request.header.authorization'
-    name = 'CognitoApiAuthorizer'
-    provider_ar_ns = [UserPoolArn]
-    rest_api_id = Api
-    type_ = 'COGNITO_USER_POOLS'
-
-
 class ApiDeployment:
     resource: apigateway.Deployment
     rest_api_id = Api
@@ -27,3 +18,12 @@ class ApiStage:
     rest_api_id = Api
     deployment_id = ApiDeployment
     stage_name = 'prod'
+
+
+class ApiAuthorizer:
+    resource: apigateway.Authorizer
+    identity_source = 'method.request.header.authorization'
+    name = 'CognitoApiAuthorizer'
+    provider_ar_ns = [UserPoolArn]
+    rest_api_id = Api
+    type_ = 'COGNITO_USER_POOLS'

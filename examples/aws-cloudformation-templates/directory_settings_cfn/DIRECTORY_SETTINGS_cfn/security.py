@@ -39,7 +39,7 @@ class DirectorySettingsLambdaRolePolicies0PolicyDocument:
 
 
 class DirectorySettingsLambdaRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CloudWatchLogGroup'
     policy_document = DirectorySettingsLambdaRolePolicies0PolicyDocument
 
@@ -79,7 +79,7 @@ class DirectorySettingsLambdaRolePolicies1PolicyDocument:
 
 
 class DirectorySettingsLambdaRolePolicy1:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'DirectorySettings'
     policy_document = DirectorySettingsLambdaRolePolicies1PolicyDocument
 

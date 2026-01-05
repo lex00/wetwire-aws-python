@@ -39,7 +39,7 @@ class TagVpcPeeringConnectionsLambdaRolePolicies0PolicyDocument:
 
 
 class TagVpcPeeringConnectionsLambdaRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CloudWatchLogGroup'
     policy_document = TagVpcPeeringConnectionsLambdaRolePolicies0PolicyDocument
 
@@ -60,7 +60,7 @@ class TagVpcPeeringConnectionsLambdaRolePolicies1PolicyDocument:
 
 
 class TagVpcPeeringConnectionsLambdaRolePolicy1:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'TagVpcPeeringConnections'
     policy_document = TagVpcPeeringConnectionsLambdaRolePolicies1PolicyDocument
 

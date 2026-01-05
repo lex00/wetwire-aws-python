@@ -37,8 +37,8 @@ class MyLambdaRolePolicies0PolicyDocument:
 
 
 class MyLambdaRolePolicy:
-    resource: iam.Role.Policy
-    policy_name = Sub('${AWS::StackName}')
+    resource: iam.User.Policy
+    policy_name = AWS_STACK_NAME
     policy_document = MyLambdaRolePolicies0PolicyDocument
 
 

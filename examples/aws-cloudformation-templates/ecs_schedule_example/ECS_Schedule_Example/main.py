@@ -64,8 +64,8 @@ class TaskDefinitionContainerDefinition1:
     volumes_from = [TaskDefinitionVolumeFrom]
 
 
-class TaskDefinitionSecret:
-    resource: ecs.Service.Secret
+class TaskDefinitionKeyValuePair:
+    resource: ecs.TaskDefinition.KeyValuePair
     name = 'my-vol'
 
 
@@ -76,7 +76,24 @@ class TaskDefinition:
     '-ecs-demo-app',
 ])
     container_definitions = [TaskDefinitionContainerDefinition, TaskDefinitionContainerDefinition1]
-    volumes = [TaskDefinitionSecret]
+    volumes = [TaskDefinitionKeyValuePair]
+
+
+class ServiceLoadBalancer:
+    resource: ecs.TaskSet.LoadBalancer
+    container_name = 'simple-app'
+    container_port = '80'
+    target_group_arn = ECSTG
+
+
+class Service:
+    resource: ecs.Service
+    cluster = ECSCluster
+    desired_count = '1'
+    load_balancers = [ServiceLoadBalancer]
+    role = ECSServiceRole
+    task_definition = TaskDefinition
+    depends_on = [ALBListener]
 
 
 class ServiceScalingTarget:

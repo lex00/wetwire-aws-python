@@ -4,12 +4,12 @@ from . import *  # noqa: F403
 
 
 class ServerEbs:
-    resource: ec2.LaunchTemplate.Ebs
+    resource: ec2.Instance.Ebs
     volume_size = 128
 
 
 class ServerBlockDeviceMapping:
-    resource: ec2.LaunchTemplate.BlockDeviceMapping
+    resource: ec2.Instance.BlockDeviceMapping
     device_name = '/dev/xvda'
     ebs = ServerEbs
 

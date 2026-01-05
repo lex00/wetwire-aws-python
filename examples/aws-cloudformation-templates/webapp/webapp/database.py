@@ -4,13 +4,13 @@ from . import *  # noqa: F403
 
 
 class TestTableAttributeDefinition:
-    resource: dynamodb.GlobalTable.AttributeDefinition
+    resource: dynamodb.Table.AttributeDefinition
     attribute_name = 'id'
     attribute_type = dynamodb.ScalarAttributeType.S
 
 
 class TestTableKeySchema:
-    resource: dynamodb.GlobalTable.KeySchema
+    resource: dynamodb.Table.KeySchema
     attribute_name = 'id'
     key_type = dynamodb.KeyType.HASH
 

@@ -1,26 +1,6 @@
-"""Monitoring resources: CPUAlarmHigh, CPUAlarmLow."""
+"""Monitoring resources: CPUAlarmLow, CPUAlarmHigh."""
 
 from . import *  # noqa: F403
-
-
-class CPUAlarmHighDimension:
-    resource: cloudwatch.Alarm.Dimension
-    name = 'AutoScalingGroupName'
-    value = WebServerGroup
-
-
-class CPUAlarmHigh:
-    resource: cloudwatch.Alarm
-    alarm_description = 'Scale-up if CPU > 90% for 10 minutes'
-    metric_name = 'CPUUtilization'
-    namespace = 'AWS/EC2'
-    statistic = 'Average'
-    period = 300
-    evaluation_periods = 2
-    threshold = 90
-    alarm_actions = [WebServerScaleUpPolicy]
-    dimensions = [CPUAlarmHighDimension]
-    comparison_operator = 'GreaterThanThreshold'
 
 
 class CPUAlarmLowDimension:
@@ -41,3 +21,23 @@ class CPUAlarmLow:
     alarm_actions = [WebServerScaleDownPolicy]
     dimensions = [CPUAlarmLowDimension]
     comparison_operator = 'LessThanThreshold'
+
+
+class CPUAlarmHighDimension:
+    resource: cloudwatch.Alarm.Dimension
+    name = 'AutoScalingGroupName'
+    value = WebServerGroup
+
+
+class CPUAlarmHigh:
+    resource: cloudwatch.Alarm
+    alarm_description = 'Scale-up if CPU > 90% for 10 minutes'
+    metric_name = 'CPUUtilization'
+    namespace = 'AWS/EC2'
+    statistic = 'Average'
+    period = 300
+    evaluation_periods = 2
+    threshold = 90
+    alarm_actions = [WebServerScaleUpPolicy]
+    dimensions = [CPUAlarmHighDimension]
+    comparison_operator = 'GreaterThanThreshold'

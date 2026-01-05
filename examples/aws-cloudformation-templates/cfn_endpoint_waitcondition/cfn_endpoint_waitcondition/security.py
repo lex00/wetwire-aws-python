@@ -1,4 +1,4 @@
-"""Security resources: RootRole, BastionProfile, PrivateProfile."""
+"""Security resources: RootRole, PrivateProfile, BastionProfile."""
 
 from . import *  # noqa: F403
 
@@ -28,7 +28,7 @@ class RootRolePolicies0PolicyDocument:
 
 
 class RootRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'root'
     policy_document = RootRolePolicies0PolicyDocument
 
@@ -40,13 +40,13 @@ class RootRole:
     policies = [RootRolePolicy]
 
 
-class BastionProfile:
+class PrivateProfile:
     resource: iam.InstanceProfile
     path = '/'
     roles = [RootRole]
 
 
-class PrivateProfile:
+class BastionProfile:
     resource: iam.InstanceProfile
     path = '/'
     roles = [RootRole]

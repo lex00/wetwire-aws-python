@@ -28,7 +28,7 @@ class TransformExecutionRolePolicies0PolicyDocument:
 
 
 class TransformExecutionRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'root'
     policy_document = TransformExecutionRolePolicies0PolicyDocument
 

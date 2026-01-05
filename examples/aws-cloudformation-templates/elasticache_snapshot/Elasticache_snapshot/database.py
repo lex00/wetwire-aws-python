@@ -1,18 +1,18 @@
-"""Database resources: RedisSubnetGroup, RedisParameterGroup, RedisReplicationGroup."""
+"""Database resources: RedisParameterGroup, RedisSubnetGroup, RedisReplicationGroup."""
 
 from . import *  # noqa: F403
-
-
-class RedisSubnetGroup:
-    resource: elasticache.SubnetGroup
-    description = 'RedisSubnetGroup'
-    subnet_ids = [PublicSubnetA, PublicSubnetB]
 
 
 class RedisParameterGroup:
     resource: elasticache.ParameterGroup
     cache_parameter_group_family = 'redis2.8'
     description = 'RedisParameterGroup'
+
+
+class RedisSubnetGroup:
+    resource: elasticache.SubnetGroup
+    description = 'RedisSubnetGroup'
+    subnet_ids = [PublicSubnetA, PublicSubnetB]
 
 
 class RedisReplicationGroup:

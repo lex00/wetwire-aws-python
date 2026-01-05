@@ -4,31 +4,31 @@ from . import *  # noqa: F403
 
 
 class TableOfBooksAttributeDefinition:
-    resource: dynamodb.GlobalTable.AttributeDefinition
+    resource: dynamodb.Table.AttributeDefinition
     attribute_name = 'Title'
     attribute_type = dynamodb.ScalarAttributeType.S
 
 
 class TableOfBooksAttributeDefinition1:
-    resource: dynamodb.GlobalTable.AttributeDefinition
+    resource: dynamodb.Table.AttributeDefinition
     attribute_name = 'Category'
     attribute_type = dynamodb.ScalarAttributeType.S
 
 
 class TableOfBooksAttributeDefinition2:
-    resource: dynamodb.GlobalTable.AttributeDefinition
+    resource: dynamodb.Table.AttributeDefinition
     attribute_name = 'Language'
     attribute_type = dynamodb.ScalarAttributeType.S
 
 
 class TableOfBooksKeySchema:
-    resource: dynamodb.GlobalTable.KeySchema
+    resource: dynamodb.Table.KeySchema
     attribute_name = 'Category'
     key_type = dynamodb.KeyType.HASH
 
 
 class TableOfBooksKeySchema1:
-    resource: dynamodb.GlobalTable.KeySchema
+    resource: dynamodb.Table.KeySchema
     attribute_name = 'Title'
     key_type = dynamodb.KeyType.RANGE
 
@@ -40,24 +40,24 @@ class TableOfBooksProvisionedThroughput:
 
 
 class TableOfBooksKeySchema2:
-    resource: dynamodb.GlobalTable.KeySchema
+    resource: dynamodb.Table.KeySchema
     attribute_name = 'Category'
     key_type = dynamodb.KeyType.HASH
 
 
 class TableOfBooksKeySchema3:
-    resource: dynamodb.GlobalTable.KeySchema
+    resource: dynamodb.Table.KeySchema
     attribute_name = 'Language'
     key_type = dynamodb.KeyType.RANGE
 
 
 class TableOfBooksProjection:
-    resource: dynamodb.GlobalTable.Projection
+    resource: dynamodb.Table.Projection
     projection_type = 'KEYS_ONLY'
 
 
 class TableOfBooksLocalSecondaryIndex:
-    resource: dynamodb.GlobalTable.LocalSecondaryIndex
+    resource: dynamodb.Table.LocalSecondaryIndex
     index_name = 'LanguageIndex'
     key_schema = [TableOfBooksKeySchema2, TableOfBooksKeySchema3]
     projection = TableOfBooksProjection
@@ -89,7 +89,7 @@ class TableOfBooksGlobalSecondaryIndex:
 
 
 class TableOfBooksPointInTimeRecoverySpecification:
-    resource: dynamodb.GlobalTable.PointInTimeRecoverySpecification
+    resource: dynamodb.Table.PointInTimeRecoverySpecification
     point_in_time_recovery_enabled = True
 
 

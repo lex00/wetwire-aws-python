@@ -33,7 +33,7 @@ class PipelineRolePolicies0PolicyDocument:
 
 
 class PipelineRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CanAccessCodeCommit'
     policy_document = PipelineRolePolicies0PolicyDocument
 
@@ -70,7 +70,7 @@ class PipelineRolePolicies1PolicyDocument:
 
 
 class PipelineRolePolicy1:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CanAccessS3'
     policy_document = PipelineRolePolicies1PolicyDocument
 
@@ -93,7 +93,7 @@ class PipelineRolePolicies2PolicyDocument:
 
 
 class PipelineRolePolicy2:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CanStartCodeBuild'
     policy_document = PipelineRolePolicies2PolicyDocument
 

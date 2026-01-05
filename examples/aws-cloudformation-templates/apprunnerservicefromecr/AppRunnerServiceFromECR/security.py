@@ -34,7 +34,7 @@ class AppRunnerRolePolicies0PolicyDocument:
 
 
 class AppRunnerRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'root'
     policy_document = AppRunnerRolePolicies0PolicyDocument
 

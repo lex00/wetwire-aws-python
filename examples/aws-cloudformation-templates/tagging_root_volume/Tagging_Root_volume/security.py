@@ -31,7 +31,7 @@ class InstanceRolePolicies0PolicyDocument:
 
 
 class InstanceRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'taginstancepolicy'
     policy_document = InstanceRolePolicies0PolicyDocument
 

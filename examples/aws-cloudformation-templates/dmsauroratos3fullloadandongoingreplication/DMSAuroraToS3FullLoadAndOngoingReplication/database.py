@@ -22,7 +22,7 @@ class AuroraCluster:
 
 
 class AuroraDBTagFormat:
-    resource: rds.DBProxy.TagFormat
+    resource: rds.DBProxyEndpoint.TagFormat
     key = 'Application'
     value = AWS_STACK_ID
 

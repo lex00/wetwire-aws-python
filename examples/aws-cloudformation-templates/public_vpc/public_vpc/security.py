@@ -1,6 +1,105 @@
-"""Security resources: ECSRole, ECSTaskExecutionRole."""
+"""Security resources: EC2Role, EC2InstanceProfile, AutoscalingRole, ECSRole."""
 
 from . import *  # noqa: F403
+
+
+class EC2RoleAllowStatement0:
+    resource: PolicyStatement
+    principal = {
+        'Service': ['ec2.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class EC2RoleAssumeRolePolicyDocument:
+    resource: PolicyDocument
+    statement = [EC2RoleAllowStatement0]
+
+
+class EC2RoleAllowStatement0_1:
+    resource: PolicyStatement
+    action = [
+        'ecs:CreateCluster',
+        'ecs:DeregisterContainerInstance',
+        'ecs:DiscoverPollEndpoint',
+        'ecs:Poll',
+        'ecs:RegisterContainerInstance',
+        'ecs:StartTelemetrySession',
+        'ecs:Submit*',
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+        'ecr:GetAuthorizationToken',
+        'ecr:BatchGetImage',
+        'ecr:GetDownloadUrlForLayer',
+    ]
+    resource_arn = '*'
+
+
+class EC2RolePolicies0PolicyDocument:
+    resource: PolicyDocument
+    statement = [EC2RoleAllowStatement0_1]
+
+
+class EC2RolePolicy:
+    resource: iam.User.Policy
+    policy_name = 'ecs-service'
+    policy_document = EC2RolePolicies0PolicyDocument
+
+
+class EC2Role:
+    resource: iam.Role
+    assume_role_policy_document = EC2RoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [EC2RolePolicy]
+
+
+class EC2InstanceProfile:
+    resource: iam.InstanceProfile
+    path = '/'
+    roles = [EC2Role]
+
+
+class AutoscalingRoleAllowStatement0:
+    resource: PolicyStatement
+    principal = {
+        'Service': ['application-autoscaling.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class AutoscalingRoleAssumeRolePolicyDocument:
+    resource: PolicyDocument
+    statement = [AutoscalingRoleAllowStatement0]
+
+
+class AutoscalingRoleAllowStatement0_1:
+    resource: PolicyStatement
+    action = [
+        'application-autoscaling:*',
+        'cloudwatch:DescribeAlarms',
+        'cloudwatch:PutMetricAlarm',
+        'ecs:DescribeServices',
+        'ecs:UpdateService',
+    ]
+    resource_arn = '*'
+
+
+class AutoscalingRolePolicies0PolicyDocument:
+    resource: PolicyDocument
+    statement = [AutoscalingRoleAllowStatement0_1]
+
+
+class AutoscalingRolePolicy:
+    resource: iam.User.Policy
+    policy_name = 'service-autoscaling'
+    policy_document = AutoscalingRolePolicies0PolicyDocument
+
+
+class AutoscalingRole:
+    resource: iam.Role
+    assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [AutoscalingRolePolicy]
 
 
 class ECSRoleAllowStatement0:
@@ -41,7 +140,7 @@ class ECSRolePolicies0PolicyDocument:
 
 
 class ECSRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ecs-service'
     policy_document = ECSRolePolicies0PolicyDocument
 
@@ -51,47 +150,3 @@ class ECSRole:
     assume_role_policy_document = ECSRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ECSRolePolicy]
-
-
-class ECSTaskExecutionRoleAllowStatement0:
-    resource: PolicyStatement
-    principal = {
-        'Service': ['ecs-tasks.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class ECSTaskExecutionRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
-    statement = [ECSTaskExecutionRoleAllowStatement0]
-
-
-class ECSTaskExecutionRoleAllowStatement0_1:
-    resource: PolicyStatement
-    action = [
-        'ecr:GetAuthorizationToken',
-        'ecr:BatchCheckLayerAvailability',
-        'ecr:GetDownloadUrlForLayer',
-        'ecr:BatchGetImage',
-        'logs:CreateLogStream',
-        'logs:PutLogEvents',
-    ]
-    resource_arn = '*'
-
-
-class ECSTaskExecutionRolePolicies0PolicyDocument:
-    resource: PolicyDocument
-    statement = [ECSTaskExecutionRoleAllowStatement0_1]
-
-
-class ECSTaskExecutionRolePolicy:
-    resource: iam.Role.Policy
-    policy_name = 'AmazonECSTaskExecutionRolePolicy'
-    policy_document = ECSTaskExecutionRolePolicies0PolicyDocument
-
-
-class ECSTaskExecutionRole:
-    resource: iam.Role
-    assume_role_policy_document = ECSTaskExecutionRoleAssumeRolePolicyDocument
-    path = '/'
-    policies = [ECSTaskExecutionRolePolicy]

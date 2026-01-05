@@ -1,4 +1,4 @@
-"""Compute resources: ECSCluster, ContainerInstances, ECSAutoScalingGroup, Service."""
+"""Compute resources: ECSCluster, ContainerInstances, ECSAutoScalingGroup."""
 
 from . import *  # noqa: F403
 
@@ -30,20 +30,3 @@ class ECSAutoScalingGroup:
     min_size = '1'
     max_size = MaxSize
     desired_capacity = DesiredCapacity
-
-
-class ServiceLoadBalancer:
-    resource: ecs.TaskSet.LoadBalancer
-    container_name = 'simple-app'
-    container_port = '80'
-    target_group_arn = ECSTG
-
-
-class Service:
-    resource: ecs.Service
-    cluster = ECSCluster
-    desired_count = '1'
-    load_balancers = [ServiceLoadBalancer]
-    role = ECSServiceRole
-    task_definition = TaskDefinition
-    depends_on = [ALBListener]

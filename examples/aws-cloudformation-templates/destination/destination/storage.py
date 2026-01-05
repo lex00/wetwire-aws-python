@@ -4,32 +4,32 @@ from . import *  # noqa: F403
 
 
 class S3BucketDestinationServerSideEncryptionByDefault:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionByDefault
+    resource: s3.Bucket.ServerSideEncryptionByDefault
     sse_algorithm = s3.ServerSideEncryption.AWSKMS
     kms_master_key_id = KmsKey
 
 
 class S3BucketDestinationServerSideEncryptionRule:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionRule
+    resource: s3.Bucket.ServerSideEncryptionRule
     server_side_encryption_by_default = S3BucketDestinationServerSideEncryptionByDefault
     bucket_key_enabled = True
 
 
 class S3BucketDestinationBucketEncryption:
-    resource: s3express.DirectoryBucket.BucketEncryption
+    resource: s3.Bucket.BucketEncryption
     server_side_encryption_configuration = [S3BucketDestinationServerSideEncryptionRule]
 
 
 class S3BucketDestinationPublicAccessBlockConfiguration:
-    resource: s3objectlambda.AccessPoint.PublicAccessBlockConfiguration
+    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
     restrict_public_buckets = True
 
 
-class S3BucketDestinationMetricsConfiguration:
-    resource: s3tables.TableBucket.MetricsConfiguration
+class S3BucketDestinationDeleteMarkerReplication:
+    resource: s3.Bucket.DeleteMarkerReplication
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -38,7 +38,7 @@ class S3BucketDestination:
     bucket_name = Sub('${AWS::StackName}-${AWS::AccountId}-bucket')
     bucket_encryption = S3BucketDestinationBucketEncryption
     public_access_block_configuration = S3BucketDestinationPublicAccessBlockConfiguration
-    versioning_configuration = S3BucketDestinationMetricsConfiguration
+    versioning_configuration = S3BucketDestinationDeleteMarkerReplication
     deletion_policy = 'Delete'
 
 

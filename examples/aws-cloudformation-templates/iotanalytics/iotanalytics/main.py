@@ -3,18 +3,18 @@
 from . import *  # noqa: F403
 
 
-class Channel:
-    resource: iotanalytics.Channel
-    channel_name = Sub('${ProjectName}_channel')
+class Datastore:
+    resource: iotanalytics.Datastore
+    datastore_name = Sub('${ProjectName}_datastore')
     tags = [{
         'Key': 'Project',
         'Value': ProjectName,
     }]
 
 
-class Datastore:
-    resource: iotanalytics.Datastore
-    datastore_name = Sub('${ProjectName}_datastore')
+class Channel:
+    resource: iotanalytics.Channel
+    channel_name = Sub('${ProjectName}_channel')
     tags = [{
         'Key': 'Project',
         'Value': ProjectName,
@@ -43,7 +43,7 @@ class SqlDatasetTrigger:
 
 
 class SqlDatasetRetentionPeriod:
-    resource: iotanalytics.Datastore.RetentionPeriod
+    resource: iotanalytics.Channel.RetentionPeriod
     unlimited = False
     number_of_days = 30
 

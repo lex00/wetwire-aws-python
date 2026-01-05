@@ -4,27 +4,27 @@ from . import *  # noqa: F403
 
 
 class BucketServerSideEncryptionByDefault:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionByDefault
+    resource: s3.Bucket.ServerSideEncryptionByDefault
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
 class BucketServerSideEncryptionRule:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionRule
+    resource: s3.Bucket.ServerSideEncryptionRule
     server_side_encryption_by_default = BucketServerSideEncryptionByDefault
 
 
 class BucketBucketEncryption:
-    resource: s3express.DirectoryBucket.BucketEncryption
+    resource: s3.Bucket.BucketEncryption
     server_side_encryption_configuration = [BucketServerSideEncryptionRule]
 
 
-class BucketMetricsConfiguration:
-    resource: s3tables.TableBucket.MetricsConfiguration
+class BucketDeleteMarkerReplication:
+    resource: s3.Bucket.DeleteMarkerReplication
     status = s3.BucketVersioningStatus.ENABLED
 
 
 class BucketPublicAccessBlockConfiguration:
-    resource: s3objectlambda.AccessPoint.PublicAccessBlockConfiguration
+    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
@@ -35,7 +35,7 @@ class Bucket:
     resource: s3.Bucket
     bucket_name = BucketName
     bucket_encryption = BucketBucketEncryption
-    versioning_configuration = BucketMetricsConfiguration
+    versioning_configuration = BucketDeleteMarkerReplication
     public_access_block_configuration = BucketPublicAccessBlockConfiguration
 
 

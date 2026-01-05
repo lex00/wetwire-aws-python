@@ -1,25 +1,6 @@
-"""Security resources: ContentReplicationRole, CloudFrontLogsReplicationRole, CloudFrontLogsReplicationPolicy, ContentReplicationPolicy."""
+"""Security resources: CloudFrontLogsReplicationRole, ContentReplicationRole, CloudFrontLogsReplicationPolicy, ContentReplicationPolicy."""
 
 from . import *  # noqa: F403
-
-
-class ContentReplicationRoleAllowStatement0:
-    resource: PolicyStatement
-    principal = {
-        'Service': ['s3.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class ContentReplicationRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
-    statement = [ContentReplicationRoleAllowStatement0]
-
-
-class ContentReplicationRole:
-    resource: iam.Role
-    assume_role_policy_document = ContentReplicationRoleAssumeRolePolicyDocument
-    path = '/'
 
 
 class CloudFrontLogsReplicationRoleAllowStatement0:
@@ -38,6 +19,25 @@ class CloudFrontLogsReplicationRoleAssumeRolePolicyDocument:
 class CloudFrontLogsReplicationRole:
     resource: iam.Role
     assume_role_policy_document = CloudFrontLogsReplicationRoleAssumeRolePolicyDocument
+    path = '/'
+
+
+class ContentReplicationRoleAllowStatement0:
+    resource: PolicyStatement
+    principal = {
+        'Service': ['s3.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class ContentReplicationRoleAssumeRolePolicyDocument:
+    resource: PolicyDocument
+    statement = [ContentReplicationRoleAllowStatement0]
+
+
+class ContentReplicationRole:
+    resource: iam.Role
+    assume_role_policy_document = ContentReplicationRoleAssumeRolePolicyDocument
     path = '/'
 
 

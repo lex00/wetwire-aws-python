@@ -9,7 +9,7 @@ class EMRClusterBootstrapActionConfig:
 
 
 class EMRClusterConfiguration:
-    resource: emr.InstanceFleetConfig.Configuration
+    resource: emr.InstanceGroupConfig.Configuration
     classification = 'hbase-site'
     configuration_properties = {
         'hbase.rootdir': S3DataUri,
@@ -17,7 +17,7 @@ class EMRClusterConfiguration:
 
 
 class EMRClusterConfiguration1:
-    resource: emr.InstanceFleetConfig.Configuration
+    resource: emr.InstanceGroupConfig.Configuration
     classification = 'hbase'
     configuration_properties = {
         'hbase.emr.storageMode': 's3',

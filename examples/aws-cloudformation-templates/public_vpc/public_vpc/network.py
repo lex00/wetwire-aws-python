@@ -1,4 +1,4 @@
-"""Network resources: VPC, PublicSubnetOne, InternetGateway, PublicSubnetTwo, PublicRouteTable, PublicSubnetTwoRouteTableAssociation, GatewayAttachement, PublicRoute, PublicSubnetOneRouteTableAssociation, DummyTargetGroupPublic, FargateContainerSecurityGroup, EcsSecurityGroupIngressFromSelf, PublicLoadBalancerSG, PublicLoadBalancer, PublicLoadBalancerListener, EcsSecurityGroupIngressFromPublicALB."""
+"""Network resources: VPC, PublicSubnetOne, PublicSubnetTwo, EcsHostSecurityGroup, DummyTargetGroupPublic, PublicLoadBalancerSG, PublicLoadBalancer, PublicRouteTable, PublicSubnetTwoRouteTableAssociation, PublicLoadBalancerListener, PublicSubnetOneRouteTableAssociation, EcsSecurityGroupIngressFromSelf, InternetGateway, GatewayAttachement, PublicRoute, EcsSecurityGroupIngressFromPublicALB."""
 
 from . import *  # noqa: F403
 
@@ -18,10 +18,6 @@ class PublicSubnetOne:
     map_public_ip_on_launch = True
 
 
-class InternetGateway:
-    resource: ec2.InternetGateway
-
-
 class PublicSubnetTwo:
     resource: ec2.Subnet
     availability_zone = Select(1, GetAZs(AWS_REGION))
@@ -30,35 +26,10 @@ class PublicSubnetTwo:
     map_public_ip_on_launch = True
 
 
-class PublicRouteTable:
-    resource: ec2.RouteTable
+class EcsHostSecurityGroup:
+    resource: ec2.SecurityGroup
+    group_description = 'Access to the ECS hosts that run containers'
     vpc_id = VPC
-
-
-class PublicSubnetTwoRouteTableAssociation:
-    resource: ec2.SubnetRouteTableAssociation
-    subnet_id = PublicSubnetTwo
-    route_table_id = PublicRouteTable
-
-
-class GatewayAttachement:
-    resource: ec2.VPCGatewayAttachment
-    vpc_id = VPC
-    internet_gateway_id = InternetGateway
-
-
-class PublicRoute:
-    resource: ec2.Route
-    route_table_id = PublicRouteTable
-    destination_cidr_block = '0.0.0.0/0'
-    gateway_id = InternetGateway
-    depends_on = [GatewayAttachement]
-
-
-class PublicSubnetOneRouteTableAssociation:
-    resource: ec2.SubnetRouteTableAssociation
-    subnet_id = PublicSubnetOne
-    route_table_id = PublicRouteTable
 
 
 class DummyTargetGroupPublic:
@@ -78,24 +49,10 @@ class DummyTargetGroupPublic:
     vpc_id = VPC
 
 
-class FargateContainerSecurityGroup:
-    resource: ec2.SecurityGroup
-    group_description = 'Access to the Fargate containers'
-    vpc_id = VPC
-
-
-class EcsSecurityGroupIngressFromSelf:
-    resource: ec2.SecurityGroupIngress
-    description = 'Ingress from other containers in the same security group'
-    group_id = FargateContainerSecurityGroup
-    ip_protocol = '-1'
-    source_security_group_id = FargateContainerSecurityGroup
-
-
 class PublicLoadBalancerSGEgress:
     resource: ec2.SecurityGroup.Egress
     cidr_ip = '0.0.0.0/0'
-    ip_protocol = '-1'
+    ip_protocol = -1
 
 
 class PublicLoadBalancerSG:
@@ -105,8 +62,8 @@ class PublicLoadBalancerSG:
     security_group_ingress = [PublicLoadBalancerSGEgress]
 
 
-class PublicLoadBalancerListenerAttribute:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+class PublicLoadBalancerTargetGroupAttribute:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
     key = 'idle_timeout.timeout_seconds'
     value = '30'
 
@@ -114,13 +71,24 @@ class PublicLoadBalancerListenerAttribute:
 class PublicLoadBalancer:
     resource: elasticloadbalancingv2.LoadBalancer
     scheme = 'internet-facing'
-    load_balancer_attributes = [PublicLoadBalancerListenerAttribute]
+    load_balancer_attributes = [PublicLoadBalancerTargetGroupAttribute]
     subnets = [PublicSubnetOne, PublicSubnetTwo]
     security_groups = [PublicLoadBalancerSG]
 
 
+class PublicRouteTable:
+    resource: ec2.RouteTable
+    vpc_id = VPC
+
+
+class PublicSubnetTwoRouteTableAssociation:
+    resource: ec2.SubnetRouteTableAssociation
+    subnet_id = PublicSubnetTwo
+    route_table_id = PublicRouteTable
+
+
 class PublicLoadBalancerListenerAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     target_group_arn = DummyTargetGroupPublic
     type_ = 'forward'
 
@@ -131,11 +99,44 @@ class PublicLoadBalancerListener:
     load_balancer_arn = PublicLoadBalancer
     port = 80
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
+    depends_on = [PublicLoadBalancer]
+
+
+class PublicSubnetOneRouteTableAssociation:
+    resource: ec2.SubnetRouteTableAssociation
+    subnet_id = PublicSubnetOne
+    route_table_id = PublicRouteTable
+
+
+class EcsSecurityGroupIngressFromSelf:
+    resource: ec2.SecurityGroupIngress
+    description = 'Ingress from other hosts in the same security group'
+    group_id = EcsHostSecurityGroup
+    ip_protocol = -1
+    source_security_group_id = EcsHostSecurityGroup
+
+
+class InternetGateway:
+    resource: ec2.InternetGateway
+
+
+class GatewayAttachement:
+    resource: ec2.VPCGatewayAttachment
+    vpc_id = VPC
+    internet_gateway_id = InternetGateway
+
+
+class PublicRoute:
+    resource: ec2.Route
+    route_table_id = PublicRouteTable
+    destination_cidr_block = '0.0.0.0/0'
+    gateway_id = InternetGateway
+    depends_on = [GatewayAttachement]
 
 
 class EcsSecurityGroupIngressFromPublicALB:
     resource: ec2.SecurityGroupIngress
     description = 'Ingress from the public ALB'
-    group_id = FargateContainerSecurityGroup
-    ip_protocol = '-1'
+    group_id = EcsHostSecurityGroup
+    ip_protocol = -1
     source_security_group_id = PublicLoadBalancerSG

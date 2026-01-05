@@ -1,4 +1,4 @@
-"""Security resources: ADConnectorServiceAccountSecret, ADConnectorLambdaRole, ADConnectorLinuxEC2SeamlessDomainJoinSecret, ADConnectorLinuxEC2DomainJoinRole, ADConnectorLinuxEC2DomainJoinInstanceProfile, ADConnectorWindowsEC2DomainJoinRole, ADConnectorWindowsEC2DomainJoinInstanceProfile."""
+"""Security resources: ADConnectorServiceAccountSecret, ADConnectorLambdaRole, ADConnectorLinuxEC2SeamlessDomainJoinSecret, ADConnectorLinuxEC2DomainJoinRole, ADConnectorWindowsEC2DomainJoinRole, ADConnectorLinuxEC2DomainJoinInstanceProfile, ADConnectorWindowsEC2DomainJoinInstanceProfile."""
 
 from . import *  # noqa: F403
 
@@ -48,7 +48,7 @@ class ADConnectorLambdaRolePolicies0PolicyDocument:
 
 
 class ADConnectorLambdaRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CloudWatchLogGroup'
     policy_document = ADConnectorLambdaRolePolicies0PolicyDocument
 
@@ -109,7 +109,7 @@ class ADConnectorLambdaRolePolicies1PolicyDocument:
 
 
 class ADConnectorLambdaRolePolicy1:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ADConnector'
     policy_document = ADConnectorLambdaRolePolicies1PolicyDocument
 
@@ -127,7 +127,7 @@ class ADConnectorLambdaRolePolicies2PolicyDocument:
 
 
 class ADConnectorLambdaRolePolicy2:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ADConnectorServiceAccountSecret'
     policy_document = ADConnectorLambdaRolePolicies2PolicyDocument
 
@@ -199,7 +199,7 @@ class ADConnectorLinuxEC2DomainJoinRolePolicies0PolicyDocument:
 
 
 class ADConnectorLinuxEC2DomainJoinRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'SSMAgent'
     policy_document = ADConnectorLinuxEC2DomainJoinRolePolicies0PolicyDocument
 
@@ -219,7 +219,7 @@ class ADConnectorLinuxEC2DomainJoinRolePolicies2PolicyDocument:
 
 
 class ADConnectorLinuxEC2DomainJoinRolePolicy1:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ADConnectorLinuxEC2SeamlessDomainJoinSecret'
     policy_document = ADConnectorLinuxEC2DomainJoinRolePolicies2PolicyDocument
 
@@ -267,14 +267,6 @@ class ADConnectorLinuxEC2DomainJoinRole:
     condition = 'LinuxEC2DomainJoinResourcesCondition'
 
 
-class ADConnectorLinuxEC2DomainJoinInstanceProfile:
-    resource: iam.InstanceProfile
-    instance_profile_name = ADConnectorLinuxEC2DomainJoinRole
-    path = '/'
-    roles = [ADConnectorLinuxEC2DomainJoinRole]
-    condition = 'LinuxEC2DomainJoinResourcesCondition'
-
-
 class ADConnectorWindowsEC2DomainJoinRoleAllowStatement0:
     resource: PolicyStatement
     principal = {
@@ -309,7 +301,7 @@ class ADConnectorWindowsEC2DomainJoinRolePolicies0PolicyDocument:
 
 
 class ADConnectorWindowsEC2DomainJoinRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'SSMAgent'
     policy_document = ADConnectorWindowsEC2DomainJoinRolePolicies0PolicyDocument
 
@@ -345,6 +337,14 @@ class ADConnectorWindowsEC2DomainJoinRole:
     },
 }, AWS_NO_VALUE)]
     condition = 'WindowsEC2DomainJoinResourcesCondition'
+
+
+class ADConnectorLinuxEC2DomainJoinInstanceProfile:
+    resource: iam.InstanceProfile
+    instance_profile_name = ADConnectorLinuxEC2DomainJoinRole
+    path = '/'
+    roles = [ADConnectorLinuxEC2DomainJoinRole]
+    condition = 'LinuxEC2DomainJoinResourcesCondition'
 
 
 class ADConnectorWindowsEC2DomainJoinInstanceProfile:

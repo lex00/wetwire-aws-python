@@ -43,7 +43,7 @@ class IAMAssumeInstanceRolePolicies0PolicyDocument:
 
 
 class IAMAssumeInstanceRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_document = IAMAssumeInstanceRolePolicies0PolicyDocument
     policy_name = Join('-', [
     'IAM',

@@ -1,6 +1,49 @@
-"""Security resources: AdministratorAccessIAMRole, LoggingBucketKMSKey, LambdaEdgeIAMRole, LoggingBucketKMSKeyAlias."""
+"""Security resources: LambdaEdgeIAMRole, AdministratorAccessIAMRole, LoggingBucketKMSKey, LoggingBucketKMSKeyAlias."""
 
 from . import *  # noqa: F403
+
+
+class LambdaEdgeIAMRoleAllowStatement0:
+    resource: PolicyStatement
+    sid = 'AllowLambdaServiceToAssumeRole'
+    principal = {
+        'Service': [
+            'edgelambda.amazonaws.com',
+            'lambda.amazonaws.com',
+        ],
+    }
+    action = ['sts:AssumeRole']
+
+
+class LambdaEdgeIAMRoleAssumeRolePolicyDocument:
+    resource: PolicyDocument
+    statement = [LambdaEdgeIAMRoleAllowStatement0]
+
+
+class LambdaEdgeIAMRoleAllowStatement0_1:
+    resource: PolicyStatement
+    action = ['lambda:PublishVersion']
+    resource_arn = '*'
+
+
+class LambdaEdgeIAMRolePolicies0PolicyDocument:
+    resource: PolicyDocument
+    statement = [LambdaEdgeIAMRoleAllowStatement0_1]
+
+
+class LambdaEdgeIAMRolePolicy:
+    resource: iam.User.Policy
+    policy_name = 'PublishNewLambdaEdgeVersion'
+    policy_document = LambdaEdgeIAMRolePolicies0PolicyDocument
+
+
+class LambdaEdgeIAMRole:
+    resource: iam.Role
+    role_name = Sub('${AppName}-iam-lambda-edge-role-${Environment}')
+    assume_role_policy_document = LambdaEdgeIAMRoleAssumeRolePolicyDocument
+    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole', 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess']
+    path = '/'
+    policies = [LambdaEdgeIAMRolePolicy]
 
 
 class AdministratorAccessIAMRoleAllowStatement0:
@@ -70,50 +113,7 @@ class LoggingBucketKMSKey:
     depends_on = [AdministratorAccessIAMRole]
 
 
-class LambdaEdgeIAMRoleAllowStatement0:
-    resource: PolicyStatement
-    sid = 'AllowLambdaServiceToAssumeRole'
-    principal = {
-        'Service': [
-            'edgelambda.amazonaws.com',
-            'lambda.amazonaws.com',
-        ],
-    }
-    action = ['sts:AssumeRole']
-
-
-class LambdaEdgeIAMRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
-    statement = [LambdaEdgeIAMRoleAllowStatement0]
-
-
-class LambdaEdgeIAMRoleAllowStatement0_1:
-    resource: PolicyStatement
-    action = ['lambda:PublishVersion']
-    resource_arn = '*'
-
-
-class LambdaEdgeIAMRolePolicies0PolicyDocument:
-    resource: PolicyDocument
-    statement = [LambdaEdgeIAMRoleAllowStatement0_1]
-
-
-class LambdaEdgeIAMRolePolicy:
-    resource: iam.Role.Policy
-    policy_name = 'PublishNewLambdaEdgeVersion'
-    policy_document = LambdaEdgeIAMRolePolicies0PolicyDocument
-
-
-class LambdaEdgeIAMRole:
-    resource: iam.Role
-    role_name = Sub('${AppName}-iam-lambda-edge-role-${Environment}')
-    assume_role_policy_document = LambdaEdgeIAMRoleAssumeRolePolicyDocument
-    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole', 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess']
-    path = '/'
-    policies = [LambdaEdgeIAMRolePolicy]
-
-
 class LoggingBucketKMSKeyAlias:
     resource: kms.Alias
     alias_name = Sub('alias/${AppName}/${Environment}/s3-logging-kms')
-    target_key_id = Sub('${LoggingBucketKMSKey}')
+    target_key_id = LoggingBucketKMSKey

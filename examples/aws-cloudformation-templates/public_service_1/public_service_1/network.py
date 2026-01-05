@@ -21,7 +21,7 @@ class TargetGroup:
 
 
 class LoadBalancerRuleAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     target_group_arn = TargetGroup
     type_ = 'forward'
 

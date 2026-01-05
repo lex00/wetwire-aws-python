@@ -35,7 +35,7 @@ class EventRolePolicies0PolicyDocument:
 
 
 class EventRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'eb-pipeline-execution'
     policy_document = EventRolePolicies0PolicyDocument
 

@@ -6,45 +6,45 @@ from . import *  # noqa: F403
 class ServiceCatalogCloudFormationProductProvisioningParameter:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'Name'
-    value = Sub('${AppName}')
+    value = AppName
 
 
 class ServiceCatalogCloudFormationProductProvisioningParameter1:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'App'
-    value = Sub('${AppName}')
+    value = AppName
 
 
 class ServiceCatalogCloudFormationProductProvisioningParameter2:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'Dept'
-    value = Sub('${Dept}')
+    value = Dept
 
 
 class ServiceCatalogCloudFormationProductProvisioningParameter3:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'Env'
-    value = Sub('${Env}')
+    value = Env
 
 
 class ServiceCatalogCloudFormationProductProvisioningParameter4:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'User'
-    value = Sub('${User}')
+    value = User
 
 
 class ServiceCatalogCloudFormationProductProvisioningParameter5:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'Owner'
-    value = Sub('${Owner}')
+    value = Owner
 
 
 class ServiceCatalogCloudFormationProductProvisioningArtifactProperties:
     resource: servicecatalog.CloudFormationProduct.ProvisioningArtifactProperties
-    name = Sub('${ProvisioningArtifactNameParameter}')
-    description = Sub('${ProvisioningArtifactDescriptionParameter}')
+    name = ProvisioningArtifactNameParameter
+    description = ProvisioningArtifactDescriptionParameter
     info = {
-        'LoadTemplateFromURL': Sub('${ProvisioningArtifactTemplateUrl}'),
+        'LoadTemplateFromURL': ProvisioningArtifactTemplateUrl,
     }
 
 
@@ -56,7 +56,7 @@ class ServiceCatalogCloudFormationProduct:
     support_description = SCProductSupport
     distributor = SCProductDistributor
     support_email = SCSupportEmail
-    support_url = Sub('${SCSupportUrl}')
+    support_url = SCSupportUrl
     tags = [ServiceCatalogCloudFormationProductProvisioningParameter, ServiceCatalogCloudFormationProductProvisioningParameter1, ServiceCatalogCloudFormationProductProvisioningParameter2, ServiceCatalogCloudFormationProductProvisioningParameter3, ServiceCatalogCloudFormationProductProvisioningParameter4, ServiceCatalogCloudFormationProductProvisioningParameter5]
     provisioning_artifact_parameters = [ServiceCatalogCloudFormationProductProvisioningArtifactProperties]
 

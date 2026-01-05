@@ -10,7 +10,7 @@ class LinuxInstanceAssociationParameter:
 
 
 class LinuxInstanceEbs:
-    resource: ec2.LaunchTemplate.Ebs
+    resource: ec2.Instance.Ebs
     volume_type = 'io1'
     iops = '200'
     delete_on_termination = 'true'
@@ -18,7 +18,7 @@ class LinuxInstanceEbs:
 
 
 class LinuxInstanceBlockDeviceMapping:
-    resource: ec2.LaunchTemplate.BlockDeviceMapping
+    resource: ec2.Instance.BlockDeviceMapping
     device_name = '/dev/sdm'
     ebs = LinuxInstanceEbs
 
@@ -48,7 +48,7 @@ class WindowsInstanceAssociationParameter:
 
 
 class WindowsInstanceEbs:
-    resource: ec2.LaunchTemplate.Ebs
+    resource: ec2.Instance.Ebs
     volume_type = 'io1'
     iops = '200'
     delete_on_termination = 'true'
@@ -56,7 +56,7 @@ class WindowsInstanceEbs:
 
 
 class WindowsInstanceBlockDeviceMapping:
-    resource: ec2.LaunchTemplate.BlockDeviceMapping
+    resource: ec2.Instance.BlockDeviceMapping
     device_name = '/dev/sdm'
     ebs = WindowsInstanceEbs
 

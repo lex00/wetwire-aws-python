@@ -99,7 +99,7 @@ class ReplicationRolePolicies0PolicyDocument:
 
 
 class ReplicationRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = Sub('${AWS::StackName}-${AccountIdDestination}-role-policy')
     policy_document = ReplicationRolePolicies0PolicyDocument
 

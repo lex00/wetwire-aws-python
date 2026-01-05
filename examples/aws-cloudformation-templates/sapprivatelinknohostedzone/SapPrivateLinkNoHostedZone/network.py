@@ -1,33 +1,6 @@
-"""Network resources: ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkVPCESPermission, ASCPrivateLinkTargetGroup, ASCPrivateLinkListener."""
+"""Network resources: ASCPrivateLinkTargetGroup, ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkListener, ASCPrivateLinkVPCESPermission."""
 
 from . import *  # noqa: F403
-
-
-class ASCPrivateLinkNLBListenerAttribute:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
-    key = 'load_balancing.cross_zone.enabled'
-    value = True
-
-
-class ASCPrivateLinkNLB:
-    resource: elasticloadbalancingv2.LoadBalancer
-    type_ = 'network'
-    scheme = 'internal'
-    subnets = Subnets
-    load_balancer_attributes = [ASCPrivateLinkNLBListenerAttribute]
-    depends_on = [ASCPrivateLinkCertificate]
-
-
-class ASCPrivateLinkVPCES:
-    resource: ec2.VPCEndpointService
-    acceptance_required = False
-    network_load_balancer_arns = [ASCPrivateLinkNLB]
-
-
-class ASCPrivateLinkVPCESPermission:
-    resource: ec2.VPCEndpointServicePermissions
-    allowed_principals = ['appflow.amazonaws.com']
-    service_id = ASCPrivateLinkVPCES
 
 
 class ASCPrivateLinkTargetGroupTargetDescription:
@@ -49,13 +22,34 @@ class ASCPrivateLinkTargetGroup:
     depends_on = [ASCPrivateLinkCertificate]
 
 
+class ASCPrivateLinkNLBTargetGroupAttribute:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
+    key = 'load_balancing.cross_zone.enabled'
+    value = True
+
+
+class ASCPrivateLinkNLB:
+    resource: elasticloadbalancingv2.LoadBalancer
+    type_ = 'network'
+    scheme = 'internal'
+    subnets = Subnets
+    load_balancer_attributes = [ASCPrivateLinkNLBTargetGroupAttribute]
+    depends_on = [ASCPrivateLinkCertificate]
+
+
+class ASCPrivateLinkVPCES:
+    resource: ec2.VPCEndpointService
+    acceptance_required = False
+    network_load_balancer_arns = [ASCPrivateLinkNLB]
+
+
 class ASCPrivateLinkListenerCertificate:
-    resource: elasticloadbalancingv2.Listener.Certificate
+    resource: elasticloadbalancingv2.ListenerCertificate.Certificate
     certificate_arn = ASCPrivateLinkCertificate
 
 
 class ASCPrivateLinkListenerAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     type_ = 'forward'
     target_group_arn = ASCPrivateLinkTargetGroup
 
@@ -68,3 +62,9 @@ class ASCPrivateLinkListener:
     ssl_policy = 'ELBSecurityPolicy-TLS13-1-0-2021-06'
     certificates = [ASCPrivateLinkListenerCertificate]
     default_actions = [ASCPrivateLinkListenerAction]
+
+
+class ASCPrivateLinkVPCESPermission:
+    resource: ec2.VPCEndpointServicePermissions
+    allowed_principals = ['appflow.amazonaws.com']
+    service_id = ASCPrivateLinkVPCES

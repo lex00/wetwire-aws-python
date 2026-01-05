@@ -37,13 +37,13 @@ class ElasticLoadBalancer:
 
 
 class LoadBalancerListenerAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     type_ = 'forward'
     target_group_arn = TargetGroup
 
 
 class LoadBalancerListenerCertificate:
-    resource: elasticloadbalancingv2.Listener.Certificate
+    resource: elasticloadbalancingv2.ListenerCertificate.Certificate
     certificate_arn = CertificateArn
 
 

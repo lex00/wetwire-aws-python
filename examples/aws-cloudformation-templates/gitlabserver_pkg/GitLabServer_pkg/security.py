@@ -1,4 +1,4 @@
-"""Security resources: InstanceRole, InstanceProfile, InstanceRolePolicy."""
+"""Security resources: InstanceRole, InstanceRolePolicy, InstanceProfile."""
 
 from . import *  # noqa: F403
 
@@ -25,11 +25,6 @@ class InstanceRole:
     }]
 
 
-class InstanceProfile:
-    resource: iam.InstanceProfile
-    roles = [InstanceRole]
-
-
 class InstanceRolePolicyAllowStatement0:
     resource: PolicyStatement
     action = [
@@ -51,3 +46,8 @@ class InstanceRolePolicy:
     policy_document = InstanceRolePolicyPolicyDocument
     policy_name = 'InstanceRolePolicy'
     role_name = InstanceRole
+
+
+class InstanceProfile:
+    resource: iam.InstanceProfile
+    roles = [InstanceRole]

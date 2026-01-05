@@ -1,6 +1,43 @@
-"""Storage resources: ObjectStorageReplicaBucketPolicyPolicy, ObjectStorageLogBucket, ObjectStorageReplicaBucket, ObjectStorageBucket, ObjectStorageLogBucketPolicyPolicy, ObjectStorageBucketPolicyPolicy."""
+"""Storage resources: ObjectStorageReplicaBucket, ObjectStorageReplicaBucketPolicyPolicy, ObjectStorageLogBucket, ObjectStorageBucket, ObjectStorageBucketPolicyPolicy, ObjectStorageLogBucketPolicyPolicy."""
 
 from . import *  # noqa: F403
+
+
+class ObjectStorageReplicaBucketServerSideEncryptionByDefault:
+    resource: s3.Bucket.ServerSideEncryptionByDefault
+    sse_algorithm = s3.ServerSideEncryption.AES256
+
+
+class ObjectStorageReplicaBucketServerSideEncryptionRule:
+    resource: s3.Bucket.ServerSideEncryptionRule
+    server_side_encryption_by_default = ObjectStorageReplicaBucketServerSideEncryptionByDefault
+
+
+class ObjectStorageReplicaBucketBucketEncryption:
+    resource: s3.Bucket.BucketEncryption
+    server_side_encryption_configuration = [ObjectStorageReplicaBucketServerSideEncryptionRule]
+
+
+class ObjectStorageReplicaBucketPublicAccessBlockConfiguration:
+    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
+    block_public_acls = True
+    block_public_policy = True
+    ignore_public_acls = True
+    restrict_public_buckets = True
+
+
+class ObjectStorageReplicaBucketDeleteMarkerReplication:
+    resource: s3.Bucket.DeleteMarkerReplication
+    status = s3.BucketVersioningStatus.ENABLED
+
+
+class ObjectStorageReplicaBucket:
+    resource: s3.Bucket
+    bucket_encryption = ObjectStorageReplicaBucketBucketEncryption
+    bucket_name = Sub('${AppName}-replicas-${AWS::Region}-${AWS::AccountId}')
+    object_lock_enabled = False
+    public_access_block_configuration = ObjectStorageReplicaBucketPublicAccessBlockConfiguration
+    versioning_configuration = ObjectStorageReplicaBucketDeleteMarkerReplication
 
 
 class ObjectStorageReplicaBucketPolicyPolicyDenyStatement0:
@@ -49,17 +86,17 @@ class ObjectStorageReplicaBucketPolicyPolicy:
 
 
 class ObjectStorageLogBucketServerSideEncryptionByDefault:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionByDefault
+    resource: s3.Bucket.ServerSideEncryptionByDefault
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
 class ObjectStorageLogBucketServerSideEncryptionRule:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionRule
+    resource: s3.Bucket.ServerSideEncryptionRule
     server_side_encryption_by_default = ObjectStorageLogBucketServerSideEncryptionByDefault
 
 
 class ObjectStorageLogBucketBucketEncryption:
-    resource: s3express.DirectoryBucket.BucketEncryption
+    resource: s3.Bucket.BucketEncryption
     server_side_encryption_configuration = [ObjectStorageLogBucketServerSideEncryptionRule]
 
 
@@ -81,15 +118,15 @@ class ObjectStorageLogBucketObjectLockConfiguration:
 
 
 class ObjectStorageLogBucketPublicAccessBlockConfiguration:
-    resource: s3objectlambda.AccessPoint.PublicAccessBlockConfiguration
+    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
     restrict_public_buckets = True
 
 
-class ObjectStorageLogBucketMetricsConfiguration:
-    resource: s3tables.TableBucket.MetricsConfiguration
+class ObjectStorageLogBucketDeleteMarkerReplication:
+    resource: s3.Bucket.DeleteMarkerReplication
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -100,58 +137,21 @@ class ObjectStorageLogBucket:
     object_lock_configuration = ObjectStorageLogBucketObjectLockConfiguration
     object_lock_enabled = True
     public_access_block_configuration = ObjectStorageLogBucketPublicAccessBlockConfiguration
-    versioning_configuration = ObjectStorageLogBucketMetricsConfiguration
-
-
-class ObjectStorageReplicaBucketServerSideEncryptionByDefault:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionByDefault
-    sse_algorithm = s3.ServerSideEncryption.AES256
-
-
-class ObjectStorageReplicaBucketServerSideEncryptionRule:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionRule
-    server_side_encryption_by_default = ObjectStorageReplicaBucketServerSideEncryptionByDefault
-
-
-class ObjectStorageReplicaBucketBucketEncryption:
-    resource: s3express.DirectoryBucket.BucketEncryption
-    server_side_encryption_configuration = [ObjectStorageReplicaBucketServerSideEncryptionRule]
-
-
-class ObjectStorageReplicaBucketPublicAccessBlockConfiguration:
-    resource: s3objectlambda.AccessPoint.PublicAccessBlockConfiguration
-    block_public_acls = True
-    block_public_policy = True
-    ignore_public_acls = True
-    restrict_public_buckets = True
-
-
-class ObjectStorageReplicaBucketMetricsConfiguration:
-    resource: s3tables.TableBucket.MetricsConfiguration
-    status = s3.BucketVersioningStatus.ENABLED
-
-
-class ObjectStorageReplicaBucket:
-    resource: s3.Bucket
-    bucket_encryption = ObjectStorageReplicaBucketBucketEncryption
-    bucket_name = Sub('${AppName}-replicas-${AWS::Region}-${AWS::AccountId}')
-    object_lock_enabled = False
-    public_access_block_configuration = ObjectStorageReplicaBucketPublicAccessBlockConfiguration
-    versioning_configuration = ObjectStorageReplicaBucketMetricsConfiguration
+    versioning_configuration = ObjectStorageLogBucketDeleteMarkerReplication
 
 
 class ObjectStorageBucketServerSideEncryptionByDefault:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionByDefault
+    resource: s3.Bucket.ServerSideEncryptionByDefault
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
 class ObjectStorageBucketServerSideEncryptionRule:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionRule
+    resource: s3.Bucket.ServerSideEncryptionRule
     server_side_encryption_by_default = ObjectStorageBucketServerSideEncryptionByDefault
 
 
 class ObjectStorageBucketBucketEncryption:
-    resource: s3express.DirectoryBucket.BucketEncryption
+    resource: s3.Bucket.BucketEncryption
     server_side_encryption_configuration = [ObjectStorageBucketServerSideEncryptionRule]
 
 
@@ -161,7 +161,7 @@ class ObjectStorageBucketLoggingConfiguration:
 
 
 class ObjectStorageBucketPublicAccessBlockConfiguration:
-    resource: s3objectlambda.AccessPoint.PublicAccessBlockConfiguration
+    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
@@ -185,8 +185,8 @@ class ObjectStorageBucketReplicationConfiguration:
     rules = [ObjectStorageBucketReplicationRule]
 
 
-class ObjectStorageBucketMetricsConfiguration:
-    resource: s3tables.TableBucket.MetricsConfiguration
+class ObjectStorageBucketDeleteMarkerReplication:
+    resource: s3.Bucket.DeleteMarkerReplication
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -198,52 +198,7 @@ class ObjectStorageBucket:
     object_lock_enabled = False
     public_access_block_configuration = ObjectStorageBucketPublicAccessBlockConfiguration
     replication_configuration = ObjectStorageBucketReplicationConfiguration
-    versioning_configuration = ObjectStorageBucketMetricsConfiguration
-
-
-class ObjectStorageLogBucketPolicyPolicyDenyStatement0:
-    resource: DenyStatement
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class ObjectStorageLogBucketPolicyPolicyAllowStatement1:
-    resource: PolicyStatement
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class ObjectStorageLogBucketPolicyPolicyPolicyDocument:
-    resource: PolicyDocument
-    statement = [ObjectStorageLogBucketPolicyPolicyDenyStatement0, ObjectStorageLogBucketPolicyPolicyAllowStatement1]
-
-
-class ObjectStorageLogBucketPolicyPolicy:
-    resource: s3.BucketPolicy
-    bucket = ObjectStorageLogBucket
-    policy_document = ObjectStorageLogBucketPolicyPolicyPolicyDocument
+    versioning_configuration = ObjectStorageBucketDeleteMarkerReplication
 
 
 class ObjectStorageBucketPolicyPolicyDenyStatement0:
@@ -289,3 +244,48 @@ class ObjectStorageBucketPolicyPolicy:
     resource: s3.BucketPolicy
     bucket = ObjectStorageBucket
     policy_document = ObjectStorageBucketPolicyPolicyPolicyDocument
+
+
+class ObjectStorageLogBucketPolicyPolicyDenyStatement0:
+    resource: DenyStatement
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class ObjectStorageLogBucketPolicyPolicyAllowStatement1:
+    resource: PolicyStatement
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class ObjectStorageLogBucketPolicyPolicyPolicyDocument:
+    resource: PolicyDocument
+    statement = [ObjectStorageLogBucketPolicyPolicyDenyStatement0, ObjectStorageLogBucketPolicyPolicyAllowStatement1]
+
+
+class ObjectStorageLogBucketPolicyPolicy:
+    resource: s3.BucketPolicy
+    bucket = ObjectStorageLogBucket
+    policy_document = ObjectStorageLogBucketPolicyPolicyPolicyDocument

@@ -4,7 +4,7 @@ from . import *  # noqa: F403
 
 
 class SimpleADVpcSettings:
-    resource: directoryservice.MicrosoftAD.VpcSettings
+    resource: directoryservice.SimpleAD.VpcSettings
     subnet_ids = [Select(0, PrivateSubnet1), Select(0, PrivateSubnet2)]
     vpc_id = Select(0, VPCID)
 

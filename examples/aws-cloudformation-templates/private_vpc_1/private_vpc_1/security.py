@@ -41,7 +41,7 @@ class EC2RolePolicies0PolicyDocument:
 
 
 class EC2RolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ecs-service'
     policy_document = EC2RolePolicies0PolicyDocument
 
@@ -97,7 +97,7 @@ class ECSRolePolicies0PolicyDocument:
 
 
 class ECSRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ecs-service'
     policy_document = ECSRolePolicies0PolicyDocument
 
@@ -140,7 +140,7 @@ class AutoscalingRolePolicies0PolicyDocument:
 
 
 class AutoscalingRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'service-autoscaling'
     policy_document = AutoscalingRolePolicies0PolicyDocument
 

@@ -1,47 +1,23 @@
-"""Storage resources: BucketToCopyD, BucketToCopyA, BucketToCopyB, BucketToCopyC."""
+"""Storage resources: Bucket, NonExplodingBucket."""
 
 from . import *  # noqa: F403
 
 
-class BucketToCopyDFilterTag:
-    resource: s3outposts.Bucket.FilterTag
-    key = 'TestKey'
-    value = 'my %s bucket %d'
+class BucketOwnershipControlsRule:
+    resource: s3.Bucket.OwnershipControlsRule
+    # Unknown CF key: ExpirationInDays = '!Explode Retention'
+    # Unknown CF key: Status = 'Enabled'
 
 
-class BucketToCopyD:
+class BucketOwnershipControls:
+    resource: s3.Bucket.OwnershipControls
+    rules = [BucketOwnershipControlsRule]
+
+
+class Bucket:
     resource: s3.Bucket
-    tags = [BucketToCopyDFilterTag]
+    lifecycle_configuration = BucketOwnershipControls
 
 
-class BucketToCopyAFilterTag:
-    resource: s3outposts.Bucket.FilterTag
-    key = 'TestKey'
-    value = 'my bucket %d'
-
-
-class BucketToCopyA:
+class NonExplodingBucket:
     resource: s3.Bucket
-    tags = [BucketToCopyAFilterTag]
-
-
-class BucketToCopyBFilterTag:
-    resource: s3outposts.Bucket.FilterTag
-    key = 'TestKey'
-    value = 'my %s bucket %d'
-
-
-class BucketToCopyB:
-    resource: s3.Bucket
-    tags = [BucketToCopyBFilterTag]
-
-
-class BucketToCopyCFilterTag:
-    resource: s3outposts.Bucket.FilterTag
-    key = 'TestKey'
-    value = 'my bucket %d'
-
-
-class BucketToCopyC:
-    resource: s3.Bucket
-    tags = [BucketToCopyCFilterTag]

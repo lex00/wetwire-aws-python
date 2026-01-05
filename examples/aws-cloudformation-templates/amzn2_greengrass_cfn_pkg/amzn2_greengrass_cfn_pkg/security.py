@@ -62,7 +62,7 @@ class LambdaExecutionRolePolicies0PolicyDocument:
 
 
 class LambdaExecutionRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_document = LambdaExecutionRolePolicies0PolicyDocument
     policy_name = 'root'
 
@@ -108,7 +108,7 @@ class GreengrassResourceRolePolicies0PolicyDocument:
 
 
 class GreengrassResourceRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_document = GreengrassResourceRolePolicies0PolicyDocument
     policy_name = 'root'
 

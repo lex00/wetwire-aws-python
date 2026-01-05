@@ -1,11 +1,6 @@
-"""Network resources: EIP1, SSHSecurityGroup, Eth0, EIPAssoc1."""
+"""Network resources: SSHSecurityGroup, Eth0, EIP1, EIPAssoc1."""
 
 from . import *  # noqa: F403
-
-
-class EIP1:
-    resource: ec2.EIP
-    domain = 'vpc'
 
 
 class SSHSecurityGroupEgress:
@@ -23,14 +18,14 @@ class SSHSecurityGroup:
     security_group_ingress = [SSHSecurityGroupEgress]
 
 
-class Eth0PrivateIpAdd:
-    resource: ec2.LaunchTemplate.PrivateIpAdd
+class Eth0PrivateIpAddressSpecification:
+    resource: ec2.Instance.PrivateIpAddressSpecification
     private_ip_address = PrimaryIPAddress
     primary = 'true'
 
 
-class Eth0PrivateIpAdd1:
-    resource: ec2.LaunchTemplate.PrivateIpAdd
+class Eth0PrivateIpAddressSpecification1:
+    resource: ec2.Instance.PrivateIpAddressSpecification
     private_ip_address = SecondaryIPAddress
     primary = 'false'
 
@@ -51,10 +46,15 @@ class Eth0:
     resource: ec2.NetworkInterface
     description = 'eth0'
     group_set = [SSHSecurityGroup]
-    private_ip_addresses = [Eth0PrivateIpAdd, Eth0PrivateIpAdd1]
+    private_ip_addresses = [Eth0PrivateIpAddressSpecification, Eth0PrivateIpAddressSpecification1]
     source_dest_check = 'true'
     subnet_id = SubnetId
     tags = [Eth0AssociationParameter, Eth0AssociationParameter1]
+
+
+class EIP1:
+    resource: ec2.EIP
+    domain = 'vpc'
 
 
 class EIPAssoc1:

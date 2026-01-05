@@ -208,10 +208,10 @@ class UploadAuditLogs:
     resource: Parameter
     type = STRING
     description = 'Enable upload of audit logs?'
-    default = 'Yes'
+    default = True
     allowed_values = [
-    'Yes',
-    'No',
+    True,
+    False,
 ]
 
 
@@ -294,7 +294,7 @@ class IAMAuthEnabled:
 class EnableAuditLogUploadCondition:
     resource: TemplateCondition
     logical_id = 'EnableAuditLogUpload'
-    expression = Equals(UploadAuditLogs, 'Yes')
+    expression = Equals(UploadAuditLogs, True)
 
 
 class CreateSnsTopicCondition:

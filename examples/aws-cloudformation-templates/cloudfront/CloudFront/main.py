@@ -4,13 +4,13 @@ from . import *  # noqa: F403
 
 
 class EC2InstanceEbs:
-    resource: ec2.LaunchTemplate.Ebs
+    resource: ec2.Instance.Ebs
     volume_size = BootVolSize
     volume_type = BootVolType
 
 
 class EC2InstanceBlockDeviceMapping:
-    resource: ec2.LaunchTemplate.BlockDeviceMapping
+    resource: ec2.Instance.BlockDeviceMapping
     device_name = '/dev/sda1'
     ebs = EC2InstanceEbs
 
@@ -38,8 +38,8 @@ class EC2Instance:
     tags = [EC2InstanceAssociationParameter, EC2InstanceAssociationParameter1]
 
 
-class OriginALBTGListenerAttribute:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+class OriginALBTGTargetGroupAttribute:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
     key = 'deregistration_delay.timeout_seconds'
     value = ALBTargetGroupAttributeDeregistration
 
@@ -50,14 +50,14 @@ class OriginALBTGTargetDescription:
     port = OriginALBTGPort
 
 
-class OriginALBTGListenerAttribute1:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+class OriginALBTGTargetGroupAttribute1:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
     key = 'Name'
     value = Sub('${AppName}-${Environment}-alb-tg')
 
 
-class OriginALBTGListenerAttribute2:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+class OriginALBTGTargetGroupAttribute2:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
     key = 'Environment'
     value = Environment
 
@@ -67,29 +67,29 @@ class OriginALBTG:
     name = Sub('${AppName}-${Environment}-alb-tg')
     health_check_protocol = HealthCheckProtocol
     health_check_path = HealthCheckPath
-    health_check_port = Sub('${OriginALBTGPort}')
+    health_check_port = OriginALBTGPort
     health_check_interval_seconds = ALBTargetGroupHealthCheckIntervalSeconds
     health_check_timeout_seconds = ALBTargetGroupHealthCheckTimeoutSeconds
     healthy_threshold_count = ALBTargetGroupHealthyThresholdCount
     unhealthy_threshold_count = ALBTargetGroupUnhealthyThresholdCount
-    target_group_attributes = [OriginALBTGListenerAttribute]
+    target_group_attributes = [OriginALBTGTargetGroupAttribute]
     target_type = elasticloadbalancingv2.TargetTypeEnum.INSTANCE
     targets = [OriginALBTGTargetDescription]
     port = OriginALBTGPort
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
     vpc_id = VpcId
-    tags = [OriginALBTGListenerAttribute1, OriginALBTGListenerAttribute2]
+    tags = [OriginALBTGTargetGroupAttribute1, OriginALBTGTargetGroupAttribute2]
     depends_on = [OriginALB]
 
 
 class OriginALBHttpsListenerAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     target_group_arn = OriginALBTG
     type_ = 'forward'
 
 
 class OriginALBHttpsListenerCertificate:
-    resource: elasticloadbalancingv2.Listener.Certificate
+    resource: elasticloadbalancingv2.ListenerCertificate.Certificate
     certificate_arn = Sub('arn:${AWS::Partition}:acm:${AWS::Region}:${AWS::AccountId}:certificate/${ACMCertificateIdentifier}')
 
 
@@ -105,7 +105,7 @@ class OriginALBHttpsListener:
 
 
 class OriginALBHttpsListenerRuleAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     type_ = 'forward'
     target_group_arn = OriginALBTG
 

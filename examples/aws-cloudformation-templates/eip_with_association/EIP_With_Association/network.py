@@ -1,10 +1,6 @@
-"""Network resources: IPAddress, InstanceSecurityGroup."""
+"""Network resources: InstanceSecurityGroup, IPAddress."""
 
 from . import *  # noqa: F403
-
-
-class IPAddress:
-    resource: ec2.EIP
 
 
 class InstanceSecurityGroupEgress:
@@ -19,3 +15,7 @@ class InstanceSecurityGroup:
     resource: ec2.SecurityGroup
     group_description = 'Enable SSH access'
     security_group_ingress = [InstanceSecurityGroupEgress]
+
+
+class IPAddress:
+    resource: ec2.EIP

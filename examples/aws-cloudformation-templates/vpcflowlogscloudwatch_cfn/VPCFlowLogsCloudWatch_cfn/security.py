@@ -34,7 +34,7 @@ class VPCFlowLogsRolePolicies0PolicyDocument:
 
 
 class VPCFlowLogsRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CloudWatchLogGroup'
     policy_document = VPCFlowLogsRolePolicies0PolicyDocument
 

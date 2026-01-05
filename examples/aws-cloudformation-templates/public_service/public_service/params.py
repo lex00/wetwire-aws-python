@@ -4,11 +4,11 @@ from . import *  # noqa: F403
 
 
 class StackName:
-    """The name of the parent Fargate networking stack that you created. Necessary to locate and reference resources created by that stack."""
+    """The name of the parent cluster stack that you created. Necessary to locate and reference resources created by that stack."""
 
     resource: Parameter
     type = STRING
-    description = 'The name of the parent Fargate networking stack that you created. Necessary to locate and reference resources created by that stack.'
+    description = 'The name of the parent cluster stack that you created. Necessary to locate and reference resources created by that stack.'
     default = 'production'
 
 

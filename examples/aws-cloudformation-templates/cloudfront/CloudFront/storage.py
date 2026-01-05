@@ -3,18 +3,18 @@
 from . import *  # noqa: F403
 
 
-class LoggingBucketRule:
-    resource: s3outposts.Bucket.Rule
-    # Unknown CF key: ObjectOwnership = 'ObjectWriter'
+class LoggingBucketOwnershipControlsRule:
+    resource: s3.Bucket.OwnershipControlsRule
+    object_ownership = 'ObjectWriter'
 
 
-class LoggingBucketLifecycleConfiguration:
-    resource: s3outposts.Bucket.LifecycleConfiguration
-    rules = [LoggingBucketRule]
+class LoggingBucketOwnershipControls:
+    resource: s3.Bucket.OwnershipControls
+    rules = [LoggingBucketOwnershipControlsRule]
 
 
 class LoggingBucketPublicAccessBlockConfiguration:
-    resource: s3objectlambda.AccessPoint.PublicAccessBlockConfiguration
+    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
@@ -22,34 +22,34 @@ class LoggingBucketPublicAccessBlockConfiguration:
 
 
 class LoggingBucketServerSideEncryptionByDefault:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionByDefault
+    resource: s3.Bucket.ServerSideEncryptionByDefault
     kms_master_key_id = LoggingBucketKMSKey.Arn
     sse_algorithm = s3.ServerSideEncryption.AWSKMS
 
 
 class LoggingBucketServerSideEncryptionRule:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionRule
+    resource: s3.Bucket.ServerSideEncryptionRule
     server_side_encryption_by_default = LoggingBucketServerSideEncryptionByDefault
 
 
 class LoggingBucketBucketEncryption:
-    resource: s3express.DirectoryBucket.BucketEncryption
+    resource: s3.Bucket.BucketEncryption
     server_side_encryption_configuration = [LoggingBucketServerSideEncryptionRule]
 
 
-class LoggingBucketMetricsConfiguration:
-    resource: s3tables.TableBucket.MetricsConfiguration
+class LoggingBucketDeleteMarkerReplication:
+    resource: s3.Bucket.DeleteMarkerReplication
     status = LoggingBucketVersioning
 
 
 class LoggingBucket:
     resource: s3.Bucket
     bucket_name = Sub('${AppName}-logging-${Environment}-${AWS::AccountId}-${AWS::Region}')
-    ownership_controls = LoggingBucketLifecycleConfiguration
+    ownership_controls = LoggingBucketOwnershipControls
     public_access_block_configuration = LoggingBucketPublicAccessBlockConfiguration
     access_control = 'LogDeliveryWrite'
     bucket_encryption = LoggingBucketBucketEncryption
-    versioning_configuration = LoggingBucketMetricsConfiguration
+    versioning_configuration = LoggingBucketDeleteMarkerReplication
     depends_on = [LoggingBucketKMSKey]
     deletion_policy = 'Retain'
 

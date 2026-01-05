@@ -4,7 +4,7 @@ from . import *  # noqa: F403
 
 
 class EC2InstanceBlockDeviceMapping:
-    resource: ec2.LaunchTemplate.BlockDeviceMapping
+    resource: ec2.Instance.BlockDeviceMapping
     device_name = '/dev/sdc'
     virtual_name = 'ephemeral0'
 
@@ -13,7 +13,7 @@ class EC2Instance:
     resource: ec2.Instance
     instance_type = InstanceType
     subnet_id = Select(0, Subnets)
-    security_groups = [EC2SecurityGroup]
+    security_group_ids = [EC2SecurityGroup.GroupId]
     key_name = KeyName
     image_id = LatestAmiId
     block_device_mappings = [EC2InstanceBlockDeviceMapping]

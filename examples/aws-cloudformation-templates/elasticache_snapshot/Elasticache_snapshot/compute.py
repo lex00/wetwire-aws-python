@@ -28,5 +28,5 @@ class LambdaExecutePermission:
     action = 'lambda:InvokeFunction'
     function_name = EnableShapshot.Arn
     principal = 'elasticache.amazonaws.com'
-    source_account = Sub('${AWS::AccountId}')
+    source_account = AWS_ACCOUNT_ID
     condition = 'EnableBackups'

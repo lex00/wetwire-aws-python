@@ -41,7 +41,7 @@ class ECSRolePolicies0PolicyDocument:
 
 
 class ECSRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ecs-service'
     policy_document = ECSRolePolicies0PolicyDocument
 
@@ -85,7 +85,7 @@ class ECSTaskExecutionRolePolicies0PolicyDocument:
 
 
 class ECSTaskExecutionRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'AmazonECSTaskExecutionRolePolicy'
     policy_document = ECSTaskExecutionRolePolicies0PolicyDocument
 

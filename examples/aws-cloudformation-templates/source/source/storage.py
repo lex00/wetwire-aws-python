@@ -4,32 +4,32 @@ from . import *  # noqa: F403
 
 
 class S3BucketSourceServerSideEncryptionByDefault:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionByDefault
+    resource: s3.Bucket.ServerSideEncryptionByDefault
     sse_algorithm = s3.ServerSideEncryption.AWSKMS
     kms_master_key_id = KmsKey
 
 
 class S3BucketSourceServerSideEncryptionRule:
-    resource: s3express.DirectoryBucket.ServerSideEncryptionRule
+    resource: s3.Bucket.ServerSideEncryptionRule
     server_side_encryption_by_default = S3BucketSourceServerSideEncryptionByDefault
     bucket_key_enabled = True
 
 
 class S3BucketSourceBucketEncryption:
-    resource: s3express.DirectoryBucket.BucketEncryption
+    resource: s3.Bucket.BucketEncryption
     server_side_encryption_configuration = [S3BucketSourceServerSideEncryptionRule]
 
 
 class S3BucketSourcePublicAccessBlockConfiguration:
-    resource: s3objectlambda.AccessPoint.PublicAccessBlockConfiguration
+    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
     restrict_public_buckets = True
 
 
-class S3BucketSourceMetricsConfiguration:
-    resource: s3tables.TableBucket.MetricsConfiguration
+class S3BucketSourceDeleteMarkerReplication:
+    resource: s3.Bucket.DeleteMarkerReplication
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -56,7 +56,7 @@ class S3BucketSourceReplicationRuleFilter:
     prefix = ''
 
 
-class S3BucketSourceDeleteMarkerReplication:
+class S3BucketSourceDeleteMarkerReplication1:
     resource: s3.Bucket.DeleteMarkerReplication
     status = 'Disabled'
 
@@ -78,7 +78,7 @@ class S3BucketSourceReplicationRule:
     status = s3.BucketVersioningStatus.ENABLED
     destination = S3BucketSourceReplicationDestination
     filter = S3BucketSourceReplicationRuleFilter
-    delete_marker_replication = S3BucketSourceDeleteMarkerReplication
+    delete_marker_replication = S3BucketSourceDeleteMarkerReplication1
     source_selection_criteria = S3BucketSourceSourceSelectionCriteria
 
 
@@ -93,6 +93,6 @@ class S3BucketSource:
     bucket_name = Sub('${AWS::StackName}-${AWS::AccountId}-bucket')
     bucket_encryption = S3BucketSourceBucketEncryption
     public_access_block_configuration = S3BucketSourcePublicAccessBlockConfiguration
-    versioning_configuration = S3BucketSourceMetricsConfiguration
+    versioning_configuration = S3BucketSourceDeleteMarkerReplication
     replication_configuration = S3BucketSourceReplicationConfiguration
     deletion_policy = 'Delete'

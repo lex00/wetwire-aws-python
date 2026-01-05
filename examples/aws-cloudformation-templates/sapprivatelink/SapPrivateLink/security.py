@@ -35,7 +35,7 @@ class ASCPrivateLinkLambdaRolePolicies0PolicyDocument:
 
 
 class ASCPrivateLinkLambdaRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ASCPrivateLinkLambdaPolicy'
     policy_document = ASCPrivateLinkLambdaRolePolicies0PolicyDocument
 

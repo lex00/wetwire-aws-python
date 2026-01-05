@@ -1,10 +1,6 @@
-"""Network resources: InternetGateway, VPC, InstanceSecurityGroup, RouteTablePublic, VPCGatewayAttachment, RouteTablePublicInternetRoute, RouteTableAssociationAPublic."""
+"""Network resources: VPC, RouteTablePublic, InternetGateway, VPCGatewayAttachment, RouteTablePublicInternetRoute, InstanceSecurityGroup, RouteTableAssociationAPublic."""
 
 from . import *  # noqa: F403
-
-
-class InternetGateway:
-    resource: ec2.InternetGateway
 
 
 class VPC:
@@ -13,6 +9,29 @@ class VPC:
     enable_dns_hostnames = True
     enable_dns_support = True
     instance_tenancy = 'default'
+
+
+class RouteTablePublic:
+    resource: ec2.RouteTable
+    vpc_id = VPC
+
+
+class InternetGateway:
+    resource: ec2.InternetGateway
+
+
+class VPCGatewayAttachment:
+    resource: ec2.VPCGatewayAttachment
+    internet_gateway_id = InternetGateway
+    vpc_id = VPC
+
+
+class RouteTablePublicInternetRoute:
+    resource: ec2.Route
+    destination_cidr_block = '0.0.0.0/0'
+    gateway_id = InternetGateway
+    route_table_id = RouteTablePublic
+    depends_on = [VPCGatewayAttachment]
 
 
 class InstanceSecurityGroupEgress:
@@ -28,25 +47,6 @@ class InstanceSecurityGroup:
     group_description = 'Allow inbound SSH access'
     security_group_ingress = [InstanceSecurityGroupEgress]
     vpc_id = VPC
-
-
-class RouteTablePublic:
-    resource: ec2.RouteTable
-    vpc_id = VPC
-
-
-class VPCGatewayAttachment:
-    resource: ec2.VPCGatewayAttachment
-    internet_gateway_id = InternetGateway
-    vpc_id = VPC
-
-
-class RouteTablePublicInternetRoute:
-    resource: ec2.Route
-    destination_cidr_block = '0.0.0.0/0'
-    gateway_id = InternetGateway
-    route_table_id = RouteTablePublic
-    depends_on = [VPCGatewayAttachment]
 
 
 class RouteTableAssociationAPublic:

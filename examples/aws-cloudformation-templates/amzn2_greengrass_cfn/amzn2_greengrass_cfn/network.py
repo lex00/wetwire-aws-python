@@ -1,4 +1,4 @@
-"""Network resources: VPC, InstanceSecurityGroup, InternetGateway, VPCGatewayAttachment, RouteTablePublic, RouteTablePublicInternetRoute."""
+"""Network resources: VPC, InternetGateway, VPCGatewayAttachment, InstanceSecurityGroup, RouteTablePublic, RouteTablePublicInternetRoute."""
 
 from . import *  # noqa: F403
 
@@ -9,6 +9,16 @@ class VPC:
     enable_dns_support = True
     enable_dns_hostnames = True
     instance_tenancy = 'default'
+
+
+class InternetGateway:
+    resource: ec2.InternetGateway
+
+
+class VPCGatewayAttachment:
+    resource: ec2.VPCGatewayAttachment
+    vpc_id = VPC
+    internet_gateway_id = InternetGateway
 
 
 class InstanceSecurityGroupEgress:
@@ -24,16 +34,6 @@ class InstanceSecurityGroup:
     group_description = 'Allow inbound SSH access'
     vpc_id = VPC
     security_group_ingress = [InstanceSecurityGroupEgress]
-
-
-class InternetGateway:
-    resource: ec2.InternetGateway
-
-
-class VPCGatewayAttachment:
-    resource: ec2.VPCGatewayAttachment
-    vpc_id = VPC
-    internet_gateway_id = InternetGateway
 
 
 class RouteTablePublic:

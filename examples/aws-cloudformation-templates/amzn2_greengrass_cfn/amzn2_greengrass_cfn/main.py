@@ -3,6 +3,115 @@
 from . import *  # noqa: F403
 
 
+class SubscriptionDefinitionSubscription:
+    resource: greengrass.SubscriptionDefinitionVersion.Subscription
+    id = 'Subscription1'
+    source = 'cloud'
+    subject = Join('/', [
+    CoreName,
+    'in',
+])
+    target = GGSampleFunctionVersion
+
+
+class SubscriptionDefinitionSubscription1:
+    resource: greengrass.SubscriptionDefinitionVersion.Subscription
+    id = 'Subscription2'
+    source = GGSampleFunctionVersion
+    subject = Join('/', [
+    CoreName,
+    'out',
+])
+    target = 'cloud'
+
+
+class SubscriptionDefinitionSubscription2:
+    resource: greengrass.SubscriptionDefinitionVersion.Subscription
+    id = 'Subscription3'
+    source = GGSampleFunctionVersion
+    subject = Join('/', [
+    CoreName,
+    'telem',
+])
+    target = 'cloud'
+
+
+class SubscriptionDefinitionSubscriptionDefinitionVersion:
+    resource: greengrass.SubscriptionDefinition.SubscriptionDefinitionVersion
+    subscriptions = [SubscriptionDefinitionSubscription, SubscriptionDefinitionSubscription1, SubscriptionDefinitionSubscription2]
+
+
+class SubscriptionDefinition:
+    resource: greengrass.SubscriptionDefinition
+    name = 'SubscriptionDefinition'
+    initial_version = SubscriptionDefinitionSubscriptionDefinitionVersion
+
+
+class InstanceAZ:
+    # Unknown resource type: Custom::InstanceAZ
+    resource: CloudFormationResource
+    service_token = InstanceAZFunction.Arn
+    region = AWS_REGION
+
+
+class IoTThing:
+    # Unknown resource type: Custom::IoTThing
+    resource: CloudFormationResource
+    service_token = CreateThingFunction.Arn
+    thing_name = Join('_', [
+    CoreName,
+    'Core',
+])
+
+
+class GreengrassCoreDefinition:
+    resource: greengrass.CoreDefinition
+    name = Join('_', [
+    CoreName,
+    'Core',
+])
+
+
+class GreengrassCoreDefinitionVersionCore:
+    resource: greengrass.CoreDefinition.Core
+    id = Join('_', [
+    CoreName,
+    'Core',
+])
+    thing_arn = Join(':', [
+    'arn:',
+    AWS_PARTITION,
+    ':iot',
+    AWS_REGION,
+    AWS_ACCOUNT_ID,
+    Join('/', [
+    'thing',
+    Join('_', [
+    CoreName,
+    'Core',
+]),
+]),
+])
+    certificate_arn = Join(':', [
+    'arn:',
+    AWS_PARTITION,
+    ':iot',
+    AWS_REGION,
+    AWS_ACCOUNT_ID,
+    Join('/', [
+    'cert',
+    IoTThing.certificateId,
+]),
+])
+    sync_shadow = 'false'
+
+
+class GreengrassCoreDefinitionVersion:
+    resource: greengrass.CoreDefinitionVersion
+    core_definition_id = GreengrassCoreDefinition
+    cores = [GreengrassCoreDefinitionVersionCore]
+
+
 class FunctionDefinitionExecution:
     resource: greengrass.FunctionDefinition.Execution
     isolation_mode = 'GreengrassContainer'
@@ -66,108 +175,6 @@ class FunctionDefinition:
     initial_version = FunctionDefinitionFunctionDefinitionVersion
 
 
-class GreengrassCoreDefinition:
-    resource: greengrass.CoreDefinition
-    name = Join('_', [
-    CoreName,
-    'Core',
-])
-
-
-class IoTThing:
-    # Unknown resource type: Custom::IoTThing
-    resource: CloudFormationResource
-    service_token = CreateThingFunction.Arn
-    thing_name = Join('_', [
-    CoreName,
-    'Core',
-])
-
-
-class GreengrassCoreDefinitionVersionDevice:
-    resource: greengrass.DeviceDefinition.Device
-    id = Join('_', [
-    CoreName,
-    'Core',
-])
-    thing_arn = Join(':', [
-    'arn:',
-    AWS_PARTITION,
-    ':iot',
-    AWS_REGION,
-    AWS_ACCOUNT_ID,
-    Join('/', [
-    'thing',
-    Join('_', [
-    CoreName,
-    'Core',
-]),
-]),
-])
-    certificate_arn = Join(':', [
-    'arn:',
-    AWS_PARTITION,
-    ':iot',
-    AWS_REGION,
-    AWS_ACCOUNT_ID,
-    Join('/', [
-    'cert',
-    IoTThing.certificateId,
-]),
-])
-    sync_shadow = 'false'
-
-
-class GreengrassCoreDefinitionVersion:
-    resource: greengrass.CoreDefinitionVersion
-    core_definition_id = GreengrassCoreDefinition
-    cores = [GreengrassCoreDefinitionVersionDevice]
-
-
-class SubscriptionDefinitionSubscription:
-    resource: greengrass.SubscriptionDefinitionVersion.Subscription
-    id = 'Subscription1'
-    source = 'cloud'
-    subject = Join('/', [
-    CoreName,
-    'in',
-])
-    target = GGSampleFunctionVersion
-
-
-class SubscriptionDefinitionSubscription1:
-    resource: greengrass.SubscriptionDefinitionVersion.Subscription
-    id = 'Subscription2'
-    source = GGSampleFunctionVersion
-    subject = Join('/', [
-    CoreName,
-    'out',
-])
-    target = 'cloud'
-
-
-class SubscriptionDefinitionSubscription2:
-    resource: greengrass.SubscriptionDefinitionVersion.Subscription
-    id = 'Subscription3'
-    source = GGSampleFunctionVersion
-    subject = Join('/', [
-    CoreName,
-    'telem',
-])
-    target = 'cloud'
-
-
-class SubscriptionDefinitionSubscriptionDefinitionVersion:
-    resource: greengrass.SubscriptionDefinition.SubscriptionDefinitionVersion
-    subscriptions = [SubscriptionDefinitionSubscription, SubscriptionDefinitionSubscription1, SubscriptionDefinitionSubscription2]
-
-
-class SubscriptionDefinition:
-    resource: greengrass.SubscriptionDefinition
-    name = 'SubscriptionDefinition'
-    initial_version = SubscriptionDefinitionSubscriptionDefinitionVersion
-
-
 class GreengrassGroupGroupVersion:
     resource: greengrass.Group.GroupVersion
     core_definition_version_arn = GreengrassCoreDefinitionVersion
@@ -180,13 +187,6 @@ class GreengrassGroup:
     name = CoreName
     role_arn = GreengrassResourceRole.Arn
     initial_version = GreengrassGroupGroupVersion
-
-
-class InstanceAZ:
-    # Unknown resource type: Custom::InstanceAZ
-    resource: CloudFormationResource
-    service_token = InstanceAZFunction.Arn
-    region = AWS_REGION
 
 
 class SubnetAPublic:
@@ -286,6 +286,12 @@ reboot
     depends_on = [GreengrassGroup]
 
 
+class RouteTableAssociationAPublic:
+    resource: ec2.SubnetRouteTableAssociation
+    subnet_id = SubnetAPublic
+    route_table_id = RouteTablePublic
+
+
 class GroupDeploymentReset:
     # Unknown resource type: Custom::GroupDeploymentReset
     resource: CloudFormationResource
@@ -296,9 +302,3 @@ class GroupDeploymentReset:
     'Core',
 ])
     depends_on = [GreengrassGroup]
-
-
-class RouteTableAssociationAPublic:
-    resource: ec2.SubnetRouteTableAssociation
-    subnet_id = SubnetAPublic
-    route_table_id = RouteTablePublic

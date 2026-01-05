@@ -1,4 +1,4 @@
-"""Security resources: EC2Role, EC2InstanceProfile, AutoscalingRole, ECSRole."""
+"""Security resources: EC2Role, AutoscalingRole, EC2InstanceProfile, ECSRole."""
 
 from . import *  # noqa: F403
 
@@ -41,7 +41,7 @@ class EC2RolePolicies0PolicyDocument:
 
 
 class EC2RolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ecs-service'
     policy_document = EC2RolePolicies0PolicyDocument
 
@@ -51,12 +51,6 @@ class EC2Role:
     assume_role_policy_document = EC2RoleAssumeRolePolicyDocument
     path = '/'
     policies = [EC2RolePolicy]
-
-
-class EC2InstanceProfile:
-    resource: iam.InstanceProfile
-    path = '/'
-    roles = [EC2Role]
 
 
 class AutoscalingRoleAllowStatement0:
@@ -90,7 +84,7 @@ class AutoscalingRolePolicies0PolicyDocument:
 
 
 class AutoscalingRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'service-autoscaling'
     policy_document = AutoscalingRolePolicies0PolicyDocument
 
@@ -100,6 +94,12 @@ class AutoscalingRole:
     assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
     path = '/'
     policies = [AutoscalingRolePolicy]
+
+
+class EC2InstanceProfile:
+    resource: iam.InstanceProfile
+    path = '/'
+    roles = [EC2Role]
 
 
 class ECSRoleAllowStatement0:
@@ -140,7 +140,7 @@ class ECSRolePolicies0PolicyDocument:
 
 
 class ECSRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ecs-service'
     policy_document = ECSRolePolicies0PolicyDocument
 

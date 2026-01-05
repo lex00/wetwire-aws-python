@@ -1,6 +1,50 @@
-"""Security resources: ECSRole, ECSTaskExecutionRole."""
+"""Security resources: ECSTaskExecutionRole, ECSRole."""
 
 from . import *  # noqa: F403
+
+
+class ECSTaskExecutionRoleAllowStatement0:
+    resource: PolicyStatement
+    principal = {
+        'Service': ['ecs-tasks.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class ECSTaskExecutionRoleAssumeRolePolicyDocument:
+    resource: PolicyDocument
+    statement = [ECSTaskExecutionRoleAllowStatement0]
+
+
+class ECSTaskExecutionRoleAllowStatement0_1:
+    resource: PolicyStatement
+    action = [
+        'ecr:GetAuthorizationToken',
+        'ecr:BatchCheckLayerAvailability',
+        'ecr:GetDownloadUrlForLayer',
+        'ecr:BatchGetImage',
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+    ]
+    resource_arn = '*'
+
+
+class ECSTaskExecutionRolePolicies0PolicyDocument:
+    resource: PolicyDocument
+    statement = [ECSTaskExecutionRoleAllowStatement0_1]
+
+
+class ECSTaskExecutionRolePolicy:
+    resource: iam.User.Policy
+    policy_name = 'AmazonECSTaskExecutionRolePolicy'
+    policy_document = ECSTaskExecutionRolePolicies0PolicyDocument
+
+
+class ECSTaskExecutionRole:
+    resource: iam.Role
+    assume_role_policy_document = ECSTaskExecutionRoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [ECSTaskExecutionRolePolicy]
 
 
 class ECSRoleAllowStatement0:
@@ -41,7 +85,7 @@ class ECSRolePolicies0PolicyDocument:
 
 
 class ECSRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ecs-service'
     policy_document = ECSRolePolicies0PolicyDocument
 
@@ -51,47 +95,3 @@ class ECSRole:
     assume_role_policy_document = ECSRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ECSRolePolicy]
-
-
-class ECSTaskExecutionRoleAllowStatement0:
-    resource: PolicyStatement
-    principal = {
-        'Service': ['ecs-tasks.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class ECSTaskExecutionRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
-    statement = [ECSTaskExecutionRoleAllowStatement0]
-
-
-class ECSTaskExecutionRoleAllowStatement0_1:
-    resource: PolicyStatement
-    action = [
-        'ecr:GetAuthorizationToken',
-        'ecr:BatchCheckLayerAvailability',
-        'ecr:GetDownloadUrlForLayer',
-        'ecr:BatchGetImage',
-        'logs:CreateLogStream',
-        'logs:PutLogEvents',
-    ]
-    resource_arn = '*'
-
-
-class ECSTaskExecutionRolePolicies0PolicyDocument:
-    resource: PolicyDocument
-    statement = [ECSTaskExecutionRoleAllowStatement0_1]
-
-
-class ECSTaskExecutionRolePolicy:
-    resource: iam.Role.Policy
-    policy_name = 'AmazonECSTaskExecutionRolePolicy'
-    policy_document = ECSTaskExecutionRolePolicies0PolicyDocument
-
-
-class ECSTaskExecutionRole:
-    resource: iam.Role
-    assume_role_policy_document = ECSTaskExecutionRoleAssumeRolePolicyDocument
-    path = '/'
-    policies = [ECSTaskExecutionRolePolicy]

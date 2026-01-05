@@ -30,7 +30,7 @@ class LambdaFunction:
     description = 'LambdaFunction using python3.12.'
     runtime = lambda_.Runtime.PYTHON3_12
     code = LambdaFunctionCode
-    handler = Sub('${LambdaHandlerPath}')
+    handler = LambdaHandlerPath
     memory_size = 128
     timeout = 10
     role = LambdaRole.Arn

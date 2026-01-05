@@ -1,4 +1,4 @@
-"""Infra resources: ConfigRecorder, ConfigRuleForVolumeTags, ConfigRuleForVolumeAutoEnableIO, DeliveryChannel."""
+"""Infra resources: ConfigRecorder, ConfigRuleForVolumeAutoEnableIO, DeliveryChannel, ConfigRuleForVolumeTags."""
 
 from . import *  # noqa: F403
 
@@ -13,27 +13,6 @@ class ConfigRecorder:
     name = 'default'
     recording_group = ConfigRecorderExclusionByResourceTypes
     role_arn = ConfigRole.Arn
-
-
-class ConfigRuleForVolumeTagsScope:
-    resource: config.ConfigRule.Scope
-    compliance_resource_types = ['AWS::EC2::Volume']
-
-
-class ConfigRuleForVolumeTagsSource:
-    resource: config.ConfigRule.Source
-    owner = 'AWS'
-    source_identifier = 'REQUIRED_TAGS'
-
-
-class ConfigRuleForVolumeTags:
-    resource: config.ConfigRule
-    input_parameters = {
-        'tag1Key': 'CostCenter',
-    }
-    scope = ConfigRuleForVolumeTagsScope
-    source = ConfigRuleForVolumeTagsSource
-    depends_on = [ConfigRecorder]
 
 
 class ConfigRuleForVolumeAutoEnableIOScope:
@@ -74,3 +53,24 @@ class DeliveryChannel:
     s3_bucket_name = ConfigBucket
     sns_topic_arn = ConfigTopic
     condition = 'CreateDeliveryChannel'
+
+
+class ConfigRuleForVolumeTagsScope:
+    resource: config.ConfigRule.Scope
+    compliance_resource_types = ['AWS::EC2::Volume']
+
+
+class ConfigRuleForVolumeTagsSource:
+    resource: config.ConfigRule.Source
+    owner = 'AWS'
+    source_identifier = 'REQUIRED_TAGS'
+
+
+class ConfigRuleForVolumeTags:
+    resource: config.ConfigRule
+    input_parameters = {
+        'tag1Key': 'CostCenter',
+    }
+    scope = ConfigRuleForVolumeTagsScope
+    source = ConfigRuleForVolumeTagsSource
+    depends_on = [ConfigRecorder]

@@ -44,7 +44,7 @@ class CodeBuildRolePolicies0PolicyDocument:
 
 
 class CodeBuildRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CanLog'
     policy_document = CodeBuildRolePolicies0PolicyDocument
 
@@ -61,7 +61,7 @@ class CodeBuildRolePolicies1PolicyDocument:
 
 
 class CodeBuildRolePolicy1:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CanAccessS3'
     policy_document = CodeBuildRolePolicies1PolicyDocument
 
@@ -78,7 +78,7 @@ class CodeBuildRolePolicies2PolicyDocument:
 
 
 class CodeBuildRolePolicy2:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'CanCreateReports'
     policy_document = CodeBuildRolePolicies2PolicyDocument
 

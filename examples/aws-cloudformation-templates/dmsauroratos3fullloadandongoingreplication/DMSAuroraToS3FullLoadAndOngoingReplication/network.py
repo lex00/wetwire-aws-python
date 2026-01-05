@@ -1,4 +1,4 @@
-"""Network resources: VPC, DBSubnet1, InternetGateway, DBSubnet2, AuroraSecurityGroup, DMSSecurityGroup, RouteTable, AttachGateway, Route, SubnetRouteTableAssociation, SubnetRouteTableAssociation1."""
+"""Network resources: VPC, DBSubnet1, DBSubnet2, DMSSecurityGroup, AuroraSecurityGroup, RouteTable, SubnetRouteTableAssociation1, InternetGateway, AttachGateway, Route, SubnetRouteTableAssociation."""
 
 from . import *  # noqa: F403
 
@@ -37,17 +37,6 @@ class DBSubnet1:
     tags = [DBSubnet1AssociationParameter]
 
 
-class InternetGatewayAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Application'
-    value = AWS_STACK_ID
-
-
-class InternetGateway:
-    resource: ec2.InternetGateway
-    tags = [InternetGatewayAssociationParameter]
-
-
 class DBSubnet2AssociationParameter:
     resource: ec2.Instance.AssociationParameter
     key = 'Application'
@@ -60,6 +49,13 @@ class DBSubnet2:
     cidr_block = '10.0.0.64/26'
     availability_zone = Select(1, GetAZs())
     tags = [DBSubnet2AssociationParameter]
+
+
+class DMSSecurityGroup:
+    resource: ec2.SecurityGroup
+    group_description = 'Security group for DMS Instance'
+    group_name = 'DMS Demo Security Group'
+    vpc_id = VPC
 
 
 class AuroraSecurityGroupEgress:
@@ -86,13 +82,6 @@ class AuroraSecurityGroup:
     security_group_ingress = [AuroraSecurityGroupEgress, AuroraSecurityGroupEgress1]
 
 
-class DMSSecurityGroup:
-    resource: ec2.SecurityGroup
-    group_description = 'Security group for DMS Instance'
-    group_name = 'DMS Demo Security Group'
-    vpc_id = VPC
-
-
 class RouteTableAssociationParameter:
     resource: ec2.Instance.AssociationParameter
     key = 'Application'
@@ -103,6 +92,23 @@ class RouteTable:
     resource: ec2.RouteTable
     vpc_id = VPC
     tags = [RouteTableAssociationParameter]
+
+
+class SubnetRouteTableAssociation1:
+    resource: ec2.SubnetRouteTableAssociation
+    subnet_id = DBSubnet2
+    route_table_id = RouteTable
+
+
+class InternetGatewayAssociationParameter:
+    resource: ec2.Instance.AssociationParameter
+    key = 'Application'
+    value = AWS_STACK_ID
+
+
+class InternetGateway:
+    resource: ec2.InternetGateway
+    tags = [InternetGatewayAssociationParameter]
 
 
 class AttachGateway:
@@ -122,10 +128,4 @@ class Route:
 class SubnetRouteTableAssociation:
     resource: ec2.SubnetRouteTableAssociation
     subnet_id = DBSubnet1
-    route_table_id = RouteTable
-
-
-class SubnetRouteTableAssociation1:
-    resource: ec2.SubnetRouteTableAssociation
-    subnet_id = DBSubnet2
     route_table_id = RouteTable

@@ -1,4 +1,4 @@
-"""Network resources: EcsSecurityGroup, EcsSecurityGroupSSHinbound, EcsSecurityGroupHTTPinbound, ECSALB, ECSTG, ALBListener, ECSALBListenerRule, EcsSecurityGroupALBports."""
+"""Network resources: EcsSecurityGroup, ECSALB, ECSTG, ALBListener, EcsSecurityGroupSSHinbound, ECSALBListenerRule, EcsSecurityGroupALBports, EcsSecurityGroupHTTPinbound."""
 
 from . import *  # noqa: F403
 
@@ -9,26 +9,8 @@ class EcsSecurityGroup:
     vpc_id = VpcId
 
 
-class EcsSecurityGroupSSHinbound:
-    resource: ec2.SecurityGroupIngress
-    group_id = EcsSecurityGroup
-    ip_protocol = 'tcp'
-    from_port = '22'
-    to_port = '22'
-    cidr_ip = '192.168.1.0/0'
-
-
-class EcsSecurityGroupHTTPinbound:
-    resource: ec2.SecurityGroupIngress
-    group_id = EcsSecurityGroup
-    ip_protocol = 'tcp'
-    from_port = '80'
-    to_port = '80'
-    cidr_ip = '0.0.0.0/0'
-
-
-class ECSALBListenerAttribute:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+class ECSALBTargetGroupAttribute:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
     key = 'idle_timeout.timeout_seconds'
     value = '30'
 
@@ -37,7 +19,7 @@ class ECSALB:
     resource: elasticloadbalancingv2.LoadBalancer
     name = 'ECSALB'
     scheme = 'internet-facing'
-    load_balancer_attributes = [ECSALBListenerAttribute]
+    load_balancer_attributes = [ECSALBTargetGroupAttribute]
     subnets = SubnetId
     security_groups = [EcsSecurityGroup]
 
@@ -58,7 +40,7 @@ class ECSTG:
 
 
 class ALBListenerAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     type_ = 'forward'
     target_group_arn = ECSTG
 
@@ -72,8 +54,17 @@ class ALBListener:
     depends_on = [ECSServiceRole]
 
 
+class EcsSecurityGroupSSHinbound:
+    resource: ec2.SecurityGroupIngress
+    group_id = EcsSecurityGroup
+    ip_protocol = 'tcp'
+    from_port = '22'
+    to_port = '22'
+    cidr_ip = '192.168.1.0/0'
+
+
 class ECSALBListenerRuleAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     type_ = 'forward'
     target_group_arn = ECSTG
 
@@ -100,3 +91,12 @@ class EcsSecurityGroupALBports:
     from_port = '31000'
     to_port = '61000'
     source_security_group_id = EcsSecurityGroup
+
+
+class EcsSecurityGroupHTTPinbound:
+    resource: ec2.SecurityGroupIngress
+    group_id = EcsSecurityGroup
+    ip_protocol = 'tcp'
+    from_port = '80'
+    to_port = '80'
+    cidr_ip = '0.0.0.0/0'

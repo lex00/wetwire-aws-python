@@ -1,79 +1,6 @@
-"""Database resources: NeptuneDBSubnetGroup, NeptuneDBParameterGroup, NeptuneDBClusterParameterGroup, NeptuneDBCluster, NeptuneDBInstance."""
+"""Database resources: NeptuneDBClusterParameterGroup, NeptuneDBSubnetGroup, NeptuneDBCluster, NeptuneDBParameterGroup, NeptuneDBInstance."""
 
 from . import *  # noqa: F403
-
-
-class NeptuneDBSubnetGroup:
-    resource: neptune.DBSubnetGroup
-    db_subnet_group_description = Sub('CloudFormation managed Neptune DB Subnet Group - ${Env}-${AppName}-subnet-group')
-    db_subnet_group_name = NeptuneDBSubnetGroupName
-    subnet_ids = [ImportValue(Sub('${VPCStack}-PrivateSubnet1')), ImportValue(Sub('${VPCStack}-PrivateSubnet2'))]
-    tags = [{
-        'Key': 'Name',
-        'Value': Sub('${Env}-${AppName}-subnet-group'),
-    }, {
-        'Key': 'App',
-        'Value': Sub('${AppName}'),
-    }, {
-        'Key': 'Compliance',
-        'Value': 'Compliance',
-    }, {
-        'Key': 'Env',
-        'Value': Sub('${Env}'),
-    }, {
-        'Key': 'User',
-        'Value': Sub('${User}'),
-    }, {
-        'Key': 'Owner',
-        'Value': Sub('${Owner}'),
-    }, {
-        'Key': 'Tier',
-        'Value': Sub('${Tier}'),
-    }, {
-        'Key': 'Version',
-        'Value': Sub('${Version}'),
-    }, {
-        'Key': 'Storage',
-        'Value': Sub('${Storage}'),
-    }]
-
-
-class NeptuneDBParameterGroup:
-    resource: neptune.DBParameterGroup
-    description = Sub('CloudFormation managed Neptune DB Parameter Group - ${Env}-${AppName}-parameter-group')
-    parameters = {
-        'neptune_query_timeout': NeptuneQueryTimeout,
-    }
-    family = 'neptune1'
-    name = Sub('${Env}-${AppName}-parameter-group')
-    tags = [{
-        'Key': 'Name',
-        'Value': Sub('${Env}-${AppName}-parameter-group'),
-    }, {
-        'Key': 'App',
-        'Value': Sub('${AppName}'),
-    }, {
-        'Key': 'Compliance',
-        'Value': 'Compliance',
-    }, {
-        'Key': 'Env',
-        'Value': Sub('${Env}'),
-    }, {
-        'Key': 'User',
-        'Value': Sub('${User}'),
-    }, {
-        'Key': 'Owner',
-        'Value': Sub('${Owner}'),
-    }, {
-        'Key': 'Tier',
-        'Value': Sub('${Tier}'),
-    }, {
-        'Key': 'Version',
-        'Value': Sub('${Version}'),
-    }, {
-        'Key': 'Storage',
-        'Value': Sub('${Storage}'),
-    }]
 
 
 class NeptuneDBClusterParameterGroup:
@@ -89,28 +16,63 @@ class NeptuneDBClusterParameterGroup:
         'Value': Sub('${Env}-${AppName}-cluster-parameter-group'),
     }, {
         'Key': 'App',
-        'Value': Sub('${AppName}'),
+        'Value': AppName,
     }, {
         'Key': 'Compliance',
         'Value': 'Compliance',
     }, {
         'Key': 'Env',
-        'Value': Sub('${Env}'),
+        'Value': Env,
     }, {
         'Key': 'User',
-        'Value': Sub('${User}'),
+        'Value': User,
     }, {
         'Key': 'Owner',
-        'Value': Sub('${Owner}'),
+        'Value': Owner,
     }, {
         'Key': 'Tier',
-        'Value': Sub('${Tier}'),
+        'Value': Tier,
     }, {
         'Key': 'Version',
-        'Value': Sub('${Version}'),
+        'Value': Version,
     }, {
         'Key': 'Storage',
-        'Value': Sub('${Storage}'),
+        'Value': Storage,
+    }]
+
+
+class NeptuneDBSubnetGroup:
+    resource: neptune.DBSubnetGroup
+    db_subnet_group_description = Sub('CloudFormation managed Neptune DB Subnet Group - ${Env}-${AppName}-subnet-group')
+    db_subnet_group_name = NeptuneDBSubnetGroupName
+    subnet_ids = [ImportValue(Sub('${VPCStack}-PrivateSubnet1')), ImportValue(Sub('${VPCStack}-PrivateSubnet2'))]
+    tags = [{
+        'Key': 'Name',
+        'Value': Sub('${Env}-${AppName}-subnet-group'),
+    }, {
+        'Key': 'App',
+        'Value': AppName,
+    }, {
+        'Key': 'Compliance',
+        'Value': 'Compliance',
+    }, {
+        'Key': 'Env',
+        'Value': Env,
+    }, {
+        'Key': 'User',
+        'Value': User,
+    }, {
+        'Key': 'Owner',
+        'Value': Owner,
+    }, {
+        'Key': 'Tier',
+        'Value': Tier,
+    }, {
+        'Key': 'Version',
+        'Value': Version,
+    }, {
+        'Key': 'Storage',
+        'Value': Storage,
     }]
 
 
@@ -131,30 +93,68 @@ class NeptuneDBCluster:
         'Value': Sub('${Env}-${AppName}-Cluster'),
     }, {
         'Key': 'App',
-        'Value': Sub('${AppName}'),
+        'Value': AppName,
     }, {
         'Key': 'Compliance',
         'Value': 'Compliance',
     }, {
         'Key': 'Env',
-        'Value': Sub('${Env}'),
+        'Value': Env,
     }, {
         'Key': 'User',
-        'Value': Sub('${User}'),
+        'Value': User,
     }, {
         'Key': 'Owner',
-        'Value': Sub('${Owner}'),
+        'Value': Owner,
     }, {
         'Key': 'Tier',
-        'Value': Sub('${Tier}'),
+        'Value': Tier,
     }, {
         'Key': 'Version',
-        'Value': Sub('${Version}'),
+        'Value': Version,
     }, {
         'Key': 'Storage',
-        'Value': Sub('${Storage}'),
+        'Value': Storage,
     }]
     depends_on = [NeptuneDBSG]
+
+
+class NeptuneDBParameterGroup:
+    resource: neptune.DBParameterGroup
+    description = Sub('CloudFormation managed Neptune DB Parameter Group - ${Env}-${AppName}-parameter-group')
+    parameters = {
+        'neptune_query_timeout': NeptuneQueryTimeout,
+    }
+    family = 'neptune1'
+    name = Sub('${Env}-${AppName}-parameter-group')
+    tags = [{
+        'Key': 'Name',
+        'Value': Sub('${Env}-${AppName}-parameter-group'),
+    }, {
+        'Key': 'App',
+        'Value': AppName,
+    }, {
+        'Key': 'Compliance',
+        'Value': 'Compliance',
+    }, {
+        'Key': 'Env',
+        'Value': Env,
+    }, {
+        'Key': 'User',
+        'Value': User,
+    }, {
+        'Key': 'Owner',
+        'Value': Owner,
+    }, {
+        'Key': 'Tier',
+        'Value': Tier,
+    }, {
+        'Key': 'Version',
+        'Value': Version,
+    }, {
+        'Key': 'Storage',
+        'Value': Storage,
+    }]
 
 
 class NeptuneDBInstance:
@@ -171,26 +171,26 @@ class NeptuneDBInstance:
         'Value': Sub('${Env}-${AppName}-Instance'),
     }, {
         'Key': 'App',
-        'Value': Sub('${AppName}'),
+        'Value': AppName,
     }, {
         'Key': 'Compliance',
         'Value': 'Compliance',
     }, {
         'Key': 'Env',
-        'Value': Sub('${Env}'),
+        'Value': Env,
     }, {
         'Key': 'User',
-        'Value': Sub('${User}'),
+        'Value': User,
     }, {
         'Key': 'Owner',
-        'Value': Sub('${Owner}'),
+        'Value': Owner,
     }, {
         'Key': 'Tier',
-        'Value': Sub('${Tier}'),
+        'Value': Tier,
     }, {
         'Key': 'Version',
-        'Value': Sub('${Version}'),
+        'Value': Version,
     }, {
         'Key': 'Storage',
-        'Value': Sub('${Storage}'),
+        'Value': Storage,
     }]

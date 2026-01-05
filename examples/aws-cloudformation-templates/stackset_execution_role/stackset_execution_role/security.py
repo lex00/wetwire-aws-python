@@ -82,7 +82,7 @@ class AWSCloudFormationStackSetExecutionRolePolicies0PolicyDocument:
 
 
 class AWSCloudFormationStackSetExecutionRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ExecutionRolePolicy'
     policy_document = AWSCloudFormationStackSetExecutionRolePolicies0PolicyDocument
 

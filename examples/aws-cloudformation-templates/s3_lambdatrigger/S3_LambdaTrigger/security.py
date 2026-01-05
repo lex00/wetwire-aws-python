@@ -32,7 +32,7 @@ class LambdaIAMRolePolicies0PolicyDocument:
 
 
 class LambdaIAMRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'root'
     policy_document = LambdaIAMRolePolicies0PolicyDocument
 

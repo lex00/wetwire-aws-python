@@ -4,7 +4,7 @@ from . import *  # noqa: F403
 
 
 class MainDBTagFormat:
-    resource: rds.DBProxy.TagFormat
+    resource: rds.DBProxyEndpoint.TagFormat
     key = 'Name'
     value = 'Master Database'
 
@@ -28,7 +28,7 @@ class MainDB:
 
 
 class ReplicaDBTagFormat:
-    resource: rds.DBProxy.TagFormat
+    resource: rds.DBProxyEndpoint.TagFormat
     key = 'Name'
     value = 'Read Replica Database'
 

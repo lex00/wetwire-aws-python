@@ -62,8 +62,13 @@ class IoTTopicRuleTopicRulePayload:
 
 class IoTTopicRule:
     resource: iot.TopicRule
-    rule_name = Sub('${AWS::StackName}')
+    rule_name = AWS_STACK_NAME
     topic_rule_payload = IoTTopicRuleTopicRulePayload
+
+
+class IoTThing:
+    resource: iot.Thing
+    thing_name = AWS_STACK_NAME
 
 
 class OpenIoTStarPolicyAllowStatement0:
@@ -80,11 +85,6 @@ class OpenIoTStarPolicyPolicyDocument:
 class OpenIoTStarPolicy:
     resource: iot.Policy
     policy_document = OpenIoTStarPolicyPolicyDocument
-
-
-class IoTThing:
-    resource: iot.Thing
-    thing_name = Sub('${AWS::StackName}')
 
 
 class IoTThingPrincipalAttachment:

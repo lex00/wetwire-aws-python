@@ -61,7 +61,7 @@ class DeliveryRolePolicies0PolicyDocument:
 
 
 class DeliveryRolePolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'firehose_delivery_policy'
     policy_document = DeliveryRolePolicies0PolicyDocument
 

@@ -1,22 +1,6 @@
-=== example (example) ===
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-  File "/home/runner/work/wetwire-aws-python/wetwire-aws-python/examples/aws-cloudformation-templates/example/example/__init__.py", line 9, in <module>
-    setup_resources(__file__, __name__, globals())
-  File "/home/runner/work/wetwire-aws-python/wetwire-aws-python/src/wetwire_aws/loader.py", line 423, in setup_resources
-    _setup_resources(
-  File "/home/runner/work/wetwire-aws-python/wetwire-aws-python/.venv/lib/python3.12/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
-    module = _load_module_with_namespace(
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/wetwire-aws-python/wetwire-aws-python/.venv/lib/python3.12/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
-    spec.loader.exec_module(module)
-  File "/home/runner/work/wetwire-aws-python/wetwire-aws-python/examples/aws-cloudformation-templates/example/example/security.py", line 6, in <module>
-    class ExecutionRoleBuilderMacroTestRole:
-  File "/home/runner/work/wetwire-aws-python/wetwire-aws-python/.venv/lib/python3.12/site-packages/dataclass_dsl/_loader.py", line 511, in metaclass_applying_build_class
-    cls: type = original_build_class(func, name, *bases, **kwargs)
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/wetwire-aws-python/wetwire-aws-python/examples/aws-cloudformation-templates/example/example/security.py", line 11, in ExecutionRoleBuilderMacroTestRole
-    permissions_boundary = PermissionBoundaryArn
-                           ^^^^^^^^^^^^^^^^^^^^^
-NameError: name 'PermissionBoundaryArn' is not defined
+=== [1;33m⚠[0m efs_with_automount_to_ec2 (skipped - known malformed template) ===
+No __init__.py found in package
+
+=== [1;33m⚠[0m example_2 (skipped - known malformed template) ===
+No __init__.py found in package
 

@@ -1,27 +1,6 @@
-"""Network resources: TargetGroup, LoadBalancerSecurityGroup, LoadBalancerEgress, LoadBalancer, LoadBalancerListener."""
+"""Network resources: LoadBalancerSecurityGroup, LoadBalancer, TargetGroup, LoadBalancerListener, LoadBalancerEgress."""
 
 from . import *  # noqa: F403
-
-
-class TargetGroupListenerAttribute:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
-    key = 'deregistration_delay.timeout_seconds'
-    value = '10'
-
-
-class TargetGroupListenerAttribute1:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
-    key = 'stickiness.enabled'
-    value = 'false'
-
-
-class TargetGroup:
-    resource: elasticloadbalancingv2.TargetGroup
-    port = 80
-    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
-    target_group_attributes = [TargetGroupListenerAttribute, TargetGroupListenerAttribute1]
-    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
-    vpc_id = VPCId
 
 
 class LoadBalancerSecurityGroupEgress:
@@ -40,45 +19,56 @@ class LoadBalancerSecurityGroup:
     vpc_id = VPCId
 
 
-class LoadBalancerEgress:
-    resource: ec2.SecurityGroupEgress
-    description = 'Load balancer to target'
-    destination_security_group_id = DestinationSecurityGroupId
-    from_port = 80
-    group_id = LoadBalancerSecurityGroup.GroupId
-    ip_protocol = 'tcp'
-    to_port = 80
-
-
-class LoadBalancerListenerAttribute:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+class LoadBalancerTargetGroupAttribute:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
     key = 'deletion_protection.enabled'
     value = False
 
 
-class LoadBalancerListenerAttribute1:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+class LoadBalancerTargetGroupAttribute1:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
     key = 'routing.http.drop_invalid_header_fields.enabled'
     value = True
 
 
 class LoadBalancer:
     resource: elasticloadbalancingv2.LoadBalancer
-    load_balancer_attributes = [LoadBalancerListenerAttribute, LoadBalancerListenerAttribute1]
+    load_balancer_attributes = [LoadBalancerTargetGroupAttribute, LoadBalancerTargetGroupAttribute1]
     scheme = 'internet-facing'
     security_groups = [LoadBalancerSecurityGroup.GroupId]
     subnets = [PublicSubnet1, PublicSubnet2]
     type_ = 'application'
 
 
+class TargetGroupTargetGroupAttribute:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
+    key = 'deregistration_delay.timeout_seconds'
+    value = '10'
+
+
+class TargetGroupTargetGroupAttribute1:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
+    key = 'stickiness.enabled'
+    value = 'false'
+
+
+class TargetGroup:
+    resource: elasticloadbalancingv2.TargetGroup
+    port = 80
+    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
+    target_group_attributes = [TargetGroupTargetGroupAttribute, TargetGroupTargetGroupAttribute1]
+    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
+    vpc_id = VPCId
+
+
 class LoadBalancerListenerAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     target_group_arn = TargetGroup
     type_ = 'forward'
 
 
 class LoadBalancerListenerCertificate:
-    resource: elasticloadbalancingv2.Listener.Certificate
+    resource: elasticloadbalancingv2.ListenerCertificate.Certificate
     certificate_arn = CertificateArn
 
 
@@ -90,3 +80,13 @@ class LoadBalancerListener:
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTPS
     certificates = [LoadBalancerListenerCertificate]
     ssl_policy = 'ELBSecurityPolicy-TLS13-1-2-2021-06'
+
+
+class LoadBalancerEgress:
+    resource: ec2.SecurityGroupEgress
+    description = 'Load balancer to target'
+    destination_security_group_id = DestinationSecurityGroupId
+    from_port = 80
+    group_id = LoadBalancerSecurityGroup.GroupId
+    ip_protocol = 'tcp'
+    to_port = 80

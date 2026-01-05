@@ -28,7 +28,7 @@ class IamRoleLambdaPolicies0PolicyDocument:
 
 
 class IamRoleLambdaPolicy:
-    resource: iam.Role.Policy
+    resource: iam.User.Policy
     policy_name = 'ElastiCacheSnapshotPolicy'
     policy_document = IamRoleLambdaPolicies0PolicyDocument
 

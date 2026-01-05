@@ -1,4 +1,4 @@
-"""Network resources: NetworkVPC, NetworkPrivateSubnet2Subnet, NetworkPrivateSubnet2RouteTable, NetworkInternetGateway, NetworkVPCGW, NetworkPublicSubnet2RouteTable, NetworkPublicSubnet2DefaultRoute, NetworkPublicSubnet2, NetworkPublicSubnet2RouteTableAssociation, NetworkPublicSubnet2EIP, NetworkPublicSubnet2NATGateway, NetworkPrivateSubnet2DefaultRoute, NetworkPublicSubnet1, NetworkPrivateSubnet2RouteTableAssociation, CloudFrontCachePolicy, InstanceSecurityGroup, NetworkPublicSubnet1RouteTable, NetworkPublicSubnet1RouteTableAssociation, NetworkPrivateSubnet1RouteTable, NetworkPrivateSubnet1Subnet, NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1EIP, NetworkPublicSubnet1NATGateway, NetworkPrivateSubnet1DefaultRoute, NetworkPrivateSubnet1RouteTableAssociation."""
+"""Network resources: NetworkVPC, NetworkPrivateSubnet1Subnet, NetworkPrivateSubnet1RouteTable, NetworkPrivateSubnet1RouteTableAssociation, NetworkInternetGateway, NetworkVPCGW, NetworkPublicSubnet2RouteTable, NetworkPublicSubnet2DefaultRoute, NetworkPrivateSubnet2RouteTable, NetworkPublicSubnet2EIP, NetworkPublicSubnet2, NetworkPublicSubnet2RouteTableAssociation, NetworkPublicSubnet2NATGateway, NetworkPrivateSubnet2DefaultRoute, NetworkPrivateSubnet2Subnet, NetworkPublicSubnet1RouteTable, NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1EIP, NetworkPublicSubnet1, NetworkPublicSubnet1RouteTableAssociation, NetworkPublicSubnet1NATGateway, CloudFrontCachePolicy, InstanceSecurityGroup, NetworkPrivateSubnet2RouteTableAssociation, NetworkPrivateSubnet1DefaultRoute."""
 
 from . import *  # noqa: F403
 
@@ -18,31 +18,37 @@ class NetworkVPC:
     tags = [NetworkVPCAssociationParameter]
 
 
-class NetworkPrivateSubnet2SubnetAssociationParameter:
+class NetworkPrivateSubnet1SubnetAssociationParameter:
     resource: ec2.Instance.AssociationParameter
     key = 'Name'
-    value = 'vscode-server-private-subnet-2'
+    value = 'vscode-server-private-subnet-1'
 
 
-class NetworkPrivateSubnet2Subnet:
+class NetworkPrivateSubnet1Subnet:
     resource: ec2.Subnet
-    availability_zone = Select(1, GetAZs(AWS_REGION))
-    cidr_block = '10.0.192.0/18'
+    availability_zone = Select(0, GetAZs(AWS_REGION))
+    cidr_block = '10.0.128.0/18'
     map_public_ip_on_launch = False
     vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet2SubnetAssociationParameter]
+    tags = [NetworkPrivateSubnet1SubnetAssociationParameter]
 
 
-class NetworkPrivateSubnet2RouteTableAssociationParameter:
+class NetworkPrivateSubnet1RouteTableAssociationParameter:
     resource: ec2.Instance.AssociationParameter
     key = 'Name'
-    value = 'vscode-server-private-subnet-2-rt'
+    value = 'vscode-server-private-subnet-1-rt'
 
 
-class NetworkPrivateSubnet2RouteTable:
+class NetworkPrivateSubnet1RouteTable:
     resource: ec2.RouteTable
     vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet2RouteTableAssociationParameter]
+    tags = [NetworkPrivateSubnet1RouteTableAssociationParameter]
+
+
+class NetworkPrivateSubnet1RouteTableAssociation:
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = NetworkPrivateSubnet1RouteTable
+    subnet_id = NetworkPrivateSubnet1Subnet
 
 
 class NetworkInternetGatewayAssociationParameter:
@@ -82,6 +88,30 @@ class NetworkPublicSubnet2DefaultRoute:
     depends_on = [NetworkVPCGW]
 
 
+class NetworkPrivateSubnet2RouteTableAssociationParameter:
+    resource: ec2.Instance.AssociationParameter
+    key = 'Name'
+    value = 'vscode-server-private-subnet-2-rt'
+
+
+class NetworkPrivateSubnet2RouteTable:
+    resource: ec2.RouteTable
+    vpc_id = NetworkVPC
+    tags = [NetworkPrivateSubnet2RouteTableAssociationParameter]
+
+
+class NetworkPublicSubnet2EIPAssociationParameter:
+    resource: ec2.Instance.AssociationParameter
+    key = 'Name'
+    value = 'vscode-server-public-subnet-eip'
+
+
+class NetworkPublicSubnet2EIP:
+    resource: ec2.EIP
+    domain = 'vpc'
+    tags = [NetworkPublicSubnet2EIPAssociationParameter]
+
+
 class NetworkPublicSubnet2AssociationParameter:
     resource: ec2.Instance.AssociationParameter
     key = 'Name'
@@ -101,18 +131,6 @@ class NetworkPublicSubnet2RouteTableAssociation:
     resource: ec2.SubnetRouteTableAssociation
     route_table_id = NetworkPublicSubnet2RouteTable
     subnet_id = NetworkPublicSubnet2
-
-
-class NetworkPublicSubnet2EIPAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'vscode-server-public-subnet-eip'
-
-
-class NetworkPublicSubnet2EIP:
-    resource: ec2.EIP
-    domain = 'vpc'
-    tags = [NetworkPublicSubnet2EIPAssociationParameter]
 
 
 class NetworkPublicSubnet2NATGatewayAssociationParameter:
@@ -136,6 +154,53 @@ class NetworkPrivateSubnet2DefaultRoute:
     route_table_id = NetworkPrivateSubnet2RouteTable
 
 
+class NetworkPrivateSubnet2SubnetAssociationParameter:
+    resource: ec2.Instance.AssociationParameter
+    key = 'Name'
+    value = 'vscode-server-private-subnet-2'
+
+
+class NetworkPrivateSubnet2Subnet:
+    resource: ec2.Subnet
+    availability_zone = Select(1, GetAZs(AWS_REGION))
+    cidr_block = '10.0.192.0/18'
+    map_public_ip_on_launch = False
+    vpc_id = NetworkVPC
+    tags = [NetworkPrivateSubnet2SubnetAssociationParameter]
+
+
+class NetworkPublicSubnet1RouteTableAssociationParameter:
+    resource: ec2.Instance.AssociationParameter
+    key = 'Name'
+    value = 'vscode-server-public-subnet-1-rt'
+
+
+class NetworkPublicSubnet1RouteTable:
+    resource: ec2.RouteTable
+    vpc_id = NetworkVPC
+    tags = [NetworkPublicSubnet1RouteTableAssociationParameter]
+
+
+class NetworkPublicSubnet1DefaultRoute:
+    resource: ec2.Route
+    destination_cidr_block = '0.0.0.0/0'
+    gateway_id = NetworkInternetGateway
+    route_table_id = NetworkPublicSubnet1RouteTable
+    depends_on = [NetworkVPCGW]
+
+
+class NetworkPublicSubnet1EIPAssociationParameter:
+    resource: ec2.Instance.AssociationParameter
+    key = 'Name'
+    value = 'vscode-server-public-subnet-1-eip'
+
+
+class NetworkPublicSubnet1EIP:
+    resource: ec2.EIP
+    domain = 'vpc'
+    tags = [NetworkPublicSubnet1EIPAssociationParameter]
+
+
 class NetworkPublicSubnet1AssociationParameter:
     resource: ec2.Instance.AssociationParameter
     key = 'Name'
@@ -151,10 +216,24 @@ class NetworkPublicSubnet1:
     tags = [NetworkPublicSubnet1AssociationParameter]
 
 
-class NetworkPrivateSubnet2RouteTableAssociation:
+class NetworkPublicSubnet1RouteTableAssociation:
     resource: ec2.SubnetRouteTableAssociation
-    route_table_id = NetworkPrivateSubnet2RouteTable
-    subnet_id = NetworkPrivateSubnet2Subnet
+    route_table_id = NetworkPublicSubnet1RouteTable
+    subnet_id = NetworkPublicSubnet1
+
+
+class NetworkPublicSubnet1NATGatewayAssociationParameter:
+    resource: ec2.Instance.AssociationParameter
+    key = 'Name'
+    value = 'vscode-server-public-subnet-1-ngw'
+
+
+class NetworkPublicSubnet1NATGateway:
+    resource: ec2.NatGateway
+    allocation_id = NetworkPublicSubnet1EIP.AllocationId
+    subnet_id = NetworkPublicSubnet1
+    tags = [NetworkPublicSubnet1NATGatewayAssociationParameter]
+    depends_on = [NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1RouteTableAssociation]
 
 
 class CloudFrontCachePolicyCookiesConfig:
@@ -226,83 +305,10 @@ class InstanceSecurityGroup:
     vpc_id = NetworkVPC
 
 
-class NetworkPublicSubnet1RouteTableAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'vscode-server-public-subnet-1-rt'
-
-
-class NetworkPublicSubnet1RouteTable:
-    resource: ec2.RouteTable
-    vpc_id = NetworkVPC
-    tags = [NetworkPublicSubnet1RouteTableAssociationParameter]
-
-
-class NetworkPublicSubnet1RouteTableAssociation:
+class NetworkPrivateSubnet2RouteTableAssociation:
     resource: ec2.SubnetRouteTableAssociation
-    route_table_id = NetworkPublicSubnet1RouteTable
-    subnet_id = NetworkPublicSubnet1
-
-
-class NetworkPrivateSubnet1RouteTableAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'vscode-server-private-subnet-1-rt'
-
-
-class NetworkPrivateSubnet1RouteTable:
-    resource: ec2.RouteTable
-    vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet1RouteTableAssociationParameter]
-
-
-class NetworkPrivateSubnet1SubnetAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'vscode-server-private-subnet-1'
-
-
-class NetworkPrivateSubnet1Subnet:
-    resource: ec2.Subnet
-    availability_zone = Select(0, GetAZs(AWS_REGION))
-    cidr_block = '10.0.128.0/18'
-    map_public_ip_on_launch = False
-    vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet1SubnetAssociationParameter]
-
-
-class NetworkPublicSubnet1DefaultRoute:
-    resource: ec2.Route
-    destination_cidr_block = '0.0.0.0/0'
-    gateway_id = NetworkInternetGateway
-    route_table_id = NetworkPublicSubnet1RouteTable
-    depends_on = [NetworkVPCGW]
-
-
-class NetworkPublicSubnet1EIPAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'vscode-server-public-subnet-1-eip'
-
-
-class NetworkPublicSubnet1EIP:
-    resource: ec2.EIP
-    domain = 'vpc'
-    tags = [NetworkPublicSubnet1EIPAssociationParameter]
-
-
-class NetworkPublicSubnet1NATGatewayAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'vscode-server-public-subnet-1-ngw'
-
-
-class NetworkPublicSubnet1NATGateway:
-    resource: ec2.NatGateway
-    allocation_id = NetworkPublicSubnet1EIP.AllocationId
-    subnet_id = NetworkPublicSubnet1
-    tags = [NetworkPublicSubnet1NATGatewayAssociationParameter]
-    depends_on = [NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1RouteTableAssociation]
+    route_table_id = NetworkPrivateSubnet2RouteTable
+    subnet_id = NetworkPrivateSubnet2Subnet
 
 
 class NetworkPrivateSubnet1DefaultRoute:
@@ -310,9 +316,3 @@ class NetworkPrivateSubnet1DefaultRoute:
     destination_cidr_block = '0.0.0.0/0'
     nat_gateway_id = NetworkPublicSubnet1NATGateway
     route_table_id = NetworkPrivateSubnet1RouteTable
-
-
-class NetworkPrivateSubnet1RouteTableAssociation:
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = NetworkPrivateSubnet1RouteTable
-    subnet_id = NetworkPrivateSubnet1Subnet

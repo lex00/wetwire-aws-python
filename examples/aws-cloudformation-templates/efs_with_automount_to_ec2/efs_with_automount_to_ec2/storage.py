@@ -1,4 +1,4 @@
-"""Storage resources: EFSFileSystem, EFSMountTarget2, EFSMountTarget3, EFSMountTarget1, EFSMountTarget4."""
+"""Storage resources: EFSFileSystem, EFSMountTarget4, EFSMountTarget1, EFSMountTarget3, EFSMountTarget2."""
 
 from . import *  # noqa: F403
 
@@ -9,18 +9,11 @@ class EFSFileSystem:
     performance_mode = 'generalPurpose'
 
 
-class EFSMountTarget2:
+class EFSMountTarget4:
     resource: efs.MountTarget
     file_system_id = EFSFileSystem
     security_groups = [EFSSecurityGroup.GroupId]
-    subnet_id = Select(1, Subnets)
-
-
-class EFSMountTarget3:
-    resource: efs.MountTarget
-    file_system_id = EFSFileSystem
-    security_groups = [EFSSecurityGroup.GroupId]
-    subnet_id = Select(2, Subnets)
+    subnet_id = Select(3, Subnets)
 
 
 class EFSMountTarget1:
@@ -30,8 +23,15 @@ class EFSMountTarget1:
     subnet_id = Select(0, Subnets)
 
 
-class EFSMountTarget4:
+class EFSMountTarget3:
     resource: efs.MountTarget
     file_system_id = EFSFileSystem
     security_groups = [EFSSecurityGroup.GroupId]
-    subnet_id = Select(3, Subnets)
+    subnet_id = Select(2, Subnets)
+
+
+class EFSMountTarget2:
+    resource: efs.MountTarget
+    file_system_id = EFSFileSystem
+    security_groups = [EFSSecurityGroup.GroupId]
+    subnet_id = Select(1, Subnets)

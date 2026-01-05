@@ -1,36 +1,64 @@
-"""Infra resources: ServiceCatalogPortfolio, ServiceCatalogProductTagOptionsDept, ServiceCatalogPortfolioShare, ServiceCatalogProductTagOptionsUser, ServiceCatalogProductTagOptionsEnv, ServiceCatalogProductTagOptionsOwner."""
+"""Infra resources: ServiceCatalogProductTagOptionsOwner, ServiceCatalogProductTagOptionsDept, ServiceCatalogProductTagOptionsUser, ServiceCatalogProductTagOptionsEnv, ServiceCatalogPortfolio, ServiceCatalogPortfolioShare."""
 
 from . import *  # noqa: F403
+
+
+class ServiceCatalogProductTagOptionsOwner:
+    resource: servicecatalog.TagOption
+    active = ActivateProductTagOptions
+    key = 'Owner'
+    value = ProductOwner
+
+
+class ServiceCatalogProductTagOptionsDept:
+    resource: servicecatalog.TagOption
+    active = ActivateProductTagOptions
+    key = 'Dept'
+    value = ProductDept
+
+
+class ServiceCatalogProductTagOptionsUser:
+    resource: servicecatalog.TagOption
+    active = ActivateProductTagOptions
+    key = 'User'
+    value = ProductUser
+
+
+class ServiceCatalogProductTagOptionsEnv:
+    resource: servicecatalog.TagOption
+    active = ActivateProductTagOptions
+    key = 'Env'
+    value = ProductEnv
 
 
 class ServiceCatalogPortfolioProvisioningParameter:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'Name'
-    value = Sub('${PortfolioDisplayName}')
+    value = PortfolioDisplayName
 
 
 class ServiceCatalogPortfolioProvisioningParameter1:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'Dept'
-    value = Sub('${Dept}')
+    value = Dept
 
 
 class ServiceCatalogPortfolioProvisioningParameter2:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'Env'
-    value = Sub('${Env}')
+    value = Env
 
 
 class ServiceCatalogPortfolioProvisioningParameter3:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'User'
-    value = Sub('${User}')
+    value = User
 
 
 class ServiceCatalogPortfolioProvisioningParameter4:
     resource: servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter
     key = 'Owner'
-    value = Sub('${Owner}')
+    value = Owner
 
 
 class ServiceCatalogPortfolio:
@@ -41,36 +69,8 @@ class ServiceCatalogPortfolio:
     tags = [ServiceCatalogPortfolioProvisioningParameter, ServiceCatalogPortfolioProvisioningParameter1, ServiceCatalogPortfolioProvisioningParameter2, ServiceCatalogPortfolioProvisioningParameter3, ServiceCatalogPortfolioProvisioningParameter4]
 
 
-class ServiceCatalogProductTagOptionsDept:
-    resource: servicecatalog.TagOption
-    active = ActivateProductTagOptions
-    key = 'Dept'
-    value = Sub('${ProductDept}')
-
-
 class ServiceCatalogPortfolioShare:
     resource: servicecatalog.PortfolioShare
     account_id = AccountIdOfChildAWSAccount
     portfolio_id = ServiceCatalogPortfolio
     condition = 'ConditionShareThisPortfolio'
-
-
-class ServiceCatalogProductTagOptionsUser:
-    resource: servicecatalog.TagOption
-    active = ActivateProductTagOptions
-    key = 'User'
-    value = Sub('${ProductUser}')
-
-
-class ServiceCatalogProductTagOptionsEnv:
-    resource: servicecatalog.TagOption
-    active = ActivateProductTagOptions
-    key = 'Env'
-    value = Sub('${ProductEnv}')
-
-
-class ServiceCatalogProductTagOptionsOwner:
-    resource: servicecatalog.TagOption
-    active = ActivateProductTagOptions
-    key = 'Owner'
-    value = Sub('${ProductOwner}')

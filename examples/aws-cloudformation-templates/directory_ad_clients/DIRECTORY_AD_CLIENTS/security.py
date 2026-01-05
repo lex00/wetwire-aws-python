@@ -1,9 +1,9 @@
-"""Security resources: JoinDomainAssociationInstances, JoinDomainAssociationTags."""
+"""Security resources: JoinDomainAssociationTags, JoinDomainAssociationInstances."""
 
 from . import *  # noqa: F403
 
 
-class JoinDomainAssociationInstancesInstanceAssociationOutputLocation:
+class JoinDomainAssociationTagsInstanceAssociationOutputLocation:
     resource: ssm.Association.InstanceAssociationOutputLocation
     s3_location = If("SSMLogsBucketCondition", {
     'OutputS3BucketName': SSMLogsBucketName,
@@ -11,18 +11,18 @@ class JoinDomainAssociationInstancesInstanceAssociationOutputLocation:
 }, AWS_NO_VALUE)
 
 
-class JoinDomainAssociationInstancesSsmParameter:
-    resource: ssmincidents.ResponsePlan.SsmParameter
-    key = 'InstanceIds'
-    values = [DomainMember2WithSsmAssociationInstance, DomainMember4LinuxWithSsmAssociationInstance]
+class JoinDomainAssociationTagsTargets:
+    resource: ssm.MaintenanceWindowTarget.Targets
+    key = 'tag:DomainJoin'
+    values = [DirectoryName]
 
 
-class JoinDomainAssociationInstances:
+class JoinDomainAssociationTags:
     resource: ssm.Association
-    association_name = Sub('JoinDomain-Association-viaInstances-${AWS::StackName}')
+    association_name = Sub('JoinDomain-Association-viaTags-${AWS::StackName}')
     name = 'AWS-JoinDirectoryServiceDomain'
-    output_location = JoinDomainAssociationInstancesInstanceAssociationOutputLocation
-    targets = [JoinDomainAssociationInstancesSsmParameter]
+    output_location = JoinDomainAssociationTagsInstanceAssociationOutputLocation
+    targets = [JoinDomainAssociationTagsTargets]
     parameters = {
         'directoryId': [DirectoryID],
         'directoryName': [DirectoryName],
@@ -35,7 +35,7 @@ class JoinDomainAssociationInstances:
     }
 
 
-class JoinDomainAssociationTagsInstanceAssociationOutputLocation:
+class JoinDomainAssociationInstancesInstanceAssociationOutputLocation:
     resource: ssm.Association.InstanceAssociationOutputLocation
     s3_location = If("SSMLogsBucketCondition", {
     'OutputS3BucketName': SSMLogsBucketName,
@@ -43,18 +43,18 @@ class JoinDomainAssociationTagsInstanceAssociationOutputLocation:
 }, AWS_NO_VALUE)
 
 
-class JoinDomainAssociationTagsSsmParameter:
-    resource: ssmincidents.ResponsePlan.SsmParameter
-    key = 'tag:DomainJoin'
-    values = [DirectoryName]
+class JoinDomainAssociationInstancesTargets:
+    resource: ssm.MaintenanceWindowTarget.Targets
+    key = 'InstanceIds'
+    values = [DomainMember2WithSsmAssociationInstance, DomainMember4LinuxWithSsmAssociationInstance]
 
 
-class JoinDomainAssociationTags:
+class JoinDomainAssociationInstances:
     resource: ssm.Association
-    association_name = Sub('JoinDomain-Association-viaTags-${AWS::StackName}')
+    association_name = Sub('JoinDomain-Association-viaInstances-${AWS::StackName}')
     name = 'AWS-JoinDirectoryServiceDomain'
-    output_location = JoinDomainAssociationTagsInstanceAssociationOutputLocation
-    targets = [JoinDomainAssociationTagsSsmParameter]
+    output_location = JoinDomainAssociationInstancesInstanceAssociationOutputLocation
+    targets = [JoinDomainAssociationInstancesTargets]
     parameters = {
         'directoryId': [DirectoryID],
         'directoryName': [DirectoryName],

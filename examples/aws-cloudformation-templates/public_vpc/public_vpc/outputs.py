@@ -42,18 +42,6 @@ class ECSRoleOutput:
 ])
 
 
-class ECSTaskExecutionRoleOutput:
-    """The ARN of the ECS role"""
-
-    resource: Output
-    value = ECSTaskExecutionRole.Arn
-    description = 'The ARN of the ECS role'
-    export_name = Join(':', [
-    AWS_STACK_NAME,
-    'ECSTaskExecutionRole',
-])
-
-
 class PublicListenerOutput:
     """The ARN of the public load balancer's Listener"""
 
@@ -102,13 +90,13 @@ class PublicSubnetTwoOutput:
 ])
 
 
-class FargateContainerSecurityGroupOutput:
-    """A security group used to allow Fargate containers to receive traffic"""
+class EcsHostSecurityGroupOutput:
+    """A security group used to allow containers to receive traffic"""
 
     resource: Output
-    value = FargateContainerSecurityGroup
-    description = 'A security group used to allow Fargate containers to receive traffic'
+    value = EcsHostSecurityGroup
+    description = 'A security group used to allow containers to receive traffic'
     export_name = Join(':', [
     AWS_STACK_NAME,
-    'FargateContainerSecurityGroup',
+    'EcsHostSecurityGroup',
 ])

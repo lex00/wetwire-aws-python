@@ -1,4 +1,4 @@
-"""Network resources: VPC, PublicSubnetB, PublicInternetRouteTable, PublicSubnetA, RedisSecurityGroup, InternetGateway, PublicSubnetARouteTableAssociation, PublicSubnetBRouteTableAssociation, VPCGatewayAttachment, PublicInternetRoute."""
+"""Network resources: VPC, PublicSubnetA, PublicInternetRouteTable, PublicSubnetARouteTableAssociation, RedisSecurityGroup, InternetGateway, VPCGatewayAttachment, PublicInternetRoute, PublicSubnetB, PublicSubnetBRouteTableAssociation."""
 
 from . import *  # noqa: F403
 
@@ -8,10 +8,10 @@ class VPC:
     cidr_block = '10.0.0.0/24'
 
 
-class PublicSubnetB:
+class PublicSubnetA:
     resource: ec2.Subnet
-    availability_zone = FindInMap("AWSRegion2AZ", AWS_REGION, 'B')
-    cidr_block = '10.0.0.128/25'
+    availability_zone = FindInMap("AWSRegion2AZ", AWS_REGION, 'A')
+    cidr_block = '10.0.0.0/25'
     vpc_id = VPC
 
 
@@ -20,11 +20,10 @@ class PublicInternetRouteTable:
     vpc_id = VPC
 
 
-class PublicSubnetA:
-    resource: ec2.Subnet
-    availability_zone = FindInMap("AWSRegion2AZ", AWS_REGION, 'A')
-    cidr_block = '10.0.0.0/25'
-    vpc_id = VPC
+class PublicSubnetARouteTableAssociation:
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PublicInternetRouteTable
+    subnet_id = PublicSubnetA
 
 
 class RedisSecurityGroupEgress:
@@ -46,18 +45,6 @@ class InternetGateway:
     resource: ec2.InternetGateway
 
 
-class PublicSubnetARouteTableAssociation:
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PublicInternetRouteTable
-    subnet_id = PublicSubnetA
-
-
-class PublicSubnetBRouteTableAssociation:
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PublicInternetRouteTable
-    subnet_id = PublicSubnetB
-
-
 class VPCGatewayAttachment:
     resource: ec2.VPCGatewayAttachment
     internet_gateway_id = InternetGateway
@@ -70,3 +57,16 @@ class PublicInternetRoute:
     gateway_id = InternetGateway
     route_table_id = PublicInternetRouteTable
     depends_on = [InternetGateway, PublicInternetRouteTable]
+
+
+class PublicSubnetB:
+    resource: ec2.Subnet
+    availability_zone = FindInMap("AWSRegion2AZ", AWS_REGION, 'B')
+    cidr_block = '10.0.0.128/25'
+    vpc_id = VPC
+
+
+class PublicSubnetBRouteTableAssociation:
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PublicInternetRouteTable
+    subnet_id = PublicSubnetB

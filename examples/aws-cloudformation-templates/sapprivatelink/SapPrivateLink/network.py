@@ -1,10 +1,10 @@
-"""Network resources: ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkVPCESPermission, ASCPrivateLinkTargetGroup, ASCPrivateLinkListener."""
+"""Network resources: ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkTargetGroup, ASCPrivateLinkListener, ASCPrivateLinkVPCESPermission."""
 
 from . import *  # noqa: F403
 
 
-class ASCPrivateLinkNLBListenerAttribute:
-    resource: elasticloadbalancingv2.Listener.ListenerAttribute
+class ASCPrivateLinkNLBTargetGroupAttribute:
+    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
     key = 'load_balancing.cross_zone.enabled'
     value = True
 
@@ -14,19 +14,13 @@ class ASCPrivateLinkNLB:
     type_ = 'network'
     scheme = 'internal'
     subnets = Subnets
-    load_balancer_attributes = [ASCPrivateLinkNLBListenerAttribute]
+    load_balancer_attributes = [ASCPrivateLinkNLBTargetGroupAttribute]
 
 
 class ASCPrivateLinkVPCES:
     resource: ec2.VPCEndpointService
     acceptance_required = False
     network_load_balancer_arns = [ASCPrivateLinkNLB]
-
-
-class ASCPrivateLinkVPCESPermission:
-    resource: ec2.VPCEndpointServicePermissions
-    allowed_principals = ['appflow.amazonaws.com']
-    service_id = ASCPrivateLinkVPCES
 
 
 class ASCPrivateLinkTargetGroupTargetDescription:
@@ -48,12 +42,12 @@ class ASCPrivateLinkTargetGroup:
 
 
 class ASCPrivateLinkListenerCertificate:
-    resource: elasticloadbalancingv2.Listener.Certificate
+    resource: elasticloadbalancingv2.ListenerCertificate.Certificate
     certificate_arn = ASCPrivateLinkCertificate
 
 
 class ASCPrivateLinkListenerAction:
-    resource: elasticloadbalancingv2.Listener.Action
+    resource: elasticloadbalancingv2.ListenerRule.Action
     type_ = 'forward'
     target_group_arn = ASCPrivateLinkTargetGroup
 
@@ -66,3 +60,9 @@ class ASCPrivateLinkListener:
     ssl_policy = 'ELBSecurityPolicy-TLS13-1-0-2021-06'
     certificates = [ASCPrivateLinkListenerCertificate]
     default_actions = [ASCPrivateLinkListenerAction]
+
+
+class ASCPrivateLinkVPCESPermission:
+    resource: ec2.VPCEndpointServicePermissions
+    allowed_principals = ['appflow.amazonaws.com']
+    service_id = ASCPrivateLinkVPCES
