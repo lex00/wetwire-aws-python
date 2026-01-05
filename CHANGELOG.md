@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Dependencies
 
 - dataclass-dsl: 1.0.0 → 1.0.1
+- wetwire-core: 1.0.0 → 1.0.1
 - Added: ty>=0.0.1a0
 - Removed: mypy, pyright
 
