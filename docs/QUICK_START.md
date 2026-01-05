@@ -5,11 +5,7 @@ Get started with `wetwire-aws` in 5 minutes.
 ## Installation
 
 ```bash
-# Using uv (recommended)
 uv add wetwire-aws
-
-# Or using pip
-pip install wetwire-aws
 ```
 
 ## Your First Project

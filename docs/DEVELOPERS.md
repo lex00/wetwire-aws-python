@@ -225,7 +225,7 @@ uv run ruff format src/ tests/
 uv run ruff check src/ tests/
 
 # Type check
-uv run mypy src/wetwire_aws/
+uv run ty check src/wetwire_aws/
 ```
 
 ### Commit Messages

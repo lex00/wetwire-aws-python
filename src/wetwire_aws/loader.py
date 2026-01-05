@@ -428,5 +428,5 @@ def setup_resources(
         generate_stubs=generate_stubs,
         extra_namespace=_get_aws_namespace(),
         auto_decorate=True,
-        decorator=wetwire_aws,
+        decorator=wetwire_aws,  # type: ignore[arg-type]
     )

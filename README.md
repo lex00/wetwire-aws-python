@@ -5,7 +5,7 @@ AWS CloudFormation synthesis using Python dataclasses.
 ## Installation
 
 ```bash
-pip install wetwire-aws
+uv add wetwire-aws
 ```
 
 ## Quick Example
