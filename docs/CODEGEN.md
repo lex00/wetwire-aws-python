@@ -402,8 +402,7 @@ def validate_syntax(path: Path) -> bool:
 
 ```bash
 # After generation, run type checker
-mypy src/wetwire_aws/resources/ --strict
-pyright src/wetwire_aws/resources/
+uv run ty check src/wetwire_aws/resources/
 ```
 
 ---
@@ -430,22 +429,24 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
       - name: Install dependencies
-        run: |
-          pip install -e "python/packages/wetwire-aws[codegen]"
+        run: uv sync --extra codegen
 
       - name: Regenerate
         run: |
           cd python/packages/wetwire-aws
-          python -m codegen.fetch --force
-          python -m codegen.parse
-          python -m codegen.generate --format
+          uv run python -m codegen.fetch --force
+          uv run python -m codegen.parse
+          uv run python -m codegen.generate --format
 
       - name: Validate
         run: |
           cd python/packages/wetwire-aws
-          python -c "import wetwire_aws.resources"
-          mypy src/wetwire_aws/resources/ --strict
+          uv run python -c "import wetwire_aws.resources"
+          uv run ty check src/wetwire_aws/resources/
 
       - name: Check for changes
         id: diff

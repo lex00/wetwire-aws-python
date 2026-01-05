@@ -146,6 +146,7 @@ def _resource_class_exists(module_name: str, class_name: str) -> bool:
         try:
             import wetwire_aws.resources as resources_pkg
 
+            assert resources_pkg.__file__ is not None
             resources_dir = Path(resources_pkg.__file__).parent
 
             for entry in resources_dir.iterdir():
@@ -214,8 +215,9 @@ def _build_property_type_map() -> None:
     try:
         import wetwire_aws.resources as resources_pkg
 
+        assert resources_pkg.__file__ is not None
         resources_dir = Path(resources_pkg.__file__).parent
-    except (ImportError, AttributeError):
+    except (ImportError, AttributeError, AssertionError):
         return
 
     # Pattern to match class definitions with parent
