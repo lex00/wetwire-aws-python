@@ -12,7 +12,7 @@ name = "wetwire-aws"
 version = "1.4.0"
 description = "AWS CloudFormation synthesis for wetwire"
 readme = "README.md"
-license = "Apache-2.0"
+license = "MIT"
 requires-python = ">=3.11"
 authors = [
     { name = "Alex Artigues", email = "albert.a.artigues@gmail.com" }
@@ -27,7 +27,7 @@ keywords = [
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
