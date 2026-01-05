@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Importer: removed Ref/GetAtt fallback generation (now raises `ValueError` for unknown references)
+- Importer: `Sub("${Param}")` now simplifies to direct reference `Param`
+- Importer: `Sub("${AWS::Region}")` now simplifies to constant `AWS_REGION`
+- Regenerated 261 AWS CloudFormation example packages
+
 ## [1.2.0] - 2026-01-05
 
 ### Added
