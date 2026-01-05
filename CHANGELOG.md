@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-01-05
+
+### Added
+
+- `PropertyTypeProxy` class for chained attribute access on nested GetAtt patterns (#25)
+- `PropertyTypeDescriptor` to wrap PropertyTypes in resources for seamless nested access
+- Nested GetAtt patterns now use dot syntax: `MyDB.Endpoint.Address` instead of `GetAtt("MyDB", "Endpoint.Address")`
+
+### Changed
+
+- Codegen now uses `PropertyTypeDescriptor` when attaching PropertyTypes to resource classes
+- Importer generates no-parens pattern for all GetAtt references including nested attributes
+- Linter rules WAW006/WAW020 now flag explicit GetAtt for nested attributes (can be auto-fixed)
+- Regenerated 263 resource modules and 261 example packages with new pattern
+
 ## [1.4.0] - 2026-01-05
 
 ### Changed
