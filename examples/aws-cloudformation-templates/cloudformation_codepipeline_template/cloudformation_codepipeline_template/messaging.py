@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class EventRuleTarget:
-    resource: events.Rule.Target
+class EventRuleTarget(events.Rule.Target):
     arn = Join('', [
     'arn:aws:codepipeline:',
     AWS_REGION,

@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class VPCPeeringConnectionAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class VPCPeeringConnectionAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = PeerName
 

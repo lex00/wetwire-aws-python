@@ -1,10 +1,9 @@
-"""Security resources: KmsKey, KmsKeyAlias, ReplicationRole."""
+"""Security resources: KmsKey, ReplicationRole, KmsKeyAlias."""
 
 from . import *  # noqa: F403
 
 
-class KmsKeyAllowStatement0:
-    resource: PolicyStatement
+class KmsKeyAllowStatement0(PolicyStatement):
     sid = 'Allow source account access to KMS key in source account'
     principal = {
         'AWS': Sub('arn:${AWS::Partition}:iam::${AWS::AccountId}:root'),
@@ -13,8 +12,7 @@ class KmsKeyAllowStatement0:
     resource_arn = '*'
 
 
-class KmsKeyKeyPolicy:
-    resource: PolicyDocument
+class KmsKeyKeyPolicy(PolicyDocument):
     statement = [KmsKeyAllowStatement0]
 
 
@@ -23,26 +21,18 @@ class KmsKey(kms.Key):
     key_policy = KmsKeyKeyPolicy
 
 
-class KmsKeyAlias(kms.Alias):
-    alias_name = Sub('alias/${AWS::StackName}-${AWS::AccountId}-kms-key')
-    target_key_id = KmsKey
-
-
-class ReplicationRoleAllowStatement0:
-    resource: PolicyStatement
+class ReplicationRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': 's3.amazonaws.com',
     }
     action = 'sts:AssumeRole'
 
 
-class ReplicationRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class ReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [ReplicationRoleAllowStatement0]
 
 
-class ReplicationRoleAllowStatement0_1:
-    resource: PolicyStatement
+class ReplicationRoleAllowStatement0_1(PolicyStatement):
     sid = 'AllowActionsOnSourceBucket'
     action = [
         's3:ListBucket',
@@ -56,8 +46,7 @@ class ReplicationRoleAllowStatement0_1:
     ]
 
 
-class ReplicationRoleAllowStatement1:
-    resource: PolicyStatement
+class ReplicationRoleAllowStatement1(PolicyStatement):
     sid = 'AllowActionsOnDestinationBucket'
     action = [
         's3:ReplicateObject',
@@ -72,15 +61,13 @@ class ReplicationRoleAllowStatement1:
     ]
 
 
-class ReplicationRoleAllowStatement2:
-    resource: PolicyStatement
+class ReplicationRoleAllowStatement2(PolicyStatement):
     sid = 'AllowKmsDecryptOnSourceKey'
     action = 'kms:Decrypt'
     resource_arn = KmsKey.Arn
 
 
-class ReplicationRoleAllowStatement3:
-    resource: PolicyStatement
+class ReplicationRoleAllowStatement3(PolicyStatement):
     sid = 'AllowKmsEncryptOnDestinationKey'
     action = 'kms:Encrypt'
     resource_arn = '*'
@@ -91,13 +78,11 @@ class ReplicationRoleAllowStatement3:
     }
 
 
-class ReplicationRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class ReplicationRolePolicies0PolicyDocument(PolicyDocument):
     statement = [ReplicationRoleAllowStatement0_1, ReplicationRoleAllowStatement1, ReplicationRoleAllowStatement2, ReplicationRoleAllowStatement3]
 
 
-class ReplicationRolePolicy:
-    resource: iam.User.Policy
+class ReplicationRolePolicy(iam.User.Policy):
     policy_name = Sub('${AWS::StackName}-${AccountIdDestination}-role-policy')
     policy_document = ReplicationRolePolicies0PolicyDocument
 
@@ -107,3 +92,8 @@ class ReplicationRole(iam.Role):
     description = 'IAM Role used by S3 bucket replication'
     assume_role_policy_document = ReplicationRoleAssumeRolePolicyDocument
     policies = [ReplicationRolePolicy]
+
+
+class KmsKeyAlias(kms.Alias):
+    alias_name = Sub('alias/${AWS::StackName}-${AWS::AccountId}-kms-key')
+    target_key_id = KmsKey

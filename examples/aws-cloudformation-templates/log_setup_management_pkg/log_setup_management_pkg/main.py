@@ -3,13 +3,11 @@
 from . import *  # noqa: F403
 
 
-class CentralEventRuleDeadLetterConfig:
-    resource: events.Rule.DeadLetterConfig
+class CentralEventRuleDeadLetterConfig(events.Rule.DeadLetterConfig):
     arn = DeadLetterQueue.Arn
 
 
-class CentralEventRuleTarget:
-    resource: events.Rule.Target
+class CentralEventRuleTarget(events.Rule.Target):
     arn = CentralEventLog.Arn
     id = 'CloudFormationLogsToCentralGroup'
     dead_letter_config = CentralEventRuleDeadLetterConfig

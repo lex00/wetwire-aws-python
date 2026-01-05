@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class LambdaEdgeFunctionCode:
-    resource: lambda_.Function.Code
+class LambdaEdgeFunctionCode(lambda_.Function.Code):
     zip_file = """'use strict';
 
  exports.handler = (event, context, callback) => {

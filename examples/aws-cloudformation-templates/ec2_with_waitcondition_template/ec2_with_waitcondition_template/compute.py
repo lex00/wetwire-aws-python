@@ -3,56 +3,47 @@
 from . import *  # noqa: F403
 
 
-class KWOSInstanceAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class KWOSInstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'LaunchPlatform'
     value = LaunchPlatform
 
 
-class KWOSInstanceAssociationParameter1:
-    resource: ec2.Instance.AssociationParameter
+class KWOSInstanceAssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'LaunchUser'
     value = LaunchUser
 
 
-class KWOSInstanceAssociationParameter2:
-    resource: ec2.Instance.AssociationParameter
+class KWOSInstanceAssociationParameter2(ec2.Instance.AssociationParameter):
     key = 'TestID'
     value = TestID
 
 
-class KWOSInstanceAssociationParameter3:
-    resource: ec2.Instance.AssociationParameter
+class KWOSInstanceAssociationParameter3(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = InstanceName
 
 
-class KWOSInstanceAssociationParameter4:
-    resource: ec2.Instance.AssociationParameter
+class KWOSInstanceAssociationParameter4(ec2.Instance.AssociationParameter):
     key = 'BudgetCode'
     value = BudgetCode
 
 
-class KWOSInstanceAssociationParameter5:
-    resource: ec2.Instance.AssociationParameter
+class KWOSInstanceAssociationParameter5(ec2.Instance.AssociationParameter):
     key = 'TestTarget'
     value = TestTarget
 
 
-class KWOSInstanceAssociationParameter6:
-    resource: ec2.Instance.AssociationParameter
+class KWOSInstanceAssociationParameter6(ec2.Instance.AssociationParameter):
     key = 'AgentID'
     value = AgentID
 
 
-class KWOSInstanceAssociationParameter7:
-    resource: ec2.Instance.AssociationParameter
+class KWOSInstanceAssociationParameter7(ec2.Instance.AssociationParameter):
     key = 'IsMaster'
     value = IsMaster
 
 
-class KWOSInstanceAssociationParameter8:
-    resource: ec2.Instance.AssociationParameter
+class KWOSInstanceAssociationParameter8(ec2.Instance.AssociationParameter):
     key = 'MasterID'
     value = MasterID
 

@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class DirectoryMonitoringTopicSubscription:
-    resource: sns.Topic.Subscription
+class DirectoryMonitoringTopicSubscription(sns.Topic.Subscription):
     endpoint = DirectoryMonitoringEmail
     protocol = 'email'
 

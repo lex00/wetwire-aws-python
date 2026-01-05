@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class S3TriggerLambdaFunctionCode:
-    resource: lambda_.Function.Code
+class S3TriggerLambdaFunctionCode(lambda_.Function.Code):
     zip_file = """import json
 def lambda_handler(event,context):
     print(event)

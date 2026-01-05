@@ -3,37 +3,31 @@
 from . import *  # noqa: F403
 
 
-class S3BucketNotificationServerSideEncryptionByDefault:
-    resource: s3.Bucket.ServerSideEncryptionByDefault
+class S3BucketNotificationServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
-class S3BucketNotificationServerSideEncryptionRule:
-    resource: s3.Bucket.ServerSideEncryptionRule
+class S3BucketNotificationServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
     server_side_encryption_by_default = S3BucketNotificationServerSideEncryptionByDefault
 
 
-class S3BucketNotificationBucketEncryption:
-    resource: s3.Bucket.BucketEncryption
+class S3BucketNotificationBucketEncryption(s3.Bucket.BucketEncryption):
     server_side_encryption_configuration = [S3BucketNotificationServerSideEncryptionRule]
 
 
-class S3BucketNotificationPublicAccessBlockConfiguration:
-    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
+class S3BucketNotificationPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
     restrict_public_buckets = True
 
 
-class S3BucketNotificationLambdaConfiguration:
-    resource: s3.Bucket.LambdaConfiguration
+class S3BucketNotificationLambdaConfiguration(s3.Bucket.LambdaConfiguration):
     event = 's3:ObjectCreated:Put'
     function = S3TriggerLambdaFunction.Arn
 
 
-class S3BucketNotificationNotificationConfiguration:
-    resource: s3.Bucket.NotificationConfiguration
+class S3BucketNotificationNotificationConfiguration(s3.Bucket.NotificationConfiguration):
     lambda_configurations = [S3BucketNotificationLambdaConfiguration]
 
 

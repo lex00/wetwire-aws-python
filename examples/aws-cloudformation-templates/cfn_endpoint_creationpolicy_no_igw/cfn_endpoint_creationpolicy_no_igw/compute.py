@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class PrivateInstanceAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class PrivateInstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'Private'
 

@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class PipelineRoleAllowStatement0:
-    resource: PolicyStatement
+class PipelineRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['codepipeline.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class PipelineRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class PipelineRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [PipelineRoleAllowStatement0]
 
 
-class PipelineRoleAllowStatement0_1:
-    resource: PolicyStatement
+class PipelineRoleAllowStatement0_1(PolicyStatement):
     action = [
         'codecommit:GetBranch',
         'codecommit:GetCommit',
@@ -27,25 +24,21 @@ class PipelineRoleAllowStatement0_1:
     resource_arn = [ImportValue(Sub('${CodeBuildStack}-CodeCommitArn'))]
 
 
-class PipelineRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class PipelineRolePolicies0PolicyDocument(PolicyDocument):
     statement = [PipelineRoleAllowStatement0_1]
 
 
-class PipelineRolePolicy:
-    resource: iam.User.Policy
+class PipelineRolePolicy(iam.User.Policy):
     policy_name = 'CanAccessCodeCommit'
     policy_document = PipelineRolePolicies0PolicyDocument
 
 
-class PipelineRoleAllowStatement0_2:
-    resource: PolicyStatement
+class PipelineRoleAllowStatement0_2(PolicyStatement):
     action = 's3:ListBucket'
     resource_arn = '*'
 
 
-class PipelineRoleAllowStatement1:
-    resource: PolicyStatement
+class PipelineRoleAllowStatement1(PolicyStatement):
     action = [
         's3:GetObject',
         's3:GetObjectVersion',
@@ -64,19 +57,16 @@ class PipelineRoleAllowStatement1:
     ]
 
 
-class PipelineRolePolicies1PolicyDocument:
-    resource: PolicyDocument
+class PipelineRolePolicies1PolicyDocument(PolicyDocument):
     statement = [PipelineRoleAllowStatement0_2, PipelineRoleAllowStatement1]
 
 
-class PipelineRolePolicy1:
-    resource: iam.User.Policy
+class PipelineRolePolicy1(iam.User.Policy):
     policy_name = 'CanAccessS3'
     policy_document = PipelineRolePolicies1PolicyDocument
 
 
-class PipelineRoleAllowStatement0_3:
-    resource: PolicyStatement
+class PipelineRoleAllowStatement0_3(PolicyStatement):
     action = [
         'codebuild:BatchGetBuilds',
         'codebuild:StartBuild',
@@ -87,13 +77,11 @@ class PipelineRoleAllowStatement0_3:
     ]
 
 
-class PipelineRolePolicies2PolicyDocument:
-    resource: PolicyDocument
+class PipelineRolePolicies2PolicyDocument(PolicyDocument):
     statement = [PipelineRoleAllowStatement0_3]
 
 
-class PipelineRolePolicy2:
-    resource: iam.User.Policy
+class PipelineRolePolicy2(iam.User.Policy):
     policy_name = 'CanStartCodeBuild'
     policy_document = PipelineRolePolicies2PolicyDocument
 

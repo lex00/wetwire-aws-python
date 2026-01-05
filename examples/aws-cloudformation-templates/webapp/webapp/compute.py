@@ -1,38 +1,14 @@
-"""Compute resources: TestResourceHandler, JwtResourceHandler, TestResourceRootPermission, JwtResourceRootPermission, JwtResourcePermission, TestResourcePermission."""
+"""Compute resources: JwtResourceHandler, JwtResourceRootPermission, TestResourceHandler, TestResourceRootPermission, TestResourcePermission, JwtResourcePermission."""
 
 from . import *  # noqa: F403
 
 
-class TestResourceHandlerContent:
-    resource: lambda_.LayerVersion.Content
-    s3_bucket = LambdaCodeS3Bucket
-    s3_key = LambdaCodeS3Key
-
-
-class TestResourceHandlerEnvironment:
-    resource: lambda_.Function.Environment
-    variables = {
-        'TABLE_NAME': TestTable,
-    }
-
-
-class TestResourceHandler(lambda_.Function):
-    handler = 'bootstrap'
-    function_name = Sub('${AppName}-test-handler')
-    runtime = lambda_.Runtime.PROVIDED_AL2023
-    code = TestResourceHandlerContent
-    role = TestResourceHandlerRole.Arn
-    environment = TestResourceHandlerEnvironment
-
-
-class JwtResourceHandlerContent:
-    resource: lambda_.LayerVersion.Content
+class JwtResourceHandlerContent(lambda_.LayerVersion.Content):
     s3_bucket = 'rain-artifacts-207567786752-us-east-1'
     s3_key = '15d7c92b571beed29cf6c012a96022482eee1df1b477ad528ddc03a4be52c076'
 
 
-class JwtResourceHandlerEnvironment:
-    resource: lambda_.Function.Environment
+class JwtResourceHandlerEnvironment(lambda_.Function.Environment):
     variables = {
         'COGNITO_REGION': 'us-east-1',
         'COGNITO_POOL_ID': CognitoUserPool,
@@ -51,13 +27,6 @@ class JwtResourceHandler(lambda_.Function):
     environment = JwtResourceHandlerEnvironment
 
 
-class TestResourceRootPermission(lambda_.Permission):
-    action = 'lambda:InvokeFunction'
-    function_name = TestResourceHandler.Arn
-    principal = 'apigateway.amazonaws.com'
-    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/')
-
-
 class JwtResourceRootPermission(lambda_.Permission):
     action = 'lambda:InvokeFunction'
     function_name = JwtResourceHandler.Arn
@@ -65,15 +34,42 @@ class JwtResourceRootPermission(lambda_.Permission):
     source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/')
 
 
-class JwtResourcePermission(lambda_.Permission):
+class TestResourceHandlerContent(lambda_.LayerVersion.Content):
+    s3_bucket = LambdaCodeS3Bucket
+    s3_key = LambdaCodeS3Key
+
+
+class TestResourceHandlerEnvironment(lambda_.Function.Environment):
+    variables = {
+        'TABLE_NAME': TestTable,
+    }
+
+
+class TestResourceHandler(lambda_.Function):
+    handler = 'bootstrap'
+    function_name = Sub('${AppName}-test-handler')
+    runtime = lambda_.Runtime.PROVIDED_AL2023
+    code = TestResourceHandlerContent
+    role = TestResourceHandlerRole.Arn
+    environment = TestResourceHandlerEnvironment
+
+
+class TestResourceRootPermission(lambda_.Permission):
     action = 'lambda:InvokeFunction'
-    function_name = JwtResourceHandler.Arn
+    function_name = TestResourceHandler.Arn
     principal = 'apigateway.amazonaws.com'
-    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/*')
+    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/')
 
 
 class TestResourcePermission(lambda_.Permission):
     action = 'lambda:InvokeFunction'
     function_name = TestResourceHandler.Arn
+    principal = 'apigateway.amazonaws.com'
+    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/*')
+
+
+class JwtResourcePermission(lambda_.Permission):
+    action = 'lambda:InvokeFunction'
+    function_name = JwtResourceHandler.Arn
     principal = 'apigateway.amazonaws.com'
     source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/*')

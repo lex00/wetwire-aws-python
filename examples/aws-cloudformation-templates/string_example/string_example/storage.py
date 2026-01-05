@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class S3BucketTagFilter:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter(s3.Bucket.TagFilter):
     key = 'Upper'
     value = Transform(name='String', parameters={
     'InputString': InputString,
@@ -12,8 +11,7 @@ class S3BucketTagFilter:
 })
 
 
-class S3BucketTagFilter1:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter1(s3.Bucket.TagFilter):
     key = 'Lower'
     value = Transform(name='String', parameters={
     'InputString': InputString,
@@ -21,8 +19,7 @@ class S3BucketTagFilter1:
 })
 
 
-class S3BucketTagFilter2:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter2(s3.Bucket.TagFilter):
     key = 'Capitalize'
     value = Transform(name='String', parameters={
     'InputString': InputString,
@@ -30,8 +27,7 @@ class S3BucketTagFilter2:
 })
 
 
-class S3BucketTagFilter3:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter3(s3.Bucket.TagFilter):
     key = 'Title'
     value = Transform(name='String', parameters={
     'InputString': InputString,
@@ -39,8 +35,7 @@ class S3BucketTagFilter3:
 })
 
 
-class S3BucketTagFilter4:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter4(s3.Bucket.TagFilter):
     key = 'Replace'
     value = Transform(name='String', parameters={
     'InputString': InputString,
@@ -50,8 +45,7 @@ class S3BucketTagFilter4:
 })
 
 
-class S3BucketTagFilter5:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter5(s3.Bucket.TagFilter):
     key = 'Strip'
     value = Transform(name='String', parameters={
     'InputString': InputString,
@@ -60,8 +54,7 @@ class S3BucketTagFilter5:
 })
 
 
-class S3BucketTagFilter6:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter6(s3.Bucket.TagFilter):
     key = 'ShortenLeft'
     value = Transform(name='String', parameters={
     'InputString': InputString,
@@ -71,8 +64,7 @@ class S3BucketTagFilter6:
 })
 
 
-class S3BucketTagFilter7:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter7(s3.Bucket.TagFilter):
     key = 'ShortenRight'
     value = Transform(name='String', parameters={
     'InputString': InputString,

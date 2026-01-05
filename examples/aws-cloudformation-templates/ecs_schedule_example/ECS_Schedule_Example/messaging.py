@@ -3,14 +3,12 @@
 from . import *  # noqa: F403
 
 
-class ECSScheduledTaskEcsParameters:
-    resource: events.Rule.EcsParameters
+class ECSScheduledTaskEcsParameters(events.Rule.EcsParameters):
     task_count = SchedulerTasksCount
     task_definition_arn = TaskDefinition
 
 
-class ECSScheduledTaskTarget:
-    resource: events.Rule.Target
+class ECSScheduledTaskTarget(events.Rule.Target):
     arn = ECSCluster.Arn
     id = 'Target1'
     role_arn = ECSEventRole.Arn

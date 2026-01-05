@@ -3,14 +3,12 @@
 from . import *  # noqa: F403
 
 
-class ASCPrivateLinkLambdaFunctionCapacityProviderVpcConfig:
-    resource: lambda_.CapacityProvider.CapacityProviderVpcConfig
+class ASCPrivateLinkLambdaFunctionCapacityProviderVpcConfig(lambda_.CapacityProvider.CapacityProviderVpcConfig):
     subnet_ids = Subnets
     security_group_ids = SecurityGroups
 
 
-class ASCPrivateLinkLambdaFunctionCode:
-    resource: lambda_.Function.Code
+class ASCPrivateLinkLambdaFunctionCode(lambda_.Function.Code):
     zip_file = Sub("""import boto3
 import cfnresponse
 import logging

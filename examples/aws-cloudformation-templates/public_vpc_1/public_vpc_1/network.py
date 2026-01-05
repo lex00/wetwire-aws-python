@@ -1,4 +1,4 @@
-"""Network resources: VPC, PublicLoadBalancerSG, EcsHostSecurityGroup, EcsSecurityGroupIngressFromPublicALB, InternetGateway, GatewayAttachement, PublicRouteTable, PublicRoute, PublicSubnetOne, PublicSubnetOneRouteTableAssociation, PublicSubnetTwo, DummyTargetGroupPublic, PublicLoadBalancer, PublicSubnetTwoRouteTableAssociation, EcsSecurityGroupIngressFromSelf, PublicLoadBalancerListener."""
+"""Network resources: VPC, PublicSubnetTwo, PublicRouteTable, PublicSubnetTwoRouteTableAssociation, EcsHostSecurityGroup, PublicLoadBalancerSG, EcsSecurityGroupIngressFromPublicALB, PublicSubnetOne, PublicSubnetOneRouteTableAssociation, PublicLoadBalancer, InternetGateway, GatewayAttachement, PublicRoute, EcsSecurityGroupIngressFromSelf, DummyTargetGroupPublic, PublicLoadBalancerListener."""
 
 from . import *  # noqa: F403
 
@@ -9,8 +9,28 @@ class VPC(ec2.VPC):
     cidr_block = FindInMap("SubnetConfig", 'VPC', 'CIDR')
 
 
-class PublicLoadBalancerSGEgress:
-    resource: ec2.SecurityGroup.Egress
+class PublicSubnetTwo(ec2.Subnet):
+    availability_zone = Select(1, GetAZs(AWS_REGION))
+    vpc_id = VPC
+    cidr_block = FindInMap("SubnetConfig", 'PublicTwo', 'CIDR')
+    map_public_ip_on_launch = True
+
+
+class PublicRouteTable(ec2.RouteTable):
+    vpc_id = VPC
+
+
+class PublicSubnetTwoRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    subnet_id = PublicSubnetTwo
+    route_table_id = PublicRouteTable
+
+
+class EcsHostSecurityGroup(ec2.SecurityGroup):
+    group_description = 'Access to the ECS hosts that run containers'
+    vpc_id = VPC
+
+
+class PublicLoadBalancerSGEgress(ec2.SecurityGroup.Egress):
     cidr_ip = '0.0.0.0/0'
     ip_protocol = -1
 
@@ -21,36 +41,11 @@ class PublicLoadBalancerSG(ec2.SecurityGroup):
     security_group_ingress = [PublicLoadBalancerSGEgress]
 
 
-class EcsHostSecurityGroup(ec2.SecurityGroup):
-    group_description = 'Access to the ECS hosts that run containers'
-    vpc_id = VPC
-
-
 class EcsSecurityGroupIngressFromPublicALB(ec2.SecurityGroupIngress):
     description = 'Ingress from the public ALB'
     group_id = EcsHostSecurityGroup
     ip_protocol = -1
     source_security_group_id = PublicLoadBalancerSG
-
-
-class InternetGateway(ec2.InternetGateway):
-    pass
-
-
-class GatewayAttachement(ec2.VPCGatewayAttachment):
-    vpc_id = VPC
-    internet_gateway_id = InternetGateway
-
-
-class PublicRouteTable(ec2.RouteTable):
-    vpc_id = VPC
-
-
-class PublicRoute(ec2.Route):
-    route_table_id = PublicRouteTable
-    destination_cidr_block = '0.0.0.0/0'
-    gateway_id = InternetGateway
-    depends_on = [GatewayAttachement]
 
 
 class PublicSubnetOne(ec2.Subnet):
@@ -65,11 +60,39 @@ class PublicSubnetOneRouteTableAssociation(ec2.SubnetRouteTableAssociation):
     route_table_id = PublicRouteTable
 
 
-class PublicSubnetTwo(ec2.Subnet):
-    availability_zone = Select(1, GetAZs(AWS_REGION))
+class PublicLoadBalancerTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'idle_timeout.timeout_seconds'
+    value = '30'
+
+
+class PublicLoadBalancer(elasticloadbalancingv2.LoadBalancer):
+    scheme = 'internet-facing'
+    load_balancer_attributes = [PublicLoadBalancerTargetGroupAttribute]
+    subnets = [PublicSubnetOne, PublicSubnetTwo]
+    security_groups = [PublicLoadBalancerSG]
+
+
+class InternetGateway(ec2.InternetGateway):
+    pass
+
+
+class GatewayAttachement(ec2.VPCGatewayAttachment):
     vpc_id = VPC
-    cidr_block = FindInMap("SubnetConfig", 'PublicTwo', 'CIDR')
-    map_public_ip_on_launch = True
+    internet_gateway_id = InternetGateway
+
+
+class PublicRoute(ec2.Route):
+    route_table_id = PublicRouteTable
+    destination_cidr_block = '0.0.0.0/0'
+    gateway_id = InternetGateway
+    depends_on = [GatewayAttachement]
+
+
+class EcsSecurityGroupIngressFromSelf(ec2.SecurityGroupIngress):
+    description = 'Ingress from other hosts in the same security group'
+    group_id = EcsHostSecurityGroup
+    ip_protocol = -1
+    source_security_group_id = EcsHostSecurityGroup
 
 
 class DummyTargetGroupPublic(elasticloadbalancingv2.TargetGroup):
@@ -88,33 +111,7 @@ class DummyTargetGroupPublic(elasticloadbalancingv2.TargetGroup):
     vpc_id = VPC
 
 
-class PublicLoadBalancerTargetGroupAttribute:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
-    key = 'idle_timeout.timeout_seconds'
-    value = '30'
-
-
-class PublicLoadBalancer(elasticloadbalancingv2.LoadBalancer):
-    scheme = 'internet-facing'
-    load_balancer_attributes = [PublicLoadBalancerTargetGroupAttribute]
-    subnets = [PublicSubnetOne, PublicSubnetTwo]
-    security_groups = [PublicLoadBalancerSG]
-
-
-class PublicSubnetTwoRouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    subnet_id = PublicSubnetTwo
-    route_table_id = PublicRouteTable
-
-
-class EcsSecurityGroupIngressFromSelf(ec2.SecurityGroupIngress):
-    description = 'Ingress from other hosts in the same security group'
-    group_id = EcsHostSecurityGroup
-    ip_protocol = -1
-    source_security_group_id = EcsHostSecurityGroup
-
-
-class PublicLoadBalancerListenerAction:
-    resource: elasticloadbalancingv2.ListenerRule.Action
+class PublicLoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):
     target_group_arn = DummyTargetGroupPublic
     type_ = 'forward'
 

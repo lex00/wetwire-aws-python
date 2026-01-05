@@ -171,10 +171,9 @@ class TestBlockModeWithPolicies:
         return generate_code(template)
 
     def test_has_wrapper_classes_for_policy(self, code):
-        # Should have wrapper classes for policy structures
-        # Invisible decorator pattern: no @wetwire_aws needed
-        assert "class MyBucketPolicyPolicyDocument:" in code
-        assert "class MyBucketPolicyAllowStatement0:" in code
+        # Should have wrapper classes for policy structures using inheritance pattern
+        assert "class MyBucketPolicyPolicyDocument(PolicyDocument):" in code
+        assert "class MyBucketPolicyAllowStatement0(PolicyStatement):" in code
 
     def test_generated_code_is_valid_python(self, code):
         compile(code, "<test>", "exec")
@@ -309,3 +308,26 @@ class TestIntrinsicSimplifications:
         intrinsic = IRIntrinsic(IntrinsicType.GET_ATT, ("UnknownResource", "Arn"))
         with pytest.raises(ValueError, match="Unknown GetAtt target"):
             intrinsic_to_python(intrinsic, ctx)
+
+    def test_simple_getatt_uses_no_parens(self, ctx):
+        """Simple GetAtt like Resource.Arn uses no-parens pattern."""
+        intrinsic = IRIntrinsic(IntrinsicType.GET_ATT, ("MyResource", "Arn"))
+        result = intrinsic_to_python(intrinsic, ctx)
+        assert result == "MyResource.Arn"
+
+    def test_nested_getatt_uses_explicit_getatt(self, ctx):
+        """Nested GetAtt like Endpoint.Address uses explicit GetAtt().
+
+        This is necessary because PropertyType class attributes (e.g., DBInstance.Endpoint)
+        shadow the metaclass __getattr__ that enables no-parens references.
+        """
+        intrinsic = IRIntrinsic(IntrinsicType.GET_ATT, ("MyResource", "Endpoint.Address"))
+        result = intrinsic_to_python(intrinsic, ctx)
+        assert result == 'GetAtt("MyResource", "Endpoint.Address")'
+        assert "GetAtt" in ctx.intrinsic_imports
+
+    def test_deeply_nested_getatt(self, ctx):
+        """Deeply nested GetAtt patterns also use explicit GetAtt()."""
+        intrinsic = IRIntrinsic(IntrinsicType.GET_ATT, ("MyResource", "A.B.C"))
+        result = intrinsic_to_python(intrinsic, ctx)
+        assert result == 'GetAtt("MyResource", "A.B.C")'

@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class DBCredentialGenerateSecretString:
-    resource: secretsmanager.Secret.GenerateSecretString
+class DBCredentialGenerateSecretString(secretsmanager.Secret.GenerateSecretString):
     password_length = 16
     exclude_characters = '"@/\\'
     require_each_included_type = True

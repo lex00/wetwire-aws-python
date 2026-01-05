@@ -3,15 +3,13 @@
 from . import *  # noqa: F403
 
 
-class ElasticLoadBalancerListeners:
-    resource: elasticloadbalancing.LoadBalancer.Listeners
+class ElasticLoadBalancerListeners(elasticloadbalancing.LoadBalancer.Listeners):
     load_balancer_port = '80'
     instance_port = '80'
     protocol = 'HTTP'
 
 
-class ElasticLoadBalancerHealthCheck:
-    resource: elasticloadbalancing.LoadBalancer.HealthCheck
+class ElasticLoadBalancerHealthCheck(elasticloadbalancing.LoadBalancer.HealthCheck):
     target = 'HTTP:80/'
     healthy_threshold = '3'
     unhealthy_threshold = '5'
@@ -26,17 +24,15 @@ class ElasticLoadBalancer(elasticloadbalancing.LoadBalancer):
     health_check = ElasticLoadBalancerHealthCheck
 
 
-class InstanceSecurityGroupIngress:
-    resource: ec2.SecurityGroup.Ingress
+class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
     ip_protocol = 'tcp'
     from_port = '80'
     to_port = '80'
-    source_security_group_owner_id = ElasticLoadBalancer.SourceSecurityGroup.OwnerAlias
-    source_security_group_name = ElasticLoadBalancer.SourceSecurityGroup.GroupName
+    source_security_group_owner_id = GetAtt("ElasticLoadBalancer", "SourceSecurityGroup.OwnerAlias")
+    source_security_group_name = GetAtt("ElasticLoadBalancer", "SourceSecurityGroup.GroupName")
 
 
-class InstanceSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = '22'
     to_port = '22'

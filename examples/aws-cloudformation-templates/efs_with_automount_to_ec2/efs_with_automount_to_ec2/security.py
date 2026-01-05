@@ -3,27 +3,23 @@
 from . import *  # noqa: F403
 
 
-class IAMAssumeInstanceRoleAllowStatement0:
-    resource: PolicyStatement
+class IAMAssumeInstanceRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ec2.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class IAMAssumeInstanceRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class IAMAssumeInstanceRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [IAMAssumeInstanceRoleAllowStatement0]
 
 
-class IAMAssumeInstanceRoleAllowStatement0_1:
-    resource: PolicyStatement
+class IAMAssumeInstanceRoleAllowStatement0_1(PolicyStatement):
     action = ['ec2:DescribeTags']
     resource_arn = '*'
 
 
-class IAMAssumeInstanceRoleAllowStatement1:
-    resource: PolicyStatement
+class IAMAssumeInstanceRoleAllowStatement1(PolicyStatement):
     action = [
         's3:Get*',
         's3:List*',
@@ -31,19 +27,16 @@ class IAMAssumeInstanceRoleAllowStatement1:
     resource_arn = '*'
 
 
-class IAMAssumeInstanceRoleAllowStatement2:
-    resource: PolicyStatement
+class IAMAssumeInstanceRoleAllowStatement2(PolicyStatement):
     action = 'logs:*'
     resource_arn = '*'
 
 
-class IAMAssumeInstanceRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class IAMAssumeInstanceRolePolicies0PolicyDocument(PolicyDocument):
     statement = [IAMAssumeInstanceRoleAllowStatement0_1, IAMAssumeInstanceRoleAllowStatement1, IAMAssumeInstanceRoleAllowStatement2]
 
 
-class IAMAssumeInstanceRolePolicy:
-    resource: iam.User.Policy
+class IAMAssumeInstanceRolePolicy(iam.User.Policy):
     policy_document = IAMAssumeInstanceRolePolicies0PolicyDocument
     policy_name = Join('-', [
     'IAM',

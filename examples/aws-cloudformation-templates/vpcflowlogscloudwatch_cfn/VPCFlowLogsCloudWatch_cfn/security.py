@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class VPCFlowLogsRoleAllowStatement0:
-    resource: PolicyStatement
+class VPCFlowLogsRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['vpc-flow-logs.amazonaws.com'],
     }
     action = 'sts:AssumeRole'
 
 
-class VPCFlowLogsRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class VPCFlowLogsRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [VPCFlowLogsRoleAllowStatement0]
 
 
-class VPCFlowLogsRoleAllowStatement0_1:
-    resource: PolicyStatement
+class VPCFlowLogsRoleAllowStatement0_1(PolicyStatement):
     sid = 'CloudWatchLogs'
     action = [
         'logs:CreateLogStream',
@@ -28,13 +25,11 @@ class VPCFlowLogsRoleAllowStatement0_1:
     resource_arn = VPCFlowLogsLogGroup.Arn
 
 
-class VPCFlowLogsRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class VPCFlowLogsRolePolicies0PolicyDocument(PolicyDocument):
     statement = [VPCFlowLogsRoleAllowStatement0_1]
 
 
-class VPCFlowLogsRolePolicy:
-    resource: iam.User.Policy
+class VPCFlowLogsRolePolicy(iam.User.Policy):
     policy_name = 'CloudWatchLogGroup'
     policy_document = VPCFlowLogsRolePolicies0PolicyDocument
 

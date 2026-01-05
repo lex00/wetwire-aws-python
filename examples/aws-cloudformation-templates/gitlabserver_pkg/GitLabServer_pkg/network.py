@@ -1,10 +1,9 @@
-"""Network resources: NetworkVPC, NetworkPublicSubnet2, NetworkPrivateSubnet2RouteTable, NetworkPrivateSubnet2Subnet, NetworkPrivateSubnet2RouteTableAssociation, CloudFrontCachePolicy, NetworkPublicSubnet2EIP, NetworkPrivateSubnet1Subnet, NetworkPublicSubnet1, NetworkPublicSubnet1RouteTable, NetworkPublicSubnet1RouteTableAssociation, NetworkPrivateSubnet1RouteTable, NetworkInternetGateway, NetworkVPCGW, NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1EIP, NetworkPublicSubnet1NATGateway, NetworkPrivateSubnet1DefaultRoute, InstanceSecurityGroup, NetworkPublicSubnet2RouteTable, NetworkPublicSubnet2RouteTableAssociation, NetworkPublicSubnet2DefaultRoute, NetworkPublicSubnet2NATGateway, NetworkPrivateSubnet2DefaultRoute, NetworkPrivateSubnet1RouteTableAssociation."""
+"""Network resources: NetworkVPC, NetworkPublicSubnet1, NetworkPublicSubnet1RouteTable, NetworkPublicSubnet1RouteTableAssociation, NetworkInternetGateway, NetworkVPCGW, NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1EIP, NetworkPublicSubnet1NATGateway, CloudFrontCachePolicy, InstanceSecurityGroup, NetworkPrivateSubnet1RouteTable, NetworkPrivateSubnet1DefaultRoute, NetworkPublicSubnet2EIP, NetworkPublicSubnet2RouteTable, NetworkPublicSubnet2, NetworkPublicSubnet2RouteTableAssociation, NetworkPublicSubnet2DefaultRoute, NetworkPublicSubnet2NATGateway, NetworkPrivateSubnet2RouteTable, NetworkPrivateSubnet2DefaultRoute, NetworkPrivateSubnet1Subnet, NetworkPrivateSubnet1RouteTableAssociation, NetworkPrivateSubnet2Subnet, NetworkPrivateSubnet2RouteTableAssociation."""
 
 from . import *  # noqa: F403
 
 
-class NetworkVPCAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class NetworkVPCAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server'
 
@@ -17,114 +16,7 @@ class NetworkVPC(ec2.VPC):
     tags = [NetworkVPCAssociationParameter]
 
 
-class NetworkPublicSubnet2AssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'gitlab-server-public-subnet-2'
-
-
-class NetworkPublicSubnet2(ec2.Subnet):
-    availability_zone = Select(1, GetAZs(AWS_REGION))
-    cidr_block = '10.0.64.0/18'
-    map_public_ip_on_launch = True
-    vpc_id = NetworkVPC
-    tags = [NetworkPublicSubnet2AssociationParameter]
-
-
-class NetworkPrivateSubnet2RouteTableAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'gitlab-server-private-subnet-2-rt'
-
-
-class NetworkPrivateSubnet2RouteTable(ec2.RouteTable):
-    vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet2RouteTableAssociationParameter]
-
-
-class NetworkPrivateSubnet2SubnetAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'gitlab-server-private-subnet-2'
-
-
-class NetworkPrivateSubnet2Subnet(ec2.Subnet):
-    availability_zone = Select(1, GetAZs(AWS_REGION))
-    cidr_block = '10.0.192.0/18'
-    map_public_ip_on_launch = False
-    vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet2SubnetAssociationParameter]
-
-
-class NetworkPrivateSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    route_table_id = NetworkPrivateSubnet2RouteTable
-    subnet_id = NetworkPrivateSubnet2Subnet
-
-
-class CloudFrontCachePolicyCookiesConfig:
-    resource: cloudfront.CachePolicy.CookiesConfig
-    cookie_behavior = 'all'
-
-
-class CloudFrontCachePolicyHeadersConfig:
-    resource: cloudfront.CachePolicy.HeadersConfig
-    header_behavior = 'whitelist'
-    headers = ['Accept-Charset', 'Authorization', 'Origin', 'Accept', 'Referer', 'Host', 'Accept-Language', 'Accept-Encoding', 'Accept-Datetime']
-
-
-class CloudFrontCachePolicyQueryStringsConfig:
-    resource: cloudfront.CachePolicy.QueryStringsConfig
-    query_string_behavior = 'all'
-
-
-class CloudFrontCachePolicyParametersInCacheKeyAndForwardedToOrigin:
-    resource: cloudfront.CachePolicy.ParametersInCacheKeyAndForwardedToOrigin
-    cookies_config = CloudFrontCachePolicyCookiesConfig
-    enable_accept_encoding_gzip = False
-    headers_config = CloudFrontCachePolicyHeadersConfig
-    query_strings_config = CloudFrontCachePolicyQueryStringsConfig
-
-
-class CloudFrontCachePolicyCachePolicyConfig:
-    resource: cloudfront.CachePolicy.CachePolicyConfig
-    default_ttl = 86400
-    max_ttl = 31536000
-    min_ttl = 1
-    name = 'gitlab-server'
-    parameters_in_cache_key_and_forwarded_to_origin = CloudFrontCachePolicyParametersInCacheKeyAndForwardedToOrigin
-
-
-class CloudFrontCachePolicy(cloudfront.CachePolicy):
-    cache_policy_config = CloudFrontCachePolicyCachePolicyConfig
-
-
-class NetworkPublicSubnet2EIPAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'gitlab-server-public-subnet-eip'
-
-
-class NetworkPublicSubnet2EIP(ec2.EIP):
-    domain = 'vpc'
-    tags = [NetworkPublicSubnet2EIPAssociationParameter]
-
-
-class NetworkPrivateSubnet1SubnetAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'gitlab-server-private-subnet-1'
-
-
-class NetworkPrivateSubnet1Subnet(ec2.Subnet):
-    availability_zone = Select(0, GetAZs(AWS_REGION))
-    cidr_block = '10.0.128.0/18'
-    map_public_ip_on_launch = False
-    vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet1SubnetAssociationParameter]
-
-
-class NetworkPublicSubnet1AssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class NetworkPublicSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server-public-subnet-1'
 
@@ -137,8 +29,7 @@ class NetworkPublicSubnet1(ec2.Subnet):
     tags = [NetworkPublicSubnet1AssociationParameter]
 
 
-class NetworkPublicSubnet1RouteTableAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class NetworkPublicSubnet1RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server-public-subnet-1-rt'
 
@@ -153,19 +44,7 @@ class NetworkPublicSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation)
     subnet_id = NetworkPublicSubnet1
 
 
-class NetworkPrivateSubnet1RouteTableAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Name'
-    value = 'gitlab-server-private-subnet-1-rt'
-
-
-class NetworkPrivateSubnet1RouteTable(ec2.RouteTable):
-    vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet1RouteTableAssociationParameter]
-
-
-class NetworkInternetGatewayAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class NetworkInternetGatewayAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server'
 
@@ -186,8 +65,7 @@ class NetworkPublicSubnet1DefaultRoute(ec2.Route):
     depends_on = [NetworkVPCGW]
 
 
-class NetworkPublicSubnet1EIPAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class NetworkPublicSubnet1EIPAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server-public-subnet-1-eip'
 
@@ -197,8 +75,7 @@ class NetworkPublicSubnet1EIP(ec2.EIP):
     tags = [NetworkPublicSubnet1EIPAssociationParameter]
 
 
-class NetworkPublicSubnet1NATGatewayAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class NetworkPublicSubnet1NATGatewayAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server-public-subnet-1-ngw'
 
@@ -210,14 +87,39 @@ class NetworkPublicSubnet1NATGateway(ec2.NatGateway):
     depends_on = [NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1RouteTableAssociation]
 
 
-class NetworkPrivateSubnet1DefaultRoute(ec2.Route):
-    destination_cidr_block = '0.0.0.0/0'
-    nat_gateway_id = NetworkPublicSubnet1NATGateway
-    route_table_id = NetworkPrivateSubnet1RouteTable
+class CloudFrontCachePolicyCookiesConfig(cloudfront.CachePolicy.CookiesConfig):
+    cookie_behavior = 'all'
 
 
-class InstanceSecurityGroupIngress:
-    resource: ec2.SecurityGroup.Ingress
+class CloudFrontCachePolicyHeadersConfig(cloudfront.CachePolicy.HeadersConfig):
+    header_behavior = 'whitelist'
+    headers = ['Accept-Charset', 'Authorization', 'Origin', 'Accept', 'Referer', 'Host', 'Accept-Language', 'Accept-Encoding', 'Accept-Datetime']
+
+
+class CloudFrontCachePolicyQueryStringsConfig(cloudfront.CachePolicy.QueryStringsConfig):
+    query_string_behavior = 'all'
+
+
+class CloudFrontCachePolicyParametersInCacheKeyAndForwardedToOrigin(cloudfront.CachePolicy.ParametersInCacheKeyAndForwardedToOrigin):
+    cookies_config = CloudFrontCachePolicyCookiesConfig
+    enable_accept_encoding_gzip = False
+    headers_config = CloudFrontCachePolicyHeadersConfig
+    query_strings_config = CloudFrontCachePolicyQueryStringsConfig
+
+
+class CloudFrontCachePolicyCachePolicyConfig(cloudfront.CachePolicy.CachePolicyConfig):
+    default_ttl = 86400
+    max_ttl = 31536000
+    min_ttl = 1
+    name = 'gitlab-server'
+    parameters_in_cache_key_and_forwarded_to_origin = CloudFrontCachePolicyParametersInCacheKeyAndForwardedToOrigin
+
+
+class CloudFrontCachePolicy(cloudfront.CachePolicy):
+    cache_policy_config = CloudFrontCachePolicyCachePolicyConfig
+
+
+class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
     description = 'Allow HTTP from com.amazonaws.global.cloudfront.origin-facing'
     ip_protocol = 'tcp'
     from_port = 80
@@ -225,15 +127,13 @@ class InstanceSecurityGroupIngress:
     source_prefix_list_id = FindInMap("Prefixes", AWS_REGION, 'PrefixList')
 
 
-class InstanceSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
     cidr_ip = '0.0.0.0/0'
     description = 'Allow all outbound traffic by default'
     ip_protocol = '-1'
 
 
-class InstanceSecurityGroupAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class InstanceSecurityGroupAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server-isg'
 
@@ -246,8 +146,33 @@ class InstanceSecurityGroup(ec2.SecurityGroup):
     vpc_id = NetworkVPC
 
 
-class NetworkPublicSubnet2RouteTableAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class NetworkPrivateSubnet1RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-private-subnet-1-rt'
+
+
+class NetworkPrivateSubnet1RouteTable(ec2.RouteTable):
+    vpc_id = NetworkVPC
+    tags = [NetworkPrivateSubnet1RouteTableAssociationParameter]
+
+
+class NetworkPrivateSubnet1DefaultRoute(ec2.Route):
+    destination_cidr_block = '0.0.0.0/0'
+    nat_gateway_id = NetworkPublicSubnet1NATGateway
+    route_table_id = NetworkPrivateSubnet1RouteTable
+
+
+class NetworkPublicSubnet2EIPAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-public-subnet-eip'
+
+
+class NetworkPublicSubnet2EIP(ec2.EIP):
+    domain = 'vpc'
+    tags = [NetworkPublicSubnet2EIPAssociationParameter]
+
+
+class NetworkPublicSubnet2RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server-public-subnet-2-rt'
 
@@ -255,6 +180,19 @@ class NetworkPublicSubnet2RouteTableAssociationParameter:
 class NetworkPublicSubnet2RouteTable(ec2.RouteTable):
     vpc_id = NetworkVPC
     tags = [NetworkPublicSubnet2RouteTableAssociationParameter]
+
+
+class NetworkPublicSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-public-subnet-2'
+
+
+class NetworkPublicSubnet2(ec2.Subnet):
+    availability_zone = Select(1, GetAZs(AWS_REGION))
+    cidr_block = '10.0.64.0/18'
+    map_public_ip_on_launch = True
+    vpc_id = NetworkVPC
+    tags = [NetworkPublicSubnet2AssociationParameter]
 
 
 class NetworkPublicSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
@@ -269,8 +207,7 @@ class NetworkPublicSubnet2DefaultRoute(ec2.Route):
     depends_on = [NetworkVPCGW]
 
 
-class NetworkPublicSubnet2NATGatewayAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class NetworkPublicSubnet2NATGatewayAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server-public-subnet-ngw'
 
@@ -282,12 +219,53 @@ class NetworkPublicSubnet2NATGateway(ec2.NatGateway):
     depends_on = [NetworkPublicSubnet2DefaultRoute, NetworkPublicSubnet2RouteTableAssociation]
 
 
+class NetworkPrivateSubnet2RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-private-subnet-2-rt'
+
+
+class NetworkPrivateSubnet2RouteTable(ec2.RouteTable):
+    vpc_id = NetworkVPC
+    tags = [NetworkPrivateSubnet2RouteTableAssociationParameter]
+
+
 class NetworkPrivateSubnet2DefaultRoute(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
     nat_gateway_id = NetworkPublicSubnet2NATGateway
     route_table_id = NetworkPrivateSubnet2RouteTable
 
 
+class NetworkPrivateSubnet1SubnetAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-private-subnet-1'
+
+
+class NetworkPrivateSubnet1Subnet(ec2.Subnet):
+    availability_zone = Select(0, GetAZs(AWS_REGION))
+    cidr_block = '10.0.128.0/18'
+    map_public_ip_on_launch = False
+    vpc_id = NetworkVPC
+    tags = [NetworkPrivateSubnet1SubnetAssociationParameter]
+
+
 class NetworkPrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
     route_table_id = NetworkPrivateSubnet1RouteTable
     subnet_id = NetworkPrivateSubnet1Subnet
+
+
+class NetworkPrivateSubnet2SubnetAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-private-subnet-2'
+
+
+class NetworkPrivateSubnet2Subnet(ec2.Subnet):
+    availability_zone = Select(1, GetAZs(AWS_REGION))
+    cidr_block = '10.0.192.0/18'
+    map_public_ip_on_launch = False
+    vpc_id = NetworkVPC
+    tags = [NetworkPrivateSubnet2SubnetAssociationParameter]
+
+
+class NetworkPrivateSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = NetworkPrivateSubnet2RouteTable
+    subnet_id = NetworkPrivateSubnet2Subnet

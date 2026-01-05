@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class RestApiEndpointConfiguration:
-    resource: apigateway.DomainName.EndpointConfiguration
+class RestApiEndpointConfiguration(apigateway.DomainName.EndpointConfiguration):
     types = [ApiType]
 
 
@@ -12,12 +11,6 @@ class RestApi(apigateway.RestApi):
     description = 'My Rest API'
     name = 'MyApi'
     endpoint_configuration = RestApiEndpointConfiguration
-
-
-class ApiResource(apigateway.Resource):
-    parent_id = RestApi.RootResourceId
-    rest_api_id = RestApi
-    path_part = '{city}'
 
 
 class RequestModel(apigateway.Model):
@@ -36,18 +29,21 @@ class RequestModel(apigateway.Model):
     }
 
 
-class ApiMethodMethodResponse:
-    resource: apigateway.Method.MethodResponse
+class ApiResource(apigateway.Resource):
+    parent_id = RestApi.RootResourceId
+    rest_api_id = RestApi
+    path_part = '{city}'
+
+
+class ApiMethodMethodResponse(apigateway.Method.MethodResponse):
     status_code = '200'
 
 
-class ApiMethodIntegrationResponse:
-    resource: apigateway.Method.IntegrationResponse
+class ApiMethodIntegrationResponse(apigateway.Method.IntegrationResponse):
     status_code = '200'
 
 
-class ApiMethodIntegration:
-    resource: apigateway.Method.Integration
+class ApiMethodIntegration(apigateway.Method.Integration):
     integration_http_method = 'POST'
     type_ = 'AWS'
     timeout_in_millis = ApigatewayTimeout

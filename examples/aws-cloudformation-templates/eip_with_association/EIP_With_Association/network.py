@@ -7,8 +7,7 @@ class IPAddress(ec2.EIP):
     pass
 
 
-class InstanceSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = '22'
     to_port = '22'

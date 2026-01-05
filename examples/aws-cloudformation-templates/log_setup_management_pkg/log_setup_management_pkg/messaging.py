@@ -7,8 +7,7 @@ class DeadLetterQueue(sqs.Queue):
     queue_name = Sub('${CentralEventBusName}-DLQ')
 
 
-class CentralEventBusDeadLetterConfig:
-    resource: events.Rule.DeadLetterConfig
+class CentralEventBusDeadLetterConfig(events.Rule.DeadLetterConfig):
     arn = DeadLetterQueue.Arn
 
 

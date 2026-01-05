@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class S3BucketTagFilter:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter(s3.Bucket.TagFilter):
     key = 'DatetimeNow'
     value = Transform(name='DatetimeNow', parameters={
     'format': '%Y-%m-%dT%H:%M:%SZ',

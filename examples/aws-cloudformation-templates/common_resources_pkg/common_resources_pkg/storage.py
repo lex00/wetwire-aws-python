@@ -1,54 +1,9 @@
-"""Storage resources: StorageBucketPolicyPolicy, StorageReplicaBucketPolicyPolicy, StorageReplicaBucket, StorageLogBucket, StorageBucket, StorageLogBucketPolicyPolicy."""
+"""Storage resources: StorageReplicaBucketPolicyPolicy, StorageBucketPolicyPolicy, StorageReplicaBucket, StorageLogBucket, StorageBucket, StorageLogBucketPolicyPolicy."""
 
 from . import *  # noqa: F403
 
 
-class StorageBucketPolicyPolicyDenyStatement0:
-    resource: DenyStatement
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class StorageBucketPolicyPolicyAllowStatement1:
-    resource: PolicyStatement
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class StorageBucketPolicyPolicyPolicyDocument:
-    resource: PolicyDocument
-    statement = [StorageBucketPolicyPolicyDenyStatement0, StorageBucketPolicyPolicyAllowStatement1]
-
-
-class StorageBucketPolicyPolicy(s3.BucketPolicy):
-    bucket = StorageBucket
-    policy_document = StorageBucketPolicyPolicyPolicyDocument
-
-
-class StorageReplicaBucketPolicyPolicyDenyStatement0:
-    resource: DenyStatement
+class StorageReplicaBucketPolicyPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
     }
@@ -64,8 +19,7 @@ class StorageReplicaBucketPolicyPolicyDenyStatement0:
     }
 
 
-class StorageReplicaBucketPolicyPolicyAllowStatement1:
-    resource: PolicyStatement
+class StorageReplicaBucketPolicyPolicyAllowStatement1(PolicyStatement):
     principal = {
         'Service': 'logging.s3.amazonaws.com',
     }
@@ -81,8 +35,7 @@ class StorageReplicaBucketPolicyPolicyAllowStatement1:
     }
 
 
-class StorageReplicaBucketPolicyPolicyPolicyDocument:
-    resource: PolicyDocument
+class StorageReplicaBucketPolicyPolicyPolicyDocument(PolicyDocument):
     statement = [StorageReplicaBucketPolicyPolicyDenyStatement0, StorageReplicaBucketPolicyPolicyAllowStatement1]
 
 
@@ -91,31 +44,67 @@ class StorageReplicaBucketPolicyPolicy(s3.BucketPolicy):
     policy_document = StorageReplicaBucketPolicyPolicyPolicyDocument
 
 
-class StorageReplicaBucketServerSideEncryptionByDefault:
-    resource: s3.Bucket.ServerSideEncryptionByDefault
+class StorageBucketPolicyPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class StorageBucketPolicyPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class StorageBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [StorageBucketPolicyPolicyDenyStatement0, StorageBucketPolicyPolicyAllowStatement1]
+
+
+class StorageBucketPolicyPolicy(s3.BucketPolicy):
+    bucket = StorageBucket
+    policy_document = StorageBucketPolicyPolicyPolicyDocument
+
+
+class StorageReplicaBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
-class StorageReplicaBucketServerSideEncryptionRule:
-    resource: s3.Bucket.ServerSideEncryptionRule
+class StorageReplicaBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
     server_side_encryption_by_default = StorageReplicaBucketServerSideEncryptionByDefault
 
 
-class StorageReplicaBucketBucketEncryption:
-    resource: s3.Bucket.BucketEncryption
+class StorageReplicaBucketBucketEncryption(s3.Bucket.BucketEncryption):
     server_side_encryption_configuration = [StorageReplicaBucketServerSideEncryptionRule]
 
 
-class StorageReplicaBucketPublicAccessBlockConfiguration:
-    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
+class StorageReplicaBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
     restrict_public_buckets = True
 
 
-class StorageReplicaBucketDeleteMarkerReplication:
-    resource: s3.Bucket.DeleteMarkerReplication
+class StorageReplicaBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -127,48 +116,40 @@ class StorageReplicaBucket(s3.Bucket):
     versioning_configuration = StorageReplicaBucketDeleteMarkerReplication
 
 
-class StorageLogBucketServerSideEncryptionByDefault:
-    resource: s3.Bucket.ServerSideEncryptionByDefault
+class StorageLogBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
-class StorageLogBucketServerSideEncryptionRule:
-    resource: s3.Bucket.ServerSideEncryptionRule
+class StorageLogBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
     server_side_encryption_by_default = StorageLogBucketServerSideEncryptionByDefault
 
 
-class StorageLogBucketBucketEncryption:
-    resource: s3.Bucket.BucketEncryption
+class StorageLogBucketBucketEncryption(s3.Bucket.BucketEncryption):
     server_side_encryption_configuration = [StorageLogBucketServerSideEncryptionRule]
 
 
-class StorageLogBucketDefaultRetention:
-    resource: s3.Bucket.DefaultRetention
+class StorageLogBucketDefaultRetention(s3.Bucket.DefaultRetention):
     mode = 'COMPLIANCE'
     years = 1
 
 
-class StorageLogBucketObjectLockRule:
-    resource: s3.Bucket.ObjectLockRule
+class StorageLogBucketObjectLockRule(s3.Bucket.ObjectLockRule):
     default_retention = StorageLogBucketDefaultRetention
 
 
-class StorageLogBucketObjectLockConfiguration:
-    resource: s3.Bucket.ObjectLockConfiguration
+class StorageLogBucketObjectLockConfiguration(s3.Bucket.ObjectLockConfiguration):
     object_lock_enabled = 'Enabled'
     rule = StorageLogBucketObjectLockRule
 
 
-class StorageLogBucketPublicAccessBlockConfiguration:
-    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
+class StorageLogBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
     restrict_public_buckets = True
 
 
-class StorageLogBucketDeleteMarkerReplication:
-    resource: s3.Bucket.DeleteMarkerReplication
+class StorageLogBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -181,53 +162,44 @@ class StorageLogBucket(s3.Bucket):
     versioning_configuration = StorageLogBucketDeleteMarkerReplication
 
 
-class StorageBucketServerSideEncryptionByDefault:
-    resource: s3.Bucket.ServerSideEncryptionByDefault
+class StorageBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
-class StorageBucketServerSideEncryptionRule:
-    resource: s3.Bucket.ServerSideEncryptionRule
+class StorageBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
     server_side_encryption_by_default = StorageBucketServerSideEncryptionByDefault
 
 
-class StorageBucketBucketEncryption:
-    resource: s3.Bucket.BucketEncryption
+class StorageBucketBucketEncryption(s3.Bucket.BucketEncryption):
     server_side_encryption_configuration = [StorageBucketServerSideEncryptionRule]
 
 
-class StorageBucketLoggingConfiguration:
-    resource: s3.Bucket.LoggingConfiguration
+class StorageBucketLoggingConfiguration(s3.Bucket.LoggingConfiguration):
     destination_bucket_name = StorageLogBucket
 
 
-class StorageBucketPublicAccessBlockConfiguration:
-    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
+class StorageBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
     restrict_public_buckets = True
 
 
-class StorageBucketReplicationDestination:
-    resource: s3.Bucket.ReplicationDestination
+class StorageBucketReplicationDestination(s3.Bucket.ReplicationDestination):
     bucket = StorageReplicaBucket.Arn
 
 
-class StorageBucketReplicationRule:
-    resource: s3.Bucket.ReplicationRule
+class StorageBucketReplicationRule(s3.Bucket.ReplicationRule):
     destination = StorageBucketReplicationDestination
     status = s3.BucketVersioningStatus.ENABLED
 
 
-class StorageBucketReplicationConfiguration:
-    resource: s3.Bucket.ReplicationConfiguration
+class StorageBucketReplicationConfiguration(s3.Bucket.ReplicationConfiguration):
     role = StorageReplicationRole.Arn
     rules = [StorageBucketReplicationRule]
 
 
-class StorageBucketDeleteMarkerReplication:
-    resource: s3.Bucket.DeleteMarkerReplication
+class StorageBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -241,8 +213,7 @@ class StorageBucket(s3.Bucket):
     versioning_configuration = StorageBucketDeleteMarkerReplication
 
 
-class StorageLogBucketPolicyPolicyDenyStatement0:
-    resource: DenyStatement
+class StorageLogBucketPolicyPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
     }
@@ -258,8 +229,7 @@ class StorageLogBucketPolicyPolicyDenyStatement0:
     }
 
 
-class StorageLogBucketPolicyPolicyAllowStatement1:
-    resource: PolicyStatement
+class StorageLogBucketPolicyPolicyAllowStatement1(PolicyStatement):
     principal = {
         'Service': 'logging.s3.amazonaws.com',
     }
@@ -275,8 +245,7 @@ class StorageLogBucketPolicyPolicyAllowStatement1:
     }
 
 
-class StorageLogBucketPolicyPolicyPolicyDocument:
-    resource: PolicyDocument
+class StorageLogBucketPolicyPolicyPolicyDocument(PolicyDocument):
     statement = [StorageLogBucketPolicyPolicyDenyStatement0, StorageLogBucketPolicyPolicyAllowStatement1]
 
 

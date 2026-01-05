@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class CloudFrontDistributionCacheBehavior:
-    resource: cloudfront.Distribution.CacheBehavior
+class CloudFrontDistributionCacheBehavior(cloudfront.Distribution.CacheBehavior):
     allowed_methods = ['GET', 'HEAD', 'OPTIONS', 'PUT', 'PATCH', 'POST', 'DELETE']
     cache_policy_id = '4135ea2d-6df8-44a3-9df3-4b5a84be39ad'
     compress = False
@@ -14,8 +13,7 @@ class CloudFrontDistributionCacheBehavior:
     path_pattern = '/proxy/*'
 
 
-class CloudFrontDistributionDefaultCacheBehavior:
-    resource: cloudfront.Distribution.DefaultCacheBehavior
+class CloudFrontDistributionDefaultCacheBehavior(cloudfront.Distribution.DefaultCacheBehavior):
     allowed_methods = ['GET', 'HEAD', 'OPTIONS', 'PUT', 'PATCH', 'POST', 'DELETE']
     cache_policy_id = CloudFrontCachePolicy
     origin_request_policy_id = '216adef6-5c7f-47e4-b989-5492eafa07d3'
@@ -23,21 +21,18 @@ class CloudFrontDistributionDefaultCacheBehavior:
     viewer_protocol_policy = 'allow-all'
 
 
-class CloudFrontDistributionCustomOriginConfig:
-    resource: cloudfront.Distribution.CustomOriginConfig
+class CloudFrontDistributionCustomOriginConfig(cloudfront.Distribution.CustomOriginConfig):
     http_port = 8080
     origin_protocol_policy = 'http-only'
 
 
-class CloudFrontDistributionOrigin:
-    resource: cloudfront.Distribution.Origin
+class CloudFrontDistributionOrigin(cloudfront.Distribution.Origin):
     domain_name = Server.PublicDnsName
     id = Sub('CloudFront-${AWS::StackName}')
     custom_origin_config = CloudFrontDistributionCustomOriginConfig
 
 
-class CloudFrontDistributionDistributionConfig:
-    resource: cloudfront.Distribution.DistributionConfig
+class CloudFrontDistributionDistributionConfig(cloudfront.Distribution.DistributionConfig):
     enabled = True
     http_version = 'http2'
     cache_behaviors = [CloudFrontDistributionCacheBehavior]

@@ -1,4 +1,4 @@
-"""Network resources: VPC, PublicSubnetOne, DummyTargetGroupPublic, PrivateSubnetTwo, PrivateRouteTableTwo, PrivateRouteTableTwoAssociation, PrivateRouteTableOne, DynamoDBEndpoint, FargateContainerSecurityGroup, InternetGateway, GatewayAttachement, NatGatewayTwoAttachment, PublicSubnetTwo, NatGatewayTwo, DummyTargetGroupPrivate, PrivateLoadBalancerSG, PrivateSubnetOne, PrivateLoadBalancer, PrivateLoadBalancerListener, PublicRouteTable, PublicRoute, PrivateRouteTwo, PublicSubnetTwoRouteTableAssociation, PrivateLoadBalancerIngressFromECS, PublicLoadBalancerSG, PublicLoadBalancer, PublicLoadBalancerListener, PublicSubnetOneRouteTableAssociation, NatGatewayOneAttachment, NatGatewayOne, PrivateRouteOne, EcsSecurityGroupIngressFromSelf, PrivateRouteTableOneAssociation, EcsSecurityGroupIngressFromPublicALB, EcsSecurityGroupIngressFromPrivateALB."""
+"""Network resources: VPC, PublicRouteTable, PrivateSubnetOne, DummyTargetGroupPrivate, PrivateLoadBalancerSG, PrivateSubnetTwo, PrivateLoadBalancer, FargateContainerSecurityGroup, PrivateLoadBalancerIngressFromECS, PrivateRouteTableOne, PrivateRouteTableTwo, PrivateRouteTableTwoAssociation, InternetGateway, GatewayAttachement, NatGatewayTwoAttachment, PublicSubnetTwo, NatGatewayTwo, DynamoDBEndpoint, PublicSubnetOne, PublicSubnetOneRouteTableAssociation, PublicLoadBalancerSG, PublicLoadBalancer, EcsSecurityGroupIngressFromSelf, EcsSecurityGroupIngressFromPrivateALB, DummyTargetGroupPublic, PrivateRouteTableOneAssociation, PublicRoute, PublicLoadBalancerListener, PublicSubnetTwoRouteTableAssociation, EcsSecurityGroupIngressFromPublicALB, NatGatewayOneAttachment, NatGatewayOne, PrivateLoadBalancerListener, PrivateRouteTwo, PrivateRouteOne."""
 
 from . import *  # noqa: F403
 
@@ -9,14 +9,17 @@ class VPC(ec2.VPC):
     cidr_block = FindInMap("SubnetConfig", 'VPC', 'CIDR')
 
 
-class PublicSubnetOne(ec2.Subnet):
+class PublicRouteTable(ec2.RouteTable):
+    vpc_id = VPC
+
+
+class PrivateSubnetOne(ec2.Subnet):
     availability_zone = Select(0, GetAZs(AWS_REGION))
     vpc_id = VPC
-    cidr_block = FindInMap("SubnetConfig", 'PublicOne', 'CIDR')
-    map_public_ip_on_launch = True
+    cidr_block = FindInMap("SubnetConfig", 'PrivateOne', 'CIDR')
 
 
-class DummyTargetGroupPublic(elasticloadbalancingv2.TargetGroup):
+class DummyTargetGroupPrivate(elasticloadbalancingv2.TargetGroup):
     health_check_interval_seconds = 6
     health_check_path = '/'
     health_check_protocol = 'HTTP'
@@ -24,11 +27,16 @@ class DummyTargetGroupPublic(elasticloadbalancingv2.TargetGroup):
     healthy_threshold_count = 2
     name = Join('-', [
     AWS_STACK_NAME,
-    'drop-1',
+    'drop-2',
 ])
     port = 80
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
     unhealthy_threshold_count = 2
+    vpc_id = VPC
+
+
+class PrivateLoadBalancerSG(ec2.SecurityGroup):
+    group_description = 'Access to the internal load balancer'
     vpc_id = VPC
 
 
@@ -38,6 +46,34 @@ class PrivateSubnetTwo(ec2.Subnet):
     cidr_block = FindInMap("SubnetConfig", 'PrivateTwo', 'CIDR')
 
 
+class PrivateLoadBalancerTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'idle_timeout.timeout_seconds'
+    value = '30'
+
+
+class PrivateLoadBalancer(elasticloadbalancingv2.LoadBalancer):
+    scheme = 'internal'
+    load_balancer_attributes = [PrivateLoadBalancerTargetGroupAttribute]
+    subnets = [PrivateSubnetOne, PrivateSubnetTwo]
+    security_groups = [PrivateLoadBalancerSG]
+
+
+class FargateContainerSecurityGroup(ec2.SecurityGroup):
+    group_description = 'Access to the Fargate containers'
+    vpc_id = VPC
+
+
+class PrivateLoadBalancerIngressFromECS(ec2.SecurityGroupIngress):
+    description = 'Only accept traffic from a container in the fargate container security group'
+    group_id = PrivateLoadBalancerSG
+    ip_protocol = '-1'
+    source_security_group_id = FargateContainerSecurityGroup
+
+
+class PrivateRouteTableOne(ec2.RouteTable):
+    vpc_id = VPC
+
+
 class PrivateRouteTableTwo(ec2.RouteTable):
     vpc_id = VPC
 
@@ -45,38 +81,6 @@ class PrivateRouteTableTwo(ec2.RouteTable):
 class PrivateRouteTableTwoAssociation(ec2.SubnetRouteTableAssociation):
     route_table_id = PrivateRouteTableTwo
     subnet_id = PrivateSubnetTwo
-
-
-class PrivateRouteTableOne(ec2.RouteTable):
-    vpc_id = VPC
-
-
-class DynamoDBEndpointAllowStatement0:
-    resource: PolicyStatement
-    principal = '*'
-    action = '*'
-    resource_arn = '*'
-
-
-class DynamoDBEndpointPolicyDocument:
-    resource: PolicyDocument
-    statement = [DynamoDBEndpointAllowStatement0]
-
-
-class DynamoDBEndpoint(ec2.VPCEndpoint):
-    policy_document = DynamoDBEndpointPolicyDocument
-    route_table_ids = [PrivateRouteTableOne, PrivateRouteTableTwo]
-    service_name = Join('', [
-    'com.amazonaws.',
-    AWS_REGION,
-    '.dynamodb',
-])
-    vpc_id = VPC
-
-
-class FargateContainerSecurityGroup(ec2.SecurityGroup):
-    group_description = 'Access to the Fargate containers'
-    vpc_id = VPC
 
 
 class InternetGateway(ec2.InternetGateway):
@@ -105,90 +109,40 @@ class NatGatewayTwo(ec2.NatGateway):
     subnet_id = PublicSubnetTwo
 
 
-class DummyTargetGroupPrivate(elasticloadbalancingv2.TargetGroup):
-    health_check_interval_seconds = 6
-    health_check_path = '/'
-    health_check_protocol = 'HTTP'
-    health_check_timeout_seconds = 5
-    healthy_threshold_count = 2
-    name = Join('-', [
-    AWS_STACK_NAME,
-    'drop-2',
+class DynamoDBEndpointAllowStatement0(PolicyStatement):
+    principal = '*'
+    action = '*'
+    resource_arn = '*'
+
+
+class DynamoDBEndpointPolicyDocument(PolicyDocument):
+    statement = [DynamoDBEndpointAllowStatement0]
+
+
+class DynamoDBEndpoint(ec2.VPCEndpoint):
+    policy_document = DynamoDBEndpointPolicyDocument
+    route_table_ids = [PrivateRouteTableOne, PrivateRouteTableTwo]
+    service_name = Join('', [
+    'com.amazonaws.',
+    AWS_REGION,
+    '.dynamodb',
 ])
-    port = 80
-    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
-    unhealthy_threshold_count = 2
     vpc_id = VPC
 
 
-class PrivateLoadBalancerSG(ec2.SecurityGroup):
-    group_description = 'Access to the internal load balancer'
-    vpc_id = VPC
-
-
-class PrivateSubnetOne(ec2.Subnet):
+class PublicSubnetOne(ec2.Subnet):
     availability_zone = Select(0, GetAZs(AWS_REGION))
     vpc_id = VPC
-    cidr_block = FindInMap("SubnetConfig", 'PrivateOne', 'CIDR')
+    cidr_block = FindInMap("SubnetConfig", 'PublicOne', 'CIDR')
+    map_public_ip_on_launch = True
 
 
-class PrivateLoadBalancerTargetGroupAttribute:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
-    key = 'idle_timeout.timeout_seconds'
-    value = '30'
-
-
-class PrivateLoadBalancer(elasticloadbalancingv2.LoadBalancer):
-    scheme = 'internal'
-    load_balancer_attributes = [PrivateLoadBalancerTargetGroupAttribute]
-    subnets = [PrivateSubnetOne, PrivateSubnetTwo]
-    security_groups = [PrivateLoadBalancerSG]
-
-
-class PrivateLoadBalancerListenerAction:
-    resource: elasticloadbalancingv2.ListenerRule.Action
-    target_group_arn = DummyTargetGroupPrivate
-    type_ = 'forward'
-
-
-class PrivateLoadBalancerListener(elasticloadbalancingv2.Listener):
-    default_actions = [PrivateLoadBalancerListenerAction]
-    load_balancer_arn = PrivateLoadBalancer
-    port = 80
-    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
-
-
-class PublicRouteTable(ec2.RouteTable):
-    vpc_id = VPC
-
-
-class PublicRoute(ec2.Route):
-    route_table_id = PublicRouteTable
-    destination_cidr_block = '0.0.0.0/0'
-    gateway_id = InternetGateway
-    depends_on = [GatewayAttachement]
-
-
-class PrivateRouteTwo(ec2.Route):
-    route_table_id = PrivateRouteTableTwo
-    destination_cidr_block = '0.0.0.0/0'
-    nat_gateway_id = NatGatewayTwo
-
-
-class PublicSubnetTwoRouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    subnet_id = PublicSubnetTwo
+class PublicSubnetOneRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    subnet_id = PublicSubnetOne
     route_table_id = PublicRouteTable
 
 
-class PrivateLoadBalancerIngressFromECS(ec2.SecurityGroupIngress):
-    description = 'Only accept traffic from a container in the fargate container security group'
-    group_id = PrivateLoadBalancerSG
-    ip_protocol = '-1'
-    source_security_group_id = FargateContainerSecurityGroup
-
-
-class PublicLoadBalancerSGEgress:
-    resource: ec2.SecurityGroup.Egress
+class PublicLoadBalancerSGEgress(ec2.SecurityGroup.Egress):
     cidr_ip = '0.0.0.0/0'
     ip_protocol = '-1'
 
@@ -199,8 +153,7 @@ class PublicLoadBalancerSG(ec2.SecurityGroup):
     security_group_ingress = [PublicLoadBalancerSGEgress]
 
 
-class PublicLoadBalancerTargetGroupAttribute:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
+class PublicLoadBalancerTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
     key = 'idle_timeout.timeout_seconds'
     value = '30'
 
@@ -213,8 +166,49 @@ class PublicLoadBalancer(elasticloadbalancingv2.LoadBalancer):
     depends_on = [GatewayAttachement]
 
 
-class PublicLoadBalancerListenerAction:
-    resource: elasticloadbalancingv2.ListenerRule.Action
+class EcsSecurityGroupIngressFromSelf(ec2.SecurityGroupIngress):
+    description = 'Ingress from other containers in the same security group'
+    group_id = FargateContainerSecurityGroup
+    ip_protocol = '-1'
+    source_security_group_id = FargateContainerSecurityGroup
+
+
+class EcsSecurityGroupIngressFromPrivateALB(ec2.SecurityGroupIngress):
+    description = 'Ingress from the private ALB'
+    group_id = FargateContainerSecurityGroup
+    ip_protocol = '-1'
+    source_security_group_id = PrivateLoadBalancerSG
+
+
+class DummyTargetGroupPublic(elasticloadbalancingv2.TargetGroup):
+    health_check_interval_seconds = 6
+    health_check_path = '/'
+    health_check_protocol = 'HTTP'
+    health_check_timeout_seconds = 5
+    healthy_threshold_count = 2
+    name = Join('-', [
+    AWS_STACK_NAME,
+    'drop-1',
+])
+    port = 80
+    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
+    unhealthy_threshold_count = 2
+    vpc_id = VPC
+
+
+class PrivateRouteTableOneAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = PrivateRouteTableOne
+    subnet_id = PrivateSubnetOne
+
+
+class PublicRoute(ec2.Route):
+    route_table_id = PublicRouteTable
+    destination_cidr_block = '0.0.0.0/0'
+    gateway_id = InternetGateway
+    depends_on = [GatewayAttachement]
+
+
+class PublicLoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):
     target_group_arn = DummyTargetGroupPublic
     type_ = 'forward'
 
@@ -226,9 +220,16 @@ class PublicLoadBalancerListener(elasticloadbalancingv2.Listener):
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
 
 
-class PublicSubnetOneRouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    subnet_id = PublicSubnetOne
+class PublicSubnetTwoRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    subnet_id = PublicSubnetTwo
     route_table_id = PublicRouteTable
+
+
+class EcsSecurityGroupIngressFromPublicALB(ec2.SecurityGroupIngress):
+    description = 'Ingress from the public ALB'
+    group_id = FargateContainerSecurityGroup
+    ip_protocol = '-1'
+    source_security_group_id = PublicLoadBalancerSG
 
 
 class NatGatewayOneAttachment(ec2.EIP):
@@ -241,33 +242,25 @@ class NatGatewayOne(ec2.NatGateway):
     subnet_id = PublicSubnetOne
 
 
+class PrivateLoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):
+    target_group_arn = DummyTargetGroupPrivate
+    type_ = 'forward'
+
+
+class PrivateLoadBalancerListener(elasticloadbalancingv2.Listener):
+    default_actions = [PrivateLoadBalancerListenerAction]
+    load_balancer_arn = PrivateLoadBalancer
+    port = 80
+    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
+
+
+class PrivateRouteTwo(ec2.Route):
+    route_table_id = PrivateRouteTableTwo
+    destination_cidr_block = '0.0.0.0/0'
+    nat_gateway_id = NatGatewayTwo
+
+
 class PrivateRouteOne(ec2.Route):
     route_table_id = PrivateRouteTableOne
     destination_cidr_block = '0.0.0.0/0'
     nat_gateway_id = NatGatewayOne
-
-
-class EcsSecurityGroupIngressFromSelf(ec2.SecurityGroupIngress):
-    description = 'Ingress from other containers in the same security group'
-    group_id = FargateContainerSecurityGroup
-    ip_protocol = '-1'
-    source_security_group_id = FargateContainerSecurityGroup
-
-
-class PrivateRouteTableOneAssociation(ec2.SubnetRouteTableAssociation):
-    route_table_id = PrivateRouteTableOne
-    subnet_id = PrivateSubnetOne
-
-
-class EcsSecurityGroupIngressFromPublicALB(ec2.SecurityGroupIngress):
-    description = 'Ingress from the public ALB'
-    group_id = FargateContainerSecurityGroup
-    ip_protocol = '-1'
-    source_security_group_id = PublicLoadBalancerSG
-
-
-class EcsSecurityGroupIngressFromPrivateALB(ec2.SecurityGroupIngress):
-    description = 'Ingress from the private ALB'
-    group_id = FargateContainerSecurityGroup
-    ip_protocol = '-1'
-    source_security_group_id = PrivateLoadBalancerSG

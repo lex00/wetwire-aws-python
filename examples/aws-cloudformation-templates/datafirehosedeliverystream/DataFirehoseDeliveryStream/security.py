@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class DeliveryRoleAllowStatement0:
-    resource: PolicyStatement
+class DeliveryRoleAllowStatement0(PolicyStatement):
     sid = ''
     principal = {
         'Service': 'firehose.amazonaws.com',
@@ -17,13 +16,11 @@ class DeliveryRoleAllowStatement0:
     }
 
 
-class DeliveryRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class DeliveryRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [DeliveryRoleAllowStatement0]
 
 
-class DeliveryRoleAllowStatement0_1:
-    resource: PolicyStatement
+class DeliveryRoleAllowStatement0_1(PolicyStatement):
     action = [
         's3:AbortMultipartUpload',
         's3:GetBucketLocation',
@@ -45,8 +42,7 @@ class DeliveryRoleAllowStatement0_1:
     ]
 
 
-class DeliveryRoleAllowStatement1:
-    resource: PolicyStatement
+class DeliveryRoleAllowStatement1(PolicyStatement):
     action = ['logs:PutLogEvents']
     resource_arn = Join('', [
     Sub('arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/kinesisfirehose/'),
@@ -55,13 +51,11 @@ class DeliveryRoleAllowStatement1:
 ])
 
 
-class DeliveryRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class DeliveryRolePolicies0PolicyDocument(PolicyDocument):
     statement = [DeliveryRoleAllowStatement0_1, DeliveryRoleAllowStatement1]
 
 
-class DeliveryRolePolicy:
-    resource: iam.User.Policy
+class DeliveryRolePolicy(iam.User.Policy):
     policy_name = 'firehose_delivery_policy'
     policy_document = DeliveryRolePolicies0PolicyDocument
 

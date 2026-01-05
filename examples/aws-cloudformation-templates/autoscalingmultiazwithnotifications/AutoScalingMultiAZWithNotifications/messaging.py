@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class NotificationTopicSubscription:
-    resource: sns.Topic.Subscription
+class NotificationTopicSubscription(sns.Topic.Subscription):
     endpoint = OperatorEMail
     protocol = 'email'
 

@@ -3,25 +3,21 @@
 from . import *  # noqa: F403
 
 
-class UserPoolAdminCreateUserConfig:
-    resource: cognito.UserPool.AdminCreateUserConfig
+class UserPoolAdminCreateUserConfig(cognito.UserPool.AdminCreateUserConfig):
     allow_admin_create_user_only = True
 
 
-class UserPoolSchemaAttribute:
-    resource: cognito.UserPool.SchemaAttribute
+class UserPoolSchemaAttribute(cognito.UserPool.SchemaAttribute):
     name = 'email'
     required = True
 
 
-class UserPoolSchemaAttribute1:
-    resource: cognito.UserPool.SchemaAttribute
+class UserPoolSchemaAttribute1(cognito.UserPool.SchemaAttribute):
     name = 'given_name'
     required = True
 
 
-class UserPoolSchemaAttribute2:
-    resource: cognito.UserPool.SchemaAttribute
+class UserPoolSchemaAttribute2(cognito.UserPool.SchemaAttribute):
     name = 'family_name'
     required = True
 

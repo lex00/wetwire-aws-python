@@ -12,8 +12,7 @@ class CloudwatchLogsGroup(logs.LogGroup):
     kms_key_id = LogsKmsKey
 
 
-class ALB500sAlarmScaleUpDimension:
-    resource: cloudwatch.Alarm.Dimension
+class ALB500sAlarmScaleUpDimension(cloudwatch.Alarm.Dimension):
     name = 'ECSService'
     value = Service
 

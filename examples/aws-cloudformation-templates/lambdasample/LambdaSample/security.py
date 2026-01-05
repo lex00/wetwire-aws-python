@@ -3,16 +3,14 @@
 from . import *  # noqa: F403
 
 
-class LambdaRoleAllowStatement0:
-    resource: PolicyStatement
+class LambdaRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['lambda.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class LambdaRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class LambdaRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [LambdaRoleAllowStatement0]
 
 

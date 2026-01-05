@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class DirectorySettingsLambdaFunctionEnvironment:
-    resource: lambda_.Function.Environment
+class DirectorySettingsLambdaFunctionEnvironment(lambda_.Function.Environment):
     variables = {
         'LOG_LEVEL': LambdaLogLevel,
     }
 
 
-class DirectorySettingsLambdaFunctionContent:
-    resource: lambda_.LayerVersion.Content
+class DirectorySettingsLambdaFunctionContent(lambda_.LayerVersion.Content):
     s3_bucket = LambdaS3BucketName
     s3_key = LambdaZipFileName
 
 
-class DirectorySettingsLambdaFunctionCapacityProviderVpcConfig:
-    resource: lambda_.CapacityProvider.CapacityProviderVpcConfig
+class DirectorySettingsLambdaFunctionCapacityProviderVpcConfig(lambda_.CapacityProvider.CapacityProviderVpcConfig):
     subnet_ids = Subnets
     security_group_ids = SecurityGroups
 

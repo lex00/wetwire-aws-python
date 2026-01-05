@@ -13,8 +13,7 @@ class ASCPrivateLinkEnablePrivateDNS(CloudFormationResource):
     depends_on = [ASCPrivateLinkVPCES]
 
 
-class ASCPrivateLinkCertificateDomainValidationOption:
-    resource: certificatemanager.Certificate.DomainValidationOption
+class ASCPrivateLinkCertificateDomainValidationOption(certificatemanager.Certificate.DomainValidationOption):
     domain_name = DomainName
     hosted_zone_id = HostedZone
 

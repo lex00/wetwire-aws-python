@@ -1,4 +1,4 @@
-"""Messaging resources: DeadLetterQueue, CloudFormationEventRule, DeadLetterQueuePolicy."""
+"""Messaging resources: DeadLetterQueue, DeadLetterQueuePolicy, CloudFormationEventRule."""
 
 from . import *  # noqa: F403
 
@@ -7,13 +7,34 @@ class DeadLetterQueue(sqs.Queue):
     queue_name = 'CloudFormation-Logs-DLQ'
 
 
-class CloudFormationEventRuleDeadLetterConfig:
-    resource: events.Rule.DeadLetterConfig
+class DeadLetterQueuePolicyAllowStatement0(PolicyStatement):
+    sid = 'AllowEventBridgeToWriteLogs'
+    principal = {
+        'Service': 'events.amazonaws.com',
+    }
+    action = 'sqs:SendMessage'
+    resource_arn = DeadLetterQueue.Arn
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/CloudFormationEventRule'),
+        },
+    }
+
+
+class DeadLetterQueuePolicyPolicyDocument(PolicyDocument):
+    statement = [DeadLetterQueuePolicyAllowStatement0]
+
+
+class DeadLetterQueuePolicy(sqs.QueuePolicy):
+    policy_document = DeadLetterQueuePolicyPolicyDocument
+    queues = [DeadLetterQueue]
+
+
+class CloudFormationEventRuleDeadLetterConfig(events.Rule.DeadLetterConfig):
     arn = DeadLetterQueue.Arn
 
 
-class CloudFormationEventRuleTarget:
-    resource: events.Rule.Target
+class CloudFormationEventRuleTarget(events.Rule.Target):
     arn = CentralEventBusArn
     role_arn = EventBridgeRole.Arn
     id = 'CentralEventBus'
@@ -28,28 +49,3 @@ class CloudFormationEventRule(events.Rule):
     }
     state = events.RuleState.ENABLED
     targets = [CloudFormationEventRuleTarget]
-
-
-class DeadLetterQueuePolicyAllowStatement0:
-    resource: PolicyStatement
-    sid = 'AllowEventBridgeToWriteLogs'
-    principal = {
-        'Service': 'events.amazonaws.com',
-    }
-    action = 'sqs:SendMessage'
-    resource_arn = DeadLetterQueue.Arn
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/CloudFormationEventRule'),
-        },
-    }
-
-
-class DeadLetterQueuePolicyPolicyDocument:
-    resource: PolicyDocument
-    statement = [DeadLetterQueuePolicyAllowStatement0]
-
-
-class DeadLetterQueuePolicy(sqs.QueuePolicy):
-    policy_document = DeadLetterQueuePolicyPolicyDocument
-    queues = [DeadLetterQueue]

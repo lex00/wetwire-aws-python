@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class CodeBuildRoleAllowStatement0:
-    resource: PolicyStatement
+class CodeBuildRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': 'codebuild.amazonaws.com',
     }
     action = 'sts:AssumeRole'
 
 
-class CodeBuildRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class CodeBuildRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [CodeBuildRoleAllowStatement0]
 
 
-class CodeBuildRoleAllowStatement0_1:
-    resource: PolicyStatement
+class CodeBuildRoleAllowStatement0_1(PolicyStatement):
     action = [
         'logs:CreateLogStream',
         'logs:CreateLogGroup',
@@ -26,8 +23,7 @@ class CodeBuildRoleAllowStatement0_1:
     resource_arn = [Sub('arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${AWS::StackName}*:log-stream:*')]
 
 
-class CodeBuildRoleAllowStatement1:
-    resource: PolicyStatement
+class CodeBuildRoleAllowStatement1(PolicyStatement):
     action = [
         's3:GetObject',
         's3:PutObject',
@@ -38,47 +34,39 @@ class CodeBuildRoleAllowStatement1:
     ]
 
 
-class CodeBuildRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class CodeBuildRolePolicies0PolicyDocument(PolicyDocument):
     statement = [CodeBuildRoleAllowStatement0_1, CodeBuildRoleAllowStatement1]
 
 
-class CodeBuildRolePolicy:
-    resource: iam.User.Policy
+class CodeBuildRolePolicy(iam.User.Policy):
     policy_name = 'CanLog'
     policy_document = CodeBuildRolePolicies0PolicyDocument
 
 
-class CodeBuildRoleAllowStatement0_2:
-    resource: PolicyStatement
+class CodeBuildRoleAllowStatement0_2(PolicyStatement):
     action = ['s3:GetObject']
     resource_arn = [PipelineS3Bucket.Arn]
 
 
-class CodeBuildRolePolicies1PolicyDocument:
-    resource: PolicyDocument
+class CodeBuildRolePolicies1PolicyDocument(PolicyDocument):
     statement = [CodeBuildRoleAllowStatement0_2]
 
 
-class CodeBuildRolePolicy1:
-    resource: iam.User.Policy
+class CodeBuildRolePolicy1(iam.User.Policy):
     policy_name = 'CanAccessS3'
     policy_document = CodeBuildRolePolicies1PolicyDocument
 
 
-class CodeBuildRoleAllowStatement0_3:
-    resource: PolicyStatement
+class CodeBuildRoleAllowStatement0_3(PolicyStatement):
     action = ['codebuild:*']
     resource_arn = [Sub('arn:${AWS::Partition}:codebuild:${AWS::Region}:${AWS::AccountId}:report-group/${AWS::StackName}*')]
 
 
-class CodeBuildRolePolicies2PolicyDocument:
-    resource: PolicyDocument
+class CodeBuildRolePolicies2PolicyDocument(PolicyDocument):
     statement = [CodeBuildRoleAllowStatement0_3]
 
 
-class CodeBuildRolePolicy2:
-    resource: iam.User.Policy
+class CodeBuildRolePolicy2(iam.User.Policy):
     policy_name = 'CanCreateReports'
     policy_document = CodeBuildRolePolicies2PolicyDocument
 

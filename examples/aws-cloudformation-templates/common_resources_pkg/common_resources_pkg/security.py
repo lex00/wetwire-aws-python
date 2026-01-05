@@ -3,16 +3,14 @@
 from . import *  # noqa: F403
 
 
-class StorageReplicationRoleAllowStatement0:
-    resource: PolicyStatement
+class StorageReplicationRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['s3.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class StorageReplicationRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class StorageReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [StorageReplicationRoleAllowStatement0]
 
 
@@ -21,8 +19,7 @@ class StorageReplicationRole(iam.Role):
     path = '/'
 
 
-class StorageReplicationPolicyAllowStatement0:
-    resource: PolicyStatement
+class StorageReplicationPolicyAllowStatement0(PolicyStatement):
     action = [
         's3:GetReplicationConfiguration',
         's3:ListBucket',
@@ -30,8 +27,7 @@ class StorageReplicationPolicyAllowStatement0:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}')
 
 
-class StorageReplicationPolicyAllowStatement1:
-    resource: PolicyStatement
+class StorageReplicationPolicyAllowStatement1(PolicyStatement):
     action = [
         's3:GetObjectVersionForReplication',
         's3:GetObjectVersionAcl',
@@ -40,8 +36,7 @@ class StorageReplicationPolicyAllowStatement1:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')
 
 
-class StorageReplicationPolicyAllowStatement2:
-    resource: PolicyStatement
+class StorageReplicationPolicyAllowStatement2(PolicyStatement):
     action = [
         's3:ReplicateObject',
         's3:ReplicateDelete',
@@ -50,8 +45,7 @@ class StorageReplicationPolicyAllowStatement2:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*')
 
 
-class StorageReplicationPolicyPolicyDocument:
-    resource: PolicyDocument
+class StorageReplicationPolicyPolicyDocument(PolicyDocument):
     statement = [StorageReplicationPolicyAllowStatement0, StorageReplicationPolicyAllowStatement1, StorageReplicationPolicyAllowStatement2]
 
 

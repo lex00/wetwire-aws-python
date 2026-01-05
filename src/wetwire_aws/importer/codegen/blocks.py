@@ -249,10 +249,9 @@ def _generate_property_type_wrapper_impl(
 
     lines = []
 
-    # Always use qualified module path: resource: s3.Bucket.BucketEncryption
+    # Import the module for inheritance: class MyBucketEncryption(s3.Bucket.BucketEncryption)
     base_module = pt_module.split(".")[0]
     ctx.add_import("wetwire_aws.resources", base_module)
-    lines.append(f"    resource: {pt_module}.{pt_class}")
 
     # Build case-insensitive lookup for CF keys
     cf_to_python_lower = {k.lower(): v for k, v in cf_to_python.items()}
@@ -300,8 +299,12 @@ def _generate_property_type_wrapper_impl(
             val_str = value_to_python(val, ctx, indent=1)
             lines.append(f"    # Unknown CF key: {cf_key} = {val_str}")
 
-    # Store class definition
-    class_def = f"class {class_name}:\n" + "\n".join(lines)
+    # Store class definition using inheritance pattern
+    class_decl = f"class {class_name}({pt_module}.{pt_class}):"
+    if lines:
+        class_def = f"{class_decl}\n" + "\n".join(lines)
+    else:
+        class_def = f"{class_decl}\n    pass"
     ctx.property_type_class_defs.append(class_def)
 
     # Return bare class name - no-parens pattern
@@ -377,7 +380,7 @@ def _generate_policy_statement_wrapper_impl(
 
     ctx.generated_classes.add(class_name)
 
-    # Add imports
+    # Add imports - inheritance pattern
     if effect == "Deny":
         ctx.add_import("wetwire_aws", "DenyStatement")
         base_class = "DenyStatement"
@@ -385,7 +388,6 @@ def _generate_policy_statement_wrapper_impl(
         ctx.add_import("wetwire_aws", "PolicyStatement")
         base_class = "PolicyStatement"
     lines = []
-    lines.append(f"    resource: {base_class}")
 
     # Map statement fields to PolicyStatement attributes
     if "Sid" in stmt:
@@ -407,8 +409,12 @@ def _generate_policy_statement_wrapper_impl(
         condition_str = _condition_to_python(stmt["Condition"], ctx, indent=1)
         lines.append(f"    condition = {condition_str}")
 
-    # Store class definition
-    class_def = f"class {class_name}:\n" + "\n".join(lines)
+    # Store class definition using inheritance pattern
+    class_decl = f"class {class_name}({base_class}):"
+    if lines:
+        class_def = f"{class_decl}\n" + "\n".join(lines)
+    else:
+        class_def = f"{class_decl}\n    pass"
     ctx.property_type_class_defs.append(class_def)
 
     # Return bare class name - no-parens pattern
@@ -461,11 +467,10 @@ def _generate_policy_document_wrapper_impl(
 
     ctx.generated_classes.add(class_name)
 
-    # Add imports
+    # Add imports - inheritance pattern
     ctx.add_import("wetwire_aws", "PolicyDocument")
 
     lines = []
-    lines.append("    resource: PolicyDocument")
 
     # Handle version if not default
     version = doc.get("Version", "2012-10-17")
@@ -498,8 +503,12 @@ def _generate_policy_document_wrapper_impl(
         else:
             lines.append(f"    statement = [{', '.join(stmt_class_names)}]")
 
-    # Store class definition
-    class_def = f"class {class_name}:\n" + "\n".join(lines)
+    # Store class definition using inheritance pattern
+    class_decl = f"class {class_name}(PolicyDocument):"
+    if lines:
+        class_def = f"{class_decl}\n" + "\n".join(lines)
+    else:
+        class_def = f"{class_decl}\n    pass"
     ctx.property_type_class_defs.append(class_def)
 
     # Return bare class name - no-parens pattern

@@ -1,34 +1,29 @@
-"""Security resources: RootRole, BastionProfile, PrivateProfile."""
+"""Security resources: RootRole, PrivateProfile, BastionProfile."""
 
 from . import *  # noqa: F403
 
 
-class RootRoleAllowStatement0:
-    resource: PolicyStatement
+class RootRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ec2.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class RootRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class RootRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [RootRoleAllowStatement0]
 
 
-class RootRoleAllowStatement0_1:
-    resource: PolicyStatement
+class RootRoleAllowStatement0_1(PolicyStatement):
     action = 'cloudformation:*'
     resource_arn = '*'
 
 
-class RootRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class RootRolePolicies0PolicyDocument(PolicyDocument):
     statement = [RootRoleAllowStatement0_1]
 
 
-class RootRolePolicy:
-    resource: iam.User.Policy
+class RootRolePolicy(iam.User.Policy):
     policy_name = 'root'
     policy_document = RootRolePolicies0PolicyDocument
 
@@ -39,11 +34,11 @@ class RootRole(iam.Role):
     policies = [RootRolePolicy]
 
 
-class BastionProfile(iam.InstanceProfile):
+class PrivateProfile(iam.InstanceProfile):
     path = '/'
     roles = [RootRole]
 
 
-class PrivateProfile(iam.InstanceProfile):
+class BastionProfile(iam.InstanceProfile):
     path = '/'
     roles = [RootRole]

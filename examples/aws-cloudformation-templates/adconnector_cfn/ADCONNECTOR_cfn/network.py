@@ -3,36 +3,31 @@
 from . import *  # noqa: F403
 
 
-class ADConnectorDomainMembersSGEgress:
-    resource: ec2.SecurityGroup.Egress
+class ADConnectorDomainMembersSGEgress(ec2.SecurityGroup.Egress):
     ip_protocol = '-1'
     description = 'LAB - Allow All Private IP Communications'
     cidr_ip = '10.0.0.0/8'
 
 
-class ADConnectorDomainMembersSGEgress1:
-    resource: ec2.SecurityGroup.Egress
+class ADConnectorDomainMembersSGEgress1(ec2.SecurityGroup.Egress):
     ip_protocol = '-1'
     description = 'LAB - Allow All Private IP Communications'
     cidr_ip = '172.16.0.0/12'
 
 
-class ADConnectorDomainMembersSGEgress2:
-    resource: ec2.SecurityGroup.Egress
+class ADConnectorDomainMembersSGEgress2(ec2.SecurityGroup.Egress):
     ip_protocol = '-1'
     description = 'LAB - Allow All Private IP Communications'
     cidr_ip = '192.168.0.0/16'
 
 
-class ADConnectorDomainMembersSGEgress3:
-    resource: ec2.SecurityGroup.Egress
+class ADConnectorDomainMembersSGEgress3(ec2.SecurityGroup.Egress):
     description = 'Allow All Outbound Communications'
     ip_protocol = '-1'
     cidr_ip = '0.0.0.0/0'
 
 
-class ADConnectorDomainMembersSGAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class ADConnectorDomainMembersSGAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = Sub('${DomainNetBiosName}-DomainMembersSG-ADConnector')
 
@@ -46,8 +41,7 @@ class ADConnectorDomainMembersSG(ec2.SecurityGroup):
     condition = 'DomainMembersSGCondition'
 
 
-class DHCPOptionsAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class DHCPOptionsAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = DomainDNSName
 

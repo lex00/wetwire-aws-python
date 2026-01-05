@@ -3,28 +3,24 @@
 from . import *  # noqa: F403
 
 
-class LaunchTemplateEbs:
-    resource: ec2.LaunchTemplate.Ebs
+class LaunchTemplateEbs(ec2.LaunchTemplate.Ebs):
     iops = 3000
     throughput = 125
     volume_size = 80
     volume_type = 'gp3'
 
 
-class LaunchTemplateBlockDeviceMapping:
-    resource: ec2.LaunchTemplate.BlockDeviceMapping
+class LaunchTemplateBlockDeviceMapping(ec2.LaunchTemplate.BlockDeviceMapping):
     device_name = '/dev/xvda'
     ebs = LaunchTemplateEbs
 
 
-class LaunchTemplateMetadataOptions:
-    resource: ec2.LaunchTemplate.MetadataOptions
+class LaunchTemplateMetadataOptions(ec2.LaunchTemplate.MetadataOptions):
     http_put_response_hop_limit = 2
     http_tokens = 'optional'
 
 
-class LaunchTemplateTagSpecification:
-    resource: ec2.LaunchTemplate.TagSpecification
+class LaunchTemplateTagSpecification(ec2.LaunchTemplate.TagSpecification):
     resource_type = 'instance'
     tags = [{
         'Key': 'Name',
@@ -38,8 +34,7 @@ class LaunchTemplateTagSpecification:
     }]
 
 
-class LaunchTemplateTagSpecification1:
-    resource: ec2.LaunchTemplate.TagSpecification
+class LaunchTemplateTagSpecification1(ec2.LaunchTemplate.TagSpecification):
     resource_type = 'volume'
     tags = [{
         'Key': 'Name',
@@ -53,8 +48,7 @@ class LaunchTemplateTagSpecification1:
     }]
 
 
-class LaunchTemplateTagSpecification2:
-    resource: ec2.LaunchTemplate.TagSpecification
+class LaunchTemplateTagSpecification2(ec2.LaunchTemplate.TagSpecification):
     resource_type = 'network-interface'
     tags = [{
         'Key': 'Name',
@@ -68,8 +62,7 @@ class LaunchTemplateTagSpecification2:
     }]
 
 
-class LaunchTemplateLaunchTemplateData:
-    resource: ec2.LaunchTemplate.LaunchTemplateData
+class LaunchTemplateLaunchTemplateData(ec2.LaunchTemplate.LaunchTemplateData):
     block_device_mappings = [LaunchTemplateBlockDeviceMapping]
     metadata_options = LaunchTemplateMetadataOptions
     security_group_ids = [ControlPlaneSecurityGroup]
@@ -81,8 +74,7 @@ class LaunchTemplate(ec2.LaunchTemplate):
     launch_template_name = Sub('${AWS::StackName}-LaunchTemplate')
 
 
-class ControlPlaneResourcesVpcConfig:
-    resource: eks.Cluster.ResourcesVpcConfig
+class ControlPlaneResourcesVpcConfig(eks.Cluster.ResourcesVpcConfig):
     security_group_ids = [ControlPlaneSecurityGroup]
     subnet_ids = [PublicSubnet1, PublicSubnet2, PublicSubnet3, PrivateSubnet1, PrivateSubnet2, PrivateSubnet3]
 
@@ -94,13 +86,11 @@ class ControlPlane(eks.Cluster):
     version = EKSClusterVersion
 
 
-class ManagedNodeGroupSsoIdentity:
-    resource: eks.Capability.SsoIdentity
+class ManagedNodeGroupSsoIdentity(eks.Capability.SsoIdentity):
     id = LaunchTemplate
 
 
-class ManagedNodeGroupScalingConfig:
-    resource: eks.Nodegroup.ScalingConfig
+class ManagedNodeGroupScalingConfig(eks.Nodegroup.ScalingConfig):
     desired_size = 2
     max_size = 2
     min_size = 2

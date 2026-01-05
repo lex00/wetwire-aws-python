@@ -9,9 +9,9 @@ class JDBCConnectionStringOutput:
     resource: Output
     value = Join('', [
     'jdbc:mysql://',
-    MyDB.Endpoint.Address,
+    GetAtt("MyDB", "Endpoint.Address"),
     ':',
-    MyDB.Endpoint.Port,
+    GetAtt("MyDB", "Endpoint.Port"),
     '/',
     DBName,
 ])

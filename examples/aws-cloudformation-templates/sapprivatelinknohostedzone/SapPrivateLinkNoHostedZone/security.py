@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class ASCPrivateLinkLambdaRoleAllowStatement0:
-    resource: PolicyStatement
+class ASCPrivateLinkLambdaRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['lambda.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class ASCPrivateLinkLambdaRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class ASCPrivateLinkLambdaRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [ASCPrivateLinkLambdaRoleAllowStatement0]
 
 
-class ASCPrivateLinkLambdaRoleAllowStatement0_1:
-    resource: PolicyStatement
+class ASCPrivateLinkLambdaRoleAllowStatement0_1(PolicyStatement):
     action = [
         'logs:CreateLogGroup',
         'logs:CreateLogStream',
@@ -28,13 +25,11 @@ class ASCPrivateLinkLambdaRoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class ASCPrivateLinkLambdaRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class ASCPrivateLinkLambdaRolePolicies0PolicyDocument(PolicyDocument):
     statement = [ASCPrivateLinkLambdaRoleAllowStatement0_1]
 
 
-class ASCPrivateLinkLambdaRolePolicy:
-    resource: iam.User.Policy
+class ASCPrivateLinkLambdaRolePolicy(iam.User.Policy):
     policy_name = 'ASCPrivateLinkLambdaPolicy'
     policy_document = ASCPrivateLinkLambdaRolePolicies0PolicyDocument
 

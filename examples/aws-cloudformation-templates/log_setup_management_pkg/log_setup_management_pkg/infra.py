@@ -3,32 +3,27 @@
 from . import *  # noqa: F403
 
 
-class TargetAccountLoggingDeploymentTargets:
-    resource: cloudformation.StackSet.DeploymentTargets
+class TargetAccountLoggingDeploymentTargets(cloudformation.StackSet.DeploymentTargets):
     organizational_unit_ids = [OUID]
 
 
-class TargetAccountLoggingStackInstances:
-    resource: cloudformation.StackSet.StackInstances
+class TargetAccountLoggingStackInstances(cloudformation.StackSet.StackInstances):
     deployment_targets = TargetAccountLoggingDeploymentTargets
     regions = ['us-east-1', 'us-west-2']
 
 
-class TargetAccountLoggingParameter:
-    resource: cloudformation.StackSet.Parameter
+class TargetAccountLoggingParameter(cloudformation.StackSet.Parameter):
     parameter_key = 'CentralEventBusArn'
     parameter_value = CentralEventBus.Arn
 
 
-class TargetAccountLoggingOperationPreferences:
-    resource: cloudformation.StackSet.OperationPreferences
+class TargetAccountLoggingOperationPreferences(cloudformation.StackSet.OperationPreferences):
     failure_tolerance_count = 0
     max_concurrent_count = 2
     region_concurrency_type = 'PARALLEL'
 
 
-class TargetAccountLoggingAutoDeployment:
-    resource: cloudformation.StackSet.AutoDeployment
+class TargetAccountLoggingAutoDeployment(cloudformation.StackSet.AutoDeployment):
     enabled = True
     retain_stacks_on_account_removal = True
 

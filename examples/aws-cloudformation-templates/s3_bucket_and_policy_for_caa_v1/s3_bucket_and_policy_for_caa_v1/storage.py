@@ -3,28 +3,23 @@
 from . import *  # noqa: F403
 
 
-class BucketServerSideEncryptionByDefault:
-    resource: s3.Bucket.ServerSideEncryptionByDefault
+class BucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
-class BucketServerSideEncryptionRule:
-    resource: s3.Bucket.ServerSideEncryptionRule
+class BucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
     server_side_encryption_by_default = BucketServerSideEncryptionByDefault
 
 
-class BucketBucketEncryption:
-    resource: s3.Bucket.BucketEncryption
+class BucketBucketEncryption(s3.Bucket.BucketEncryption):
     server_side_encryption_configuration = [BucketServerSideEncryptionRule]
 
 
-class BucketDeleteMarkerReplication:
-    resource: s3.Bucket.DeleteMarkerReplication
+class BucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
     status = s3.BucketVersioningStatus.ENABLED
 
 
-class BucketPublicAccessBlockConfiguration:
-    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
+class BucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
@@ -38,8 +33,7 @@ class Bucket(s3.Bucket):
     public_access_block_configuration = BucketPublicAccessBlockConfiguration
 
 
-class BucketPolicyAllowStatement0:
-    resource: PolicyStatement
+class BucketPolicyAllowStatement0(PolicyStatement):
     sid = 'CrossAccPolicyDoc'
     principal = {
         'AWS': [Sub('arn:${AWS::Partition}:iam::${PublisherAccountID}:root')],
@@ -48,8 +42,7 @@ class BucketPolicyAllowStatement0:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${Bucket}')
 
 
-class BucketPolicyAllowStatement1:
-    resource: PolicyStatement
+class BucketPolicyAllowStatement1(PolicyStatement):
     sid = 'CrossAccPolicyDoc'
     principal = {
         'AWS': [Sub('arn:${AWS::Partition}:iam::${PublisherAccountID}:root')],
@@ -58,8 +51,7 @@ class BucketPolicyAllowStatement1:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${Bucket}/*')
 
 
-class BucketPolicyDenyStatement2:
-    resource: DenyStatement
+class BucketPolicyDenyStatement2(DenyStatement):
     principal = {
         'AWS': '*',
     }
@@ -75,8 +67,7 @@ class BucketPolicyDenyStatement2:
     }
 
 
-class BucketPolicyPolicyDocument:
-    resource: PolicyDocument
+class BucketPolicyPolicyDocument(PolicyDocument):
     statement = [BucketPolicyAllowStatement0, BucketPolicyAllowStatement1, BucketPolicyDenyStatement2]
 
 

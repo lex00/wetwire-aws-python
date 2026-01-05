@@ -3,29 +3,16 @@
 from . import *  # noqa: F403
 
 
-class OpenIoTStarPolicyAllowStatement0:
-    resource: PolicyStatement
-    action = 'iot:*'
-    resource_arn = '*'
+class IoTThing(iot.Thing):
+    thing_name = AWS_STACK_NAME
 
 
-class OpenIoTStarPolicyPolicyDocument:
-    resource: PolicyDocument
-    statement = [OpenIoTStarPolicyAllowStatement0]
-
-
-class OpenIoTStarPolicy(iot.Policy):
-    policy_document = OpenIoTStarPolicyPolicyDocument
-
-
-class IoTPolicyAllowStatement0:
-    resource: PolicyStatement
+class IoTPolicyAllowStatement0(PolicyStatement):
     action = 'iot:Connect'
     resource_arn = [Sub('arn:${AWS::Partition}:iot:${AWS::Region}:${AWS::AccountId}:client/*')]
 
 
-class IoTPolicyAllowStatement1:
-    resource: PolicyStatement
+class IoTPolicyAllowStatement1(PolicyStatement):
     action = 'iot:*'
     resource_arn = [
         Sub('arn:${AWS::Partition}:iot:${AWS::Region}:${AWS::AccountId}:topic/${AWS::StackName}'),
@@ -35,14 +22,12 @@ class IoTPolicyAllowStatement1:
     ]
 
 
-class IoTPolicyAllowStatement2:
-    resource: PolicyStatement
+class IoTPolicyAllowStatement2(PolicyStatement):
     action = 'iot:Subscribe'
     resource_arn = [Sub('arn:${AWS::Partition}:iot:${AWS::Region}:${AWS::AccountId}:topicfilter/*')]
 
 
-class IoTPolicyPolicyDocument:
-    resource: PolicyDocument
+class IoTPolicyPolicyDocument(PolicyDocument):
     statement = [IoTPolicyAllowStatement0, IoTPolicyAllowStatement1, IoTPolicyAllowStatement2]
 
 
@@ -55,18 +40,15 @@ class IoTPolicyPrincipalAttachment(iot.PolicyPrincipalAttachment):
     principal = CertificateARN
 
 
-class IoTTopicRuleLambdaAction:
-    resource: iot.TopicRule.LambdaAction
+class IoTTopicRuleLambdaAction(iot.TopicRule.LambdaAction):
     function_arn = MyLambda.Arn
 
 
-class IoTTopicRuleAction:
-    resource: iot.TopicRule.Action
+class IoTTopicRuleAction(iot.TopicRule.Action):
     lambda_ = IoTTopicRuleLambdaAction
 
 
-class IoTTopicRuleTopicRulePayload:
-    resource: iot.TopicRule.TopicRulePayload
+class IoTTopicRuleTopicRulePayload(iot.TopicRule.TopicRulePayload):
     actions = [IoTTopicRuleAction]
     aws_iot_sql_version = '2016-03-23'
     sql = " SELECT * FROM 'topic_2'"
@@ -78,10 +60,19 @@ class IoTTopicRule(iot.TopicRule):
     topic_rule_payload = IoTTopicRuleTopicRulePayload
 
 
-class IoTThing(iot.Thing):
-    thing_name = AWS_STACK_NAME
-
-
 class IoTThingPrincipalAttachment(iot.ThingPrincipalAttachment):
     principal = CertificateARN
     thing_name = IoTThing
+
+
+class OpenIoTStarPolicyAllowStatement0(PolicyStatement):
+    action = 'iot:*'
+    resource_arn = '*'
+
+
+class OpenIoTStarPolicyPolicyDocument(PolicyDocument):
+    statement = [OpenIoTStarPolicyAllowStatement0]
+
+
+class OpenIoTStarPolicy(iot.Policy):
+    policy_document = OpenIoTStarPolicyPolicyDocument

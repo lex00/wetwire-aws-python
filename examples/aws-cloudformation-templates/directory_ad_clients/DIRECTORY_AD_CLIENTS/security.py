@@ -3,16 +3,14 @@
 from . import *  # noqa: F403
 
 
-class JoinDomainAssociationInstancesInstanceAssociationOutputLocation:
-    resource: ssm.Association.InstanceAssociationOutputLocation
+class JoinDomainAssociationInstancesInstanceAssociationOutputLocation(ssm.Association.InstanceAssociationOutputLocation):
     s3_location = If("SSMLogsBucketCondition", {
     'OutputS3BucketName': SSMLogsBucketName,
     'OutputS3KeyPrefix': Sub('ssm-association-logs/AWSLogs/${AWS::AccountId}/*'),
 }, AWS_NO_VALUE)
 
 
-class JoinDomainAssociationInstancesTargets:
-    resource: ssm.MaintenanceWindowTarget.Targets
+class JoinDomainAssociationInstancesTargets(ssm.MaintenanceWindowTarget.Targets):
     key = 'InstanceIds'
     values = [DomainMember2WithSsmAssociationInstance, DomainMember4LinuxWithSsmAssociationInstance]
 
@@ -34,16 +32,14 @@ class JoinDomainAssociationInstances(ssm.Association):
     }
 
 
-class JoinDomainAssociationTagsInstanceAssociationOutputLocation:
-    resource: ssm.Association.InstanceAssociationOutputLocation
+class JoinDomainAssociationTagsInstanceAssociationOutputLocation(ssm.Association.InstanceAssociationOutputLocation):
     s3_location = If("SSMLogsBucketCondition", {
     'OutputS3BucketName': SSMLogsBucketName,
     'OutputS3KeyPrefix': Sub('ssm-association-logs/AWSLogs/${AWS::AccountId}/*'),
 }, AWS_NO_VALUE)
 
 
-class JoinDomainAssociationTagsTargets:
-    resource: ssm.MaintenanceWindowTarget.Targets
+class JoinDomainAssociationTagsTargets(ssm.MaintenanceWindowTarget.Targets):
     key = 'tag:DomainJoin'
     values = [DirectoryName]
 

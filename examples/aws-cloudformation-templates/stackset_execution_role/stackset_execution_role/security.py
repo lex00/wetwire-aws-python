@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class AWSCloudFormationStackSetExecutionRoleAllowStatement0:
-    resource: PolicyStatement
+class AWSCloudFormationStackSetExecutionRoleAllowStatement0(PolicyStatement):
     principal = {
         'AWS': Sub('arn:aws:iam::${AdministrationAccountId}:role/AWSCloudFormationStackSetAdministrationRole'),
     }
     action = 'sts:AssumeRole'
 
 
-class AWSCloudFormationStackSetExecutionRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class AWSCloudFormationStackSetExecutionRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [AWSCloudFormationStackSetExecutionRoleAllowStatement0]
 
 
-class AWSCloudFormationStackSetExecutionRoleAllowStatement0_1:
-    resource: PolicyStatement
+class AWSCloudFormationStackSetExecutionRoleAllowStatement0_1(PolicyStatement):
     action = [
         'cloudformation:CreateStack',
         'cloudformation:UpdateStack',
@@ -31,8 +28,7 @@ class AWSCloudFormationStackSetExecutionRoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class AWSCloudFormationStackSetExecutionRoleAllowStatement1:
-    resource: PolicyStatement
+class AWSCloudFormationStackSetExecutionRoleAllowStatement1(PolicyStatement):
     action = [
         'cloudwatch:PutDashboard',
         'cloudwatch:DeleteDashboards',
@@ -43,8 +39,7 @@ class AWSCloudFormationStackSetExecutionRoleAllowStatement1:
     resource_arn = '*'
 
 
-class AWSCloudFormationStackSetExecutionRoleAllowStatement2:
-    resource: PolicyStatement
+class AWSCloudFormationStackSetExecutionRoleAllowStatement2(PolicyStatement):
     action = [
         'sns:CreateTopic',
         'sns:DeleteTopic',
@@ -57,8 +52,7 @@ class AWSCloudFormationStackSetExecutionRoleAllowStatement2:
     resource_arn = '*'
 
 
-class AWSCloudFormationStackSetExecutionRoleAllowStatement3:
-    resource: PolicyStatement
+class AWSCloudFormationStackSetExecutionRoleAllowStatement3(PolicyStatement):
     action = [
         'kms:Decrypt',
         'kms:DescribeKey',
@@ -66,8 +60,7 @@ class AWSCloudFormationStackSetExecutionRoleAllowStatement3:
     resource_arn = '*'
 
 
-class AWSCloudFormationStackSetExecutionRoleAllowStatement4:
-    resource: PolicyStatement
+class AWSCloudFormationStackSetExecutionRoleAllowStatement4(PolicyStatement):
     action = [
         'ssm:GetParameter',
         'ssm:GetParameters',
@@ -76,13 +69,11 @@ class AWSCloudFormationStackSetExecutionRoleAllowStatement4:
     resource_arn = ['arn:aws:ssm:*:*:parameter/cdk-bootstrap/*']
 
 
-class AWSCloudFormationStackSetExecutionRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class AWSCloudFormationStackSetExecutionRolePolicies0PolicyDocument(PolicyDocument):
     statement = [AWSCloudFormationStackSetExecutionRoleAllowStatement0_1, AWSCloudFormationStackSetExecutionRoleAllowStatement1, AWSCloudFormationStackSetExecutionRoleAllowStatement2, AWSCloudFormationStackSetExecutionRoleAllowStatement3, AWSCloudFormationStackSetExecutionRoleAllowStatement4]
 
 
-class AWSCloudFormationStackSetExecutionRolePolicy:
-    resource: iam.User.Policy
+class AWSCloudFormationStackSetExecutionRolePolicy(iam.User.Policy):
     policy_name = 'ExecutionRolePolicy'
     policy_document = AWSCloudFormationStackSetExecutionRolePolicies0PolicyDocument
 

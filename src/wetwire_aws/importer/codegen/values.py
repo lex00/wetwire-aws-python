@@ -183,7 +183,15 @@ def intrinsic_to_python(
     if intrinsic.type == IntrinsicType.GET_ATT:
         logical_id, attr = intrinsic.args
         if logical_id in ctx.template.resources:
-            # Use no-parens pattern: ClassName.Attr
+            # Check if this is a nested attribute like "Endpoint.Address"
+            # Nested attributes can't use the no-parens pattern because
+            # PropertyType class attributes (e.g., DBInstance.Endpoint) shadow
+            # the metaclass __getattr__ that enables no-parens references.
+            if "." in attr:
+                # Use explicit GetAtt for nested attributes
+                ctx.add_intrinsic_import("GetAtt")
+                return f'GetAtt("{_format_ref_target(logical_id)}", "{attr}")'
+            # Use no-parens pattern for simple attributes: ClassName.Attr
             # setup_resources() handles forward refs via placeholders
             return f"{_format_ref_target(logical_id)}.{attr}"
         raise ValueError(f"Unknown GetAtt target: {logical_id}")

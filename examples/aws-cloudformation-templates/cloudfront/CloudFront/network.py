@@ -1,16 +1,14 @@
-"""Network resources: ALBExternalAccessSG, OriginALB, EC2InstanceSG, Tcp8080In, HTTPSTcpIn, Tcp8080Out, HTTPTcpIn, CloudFrontDistribution."""
+"""Network resources: ALBExternalAccessSG, EC2InstanceSG, Tcp8080In, HTTPSTcpIn, OriginALB, CloudFrontDistribution, HTTPTcpIn, Tcp8080Out."""
 
 from . import *  # noqa: F403
 
 
-class ALBExternalAccessSGAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class ALBExternalAccessSGAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = Sub('${AppName}-${Environment}-alb-external-access-ingrees-SG')
 
 
-class ALBExternalAccessSGAssociationParameter1:
-    resource: ec2.Instance.AssociationParameter
+class ALBExternalAccessSGAssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'Environment'
     value = Environment
 
@@ -21,54 +19,12 @@ class ALBExternalAccessSG(ec2.SecurityGroup):
     tags = [ALBExternalAccessSGAssociationParameter, ALBExternalAccessSGAssociationParameter1]
 
 
-class OriginALBTargetGroupAttribute:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
-    key = 'idle_timeout.timeout_seconds'
-    value = ALBAttributeIdleTimeOut
-
-
-class OriginALBTargetGroupAttribute1:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
-    key = 'deletion_protection.enabled'
-    value = ALBAttributeDeletionProtection
-
-
-class OriginALBTargetGroupAttribute2:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
-    key = 'routing.http2.enabled'
-    value = ALBAttributeRoutingHttp2
-
-
-class OriginALBTargetGroupAttribute3:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
-    key = 'Name'
-    value = Sub('${AppName}-${Environment}-alb')
-
-
-class OriginALBTargetGroupAttribute4:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
-    key = 'Environment'
-    value = Environment
-
-
-class OriginALB(elasticloadbalancingv2.LoadBalancer):
-    name = Sub('${AppName}-${Environment}-alb')
-    scheme = ALBScheme
-    type_ = ALBType
-    load_balancer_attributes = [OriginALBTargetGroupAttribute, OriginALBTargetGroupAttribute1, OriginALBTargetGroupAttribute2]
-    subnets = [PublicSubnetId1, PublicSubnetId2]
-    security_groups = [ALBExternalAccessSG]
-    tags = [OriginALBTargetGroupAttribute3, OriginALBTargetGroupAttribute4]
-
-
-class EC2InstanceSGAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class EC2InstanceSGAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = Sub('${AppName}-${Environment}-ec2-instance-SG')
 
 
-class EC2InstanceSGAssociationParameter1:
-    resource: ec2.Instance.AssociationParameter
+class EC2InstanceSGAssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'Environment'
     value = Environment
 
@@ -95,24 +51,42 @@ class HTTPSTcpIn(ec2.SecurityGroupIngress):
     cidr_ip = '0.0.0.0/0'
 
 
-class Tcp8080Out(ec2.SecurityGroupEgress):
-    group_id = ALBExternalAccessSG
-    to_port = 8080
-    ip_protocol = 'tcp'
-    from_port = 8080
-    destination_security_group_id = EC2InstanceSG
+class OriginALBTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'idle_timeout.timeout_seconds'
+    value = ALBAttributeIdleTimeOut
 
 
-class HTTPTcpIn(ec2.SecurityGroupIngress):
-    group_id = ALBExternalAccessSG
-    to_port = 80
-    ip_protocol = 'tcp'
-    from_port = 80
-    cidr_ip = '0.0.0.0/0'
+class OriginALBTargetGroupAttribute1(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'deletion_protection.enabled'
+    value = ALBAttributeDeletionProtection
 
 
-class CloudFrontDistributionCustomOriginConfig:
-    resource: cloudfront.Distribution.CustomOriginConfig
+class OriginALBTargetGroupAttribute2(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'routing.http2.enabled'
+    value = ALBAttributeRoutingHttp2
+
+
+class OriginALBTargetGroupAttribute3(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'Name'
+    value = Sub('${AppName}-${Environment}-alb')
+
+
+class OriginALBTargetGroupAttribute4(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'Environment'
+    value = Environment
+
+
+class OriginALB(elasticloadbalancingv2.LoadBalancer):
+    name = Sub('${AppName}-${Environment}-alb')
+    scheme = ALBScheme
+    type_ = ALBType
+    load_balancer_attributes = [OriginALBTargetGroupAttribute, OriginALBTargetGroupAttribute1, OriginALBTargetGroupAttribute2]
+    subnets = [PublicSubnetId1, PublicSubnetId2]
+    security_groups = [ALBExternalAccessSG]
+    tags = [OriginALBTargetGroupAttribute3, OriginALBTargetGroupAttribute4]
+
+
+class CloudFrontDistributionCustomOriginConfig(cloudfront.Distribution.CustomOriginConfig):
     http_port = 80
     https_port = 443
     origin_protocol_policy = OriginProtocolPolicy
@@ -121,32 +95,27 @@ class CloudFrontDistributionCustomOriginConfig:
     origin_ssl_protocols = ['TLSv1', 'TLSv1.1', 'TLSv1.2', 'SSLv3']
 
 
-class CloudFrontDistributionOrigin:
-    resource: cloudfront.Distribution.Origin
+class CloudFrontDistributionOrigin(cloudfront.Distribution.Origin):
     domain_name = OriginALB.DNSName
     id = OriginALB
     custom_origin_config = CloudFrontDistributionCustomOriginConfig
 
 
-class CloudFrontDistributionCookies:
-    resource: cloudfront.Distribution.Cookies
+class CloudFrontDistributionCookies(cloudfront.Distribution.Cookies):
     forward = ForwardCookies
 
 
-class CloudFrontDistributionForwardedValues:
-    resource: cloudfront.Distribution.ForwardedValues
+class CloudFrontDistributionForwardedValues(cloudfront.Distribution.ForwardedValues):
     query_string = QueryString
     cookies = CloudFrontDistributionCookies
 
 
-class CloudFrontDistributionLambdaFunctionAssociation:
-    resource: cloudfront.Distribution.LambdaFunctionAssociation
+class CloudFrontDistributionLambdaFunctionAssociation(cloudfront.Distribution.LambdaFunctionAssociation):
     event_type = LambdaEventType
     lambda_function_arn = LambdaEdgeVersion
 
 
-class CloudFrontDistributionDefaultCacheBehavior:
-    resource: cloudfront.Distribution.DefaultCacheBehavior
+class CloudFrontDistributionDefaultCacheBehavior(cloudfront.Distribution.DefaultCacheBehavior):
     allowed_methods = ['GET', 'HEAD', 'DELETE', 'OPTIONS', 'PATCH', 'POST', 'PUT']
     compress = Compress
     default_ttl = DefaultTTL
@@ -159,20 +128,17 @@ class CloudFrontDistributionDefaultCacheBehavior:
     lambda_function_associations = [CloudFrontDistributionLambdaFunctionAssociation]
 
 
-class CloudFrontDistributionViewerCertificate:
-    resource: cloudfront.Distribution.ViewerCertificate
+class CloudFrontDistributionViewerCertificate(cloudfront.Distribution.ViewerCertificate):
     acm_certificate_arn = Sub('arn:${AWS::Partition}:acm:${AWS::Region}:${AWS::AccountId}:certificate/${ACMCertificateIdentifier}')
     ssl_support_method = SslSupportMethod
     minimum_protocol_version = MinimumProtocolVersion
 
 
-class CloudFrontDistributionLogging:
-    resource: cloudfront.Distribution.Logging
+class CloudFrontDistributionLogging(cloudfront.Distribution.Logging):
     bucket = Sub('${LoggingBucket}.s3.amazonaws.com')
 
 
-class CloudFrontDistributionDistributionConfig:
-    resource: cloudfront.Distribution.DistributionConfig
+class CloudFrontDistributionDistributionConfig(cloudfront.Distribution.DistributionConfig):
     comment = 'Cloudfront Distribution pointing ALB Origin'
     origins = [CloudFrontDistributionOrigin]
     enabled = True
@@ -188,3 +154,19 @@ class CloudFrontDistributionDistributionConfig:
 class CloudFrontDistribution(cloudfront.Distribution):
     distribution_config = CloudFrontDistributionDistributionConfig
     depends_on = [LoggingBucket, LambdaEdgeFunction]
+
+
+class HTTPTcpIn(ec2.SecurityGroupIngress):
+    group_id = ALBExternalAccessSG
+    to_port = 80
+    ip_protocol = 'tcp'
+    from_port = 80
+    cidr_ip = '0.0.0.0/0'
+
+
+class Tcp8080Out(ec2.SecurityGroupEgress):
+    group_id = ALBExternalAccessSG
+    to_port = 8080
+    ip_protocol = 'tcp'
+    from_port = 8080
+    destination_security_group_id = EC2InstanceSG

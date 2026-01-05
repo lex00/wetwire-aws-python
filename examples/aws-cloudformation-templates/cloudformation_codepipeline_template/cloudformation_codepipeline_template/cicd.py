@@ -3,27 +3,23 @@
 from . import *  # noqa: F403
 
 
-class PipelineArtifactStore:
-    resource: codepipeline.Pipeline.ArtifactStore
+class PipelineArtifactStore(codepipeline.Pipeline.ArtifactStore):
     type_ = 'S3'
     location = ImportValue(Sub('${CodeBuildStack}-PipelineS3Bucket'))
 
 
-class PipelineActionTypeId:
-    resource: codepipeline.Pipeline.ActionTypeId
+class PipelineActionTypeId(codepipeline.Pipeline.ActionTypeId):
     category = 'Source'
     owner = 'AWS'
     provider = 'CodeCommit'
     version = 1
 
 
-class PipelineOutputArtifact:
-    resource: codepipeline.Pipeline.OutputArtifact
+class PipelineOutputArtifact(codepipeline.Pipeline.OutputArtifact):
     name = 'Source'
 
 
-class PipelineActionDeclaration:
-    resource: codepipeline.Pipeline.ActionDeclaration
+class PipelineActionDeclaration(codepipeline.Pipeline.ActionDeclaration):
     name = 'Source'
     action_type_id = PipelineActionTypeId
     configuration = {
@@ -34,32 +30,27 @@ class PipelineActionDeclaration:
     output_artifacts = [PipelineOutputArtifact]
 
 
-class PipelineStageDeclaration:
-    resource: codepipeline.Pipeline.StageDeclaration
+class PipelineStageDeclaration(codepipeline.Pipeline.StageDeclaration):
     name = 'Source'
     actions = [PipelineActionDeclaration]
 
 
-class PipelineActionTypeId1:
-    resource: codepipeline.Pipeline.ActionTypeId
+class PipelineActionTypeId1(codepipeline.Pipeline.ActionTypeId):
     category = 'Build'
     owner = 'AWS'
     provider = 'CodeBuild'
     version = 1
 
 
-class PipelineInputArtifact:
-    resource: codepipeline.Pipeline.InputArtifact
+class PipelineInputArtifact(codepipeline.Pipeline.InputArtifact):
     name = 'Source'
 
 
-class PipelineOutputArtifact1:
-    resource: codepipeline.Pipeline.OutputArtifact
+class PipelineOutputArtifact1(codepipeline.Pipeline.OutputArtifact):
     name = 'FullZip'
 
 
-class PipelineActionDeclaration1:
-    resource: codepipeline.Pipeline.ActionDeclaration
+class PipelineActionDeclaration1(codepipeline.Pipeline.ActionDeclaration):
     name = 'App-Build'
     action_type_id = PipelineActionTypeId1
     configuration = {
@@ -70,22 +61,19 @@ class PipelineActionDeclaration1:
     run_order = 1
 
 
-class PipelineStageDeclaration1:
-    resource: codepipeline.Pipeline.StageDeclaration
+class PipelineStageDeclaration1(codepipeline.Pipeline.StageDeclaration):
     name = 'Build-AppBuild'
     actions = [PipelineActionDeclaration1]
 
 
-class PipelineActionTypeId2:
-    resource: codepipeline.Pipeline.ActionTypeId
+class PipelineActionTypeId2(codepipeline.Pipeline.ActionTypeId):
     category = 'Approval'
     owner = 'AWS'
     provider = 'Manual'
     version = 1
 
 
-class PipelineActionDeclaration2:
-    resource: codepipeline.Pipeline.ActionDeclaration
+class PipelineActionDeclaration2(codepipeline.Pipeline.ActionDeclaration):
     name = 'Approval'
     action_type_id = PipelineActionTypeId2
     configuration = {
@@ -94,26 +82,22 @@ class PipelineActionDeclaration2:
     run_order = 2
 
 
-class PipelineActionTypeId3:
-    resource: codepipeline.Pipeline.ActionTypeId
+class PipelineActionTypeId3(codepipeline.Pipeline.ActionTypeId):
     category = 'Build'
     owner = 'AWS'
     provider = 'CodeBuild'
     version = 1
 
 
-class PipelineInputArtifact1:
-    resource: codepipeline.Pipeline.InputArtifact
+class PipelineInputArtifact1(codepipeline.Pipeline.InputArtifact):
     name = 'Source'
 
 
-class PipelineInputArtifact2:
-    resource: codepipeline.Pipeline.InputArtifact
+class PipelineInputArtifact2(codepipeline.Pipeline.InputArtifact):
     name = 'FullZip'
 
 
-class PipelineActionDeclaration3:
-    resource: codepipeline.Pipeline.ActionDeclaration
+class PipelineActionDeclaration3(codepipeline.Pipeline.ActionDeclaration):
     name = 'App-Deploy'
     action_type_id = PipelineActionTypeId3
     configuration = {
@@ -125,8 +109,7 @@ class PipelineActionDeclaration3:
     run_order = 3
 
 
-class PipelineStageDeclaration2:
-    resource: codepipeline.Pipeline.StageDeclaration
+class PipelineStageDeclaration2(codepipeline.Pipeline.StageDeclaration):
     name = 'Deploy-App'
     actions = [PipelineActionDeclaration2, PipelineActionDeclaration3]
 

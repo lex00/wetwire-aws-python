@@ -3,16 +3,14 @@
 from . import *  # noqa: F403
 
 
-class DirectoryConsoleDelegatedAccessSecurityAuditRoleAllowStatement0:
-    resource: PolicyStatement
+class DirectoryConsoleDelegatedAccessSecurityAuditRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ds.amazonaws.com'],
     }
     action = 'sts:AssumeRole'
 
 
-class DirectoryConsoleDelegatedAccessSecurityAuditRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class DirectoryConsoleDelegatedAccessSecurityAuditRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [DirectoryConsoleDelegatedAccessSecurityAuditRoleAllowStatement0]
 
 
@@ -28,28 +26,24 @@ class DirectoryConsoleDelegatedAccessSecurityAuditRole(iam.Role):
     condition = 'DirectoryConsoleDelegatedAccessRolesCondition'
 
 
-class DirectorySettingsLambdaRoleAllowStatement0:
-    resource: PolicyStatement
+class DirectorySettingsLambdaRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['lambda.amazonaws.com'],
     }
     action = 'sts:AssumeRole'
 
 
-class DirectorySettingsLambdaRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class DirectorySettingsLambdaRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [DirectorySettingsLambdaRoleAllowStatement0]
 
 
-class DirectorySettingsLambdaRoleAllowStatement0_1:
-    resource: PolicyStatement
+class DirectorySettingsLambdaRoleAllowStatement0_1(PolicyStatement):
     sid = 'CreateLogGroup'
     action = 'logs:CreateLogGroup'
     resource_arn = Sub('arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:${DirectorySettingsLambdaLogsLogGroup}')
 
 
-class DirectorySettingsLambdaRoleAllowStatement1:
-    resource: PolicyStatement
+class DirectorySettingsLambdaRoleAllowStatement1(PolicyStatement):
     sid = 'CreateLogStreamAndEvents'
     action = [
         'logs:CreateLogStream',
@@ -58,19 +52,16 @@ class DirectorySettingsLambdaRoleAllowStatement1:
     resource_arn = Sub('arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:${DirectorySettingsLambdaLogsLogGroup}:log-stream:*')
 
 
-class DirectorySettingsLambdaRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class DirectorySettingsLambdaRolePolicies0PolicyDocument(PolicyDocument):
     statement = [DirectorySettingsLambdaRoleAllowStatement0_1, DirectorySettingsLambdaRoleAllowStatement1]
 
 
-class DirectorySettingsLambdaRolePolicy:
-    resource: iam.User.Policy
+class DirectorySettingsLambdaRolePolicy(iam.User.Policy):
     policy_name = 'CloudWatchLogGroup'
     policy_document = DirectorySettingsLambdaRolePolicies0PolicyDocument
 
 
-class DirectorySettingsLambdaRoleAllowStatement0_2:
-    resource: PolicyStatement
+class DirectorySettingsLambdaRoleAllowStatement0_2(PolicyStatement):
     sid = 'SnsTopic'
     action = [
         'ds:RegisterEventTopic',
@@ -80,15 +71,13 @@ class DirectorySettingsLambdaRoleAllowStatement0_2:
     resource_arn = Sub('arn:${AWS::Partition}:ds:${AWS::Region}:${AWS::AccountId}:directory/${DirectoryID}')
 
 
-class DirectorySettingsLambdaRoleAllowStatement1_1:
-    resource: PolicyStatement
+class DirectorySettingsLambdaRoleAllowStatement1_1(PolicyStatement):
     sid = 'DescribeDirectories'
     action = 'ds:DescribeDirectories'
     resource_arn = '*'
 
 
-class DirectorySettingsLambdaRoleAllowStatement2:
-    resource: PolicyStatement
+class DirectorySettingsLambdaRoleAllowStatement2(PolicyStatement):
     sid = 'AliasSso'
     action = [
         'ds:CreateAlias',
@@ -98,13 +87,11 @@ class DirectorySettingsLambdaRoleAllowStatement2:
     resource_arn = Sub('arn:${AWS::Partition}:ds:${AWS::Region}:${AWS::AccountId}:directory/${DirectoryID}')
 
 
-class DirectorySettingsLambdaRolePolicies1PolicyDocument:
-    resource: PolicyDocument
+class DirectorySettingsLambdaRolePolicies1PolicyDocument(PolicyDocument):
     statement = [DirectorySettingsLambdaRoleAllowStatement0_2, DirectorySettingsLambdaRoleAllowStatement1_1, DirectorySettingsLambdaRoleAllowStatement2]
 
 
-class DirectorySettingsLambdaRolePolicy1:
-    resource: iam.User.Policy
+class DirectorySettingsLambdaRolePolicy1(iam.User.Policy):
     policy_name = 'DirectorySettings'
     policy_document = DirectorySettingsLambdaRolePolicies1PolicyDocument
 
@@ -121,16 +108,14 @@ class DirectorySettingsLambdaRole(iam.Role):
     policies = [DirectorySettingsLambdaRolePolicy, DirectorySettingsLambdaRolePolicy1]
 
 
-class DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAllowStatement0:
-    resource: PolicyStatement
+class DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ds.amazonaws.com'],
     }
     action = 'sts:AssumeRole'
 
 
-class DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAllowStatement0]
 
 

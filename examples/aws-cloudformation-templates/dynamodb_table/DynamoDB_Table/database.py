@@ -3,26 +3,22 @@
 from . import *  # noqa: F403
 
 
-class myDynamoDBTableAttributeDefinition:
-    resource: dynamodb.Table.AttributeDefinition
+class myDynamoDBTableAttributeDefinition(dynamodb.Table.AttributeDefinition):
     attribute_name = HashKeyElementName
     attribute_type = HashKeyElementType
 
 
-class myDynamoDBTableKeySchema:
-    resource: dynamodb.Table.KeySchema
+class myDynamoDBTableKeySchema(dynamodb.Table.KeySchema):
     attribute_name = HashKeyElementName
     key_type = dynamodb.KeyType.HASH
 
 
-class myDynamoDBTableProvisionedThroughput:
-    resource: dynamodb.Table.ProvisionedThroughput
+class myDynamoDBTableProvisionedThroughput(dynamodb.Table.ProvisionedThroughput):
     read_capacity_units = ReadCapacityUnits
     write_capacity_units = WriteCapacityUnits
 
 
-class myDynamoDBTablePointInTimeRecoverySpecification:
-    resource: dynamodb.Table.PointInTimeRecoverySpecification
+class myDynamoDBTablePointInTimeRecoverySpecification(dynamodb.Table.PointInTimeRecoverySpecification):
     point_in_time_recovery_enabled = True
 
 

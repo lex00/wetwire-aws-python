@@ -3,11 +3,43 @@
 from . import *  # noqa: F403
 
 
-class GreengrassCoreDefinition(greengrass.CoreDefinition):
-    name = Join('_', [
+class SubscriptionDefinitionSubscription(greengrass.SubscriptionDefinitionVersion.Subscription):
+    id = 'Subscription1'
+    source = 'cloud'
+    subject = Join('/', [
     CoreName,
-    'Core',
+    'in',
 ])
+    target = GGSampleFunctionVersion
+
+
+class SubscriptionDefinitionSubscription1(greengrass.SubscriptionDefinitionVersion.Subscription):
+    id = 'Subscription2'
+    source = GGSampleFunctionVersion
+    subject = Join('/', [
+    CoreName,
+    'out',
+])
+    target = 'cloud'
+
+
+class SubscriptionDefinitionSubscription2(greengrass.SubscriptionDefinitionVersion.Subscription):
+    id = 'Subscription3'
+    source = GGSampleFunctionVersion
+    subject = Join('/', [
+    CoreName,
+    'telem',
+])
+    target = 'cloud'
+
+
+class SubscriptionDefinitionSubscriptionDefinitionVersion(greengrass.SubscriptionDefinition.SubscriptionDefinitionVersion):
+    subscriptions = [SubscriptionDefinitionSubscription, SubscriptionDefinitionSubscription1, SubscriptionDefinitionSubscription2]
+
+
+class SubscriptionDefinition(greengrass.SubscriptionDefinition):
+    name = 'SubscriptionDefinition'
+    initial_version = SubscriptionDefinitionSubscriptionDefinitionVersion
 
 
 class IoTThing(CloudFormationResource):
@@ -19,8 +51,14 @@ class IoTThing(CloudFormationResource):
 ])
 
 
-class GreengrassCoreDefinitionVersionCore:
-    resource: greengrass.CoreDefinition.Core
+class GreengrassCoreDefinition(greengrass.CoreDefinition):
+    name = Join('_', [
+    CoreName,
+    'Core',
+])
+
+
+class GreengrassCoreDefinitionVersionCore(greengrass.CoreDefinition.Core):
     id = Join('_', [
     CoreName,
     'Core',
@@ -58,36 +96,25 @@ class GreengrassCoreDefinitionVersion(greengrass.CoreDefinitionVersion):
     cores = [GreengrassCoreDefinitionVersionCore]
 
 
-class InstanceAZ(CloudFormationResource):
-    # Unknown resource type: Custom::InstanceAZ
-    service_token = InstanceAZFunction.Arn
-    region = AWS_REGION
-
-
-class FunctionDefinitionExecution:
-    resource: greengrass.FunctionDefinition.Execution
+class FunctionDefinitionExecution(greengrass.FunctionDefinition.Execution):
     isolation_mode = 'GreengrassContainer'
 
 
-class FunctionDefinitionDefaultConfig:
-    resource: greengrass.FunctionDefinition.DefaultConfig
+class FunctionDefinitionDefaultConfig(greengrass.FunctionDefinition.DefaultConfig):
     execution = FunctionDefinitionExecution
 
 
-class FunctionDefinitionRunAs:
-    resource: greengrass.FunctionDefinition.RunAs
+class FunctionDefinitionRunAs(greengrass.FunctionDefinition.RunAs):
     uid = '1'
     gid = '10'
 
 
-class FunctionDefinitionExecution1:
-    resource: greengrass.FunctionDefinition.Execution
+class FunctionDefinitionExecution1(greengrass.FunctionDefinition.Execution):
     isolation_mode = 'GreengrassContainer'
     run_as = FunctionDefinitionRunAs
 
 
-class FunctionDefinitionEnvironment:
-    resource: greengrass.FunctionDefinition.Environment
+class FunctionDefinitionEnvironment(greengrass.FunctionDefinition.Environment):
     variables = {
         'CORE_NAME': CoreName,
     }
@@ -95,8 +122,7 @@ class FunctionDefinitionEnvironment:
     execution = FunctionDefinitionExecution1
 
 
-class FunctionDefinitionFunctionConfiguration:
-    resource: greengrass.FunctionDefinition.FunctionConfiguration
+class FunctionDefinitionFunctionConfiguration(greengrass.FunctionDefinition.FunctionConfiguration):
     pinned = 'true'
     executable = 'index.py'
     memory_size = '65536'
@@ -105,8 +131,7 @@ class FunctionDefinitionFunctionConfiguration:
     environment = FunctionDefinitionEnvironment
 
 
-class FunctionDefinitionFunction:
-    resource: greengrass.FunctionDefinition.Function
+class FunctionDefinitionFunction(greengrass.FunctionDefinition.Function):
     id = Join('_', [
     CoreName,
     'sample',
@@ -115,8 +140,7 @@ class FunctionDefinitionFunction:
     function_configuration = FunctionDefinitionFunctionConfiguration
 
 
-class FunctionDefinitionFunctionDefinitionVersion:
-    resource: greengrass.FunctionDefinition.FunctionDefinitionVersion
+class FunctionDefinitionFunctionDefinitionVersion(greengrass.FunctionDefinition.FunctionDefinitionVersion):
     default_config = FunctionDefinitionDefaultConfig
     functions = [FunctionDefinitionFunction]
 
@@ -126,51 +150,7 @@ class FunctionDefinition(greengrass.FunctionDefinition):
     initial_version = FunctionDefinitionFunctionDefinitionVersion
 
 
-class SubscriptionDefinitionSubscription:
-    resource: greengrass.SubscriptionDefinitionVersion.Subscription
-    id = 'Subscription1'
-    source = 'cloud'
-    subject = Join('/', [
-    CoreName,
-    'in',
-])
-    target = GGSampleFunctionVersion
-
-
-class SubscriptionDefinitionSubscription1:
-    resource: greengrass.SubscriptionDefinitionVersion.Subscription
-    id = 'Subscription2'
-    source = GGSampleFunctionVersion
-    subject = Join('/', [
-    CoreName,
-    'out',
-])
-    target = 'cloud'
-
-
-class SubscriptionDefinitionSubscription2:
-    resource: greengrass.SubscriptionDefinitionVersion.Subscription
-    id = 'Subscription3'
-    source = GGSampleFunctionVersion
-    subject = Join('/', [
-    CoreName,
-    'telem',
-])
-    target = 'cloud'
-
-
-class SubscriptionDefinitionSubscriptionDefinitionVersion:
-    resource: greengrass.SubscriptionDefinition.SubscriptionDefinitionVersion
-    subscriptions = [SubscriptionDefinitionSubscription, SubscriptionDefinitionSubscription1, SubscriptionDefinitionSubscription2]
-
-
-class SubscriptionDefinition(greengrass.SubscriptionDefinition):
-    name = 'SubscriptionDefinition'
-    initial_version = SubscriptionDefinitionSubscriptionDefinitionVersion
-
-
-class GreengrassGroupGroupVersion:
-    resource: greengrass.Group.GroupVersion
+class GreengrassGroupGroupVersion(greengrass.Group.GroupVersion):
     core_definition_version_arn = GreengrassCoreDefinitionVersion
     function_definition_version_arn = FunctionDefinition.LatestVersionArn
     subscription_definition_version_arn = SubscriptionDefinition.LatestVersionArn
@@ -182,15 +162,10 @@ class GreengrassGroup(greengrass.Group):
     initial_version = GreengrassGroupGroupVersion
 
 
-class GroupDeploymentReset(CloudFormationResource):
-    # Unknown resource type: Custom::GroupDeploymentReset
-    service_token = GroupDeploymentResetFunction.Arn
+class InstanceAZ(CloudFormationResource):
+    # Unknown resource type: Custom::InstanceAZ
+    service_token = InstanceAZFunction.Arn
     region = AWS_REGION
-    thing_name = Join('_', [
-    CoreName,
-    'Core',
-])
-    depends_on = [GreengrassGroup]
 
 
 class SubnetAPublic(ec2.Subnet):
@@ -200,13 +175,7 @@ class SubnetAPublic(ec2.Subnet):
     vpc_id = VPC
 
 
-class RouteTableAssociationAPublic(ec2.SubnetRouteTableAssociation):
-    subnet_id = SubnetAPublic
-    route_table_id = RouteTablePublic
-
-
-class GreengrassInstanceAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class GreengrassInstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = Join('-', [
     'Greengrass Core Blog ',
@@ -291,3 +260,19 @@ systemctl enable greengrass.service
 reboot
 """))
     depends_on = [GreengrassGroup]
+
+
+class GroupDeploymentReset(CloudFormationResource):
+    # Unknown resource type: Custom::GroupDeploymentReset
+    service_token = GroupDeploymentResetFunction.Arn
+    region = AWS_REGION
+    thing_name = Join('_', [
+    CoreName,
+    'Core',
+])
+    depends_on = [GreengrassGroup]
+
+
+class RouteTableAssociationAPublic(ec2.SubnetRouteTableAssociation):
+    subnet_id = SubnetAPublic
+    route_table_id = RouteTablePublic

@@ -3,19 +3,16 @@
 from . import *  # noqa: F403
 
 
-class LaunchTemplateEbs:
-    resource: ec2.LaunchTemplate.Ebs
+class LaunchTemplateEbs(ec2.LaunchTemplate.Ebs):
     volume_size = 32
 
 
-class LaunchTemplateBlockDeviceMapping:
-    resource: ec2.LaunchTemplate.BlockDeviceMapping
+class LaunchTemplateBlockDeviceMapping(ec2.LaunchTemplate.BlockDeviceMapping):
     device_name = '/dev/sda1'
     ebs = LaunchTemplateEbs
 
 
-class LaunchTemplateTagSpecification:
-    resource: ec2.LaunchTemplate.TagSpecification
+class LaunchTemplateTagSpecification(ec2.LaunchTemplate.TagSpecification):
     resource_type = 'instance'
     tags = [{
         'Key': 'Name',
@@ -23,8 +20,7 @@ class LaunchTemplateTagSpecification:
     }]
 
 
-class LaunchTemplateLaunchTemplateData:
-    resource: ec2.LaunchTemplate.LaunchTemplateData
+class LaunchTemplateLaunchTemplateData(ec2.LaunchTemplate.LaunchTemplateData):
     image_id = LatestAmiId
     instance_type = InstanceType
     security_group_ids = SecurityGroups
@@ -42,14 +38,12 @@ class LaunchTemplate(ec2.LaunchTemplate):
     launch_template_data = LaunchTemplateLaunchTemplateData
 
 
-class WebServerGroupLaunchTemplateSpecification:
-    resource: autoscaling.AutoScalingGroup.LaunchTemplateSpecification
+class WebServerGroupLaunchTemplateSpecification(autoscaling.AutoScalingGroup.LaunchTemplateSpecification):
     launch_template_id = LaunchTemplate
     version = LaunchTemplate.LatestVersionNumber
 
 
-class WebServerGroupNotificationConfiguration:
-    resource: autoscaling.AutoScalingGroup.NotificationConfiguration
+class WebServerGroupNotificationConfiguration(autoscaling.AutoScalingGroup.NotificationConfiguration):
     topic_arn = NotificationTopic
     notification_types = ['autoscaling:EC2_INSTANCE_LAUNCH', 'autoscaling:EC2_INSTANCE_LAUNCH_ERROR', 'autoscaling:EC2_INSTANCE_TERMINATE', 'autoscaling:EC2_INSTANCE_TERMINATE_ERROR']
 

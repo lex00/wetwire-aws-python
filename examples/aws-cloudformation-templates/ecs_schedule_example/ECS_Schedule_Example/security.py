@@ -1,23 +1,20 @@
-"""Security resources: EC2Role, EC2InstanceProfile, AutoscalingRole, LogsKmsKey, ECSServiceRole, ECSEventRole."""
+"""Security resources: EC2Role, EC2InstanceProfile, ECSServiceRole, LogsKmsKey, AutoscalingRole, ECSEventRole."""
 
 from . import *  # noqa: F403
 
 
-class EC2RoleAllowStatement0:
-    resource: PolicyStatement
+class EC2RoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ec2.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class EC2RoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class EC2RoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [EC2RoleAllowStatement0]
 
 
-class EC2RoleAllowStatement0_1:
-    resource: PolicyStatement
+class EC2RoleAllowStatement0_1(PolicyStatement):
     action = [
         'ecs:CreateCluster',
         'ecs:DeregisterContainerInstance',
@@ -32,13 +29,11 @@ class EC2RoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class EC2RolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class EC2RolePolicies0PolicyDocument(PolicyDocument):
     statement = [EC2RoleAllowStatement0_1]
 
 
-class EC2RolePolicy:
-    resource: iam.User.Policy
+class EC2RolePolicy(iam.User.Policy):
     policy_name = 'ecs-service'
     policy_document = EC2RolePolicies0PolicyDocument
 
@@ -54,68 +49,18 @@ class EC2InstanceProfile(iam.InstanceProfile):
     roles = [EC2Role]
 
 
-class AutoscalingRoleAllowStatement0:
-    resource: PolicyStatement
-    principal = {
-        'Service': ['application-autoscaling.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class AutoscalingRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
-    statement = [AutoscalingRoleAllowStatement0]
-
-
-class AutoscalingRoleAllowStatement0_1:
-    resource: PolicyStatement
-    action = [
-        'application-autoscaling:*',
-        'cloudwatch:DescribeAlarms',
-        'cloudwatch:PutMetricAlarm',
-        'ecs:DescribeServices',
-        'ecs:UpdateService',
-    ]
-    resource_arn = '*'
-
-
-class AutoscalingRolePolicies0PolicyDocument:
-    resource: PolicyDocument
-    statement = [AutoscalingRoleAllowStatement0_1]
-
-
-class AutoscalingRolePolicy:
-    resource: iam.User.Policy
-    policy_name = 'service-autoscaling'
-    policy_document = AutoscalingRolePolicies0PolicyDocument
-
-
-class AutoscalingRole(iam.Role):
-    assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
-    path = '/'
-    policies = [AutoscalingRolePolicy]
-
-
-class LogsKmsKey(kms.Key):
-    description = 'ECS Logs Encryption Key'
-    enable_key_rotation = True
-
-
-class ECSServiceRoleAllowStatement0:
-    resource: PolicyStatement
+class ECSServiceRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ecs.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class ECSServiceRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class ECSServiceRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [ECSServiceRoleAllowStatement0]
 
 
-class ECSServiceRoleAllowStatement0_1:
-    resource: PolicyStatement
+class ECSServiceRoleAllowStatement0_1(PolicyStatement):
     action = [
         'elasticloadbalancing:DeregisterInstancesFromLoadBalancer',
         'elasticloadbalancing:DeregisterTargets',
@@ -128,13 +73,11 @@ class ECSServiceRoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class ECSServiceRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class ECSServiceRolePolicies0PolicyDocument(PolicyDocument):
     statement = [ECSServiceRoleAllowStatement0_1]
 
 
-class ECSServiceRolePolicy:
-    resource: iam.User.Policy
+class ECSServiceRolePolicy(iam.User.Policy):
     policy_name = 'ecs-service'
     policy_document = ECSServiceRolePolicies0PolicyDocument
 
@@ -145,32 +88,69 @@ class ECSServiceRole(iam.Role):
     policies = [ECSServiceRolePolicy]
 
 
-class ECSEventRoleAllowStatement0:
-    resource: PolicyStatement
+class LogsKmsKey(kms.Key):
+    description = 'ECS Logs Encryption Key'
+    enable_key_rotation = True
+
+
+class AutoscalingRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['application-autoscaling.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class AutoscalingRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [AutoscalingRoleAllowStatement0]
+
+
+class AutoscalingRoleAllowStatement0_1(PolicyStatement):
+    action = [
+        'application-autoscaling:*',
+        'cloudwatch:DescribeAlarms',
+        'cloudwatch:PutMetricAlarm',
+        'ecs:DescribeServices',
+        'ecs:UpdateService',
+    ]
+    resource_arn = '*'
+
+
+class AutoscalingRolePolicies0PolicyDocument(PolicyDocument):
+    statement = [AutoscalingRoleAllowStatement0_1]
+
+
+class AutoscalingRolePolicy(iam.User.Policy):
+    policy_name = 'service-autoscaling'
+    policy_document = AutoscalingRolePolicies0PolicyDocument
+
+
+class AutoscalingRole(iam.Role):
+    assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [AutoscalingRolePolicy]
+
+
+class ECSEventRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['events.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class ECSEventRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class ECSEventRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [ECSEventRoleAllowStatement0]
 
 
-class ECSEventRoleAllowStatement0_1:
-    resource: PolicyStatement
+class ECSEventRoleAllowStatement0_1(PolicyStatement):
     action = ['ecs:RunTask']
     resource_arn = '*'
 
 
-class ECSEventRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class ECSEventRolePolicies0PolicyDocument(PolicyDocument):
     statement = [ECSEventRoleAllowStatement0_1]
 
 
-class ECSEventRolePolicy:
-    resource: iam.User.Policy
+class ECSEventRolePolicy(iam.User.Policy):
     policy_name = 'ecs-service'
     policy_document = ECSEventRolePolicies0PolicyDocument
 

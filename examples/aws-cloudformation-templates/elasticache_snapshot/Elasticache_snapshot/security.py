@@ -3,32 +3,27 @@
 from . import *  # noqa: F403
 
 
-class IamRoleLambdaAllowStatement0:
-    resource: PolicyStatement
+class IamRoleLambdaAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['lambda.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class IamRoleLambdaAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class IamRoleLambdaAssumeRolePolicyDocument(PolicyDocument):
     statement = [IamRoleLambdaAllowStatement0]
 
 
-class IamRoleLambdaAllowStatement0_1:
-    resource: PolicyStatement
+class IamRoleLambdaAllowStatement0_1(PolicyStatement):
     action = ['elasticache:ModifyReplicationGroup']
     resource_arn = RedisReplicationGroup
 
 
-class IamRoleLambdaPolicies0PolicyDocument:
-    resource: PolicyDocument
+class IamRoleLambdaPolicies0PolicyDocument(PolicyDocument):
     statement = [IamRoleLambdaAllowStatement0_1]
 
 
-class IamRoleLambdaPolicy:
-    resource: iam.User.Policy
+class IamRoleLambdaPolicy(iam.User.Policy):
     policy_name = 'ElastiCacheSnapshotPolicy'
     policy_document = IamRoleLambdaPolicies0PolicyDocument
 

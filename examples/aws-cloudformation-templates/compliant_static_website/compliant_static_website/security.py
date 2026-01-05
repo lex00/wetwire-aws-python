@@ -1,36 +1,16 @@
-"""Security resources: CloudFrontLogsReplicationRole, ContentReplicationRole, ContentReplicationPolicy, CloudFrontLogsReplicationPolicy."""
+"""Security resources: ContentReplicationRole, ContentReplicationPolicy, CloudFrontLogsReplicationRole, CloudFrontLogsReplicationPolicy."""
 
 from . import *  # noqa: F403
 
 
-class CloudFrontLogsReplicationRoleAllowStatement0:
-    resource: PolicyStatement
+class ContentReplicationRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['s3.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class CloudFrontLogsReplicationRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
-    statement = [CloudFrontLogsReplicationRoleAllowStatement0]
-
-
-class CloudFrontLogsReplicationRole(iam.Role):
-    assume_role_policy_document = CloudFrontLogsReplicationRoleAssumeRolePolicyDocument
-    path = '/'
-
-
-class ContentReplicationRoleAllowStatement0:
-    resource: PolicyStatement
-    principal = {
-        'Service': ['s3.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class ContentReplicationRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class ContentReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [ContentReplicationRoleAllowStatement0]
 
 
@@ -39,8 +19,7 @@ class ContentReplicationRole(iam.Role):
     path = '/'
 
 
-class ContentReplicationPolicyAllowStatement0:
-    resource: PolicyStatement
+class ContentReplicationPolicyAllowStatement0(PolicyStatement):
     action = [
         's3:GetReplicationConfiguration',
         's3:ListBucket',
@@ -48,8 +27,7 @@ class ContentReplicationPolicyAllowStatement0:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}')
 
 
-class ContentReplicationPolicyAllowStatement1:
-    resource: PolicyStatement
+class ContentReplicationPolicyAllowStatement1(PolicyStatement):
     action = [
         's3:GetObjectVersionForReplication',
         's3:GetObjectVersionAcl',
@@ -58,8 +36,7 @@ class ContentReplicationPolicyAllowStatement1:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')
 
 
-class ContentReplicationPolicyAllowStatement2:
-    resource: PolicyStatement
+class ContentReplicationPolicyAllowStatement2(PolicyStatement):
     action = [
         's3:ReplicateObject',
         's3:ReplicateDelete',
@@ -68,8 +45,7 @@ class ContentReplicationPolicyAllowStatement2:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*')
 
 
-class ContentReplicationPolicyPolicyDocument:
-    resource: PolicyDocument
+class ContentReplicationPolicyPolicyDocument(PolicyDocument):
     statement = [ContentReplicationPolicyAllowStatement0, ContentReplicationPolicyAllowStatement1, ContentReplicationPolicyAllowStatement2]
 
 
@@ -79,8 +55,23 @@ class ContentReplicationPolicy(iam.RolePolicy):
     role_name = ContentReplicationRole
 
 
-class CloudFrontLogsReplicationPolicyAllowStatement0:
-    resource: PolicyStatement
+class CloudFrontLogsReplicationRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['s3.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class CloudFrontLogsReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [CloudFrontLogsReplicationRoleAllowStatement0]
+
+
+class CloudFrontLogsReplicationRole(iam.Role):
+    assume_role_policy_document = CloudFrontLogsReplicationRoleAssumeRolePolicyDocument
+    path = '/'
+
+
+class CloudFrontLogsReplicationPolicyAllowStatement0(PolicyStatement):
     action = [
         's3:GetReplicationConfiguration',
         's3:ListBucket',
@@ -88,8 +79,7 @@ class CloudFrontLogsReplicationPolicyAllowStatement0:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}')
 
 
-class CloudFrontLogsReplicationPolicyAllowStatement1:
-    resource: PolicyStatement
+class CloudFrontLogsReplicationPolicyAllowStatement1(PolicyStatement):
     action = [
         's3:GetObjectVersionForReplication',
         's3:GetObjectVersionAcl',
@@ -98,8 +88,7 @@ class CloudFrontLogsReplicationPolicyAllowStatement1:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*')
 
 
-class CloudFrontLogsReplicationPolicyAllowStatement2:
-    resource: PolicyStatement
+class CloudFrontLogsReplicationPolicyAllowStatement2(PolicyStatement):
     action = [
         's3:ReplicateObject',
         's3:ReplicateDelete',
@@ -108,8 +97,7 @@ class CloudFrontLogsReplicationPolicyAllowStatement2:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}/*')
 
 
-class CloudFrontLogsReplicationPolicyPolicyDocument:
-    resource: PolicyDocument
+class CloudFrontLogsReplicationPolicyPolicyDocument(PolicyDocument):
     statement = [CloudFrontLogsReplicationPolicyAllowStatement0, CloudFrontLogsReplicationPolicyAllowStatement1, CloudFrontLogsReplicationPolicyAllowStatement2]
 
 

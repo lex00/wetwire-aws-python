@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class S3BucketTagFilter:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter(s3.Bucket.TagFilter):
     key = 'Current'
     value = Transform(name='Date', parameters={
     'Date': Date,
@@ -12,8 +11,7 @@ class S3BucketTagFilter:
 })
 
 
-class S3BucketTagFilter1:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter1(s3.Bucket.TagFilter):
     key = 'Add'
     value = Transform(name='Date', parameters={
     'Date': Date,
@@ -22,8 +20,7 @@ class S3BucketTagFilter1:
 })
 
 
-class S3BucketTagFilter2:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter2(s3.Bucket.TagFilter):
     key = 'Subtract'
     value = Transform(name='Date', parameters={
     'Date': Date,
@@ -32,8 +29,7 @@ class S3BucketTagFilter2:
 })
 
 
-class S3BucketTagFilter3:
-    resource: s3.Bucket.TagFilter
+class S3BucketTagFilter3(s3.Bucket.TagFilter):
     key = 'Days'
     value = Transform(name='Date', parameters={
     'Date': Date,

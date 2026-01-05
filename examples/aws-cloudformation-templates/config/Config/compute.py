@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class VolumeAutoEnableIOComplianceCheckCode:
-    resource: lambda_.Function.Code
+class VolumeAutoEnableIOComplianceCheckCode(lambda_.Function.Code):
     zip_file = """var aws  = require('aws-sdk');
 var config = new aws.ConfigService();
 var ec2 = new aws.EC2();
@@ -54,8 +53,7 @@ class ConfigPermissionToCallLambda(lambda_.Permission):
     principal = 'config.amazonaws.com'
 
 
-class Ec2VolumeAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class Ec2VolumeAssociationParameter(ec2.Instance.AssociationParameter):
     key = Ec2VolumeTagKey
     value = 'Ec2VolumeTagValue'
 
