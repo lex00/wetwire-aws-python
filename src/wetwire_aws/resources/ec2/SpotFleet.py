@@ -146,6 +146,7 @@ class LaunchTemplateConfig(PropertyType):
 @dataclass
 class LaunchTemplateOverrides(PropertyType):
     availability_zone: str | None = None
+    availability_zone_id: str | None = None
     instance_requirements: InstanceRequirementsRequest | None = None
     instance_type: str | None = None
     priority: float | None = None
@@ -273,6 +274,7 @@ class SpotMaintenanceStrategies(PropertyType):
 @dataclass
 class SpotPlacement(PropertyType):
     availability_zone: str | None = None
+    availability_zone_id: str | None = None
     group_name: str | None = None
     tenancy: str | None = None
 

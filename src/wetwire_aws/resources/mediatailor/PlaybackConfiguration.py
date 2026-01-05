@@ -14,6 +14,11 @@ class AdConditioningConfiguration(PropertyType):
 
 
 @dataclass
+class AdDecisionServerConfiguration(PropertyType):
+    http_request: HttpRequest | None = None
+
+
+@dataclass
 class AdMarkerPassthrough(PropertyType):
     enabled: bool | None = None
 
@@ -53,6 +58,14 @@ class DashConfiguration(PropertyType):
 @dataclass
 class HlsConfiguration(PropertyType):
     manifest_endpoint_prefix: str | None = None
+
+
+@dataclass
+class HttpRequest(PropertyType):
+    body: str | None = None
+    compress_request: str | None = None
+    headers: dict[str, String] = field(default_factory=dict)
+    http_method: str | None = None
 
 
 @dataclass

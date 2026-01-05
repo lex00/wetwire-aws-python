@@ -10,6 +10,7 @@ from wetwire_aws.base import PropertyType, Tag
 
 @dataclass
 class CustomConfigurationInput(PropertyType):
+    episodic_override: EpisodicOverride | None = None
     self_managed_configuration: SelfManagedConfiguration | None = None
     semantic_override: SemanticOverride | None = None
     summary_override: SummaryOverride | None = None
@@ -30,6 +31,50 @@ class CustomMemoryStrategy(PropertyType):
 
 
 @dataclass
+class EpisodicMemoryStrategy(PropertyType):
+    name: str | None = None
+    created_at: str | None = None
+    description: str | None = None
+    namespaces: list[String] = field(default_factory=list)
+    reflection_configuration: EpisodicReflectionConfigurationInput | None = None
+    status: str | None = None
+    strategy_id: str | None = None
+    type_: str | None = None
+    updated_at: str | None = None
+
+
+@dataclass
+class EpisodicOverride(PropertyType):
+    consolidation: EpisodicOverrideConsolidationConfigurationInput | None = None
+    extraction: EpisodicOverrideExtractionConfigurationInput | None = None
+    reflection: EpisodicOverrideReflectionConfigurationInput | None = None
+
+
+@dataclass
+class EpisodicOverrideConsolidationConfigurationInput(PropertyType):
+    append_to_prompt: str | None = None
+    model_id: str | None = None
+
+
+@dataclass
+class EpisodicOverrideExtractionConfigurationInput(PropertyType):
+    append_to_prompt: str | None = None
+    model_id: str | None = None
+
+
+@dataclass
+class EpisodicOverrideReflectionConfigurationInput(PropertyType):
+    append_to_prompt: str | None = None
+    model_id: str | None = None
+    namespaces: list[String] = field(default_factory=list)
+
+
+@dataclass
+class EpisodicReflectionConfigurationInput(PropertyType):
+    namespaces: list[String] = field(default_factory=list)
+
+
+@dataclass
 class InvocationConfigurationInput(PropertyType):
     payload_delivery_bucket_name: str | None = None
     topic_arn: str | None = None
@@ -38,6 +83,7 @@ class InvocationConfigurationInput(PropertyType):
 @dataclass
 class MemoryStrategy(PropertyType):
     custom_memory_strategy: CustomMemoryStrategy | None = None
+    episodic_memory_strategy: EpisodicMemoryStrategy | None = None
     semantic_memory_strategy: SemanticMemoryStrategy | None = None
     summary_memory_strategy: SummaryMemoryStrategy | None = None
     user_preference_memory_strategy: UserPreferenceMemoryStrategy | None = None

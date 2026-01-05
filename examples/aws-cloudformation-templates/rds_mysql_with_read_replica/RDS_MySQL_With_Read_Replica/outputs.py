@@ -25,9 +25,9 @@ class JDBCConnectionStringOutput:
     resource: Output
     value = Join('', [
     'jdbc:mysql://',
-    GetAtt("MainDB", "Endpoint.Address"),
+    MainDB.Endpoint.Address,
     ':',
-    GetAtt("MainDB", "Endpoint.Port"),
+    MainDB.Endpoint.Port,
     '/',
     DBName,
 ])
@@ -40,9 +40,9 @@ class ReplicaJDBCConnectionStringOutput:
     resource: Output
     value = Join('', [
     'jdbc:mysql://',
-    GetAtt("ReplicaDB", "Endpoint.Address"),
+    ReplicaDB.Endpoint.Address,
     ':',
-    GetAtt("ReplicaDB", "Endpoint.Port"),
+    ReplicaDB.Endpoint.Port,
     '/',
     DBName,
 ])

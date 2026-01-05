@@ -1,45 +1,6 @@
-"""Security resources: GreengrassResourceRole, LambdaExecutionRole."""
+"""Security resources: LambdaExecutionRole, GreengrassResourceRole."""
 
 from . import *  # noqa: F403
-
-
-class GreengrassResourceRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': 'greengrass.amazonaws.com',
-    }
-    action = 'sts:AssumeRole'
-
-
-class GreengrassResourceRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [GreengrassResourceRoleAllowStatement0]
-
-
-class GreengrassResourceRoleAllowStatement0_1(PolicyStatement):
-    action = [
-        'logs:CreateLogGroup',
-        'logs:CreateLogStream',
-        'logs:PutLogEvents',
-    ]
-    resource_arn = Sub('arn:${AWS::Partition}:logs:*:*:*')
-
-
-class GreengrassResourceRoleAllowStatement1(PolicyStatement):
-    action = ['iot:*']
-    resource_arn = '*'
-
-
-class GreengrassResourceRolePolicies0PolicyDocument(PolicyDocument):
-    statement = [GreengrassResourceRoleAllowStatement0_1, GreengrassResourceRoleAllowStatement1]
-
-
-class GreengrassResourceRolePolicy(iam.User.Policy):
-    policy_name = 'root'
-    policy_document = GreengrassResourceRolePolicies0PolicyDocument
-
-
-class GreengrassResourceRole(iam.Role):
-    assume_role_policy_document = GreengrassResourceRoleAssumeRolePolicyDocument
-    policies = [GreengrassResourceRolePolicy]
 
 
 class LambdaExecutionRoleAllowStatement0(PolicyStatement):
@@ -100,3 +61,42 @@ class LambdaExecutionRolePolicy(iam.User.Policy):
 class LambdaExecutionRole(iam.Role):
     assume_role_policy_document = LambdaExecutionRoleAssumeRolePolicyDocument
     policies = [LambdaExecutionRolePolicy]
+
+
+class GreengrassResourceRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': 'greengrass.amazonaws.com',
+    }
+    action = 'sts:AssumeRole'
+
+
+class GreengrassResourceRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [GreengrassResourceRoleAllowStatement0]
+
+
+class GreengrassResourceRoleAllowStatement0_1(PolicyStatement):
+    action = [
+        'logs:CreateLogGroup',
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+    ]
+    resource_arn = Sub('arn:${AWS::Partition}:logs:*:*:*')
+
+
+class GreengrassResourceRoleAllowStatement1(PolicyStatement):
+    action = ['iot:*']
+    resource_arn = '*'
+
+
+class GreengrassResourceRolePolicies0PolicyDocument(PolicyDocument):
+    statement = [GreengrassResourceRoleAllowStatement0_1, GreengrassResourceRoleAllowStatement1]
+
+
+class GreengrassResourceRolePolicy(iam.User.Policy):
+    policy_name = 'root'
+    policy_document = GreengrassResourceRolePolicies0PolicyDocument
+
+
+class GreengrassResourceRole(iam.Role):
+    assume_role_policy_document = GreengrassResourceRoleAssumeRolePolicyDocument
+    policies = [GreengrassResourceRolePolicy]

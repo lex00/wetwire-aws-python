@@ -42,17 +42,35 @@ class SubscriptionDefinition(greengrass.SubscriptionDefinition):
     initial_version = SubscriptionDefinitionSubscriptionDefinitionVersion
 
 
-class IoTThing(CloudFormationResource):
-    # Unknown resource type: Custom::IoTThing
-    service_token = CreateThingFunction.Arn
-    thing_name = Join('_', [
+class InstanceAZ(CloudFormationResource):
+    # Unknown resource type: Custom::InstanceAZ
+    service_token = InstanceAZFunction.Arn
+    region = AWS_REGION
+
+
+class SubnetAPublic(ec2.Subnet):
+    availability_zone = InstanceAZ.AvailabilityZone
+    cidr_block = '172.31.0.0/24'
+    map_public_ip_on_launch = True
+    vpc_id = VPC
+
+
+class RouteTableAssociationAPublic(ec2.SubnetRouteTableAssociation):
+    subnet_id = SubnetAPublic
+    route_table_id = RouteTablePublic
+
+
+class GreengrassCoreDefinition(greengrass.CoreDefinition):
+    name = Join('_', [
     CoreName,
     'Core',
 ])
 
 
-class GreengrassCoreDefinition(greengrass.CoreDefinition):
-    name = Join('_', [
+class IoTThing(CloudFormationResource):
+    # Unknown resource type: Custom::IoTThing
+    service_token = CreateThingFunction.Arn
+    thing_name = Join('_', [
     CoreName,
     'Core',
 ])
@@ -162,19 +180,6 @@ class GreengrassGroup(greengrass.Group):
     initial_version = GreengrassGroupGroupVersion
 
 
-class InstanceAZ(CloudFormationResource):
-    # Unknown resource type: Custom::InstanceAZ
-    service_token = InstanceAZFunction.Arn
-    region = AWS_REGION
-
-
-class SubnetAPublic(ec2.Subnet):
-    availability_zone = InstanceAZ.AvailabilityZone
-    cidr_block = '172.31.0.0/24'
-    map_public_ip_on_launch = True
-    vpc_id = VPC
-
-
 class GreengrassInstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = Join('-', [
@@ -271,8 +276,3 @@ class GroupDeploymentReset(CloudFormationResource):
     'Core',
 ])
     depends_on = [GreengrassGroup]
-
-
-class RouteTableAssociationAPublic(ec2.SubnetRouteTableAssociation):
-    subnet_id = SubnetAPublic
-    route_table_id = RouteTablePublic

@@ -1,24 +1,6 @@
-"""Network resources: TargetGroup, LoadBalancerSecurityGroup, LoadBalancerEgress, LoadBalancer, LoadBalancerListener."""
+"""Network resources: LoadBalancerSecurityGroup, LoadBalancerEgress, TargetGroup, LoadBalancer, LoadBalancerListener."""
 
 from . import *  # noqa: F403
-
-
-class TargetGroupTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
-    key = 'deregistration_delay.timeout_seconds'
-    value = '10'
-
-
-class TargetGroupTargetGroupAttribute1(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
-    key = 'stickiness.enabled'
-    value = 'false'
-
-
-class TargetGroup(elasticloadbalancingv2.TargetGroup):
-    port = 80
-    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
-    target_group_attributes = [TargetGroupTargetGroupAttribute, TargetGroupTargetGroupAttribute1]
-    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
-    vpc_id = VPCId
 
 
 class LoadBalancerSecurityGroupEgress(ec2.SecurityGroup.Egress):
@@ -42,6 +24,24 @@ class LoadBalancerEgress(ec2.SecurityGroupEgress):
     group_id = LoadBalancerSecurityGroup.GroupId
     ip_protocol = 'tcp'
     to_port = 80
+
+
+class TargetGroupTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'deregistration_delay.timeout_seconds'
+    value = '10'
+
+
+class TargetGroupTargetGroupAttribute1(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'stickiness.enabled'
+    value = 'false'
+
+
+class TargetGroup(elasticloadbalancingv2.TargetGroup):
+    port = 80
+    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
+    target_group_attributes = [TargetGroupTargetGroupAttribute, TargetGroupTargetGroupAttribute1]
+    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
+    vpc_id = VPCId
 
 
 class LoadBalancerTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):

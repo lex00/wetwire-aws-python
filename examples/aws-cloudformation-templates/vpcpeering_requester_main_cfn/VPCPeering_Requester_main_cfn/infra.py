@@ -31,5 +31,5 @@ class VPCPeeringUpdatesStack(cloudformation.Stack):
         'PeerVPCCIDR': PeerVPCCIDR,
         'RouteTableIds': RouteTableIds,
         'SecurityGroupIds': Join(',', SecurityGroupIds),
-        'VPCPeeringConnectionId': GetAtt("VPCPeeringRequesterSetupStack", "Outputs.VPCPeeringConnectionId"),
+        'VPCPeeringConnectionId': VPCPeeringRequesterSetupStack.Outputs.VPCPeeringConnectionId,
     }

@@ -7,6 +7,11 @@ class IoTThing(iot.Thing):
     thing_name = AWS_STACK_NAME
 
 
+class IoTThingPrincipalAttachment(iot.ThingPrincipalAttachment):
+    principal = CertificateARN
+    thing_name = IoTThing
+
+
 class IoTPolicyAllowStatement0(PolicyStatement):
     action = 'iot:Connect'
     resource_arn = [Sub('arn:${AWS::Partition}:iot:${AWS::Region}:${AWS::AccountId}:client/*')]
@@ -58,11 +63,6 @@ class IoTTopicRuleTopicRulePayload(iot.TopicRule.TopicRulePayload):
 class IoTTopicRule(iot.TopicRule):
     rule_name = AWS_STACK_NAME
     topic_rule_payload = IoTTopicRuleTopicRulePayload
-
-
-class IoTThingPrincipalAttachment(iot.ThingPrincipalAttachment):
-    principal = CertificateARN
-    thing_name = IoTThing
 
 
 class OpenIoTStarPolicyAllowStatement0(PolicyStatement):

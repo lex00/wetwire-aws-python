@@ -1,4 +1,4 @@
-"""Storage resources: EFSFileSystem, EFSMountTarget1, EFSAccessPoint, EFSMountTarget2, EFSMountTarget3."""
+"""Storage resources: EFSFileSystem, EFSMountTarget2, EFSMountTarget1, EFSAccessPoint, EFSMountTarget3."""
 
 from . import *  # noqa: F403
 
@@ -12,6 +12,12 @@ class EFSFileSystem(efs.FileSystem):
     encrypted = True
     performance_mode = 'generalPurpose'
     file_system_tags = [EFSFileSystemAccessPointTag]
+
+
+class EFSMountTarget2(efs.MountTarget):
+    file_system_id = EFSFileSystem
+    security_groups = [SecurityGroup2]
+    subnet_id = Subnet2
 
 
 class EFSMountTarget1(efs.MountTarget):
@@ -28,12 +34,6 @@ class EFSAccessPointAccessPointTag(efs.AccessPoint.AccessPointTag):
 class EFSAccessPoint(efs.AccessPoint):
     file_system_id = EFSFileSystem
     access_point_tags = [EFSAccessPointAccessPointTag]
-
-
-class EFSMountTarget2(efs.MountTarget):
-    file_system_id = EFSFileSystem
-    security_groups = [SecurityGroup2]
-    subnet_id = Subnet2
 
 
 class EFSMountTarget3(efs.MountTarget):

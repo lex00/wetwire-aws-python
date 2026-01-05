@@ -1,14 +1,14 @@
 {
-  "fetched_at": "2025-12-31T20:14:38.966064+00:00",
+  "fetched_at": "2026-01-05T22:51:16.629338+00:00",
   "domain": "aws",
   "generator_version": "1.0.0",
   "sources": [
     {
       "name": "cloudformation-spec",
-      "version": "2025.12.18",
+      "version": "2026.01.02",
       "url": "https://d1uauaxba7bl26.cloudfront.net/latest/gzip/CloudFormationResourceSpecification.json",
-      "sha256": "4af65d2cceb00c54346a2e7d5660a57f0e2a87a45e01fc30e7417ad1372b677f",
-      "fetched_at": "2025-12-31T20:14:39.664512+00:00"
+      "sha256": "02c8656750b8626d212deb4eded398cbb7041644b8853434860c4bda0359831e",
+      "fetched_at": "2026-01-05T22:51:17.292339+00:00"
     },
     {
       "name": "botocore",

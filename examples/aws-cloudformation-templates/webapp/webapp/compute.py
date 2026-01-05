@@ -1,4 +1,4 @@
-"""Compute resources: JwtResourceHandler, JwtResourceRootPermission, TestResourceHandler, TestResourceRootPermission, TestResourcePermission, JwtResourcePermission."""
+"""Compute resources: JwtResourceHandler, JwtResourcePermission, TestResourceHandler, TestResourceRootPermission, TestResourcePermission, JwtResourceRootPermission."""
 
 from . import *  # noqa: F403
 
@@ -27,11 +27,11 @@ class JwtResourceHandler(lambda_.Function):
     environment = JwtResourceHandlerEnvironment
 
 
-class JwtResourceRootPermission(lambda_.Permission):
+class JwtResourcePermission(lambda_.Permission):
     action = 'lambda:InvokeFunction'
     function_name = JwtResourceHandler.Arn
     principal = 'apigateway.amazonaws.com'
-    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/')
+    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/*')
 
 
 class TestResourceHandlerContent(lambda_.LayerVersion.Content):
@@ -68,8 +68,8 @@ class TestResourcePermission(lambda_.Permission):
     source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/*')
 
 
-class JwtResourcePermission(lambda_.Permission):
+class JwtResourceRootPermission(lambda_.Permission):
     action = 'lambda:InvokeFunction'
     function_name = JwtResourceHandler.Arn
     principal = 'apigateway.amazonaws.com'
-    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/*')
+    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/')

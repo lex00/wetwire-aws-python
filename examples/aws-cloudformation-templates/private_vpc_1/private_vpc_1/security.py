@@ -1,50 +1,6 @@
-"""Security resources: ECSRole, EC2Role, AutoscalingRole, EC2InstanceProfile."""
+"""Security resources: EC2Role, EC2InstanceProfile, ECSRole, AutoscalingRole."""
 
 from . import *  # noqa: F403
-
-
-class ECSRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['ecs.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class ECSRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [ECSRoleAllowStatement0]
-
-
-class ECSRoleAllowStatement0_1(PolicyStatement):
-    action = [
-        'ec2:AttachNetworkInterface',
-        'ec2:CreateNetworkInterface',
-        'ec2:CreateNetworkInterfacePermission',
-        'ec2:DeleteNetworkInterface',
-        'ec2:DeleteNetworkInterfacePermission',
-        'ec2:Describe*',
-        'ec2:DetachNetworkInterface',
-        'elasticloadbalancing:DeregisterInstancesFromLoadBalancer',
-        'elasticloadbalancing:DeregisterTargets',
-        'elasticloadbalancing:Describe*',
-        'elasticloadbalancing:RegisterInstancesWithLoadBalancer',
-        'elasticloadbalancing:RegisterTargets',
-    ]
-    resource_arn = '*'
-
-
-class ECSRolePolicies0PolicyDocument(PolicyDocument):
-    statement = [ECSRoleAllowStatement0_1]
-
-
-class ECSRolePolicy(iam.User.Policy):
-    policy_name = 'ecs-service'
-    policy_document = ECSRolePolicies0PolicyDocument
-
-
-class ECSRole(iam.Role):
-    assume_role_policy_document = ECSRoleAssumeRolePolicyDocument
-    path = '/'
-    policies = [ECSRolePolicy]
 
 
 class EC2RoleAllowStatement0(PolicyStatement):
@@ -91,6 +47,55 @@ class EC2Role(iam.Role):
     policies = [EC2RolePolicy]
 
 
+class EC2InstanceProfile(iam.InstanceProfile):
+    path = '/'
+    roles = [EC2Role]
+
+
+class ECSRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['ecs.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class ECSRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [ECSRoleAllowStatement0]
+
+
+class ECSRoleAllowStatement0_1(PolicyStatement):
+    action = [
+        'ec2:AttachNetworkInterface',
+        'ec2:CreateNetworkInterface',
+        'ec2:CreateNetworkInterfacePermission',
+        'ec2:DeleteNetworkInterface',
+        'ec2:DeleteNetworkInterfacePermission',
+        'ec2:Describe*',
+        'ec2:DetachNetworkInterface',
+        'elasticloadbalancing:DeregisterInstancesFromLoadBalancer',
+        'elasticloadbalancing:DeregisterTargets',
+        'elasticloadbalancing:Describe*',
+        'elasticloadbalancing:RegisterInstancesWithLoadBalancer',
+        'elasticloadbalancing:RegisterTargets',
+    ]
+    resource_arn = '*'
+
+
+class ECSRolePolicies0PolicyDocument(PolicyDocument):
+    statement = [ECSRoleAllowStatement0_1]
+
+
+class ECSRolePolicy(iam.User.Policy):
+    policy_name = 'ecs-service'
+    policy_document = ECSRolePolicies0PolicyDocument
+
+
+class ECSRole(iam.Role):
+    assume_role_policy_document = ECSRoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [ECSRolePolicy]
+
+
 class AutoscalingRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['application-autoscaling.amazonaws.com'],
@@ -126,8 +131,3 @@ class AutoscalingRole(iam.Role):
     assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
     path = '/'
     policies = [AutoscalingRolePolicy]
-
-
-class EC2InstanceProfile(iam.InstanceProfile):
-    path = '/'
-    roles = [EC2Role]

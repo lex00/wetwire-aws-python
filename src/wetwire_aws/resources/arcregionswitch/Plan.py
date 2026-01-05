@@ -41,6 +41,22 @@ class CustomActionLambdaConfiguration(PropertyType):
 
 
 @dataclass
+class DocumentDbConfiguration(PropertyType):
+    behavior: dict[str, Any] | None = None
+    database_cluster_arns: list[String] = field(default_factory=list)
+    global_cluster_identifier: str | None = None
+    cross_account_role: str | None = None
+    external_id: str | None = None
+    timeout_minutes: float | None = None
+    ungraceful: DocumentDbUngraceful | None = None
+
+
+@dataclass
+class DocumentDbUngraceful(PropertyType):
+    ungraceful: str | None = None
+
+
+@dataclass
 class Ec2AsgCapacityIncreaseConfiguration(PropertyType):
     asgs: list[Asg] = field(default_factory=list)
     capacity_monitoring_approach: dict[str, Any] | None = None
@@ -101,6 +117,7 @@ class ExecutionApprovalConfiguration(PropertyType):
 class ExecutionBlockConfiguration(PropertyType):
     arc_routing_control_config: ArcRoutingControlConfiguration | None = None
     custom_action_lambda_config: CustomActionLambdaConfiguration | None = None
+    document_db_config: DocumentDbConfiguration | None = None
     ec2_asg_capacity_increase_config: Ec2AsgCapacityIncreaseConfiguration | None = None
     ecs_capacity_increase_config: EcsCapacityIncreaseConfiguration | None = None
     eks_resource_scaling_config: EksResourceScalingConfiguration | None = None
@@ -158,6 +175,16 @@ class RegionSwitchPlanConfiguration(PropertyType):
 
 
 @dataclass
+class ReportConfiguration(PropertyType):
+    report_output: list[ReportOutputConfiguration] = field(default_factory=list)
+
+
+@dataclass
+class ReportOutputConfiguration(PropertyType):
+    s3_configuration: S3ReportOutputConfiguration | None = None
+
+
+@dataclass
 class Route53HealthCheckConfiguration(PropertyType):
     hosted_zone_id: str | None = None
     record_name: str | None = None
@@ -171,6 +198,12 @@ class Route53HealthCheckConfiguration(PropertyType):
 class Route53ResourceRecordSet(PropertyType):
     record_set_identifier: str | None = None
     region: str | None = None
+
+
+@dataclass
+class S3ReportOutputConfiguration(PropertyType):
+    bucket_owner: str | None = None
+    bucket_path: str | None = None
 
 
 @dataclass

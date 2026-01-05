@@ -1,16 +1,16 @@
-"""Storage resources: ObjectStorageReplicaBucketPolicyPolicy, ObjectStorageReplicaBucket, ObjectStorageLogBucket, ObjectStorageBucket, ObjectStorageBucketPolicyPolicy, ObjectStorageLogBucketPolicyPolicy."""
+"""Storage resources: ObjectStorageLogBucketPolicyPolicy, ObjectStorageLogBucket, ObjectStorageReplicaBucket, ObjectStorageBucket, ObjectStorageBucketPolicyPolicy, ObjectStorageReplicaBucketPolicyPolicy."""
 
 from . import *  # noqa: F403
 
 
-class ObjectStorageReplicaBucketPolicyPolicyDenyStatement0(DenyStatement):
+class ObjectStorageLogBucketPolicyPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
     }
     action = 's3:*'
     resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*'),
     ]
     condition = {
         BOOL: {
@@ -19,15 +19,15 @@ class ObjectStorageReplicaBucketPolicyPolicyDenyStatement0(DenyStatement):
     }
 
 
-class ObjectStorageReplicaBucketPolicyPolicyAllowStatement1(PolicyStatement):
+class ObjectStorageLogBucketPolicyPolicyAllowStatement1(PolicyStatement):
     principal = {
         'Service': 'logging.s3.amazonaws.com',
     }
     action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*')]
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*')]
     condition = {
         ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}'),
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
         },
         STRING_EQUALS: {
             'aws:SourceAccount': AWS_ACCOUNT_ID,
@@ -35,44 +35,13 @@ class ObjectStorageReplicaBucketPolicyPolicyAllowStatement1(PolicyStatement):
     }
 
 
-class ObjectStorageReplicaBucketPolicyPolicyPolicyDocument(PolicyDocument):
-    statement = [ObjectStorageReplicaBucketPolicyPolicyDenyStatement0, ObjectStorageReplicaBucketPolicyPolicyAllowStatement1]
+class ObjectStorageLogBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [ObjectStorageLogBucketPolicyPolicyDenyStatement0, ObjectStorageLogBucketPolicyPolicyAllowStatement1]
 
 
-class ObjectStorageReplicaBucketPolicyPolicy(s3.BucketPolicy):
-    bucket = ObjectStorageReplicaBucket
-    policy_document = ObjectStorageReplicaBucketPolicyPolicyPolicyDocument
-
-
-class ObjectStorageReplicaBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
-    sse_algorithm = s3.ServerSideEncryption.AES256
-
-
-class ObjectStorageReplicaBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
-    server_side_encryption_by_default = ObjectStorageReplicaBucketServerSideEncryptionByDefault
-
-
-class ObjectStorageReplicaBucketBucketEncryption(s3.Bucket.BucketEncryption):
-    server_side_encryption_configuration = [ObjectStorageReplicaBucketServerSideEncryptionRule]
-
-
-class ObjectStorageReplicaBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
-    block_public_acls = True
-    block_public_policy = True
-    ignore_public_acls = True
-    restrict_public_buckets = True
-
-
-class ObjectStorageReplicaBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
-    status = s3.BucketVersioningStatus.ENABLED
-
-
-class ObjectStorageReplicaBucket(s3.Bucket):
-    bucket_encryption = ObjectStorageReplicaBucketBucketEncryption
-    bucket_name = Sub('${AppName}-replicas-${AWS::Region}-${AWS::AccountId}')
-    object_lock_enabled = False
-    public_access_block_configuration = ObjectStorageReplicaBucketPublicAccessBlockConfiguration
-    versioning_configuration = ObjectStorageReplicaBucketDeleteMarkerReplication
+class ObjectStorageLogBucketPolicyPolicy(s3.BucketPolicy):
+    bucket = ObjectStorageLogBucket
+    policy_document = ObjectStorageLogBucketPolicyPolicyPolicyDocument
 
 
 class ObjectStorageLogBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
@@ -119,6 +88,37 @@ class ObjectStorageLogBucket(s3.Bucket):
     object_lock_enabled = True
     public_access_block_configuration = ObjectStorageLogBucketPublicAccessBlockConfiguration
     versioning_configuration = ObjectStorageLogBucketDeleteMarkerReplication
+
+
+class ObjectStorageReplicaBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
+    sse_algorithm = s3.ServerSideEncryption.AES256
+
+
+class ObjectStorageReplicaBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
+    server_side_encryption_by_default = ObjectStorageReplicaBucketServerSideEncryptionByDefault
+
+
+class ObjectStorageReplicaBucketBucketEncryption(s3.Bucket.BucketEncryption):
+    server_side_encryption_configuration = [ObjectStorageReplicaBucketServerSideEncryptionRule]
+
+
+class ObjectStorageReplicaBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
+    block_public_acls = True
+    block_public_policy = True
+    ignore_public_acls = True
+    restrict_public_buckets = True
+
+
+class ObjectStorageReplicaBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
+    status = s3.BucketVersioningStatus.ENABLED
+
+
+class ObjectStorageReplicaBucket(s3.Bucket):
+    bucket_encryption = ObjectStorageReplicaBucketBucketEncryption
+    bucket_name = Sub('${AppName}-replicas-${AWS::Region}-${AWS::AccountId}')
+    object_lock_enabled = False
+    public_access_block_configuration = ObjectStorageReplicaBucketPublicAccessBlockConfiguration
+    versioning_configuration = ObjectStorageReplicaBucketDeleteMarkerReplication
 
 
 class ObjectStorageBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
@@ -213,14 +213,14 @@ class ObjectStorageBucketPolicyPolicy(s3.BucketPolicy):
     policy_document = ObjectStorageBucketPolicyPolicyPolicyDocument
 
 
-class ObjectStorageLogBucketPolicyPolicyDenyStatement0(DenyStatement):
+class ObjectStorageReplicaBucketPolicyPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
     }
     action = 's3:*'
     resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*'),
     ]
     condition = {
         BOOL: {
@@ -229,15 +229,15 @@ class ObjectStorageLogBucketPolicyPolicyDenyStatement0(DenyStatement):
     }
 
 
-class ObjectStorageLogBucketPolicyPolicyAllowStatement1(PolicyStatement):
+class ObjectStorageReplicaBucketPolicyPolicyAllowStatement1(PolicyStatement):
     principal = {
         'Service': 'logging.s3.amazonaws.com',
     }
     action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*')]
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*')]
     condition = {
         ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}'),
         },
         STRING_EQUALS: {
             'aws:SourceAccount': AWS_ACCOUNT_ID,
@@ -245,10 +245,10 @@ class ObjectStorageLogBucketPolicyPolicyAllowStatement1(PolicyStatement):
     }
 
 
-class ObjectStorageLogBucketPolicyPolicyPolicyDocument(PolicyDocument):
-    statement = [ObjectStorageLogBucketPolicyPolicyDenyStatement0, ObjectStorageLogBucketPolicyPolicyAllowStatement1]
+class ObjectStorageReplicaBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [ObjectStorageReplicaBucketPolicyPolicyDenyStatement0, ObjectStorageReplicaBucketPolicyPolicyAllowStatement1]
 
 
-class ObjectStorageLogBucketPolicyPolicy(s3.BucketPolicy):
-    bucket = ObjectStorageLogBucket
-    policy_document = ObjectStorageLogBucketPolicyPolicyPolicyDocument
+class ObjectStorageReplicaBucketPolicyPolicy(s3.BucketPolicy):
+    bucket = ObjectStorageReplicaBucket
+    policy_document = ObjectStorageReplicaBucketPolicyPolicyPolicyDocument

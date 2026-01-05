@@ -1,4 +1,4 @@
-"""Security resources: EC2Role, EC2InstanceProfile, ECSServiceRole, LogsKmsKey, AutoscalingRole, ECSEventRole."""
+"""Security resources: EC2Role, EC2InstanceProfile, AutoscalingRole, LogsKmsKey, ECSServiceRole, ECSEventRole."""
 
 from . import *  # noqa: F403
 
@@ -49,6 +49,48 @@ class EC2InstanceProfile(iam.InstanceProfile):
     roles = [EC2Role]
 
 
+class AutoscalingRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['application-autoscaling.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class AutoscalingRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [AutoscalingRoleAllowStatement0]
+
+
+class AutoscalingRoleAllowStatement0_1(PolicyStatement):
+    action = [
+        'application-autoscaling:*',
+        'cloudwatch:DescribeAlarms',
+        'cloudwatch:PutMetricAlarm',
+        'ecs:DescribeServices',
+        'ecs:UpdateService',
+    ]
+    resource_arn = '*'
+
+
+class AutoscalingRolePolicies0PolicyDocument(PolicyDocument):
+    statement = [AutoscalingRoleAllowStatement0_1]
+
+
+class AutoscalingRolePolicy(iam.User.Policy):
+    policy_name = 'service-autoscaling'
+    policy_document = AutoscalingRolePolicies0PolicyDocument
+
+
+class AutoscalingRole(iam.Role):
+    assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [AutoscalingRolePolicy]
+
+
+class LogsKmsKey(kms.Key):
+    description = 'ECS Logs Encryption Key'
+    enable_key_rotation = True
+
+
 class ECSServiceRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ecs.amazonaws.com'],
@@ -86,48 +128,6 @@ class ECSServiceRole(iam.Role):
     assume_role_policy_document = ECSServiceRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ECSServiceRolePolicy]
-
-
-class LogsKmsKey(kms.Key):
-    description = 'ECS Logs Encryption Key'
-    enable_key_rotation = True
-
-
-class AutoscalingRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['application-autoscaling.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class AutoscalingRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [AutoscalingRoleAllowStatement0]
-
-
-class AutoscalingRoleAllowStatement0_1(PolicyStatement):
-    action = [
-        'application-autoscaling:*',
-        'cloudwatch:DescribeAlarms',
-        'cloudwatch:PutMetricAlarm',
-        'ecs:DescribeServices',
-        'ecs:UpdateService',
-    ]
-    resource_arn = '*'
-
-
-class AutoscalingRolePolicies0PolicyDocument(PolicyDocument):
-    statement = [AutoscalingRoleAllowStatement0_1]
-
-
-class AutoscalingRolePolicy(iam.User.Policy):
-    policy_name = 'service-autoscaling'
-    policy_document = AutoscalingRolePolicies0PolicyDocument
-
-
-class AutoscalingRole(iam.Role):
-    assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
-    path = '/'
-    policies = [AutoscalingRolePolicy]
 
 
 class ECSEventRoleAllowStatement0(PolicyStatement):

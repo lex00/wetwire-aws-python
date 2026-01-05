@@ -315,19 +315,18 @@ class TestIntrinsicSimplifications:
         result = intrinsic_to_python(intrinsic, ctx)
         assert result == "MyResource.Arn"
 
-    def test_nested_getatt_uses_explicit_getatt(self, ctx):
-        """Nested GetAtt like Endpoint.Address uses explicit GetAtt().
+    def test_nested_getatt_uses_no_parens(self, ctx):
+        """Nested GetAtt like Endpoint.Address uses no-parens pattern.
 
-        This is necessary because PropertyType class attributes (e.g., DBInstance.Endpoint)
-        shadow the metaclass __getattr__ that enables no-parens references.
+        PropertyTypeDescriptor returns PropertyTypeProxy for chained attribute access,
+        enabling MyDB.Endpoint.Address syntax for nested GetAtt patterns.
         """
         intrinsic = IRIntrinsic(IntrinsicType.GET_ATT, ("MyResource", "Endpoint.Address"))
         result = intrinsic_to_python(intrinsic, ctx)
-        assert result == 'GetAtt("MyResource", "Endpoint.Address")'
-        assert "GetAtt" in ctx.intrinsic_imports
+        assert result == "MyResource.Endpoint.Address"
 
     def test_deeply_nested_getatt(self, ctx):
-        """Deeply nested GetAtt patterns also use explicit GetAtt()."""
+        """Deeply nested GetAtt patterns also use no-parens pattern."""
         intrinsic = IRIntrinsic(IntrinsicType.GET_ATT, ("MyResource", "A.B.C"))
         result = intrinsic_to_python(intrinsic, ctx)
-        assert result == 'GetAtt("MyResource", "A.B.C")'
+        assert result == "MyResource.A.B.C"

@@ -1,6 +1,12 @@
-"""Infra resources: ServiceCatalogPortfolio, ServiceCatalogPortfolioShare, ServiceCatalogProductTagOptionsUser, ServiceCatalogProductTagOptionsDept, ServiceCatalogProductTagOptionsEnv, ServiceCatalogProductTagOptionsOwner."""
+"""Infra resources: ServiceCatalogProductTagOptionsEnv, ServiceCatalogPortfolio, ServiceCatalogPortfolioShare, ServiceCatalogProductTagOptionsDept, ServiceCatalogProductTagOptionsUser, ServiceCatalogProductTagOptionsOwner."""
 
 from . import *  # noqa: F403
+
+
+class ServiceCatalogProductTagOptionsEnv(servicecatalog.TagOption):
+    active = ActivateProductTagOptions
+    key = 'Env'
+    value = ProductEnv
 
 
 class ServiceCatalogPortfolioProvisioningParameter(servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter):
@@ -41,22 +47,16 @@ class ServiceCatalogPortfolioShare(servicecatalog.PortfolioShare):
     condition = 'ConditionShareThisPortfolio'
 
 
-class ServiceCatalogProductTagOptionsUser(servicecatalog.TagOption):
-    active = ActivateProductTagOptions
-    key = 'User'
-    value = ProductUser
-
-
 class ServiceCatalogProductTagOptionsDept(servicecatalog.TagOption):
     active = ActivateProductTagOptions
     key = 'Dept'
     value = ProductDept
 
 
-class ServiceCatalogProductTagOptionsEnv(servicecatalog.TagOption):
+class ServiceCatalogProductTagOptionsUser(servicecatalog.TagOption):
     active = ActivateProductTagOptions
-    key = 'Env'
-    value = ProductEnv
+    key = 'User'
+    value = ProductUser
 
 
 class ServiceCatalogProductTagOptionsOwner(servicecatalog.TagOption):

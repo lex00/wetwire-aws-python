@@ -9,22 +9,17 @@ from wetwire_aws.base import PropertyType, Tag
 
 
 @dataclass
-class JiraCloud(PropertyType):
+class JiraCloudProviderConfiguration(PropertyType):
     project_key: str | None = None
-    auth_status: str | None = None
-    auth_url: str | None = None
-    cloud_id: str | None = None
-    domain: str | None = None
 
 
 @dataclass
 class Provider(PropertyType):
-    jira_cloud: JiraCloud | None = None
-    service_now: ServiceNow | None = None
+    jira_cloud: JiraCloudProviderConfiguration | None = None
+    service_now: ServiceNowProviderConfiguration | None = None
 
 
 @dataclass
-class ServiceNow(PropertyType):
+class ServiceNowProviderConfiguration(PropertyType):
     instance_name: str | None = None
     secret_arn: str | None = None
-    auth_status: str | None = None

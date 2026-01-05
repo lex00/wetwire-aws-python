@@ -1,0 +1,7 @@
+=== private_subnet_private_service (private_subnet_private_service) ===
+warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
+Uninstalled 1 package in 22ms
+error: Failed to install: wetwire_aws-1.4.0-py3-none-any.whl (wetwire-aws==1.4.0 (from file:///Users/alex/Documents/checkouts/wetwire-aws-python))
+  Caused by: Failed to reflink /Users/alex/.cache/uv/archive-v0/dnKNyMRiYg7MmF8FBY1iA/wetwire_aws/resources/elasticbeanstalk/__init__.py to .venv/lib/python3.13/site-packages/wetwire_aws/resources/elasticbeanstalk/__init__.py
+  Caused by: No such file or directory (os error 2)
+

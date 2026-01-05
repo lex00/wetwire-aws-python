@@ -1,4 +1,4 @@
-"""Security resources: UserPool, Domain, Client."""
+"""Security resources: UserPool, Client, Domain."""
 
 from . import *  # noqa: F403
 
@@ -30,11 +30,6 @@ class UserPool(cognito.UserPool):
     schema = [UserPoolSchemaAttribute, UserPoolSchemaAttribute1, UserPoolSchemaAttribute2]
 
 
-class Domain(cognito.UserPoolDomain):
-    domain = AppName
-    user_pool_id = UserPool
-
-
 class Client(cognito.UserPoolClient):
     client_name = AppName
     generate_secret = False
@@ -44,3 +39,8 @@ class Client(cognito.UserPoolClient):
     allowed_o_auth_flows_user_pool_client = True
     allowed_o_auth_scopes = ['phone', 'email', 'openid']
     supported_identity_providers = ['COGNITO']
+
+
+class Domain(cognito.UserPoolDomain):
+    domain = AppName
+    user_pool_id = UserPool

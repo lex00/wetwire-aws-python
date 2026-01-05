@@ -1,4 +1,4 @@
-"""Network resources: VPC, PublicSubnetA, PublicSubnetB, PublicInternetRouteTable, PublicSubnetBRouteTableAssociation, RedisSecurityGroup, InternetGateway, PublicSubnetARouteTableAssociation, PublicInternetRoute, VPCGatewayAttachment."""
+"""Network resources: VPC, PublicSubnetA, PublicSubnetB, RedisSecurityGroup, PublicInternetRouteTable, PublicSubnetARouteTableAssociation, InternetGateway, PublicInternetRoute, VPCGatewayAttachment, PublicSubnetBRouteTableAssociation."""
 
 from . import *  # noqa: F403
 
@@ -19,15 +19,6 @@ class PublicSubnetB(ec2.Subnet):
     vpc_id = VPC
 
 
-class PublicInternetRouteTable(ec2.RouteTable):
-    vpc_id = VPC
-
-
-class PublicSubnetBRouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    route_table_id = PublicInternetRouteTable
-    subnet_id = PublicSubnetB
-
-
 class RedisSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = '6379'
@@ -41,13 +32,17 @@ class RedisSecurityGroup(ec2.SecurityGroup):
     security_group_ingress = [RedisSecurityGroupEgress]
 
 
-class InternetGateway(ec2.InternetGateway):
-    pass
+class PublicInternetRouteTable(ec2.RouteTable):
+    vpc_id = VPC
 
 
 class PublicSubnetARouteTableAssociation(ec2.SubnetRouteTableAssociation):
     route_table_id = PublicInternetRouteTable
     subnet_id = PublicSubnetA
+
+
+class InternetGateway(ec2.InternetGateway):
+    pass
 
 
 class PublicInternetRoute(ec2.Route):
@@ -60,3 +55,8 @@ class PublicInternetRoute(ec2.Route):
 class VPCGatewayAttachment(ec2.VPCGatewayAttachment):
     internet_gateway_id = InternetGateway
     vpc_id = VPC
+
+
+class PublicSubnetBRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = PublicInternetRouteTable
+    subnet_id = PublicSubnetB

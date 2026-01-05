@@ -60,6 +60,13 @@ class AssetPropertyVariant(PropertyType):
 
 
 @dataclass
+class BatchConfig(PropertyType):
+    max_batch_open_ms: int | None = None
+    max_batch_size: int | None = None
+    max_batch_size_bytes: int | None = None
+
+
+@dataclass
 class CloudwatchAlarmAction(PropertyType):
     alarm_name: str | None = None
     role_arn: str | None = None
@@ -124,7 +131,9 @@ class FirehoseAction(PropertyType):
 class HttpAction(PropertyType):
     url: str | None = None
     auth: HttpAuthorization | None = None
+    batch_config: BatchConfig | None = None
     confirmation_url: str | None = None
+    enable_batching: bool | None = None
     headers: list[HttpActionHeader] = field(default_factory=list)
 
 

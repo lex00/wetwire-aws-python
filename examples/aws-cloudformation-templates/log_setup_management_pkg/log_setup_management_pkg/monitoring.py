@@ -1,6 +1,12 @@
-"""Monitoring resources: CentralEventLog, CentralEventLogQuery, CentralEventLogPolicy, CentralEventLogQueryReason."""
+"""Monitoring resources: CentralEventLogQuery, CentralEventLog, CentralEventLogPolicy, CentralEventLogQueryReason."""
 
 from . import *  # noqa: F403
+
+
+class CentralEventLogQuery(logs.QueryDefinition):
+    name = 'CentralCloudFormationEventLogs'
+    query_string = 'fields time, account, region, `detail.resource-type`, `detail.logical-resource-id`, `detail.status-details.status` | sort @timestamp desc'
+    log_group_names = [CentralEventLogName]
 
 
 class CentralEventLog(logs.LogGroup):
@@ -8,12 +14,6 @@ class CentralEventLog(logs.LogGroup):
     log_group_name = CentralEventLogName
     kms_key_id = CentralEventLogKey.Arn
     depends_on = [CentralEventBus]
-
-
-class CentralEventLogQuery(logs.QueryDefinition):
-    name = 'CentralCloudFormationEventLogs'
-    query_string = 'fields time, account, region, `detail.resource-type`, `detail.logical-resource-id`, `detail.status-details.status` | sort @timestamp desc'
-    log_group_names = [CentralEventLogName]
 
 
 class CentralEventLogPolicy(logs.ResourcePolicy):

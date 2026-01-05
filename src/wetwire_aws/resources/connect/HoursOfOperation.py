@@ -23,6 +23,8 @@ class HoursOfOperationOverride(PropertyType):
     override_name: str | None = None
     hours_of_operation_override_id: str | None = None
     override_description: str | None = None
+    override_type: str | None = None
+    recurrence_config: RecurrenceConfig | None = None
 
 
 @dataclass
@@ -39,6 +41,26 @@ class HoursOfOperationTimeSlice(PropertyType):
 
 
 @dataclass
+class HoursOfOperationsIdentifier(PropertyType):
+    id: str | None = None
+    name: str | None = None
+
+
+@dataclass
 class OverrideTimeSlice(PropertyType):
     hours: int | None = None
     minutes: int | None = None
+
+
+@dataclass
+class RecurrenceConfig(PropertyType):
+    recurrence_pattern: RecurrencePattern | None = None
+
+
+@dataclass
+class RecurrencePattern(PropertyType):
+    by_month: list[Integer] = field(default_factory=list)
+    by_month_day: list[Integer] = field(default_factory=list)
+    by_weekday_occurrence: list[Integer] = field(default_factory=list)
+    frequency: str | None = None
+    interval: int | None = None
