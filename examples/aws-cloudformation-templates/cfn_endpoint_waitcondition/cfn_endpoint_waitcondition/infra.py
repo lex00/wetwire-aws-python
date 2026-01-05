@@ -1,14 +1,7 @@
-"""Infra resources: PrivateWaitHandle, PrivateWaitCondition."""
+"""Infra resources: PrivateWaitHandle."""
 
 from . import *  # noqa: F403
 
 
 class PrivateWaitHandle(cloudformation.WaitConditionHandle):
     pass
-
-
-class PrivateWaitCondition(cloudformation.WaitCondition):
-    handle = PrivateWaitHandle
-    timeout = '3600'
-    count = 1
-    depends_on = [PrivateInstance]

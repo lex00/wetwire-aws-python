@@ -3,15 +3,13 @@
 from . import *  # noqa: F403
 
 
-class TagVpcPeeringConnectionsLambdaFunctionEnvironment:
-    resource: lambda_.Function.Environment
+class TagVpcPeeringConnectionsLambdaFunctionEnvironment(lambda_.Function.Environment):
     variables = {
         'LOG_LEVEL': LambdaLogLevel,
     }
 
 
-class TagVpcPeeringConnectionsLambdaFunctionCode:
-    resource: lambda_.Function.Code
+class TagVpcPeeringConnectionsLambdaFunctionCode(lambda_.Function.Code):
     zip_file = """import cfnresponse, json, os, logging, boto3
 
 LOGGER = logging.getLogger()

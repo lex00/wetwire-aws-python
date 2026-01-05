@@ -7,13 +7,11 @@ class ECSCluster(ecs.Cluster):
     pass
 
 
-class ContainerInstancesIamInstanceProfile:
-    resource: ec2.LaunchTemplate.IamInstanceProfile
+class ContainerInstancesIamInstanceProfile(ec2.LaunchTemplate.IamInstanceProfile):
     arn = EC2InstanceProfile.Arn
 
 
-class ContainerInstancesLaunchTemplateData:
-    resource: ec2.LaunchTemplate.LaunchTemplateData
+class ContainerInstancesLaunchTemplateData(ec2.LaunchTemplate.LaunchTemplateData):
     image_id = ECSAMI
     security_group_ids = [EcsHostSecurityGroup]
     instance_type = InstanceType
@@ -29,8 +27,7 @@ class ContainerInstances(ec2.LaunchTemplate):
     launch_template_data = ContainerInstancesLaunchTemplateData
 
 
-class ECSAutoScalingGroupLaunchTemplateSpecification:
-    resource: autoscaling.AutoScalingGroup.LaunchTemplateSpecification
+class ECSAutoScalingGroupLaunchTemplateSpecification(autoscaling.AutoScalingGroup.LaunchTemplateSpecification):
     launch_template_id = ContainerInstances
     version = ContainerInstances.LatestVersionNumber
 

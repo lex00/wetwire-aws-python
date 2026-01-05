@@ -1,4 +1,4 @@
-"""Network resources: VPC, PublicInternetRouteTable, PublicSubnetA, PublicSubnetARouteTableAssociation, InternetGateway, VPCGatewayAttachment, PublicSubnetB, RedisSecurityGroup, PublicInternetRoute, PublicSubnetBRouteTableAssociation."""
+"""Network resources: VPC, PublicSubnetA, PublicSubnetB, PublicInternetRouteTable, PublicSubnetBRouteTableAssociation, RedisSecurityGroup, InternetGateway, PublicSubnetARouteTableAssociation, PublicInternetRoute, VPCGatewayAttachment."""
 
 from . import *  # noqa: F403
 
@@ -7,27 +7,9 @@ class VPC(ec2.VPC):
     cidr_block = '10.0.0.0/24'
 
 
-class PublicInternetRouteTable(ec2.RouteTable):
-    vpc_id = VPC
-
-
 class PublicSubnetA(ec2.Subnet):
     availability_zone = FindInMap("AWSRegion2AZ", AWS_REGION, 'A')
     cidr_block = '10.0.0.0/25'
-    vpc_id = VPC
-
-
-class PublicSubnetARouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    route_table_id = PublicInternetRouteTable
-    subnet_id = PublicSubnetA
-
-
-class InternetGateway(ec2.InternetGateway):
-    pass
-
-
-class VPCGatewayAttachment(ec2.VPCGatewayAttachment):
-    internet_gateway_id = InternetGateway
     vpc_id = VPC
 
 
@@ -37,8 +19,16 @@ class PublicSubnetB(ec2.Subnet):
     vpc_id = VPC
 
 
-class RedisSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class PublicInternetRouteTable(ec2.RouteTable):
+    vpc_id = VPC
+
+
+class PublicSubnetBRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = PublicInternetRouteTable
+    subnet_id = PublicSubnetB
+
+
+class RedisSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = '6379'
     to_port = '6379'
@@ -51,6 +41,15 @@ class RedisSecurityGroup(ec2.SecurityGroup):
     security_group_ingress = [RedisSecurityGroupEgress]
 
 
+class InternetGateway(ec2.InternetGateway):
+    pass
+
+
+class PublicSubnetARouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = PublicInternetRouteTable
+    subnet_id = PublicSubnetA
+
+
 class PublicInternetRoute(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
     gateway_id = InternetGateway
@@ -58,6 +57,6 @@ class PublicInternetRoute(ec2.Route):
     depends_on = [InternetGateway, PublicInternetRouteTable]
 
 
-class PublicSubnetBRouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    route_table_id = PublicInternetRouteTable
-    subnet_id = PublicSubnetB
+class VPCGatewayAttachment(ec2.VPCGatewayAttachment):
+    internet_gateway_id = InternetGateway
+    vpc_id = VPC

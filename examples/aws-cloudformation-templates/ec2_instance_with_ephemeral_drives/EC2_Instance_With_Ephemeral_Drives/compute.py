@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class EC2InstanceBlockDeviceMapping:
-    resource: ec2.Instance.BlockDeviceMapping
+class EC2InstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
     device_name = '/dev/sdc'
     virtual_name = 'ephemeral0'
 

@@ -18,8 +18,17 @@ class DMSReplicationInstance(dms.ReplicationInstance):
     depends_on = [DMSReplicationSubnetGroup, DMSSecurityGroup]
 
 
-class S3TargetEndpointRedshiftSettings:
-    resource: dms.Endpoint.RedshiftSettings
+class AuroraSourceEndpoint(dms.Endpoint):
+    endpoint_type = 'source'
+    engine_name = 'AURORA'
+    password = '{{resolve:secretsmanager:aurora-source-enpoint-password:SecretString:password}}'
+    port = 3306
+    server_name = GetAtt("AuroraCluster", "Endpoint.Address")
+    username = 'admin'
+    depends_on = [DMSReplicationInstance, AuroraCluster, AuroraDB]
+
+
+class S3TargetEndpointRedshiftSettings(dms.Endpoint.RedshiftSettings):
     bucket_name = S3Bucket
     service_access_role_arn = S3TargetDMSRole.Arn
 
@@ -30,16 +39,6 @@ class S3TargetEndpoint(dms.Endpoint):
     extra_connection_attributes = 'addColumnName=true'
     s3_settings = S3TargetEndpointRedshiftSettings
     depends_on = [DMSReplicationInstance, S3Bucket, S3TargetDMSRole]
-
-
-class AuroraSourceEndpoint(dms.Endpoint):
-    endpoint_type = 'source'
-    engine_name = 'AURORA'
-    password = '{{resolve:secretsmanager:aurora-source-enpoint-password:SecretString:password}}'
-    port = 3306
-    server_name = AuroraCluster.Endpoint.Address
-    username = 'admin'
-    depends_on = [DMSReplicationInstance, AuroraCluster, AuroraDB]
 
 
 class DMSReplicationTask(dms.ReplicationTask):

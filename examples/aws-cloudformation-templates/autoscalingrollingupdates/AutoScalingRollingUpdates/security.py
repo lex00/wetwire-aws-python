@@ -3,32 +3,27 @@
 from . import *  # noqa: F403
 
 
-class DescribeHealthRoleAllowStatement0:
-    resource: PolicyStatement
+class DescribeHealthRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ec2.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class DescribeHealthRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class DescribeHealthRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [DescribeHealthRoleAllowStatement0]
 
 
-class DescribeHealthRoleAllowStatement0_1:
-    resource: PolicyStatement
+class DescribeHealthRoleAllowStatement0_1(PolicyStatement):
     action = ['elasticloadbalancing:DescribeInstanceHealth']
     resource_arn = '*'
 
 
-class DescribeHealthRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class DescribeHealthRolePolicies0PolicyDocument(PolicyDocument):
     statement = [DescribeHealthRoleAllowStatement0_1]
 
 
-class DescribeHealthRolePolicy:
-    resource: iam.User.Policy
+class DescribeHealthRolePolicy(iam.User.Policy):
     policy_name = 'describe-instance-health-policy'
     policy_document = DescribeHealthRolePolicies0PolicyDocument
 

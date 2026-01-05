@@ -1,10 +1,58 @@
-"""Compute resources: CreateThingFunction, InstanceAZFunction, GGSampleFunction, GGSampleFunctionVersion, GroupDeploymentResetFunction."""
+"""Compute resources: GGSampleFunction, GGSampleFunctionVersion, CreateThingFunction, GroupDeploymentResetFunction, InstanceAZFunction."""
 
 from . import *  # noqa: F403
 
 
-class CreateThingFunctionCode:
-    resource: lambda_.Function.Code
+class GGSampleFunctionCode(lambda_.Function.Code):
+    zip_file = """import os
+from threading import Timer
+import greengrasssdk
+
+
+counter = 0
+client = greengrasssdk.client('iot-data')
+
+
+def telemetry():
+    '''Publish incrementing value to telemetry topic every 2 seconds'''
+    global counter
+    counter += 1
+    client.publish(
+        topic='{}/telem'.format(os.environ['CORE_NAME']),
+        payload='Example telemetry counter, value: {}'.format(counter)
+    )
+    Timer(5, telemetry).start()
+# Call telemetry() to start telemetry publish
+telemetry()
+
+
+def function_handler(event, context):
+    '''Echo message on /in topic to /out topic'''
+    client.publish(
+        topic='{}/out'.format(os.environ['CORE_NAME']),
+        payload=event
+    )
+"""
+
+
+class GGSampleFunction(lambda_.Function):
+    function_name = Join('_', [
+    CoreName,
+    'sample',
+])
+    description = 'Long running lambda that provides telemetry and pub/sub echo'
+    handler = 'index.function_handler'
+    runtime = lambda_.Runtime.PYTHON3_12
+    role = LambdaExecutionRole.Arn
+    timeout = 60
+    code = GGSampleFunctionCode
+
+
+class GGSampleFunctionVersion(lambda_.Version):
+    function_name = GGSampleFunction.Arn
+
+
+class CreateThingFunctionCode(lambda_.Function.Code):
     zip_file = """import sys
 import cfnresponse
 import boto3
@@ -118,8 +166,29 @@ class CreateThingFunction(lambda_.Function):
     code = CreateThingFunctionCode
 
 
-class InstanceAZFunctionCode:
-    resource: lambda_.Function.Code
+class GroupDeploymentResetFunctionEnvironment(lambda_.Function.Environment):
+    variables = {
+        'STACK_NAME': AWS_STACK_NAME,
+    }
+
+
+class GroupDeploymentResetFunctionCode(lambda_.Function.Code):
+    zip_file = {
+        'Rain::Embed': 'reset_function.py',
+    }
+
+
+class GroupDeploymentResetFunction(lambda_.Function):
+    description = 'Resets any deployments during stack delete and manages Greengrass service role needs'
+    handler = 'index.handler'
+    runtime = lambda_.Runtime.PYTHON3_12
+    role = LambdaExecutionRole.Arn
+    timeout = 60
+    environment = GroupDeploymentResetFunctionEnvironment
+    code = GroupDeploymentResetFunctionCode
+
+
+class InstanceAZFunctionCode(lambda_.Function.Code):
     zip_file = """import sys
 import cfnresponse
 import boto3
@@ -186,77 +255,3 @@ class InstanceAZFunction(lambda_.Function):
     role = LambdaExecutionRole.Arn
     timeout = 60
     code = InstanceAZFunctionCode
-
-
-class GGSampleFunctionCode:
-    resource: lambda_.Function.Code
-    zip_file = """import os
-from threading import Timer
-import greengrasssdk
-
-
-counter = 0
-client = greengrasssdk.client('iot-data')
-
-
-def telemetry():
-    '''Publish incrementing value to telemetry topic every 2 seconds'''
-    global counter
-    counter += 1
-    client.publish(
-        topic='{}/telem'.format(os.environ['CORE_NAME']),
-        payload='Example telemetry counter, value: {}'.format(counter)
-    )
-    Timer(5, telemetry).start()
-# Call telemetry() to start telemetry publish
-telemetry()
-
-
-def function_handler(event, context):
-    '''Echo message on /in topic to /out topic'''
-    client.publish(
-        topic='{}/out'.format(os.environ['CORE_NAME']),
-        payload=event
-    )
-"""
-
-
-class GGSampleFunction(lambda_.Function):
-    function_name = Join('_', [
-    CoreName,
-    'sample',
-])
-    description = 'Long running lambda that provides telemetry and pub/sub echo'
-    handler = 'index.function_handler'
-    runtime = lambda_.Runtime.PYTHON3_12
-    role = LambdaExecutionRole.Arn
-    timeout = 60
-    code = GGSampleFunctionCode
-
-
-class GGSampleFunctionVersion(lambda_.Version):
-    function_name = GGSampleFunction.Arn
-
-
-class GroupDeploymentResetFunctionEnvironment:
-    resource: lambda_.Function.Environment
-    variables = {
-        'STACK_NAME': AWS_STACK_NAME,
-    }
-
-
-class GroupDeploymentResetFunctionCode:
-    resource: lambda_.Function.Code
-    zip_file = {
-        'Rain::Embed': 'reset_function.py',
-    }
-
-
-class GroupDeploymentResetFunction(lambda_.Function):
-    description = 'Resets any deployments during stack delete and manages Greengrass service role needs'
-    handler = 'index.handler'
-    runtime = lambda_.Runtime.PYTHON3_12
-    role = LambdaExecutionRole.Arn
-    timeout = 60
-    environment = GroupDeploymentResetFunctionEnvironment
-    code = GroupDeploymentResetFunctionCode

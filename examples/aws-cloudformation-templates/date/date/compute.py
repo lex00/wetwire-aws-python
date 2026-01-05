@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class TransformFunctionCode:
-    resource: lambda_.Function.Code
+class TransformFunctionCode(lambda_.Function.Code):
     zip_file = {
         'Rain::Embed': 'handler.py',
     }

@@ -1,16 +1,14 @@
-"""Network resources: VPC, DBSubnet1, DBSubnet2, AuroraSecurityGroup, RouteTable, DMSSecurityGroup, SubnetRouteTableAssociation, SubnetRouteTableAssociation1, InternetGateway, AttachGateway, Route."""
+"""Network resources: VPC, DBSubnet2, RouteTable, SubnetRouteTableAssociation1, DBSubnet1, AuroraSecurityGroup, InternetGateway, AttachGateway, Route, DMSSecurityGroup, SubnetRouteTableAssociation."""
 
 from . import *  # noqa: F403
 
 
-class VPCAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class VPCAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Application'
     value = AWS_STACK_ID
 
 
-class VPCAssociationParameter1:
-    resource: ec2.Instance.AssociationParameter
+class VPCAssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = AWS_STACK_NAME
 
@@ -22,21 +20,7 @@ class VPC(ec2.VPC):
     tags = [VPCAssociationParameter, VPCAssociationParameter1]
 
 
-class DBSubnet1AssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Application'
-    value = AWS_STACK_ID
-
-
-class DBSubnet1(ec2.Subnet):
-    vpc_id = VPC
-    cidr_block = '10.0.0.0/26'
-    availability_zone = Select(0, GetAZs())
-    tags = [DBSubnet1AssociationParameter]
-
-
-class DBSubnet2AssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class DBSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Application'
     value = AWS_STACK_ID
 
@@ -48,16 +32,41 @@ class DBSubnet2(ec2.Subnet):
     tags = [DBSubnet2AssociationParameter]
 
 
-class AuroraSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_ID
+
+
+class RouteTable(ec2.RouteTable):
+    vpc_id = VPC
+    tags = [RouteTableAssociationParameter]
+
+
+class SubnetRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
+    subnet_id = DBSubnet2
+    route_table_id = RouteTable
+
+
+class DBSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_ID
+
+
+class DBSubnet1(ec2.Subnet):
+    vpc_id = VPC
+    cidr_block = '10.0.0.0/26'
+    availability_zone = Select(0, GetAZs())
+    tags = [DBSubnet1AssociationParameter]
+
+
+class AuroraSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = '3306'
     to_port = '3306'
     cidr_ip = ClientIP
 
 
-class AuroraSecurityGroupEgress1:
-    resource: ec2.SecurityGroup.Egress
+class AuroraSecurityGroupEgress1(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = '3306'
     to_port = '3306'
@@ -71,35 +80,7 @@ class AuroraSecurityGroup(ec2.SecurityGroup):
     security_group_ingress = [AuroraSecurityGroupEgress, AuroraSecurityGroupEgress1]
 
 
-class RouteTableAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
-    key = 'Application'
-    value = AWS_STACK_ID
-
-
-class RouteTable(ec2.RouteTable):
-    vpc_id = VPC
-    tags = [RouteTableAssociationParameter]
-
-
-class DMSSecurityGroup(ec2.SecurityGroup):
-    group_description = 'Security group for DMS Instance'
-    group_name = 'DMS Demo Security Group'
-    vpc_id = VPC
-
-
-class SubnetRouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    subnet_id = DBSubnet1
-    route_table_id = RouteTable
-
-
-class SubnetRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
-    subnet_id = DBSubnet2
-    route_table_id = RouteTable
-
-
-class InternetGatewayAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class InternetGatewayAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Application'
     value = AWS_STACK_ID
 
@@ -118,3 +99,14 @@ class Route(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
     gateway_id = InternetGateway
     depends_on = [AttachGateway]
+
+
+class DMSSecurityGroup(ec2.SecurityGroup):
+    group_description = 'Security group for DMS Instance'
+    group_name = 'DMS Demo Security Group'
+    vpc_id = VPC
+
+
+class SubnetRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    subnet_id = DBSubnet1
+    route_table_id = RouteTable

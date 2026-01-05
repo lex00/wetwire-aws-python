@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class SSHSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class SSHSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = '22'
     to_port = '22'
@@ -21,26 +20,22 @@ class EIP1(ec2.EIP):
     domain = 'vpc'
 
 
-class Eth0PrivateIpAddressSpecification:
-    resource: ec2.Instance.PrivateIpAddressSpecification
+class Eth0PrivateIpAddressSpecification(ec2.Instance.PrivateIpAddressSpecification):
     private_ip_address = PrimaryIPAddress
     primary = 'true'
 
 
-class Eth0PrivateIpAddressSpecification1:
-    resource: ec2.Instance.PrivateIpAddressSpecification
+class Eth0PrivateIpAddressSpecification1(ec2.Instance.PrivateIpAddressSpecification):
     private_ip_address = SecondaryIPAddress
     primary = 'false'
 
 
-class Eth0AssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class Eth0AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'Interface 0'
 
 
-class Eth0AssociationParameter1:
-    resource: ec2.Instance.AssociationParameter
+class Eth0AssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'Interface'
     value = 'eth0'
 

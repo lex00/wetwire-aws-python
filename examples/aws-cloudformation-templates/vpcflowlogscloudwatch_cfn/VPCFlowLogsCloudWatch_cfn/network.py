@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class VPCFlowLogsToCloudWatchAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class VPCFlowLogsToCloudWatchAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'VPC Flow Logs CloudWatch'
 

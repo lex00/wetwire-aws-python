@@ -1,10 +1,9 @@
-"""Storage resources: EFSFileSystem, EFSMountTarget2, EFSMountTarget3, EFSAccessPoint, EFSMountTarget1."""
+"""Storage resources: EFSFileSystem, EFSMountTarget1, EFSAccessPoint, EFSMountTarget2, EFSMountTarget3."""
 
 from . import *  # noqa: F403
 
 
-class EFSFileSystemAccessPointTag:
-    resource: efs.AccessPoint.AccessPointTag
+class EFSFileSystemAccessPointTag(efs.AccessPoint.AccessPointTag):
     key = 'Name'
     value = EFSFileSystemName
 
@@ -13,6 +12,22 @@ class EFSFileSystem(efs.FileSystem):
     encrypted = True
     performance_mode = 'generalPurpose'
     file_system_tags = [EFSFileSystemAccessPointTag]
+
+
+class EFSMountTarget1(efs.MountTarget):
+    file_system_id = EFSFileSystem
+    security_groups = [SecurityGroup1]
+    subnet_id = Subnet1
+
+
+class EFSAccessPointAccessPointTag(efs.AccessPoint.AccessPointTag):
+    key = 'Name'
+    value = AccessPointName
+
+
+class EFSAccessPoint(efs.AccessPoint):
+    file_system_id = EFSFileSystem
+    access_point_tags = [EFSAccessPointAccessPointTag]
 
 
 class EFSMountTarget2(efs.MountTarget):
@@ -25,20 +40,3 @@ class EFSMountTarget3(efs.MountTarget):
     file_system_id = EFSFileSystem
     security_groups = [SecurityGroup3]
     subnet_id = Subnet3
-
-
-class EFSAccessPointAccessPointTag:
-    resource: efs.AccessPoint.AccessPointTag
-    key = 'Name'
-    value = AccessPointName
-
-
-class EFSAccessPoint(efs.AccessPoint):
-    file_system_id = EFSFileSystem
-    access_point_tags = [EFSAccessPointAccessPointTag]
-
-
-class EFSMountTarget1(efs.MountTarget):
-    file_system_id = EFSFileSystem
-    security_groups = [SecurityGroup1]
-    subnet_id = Subnet1

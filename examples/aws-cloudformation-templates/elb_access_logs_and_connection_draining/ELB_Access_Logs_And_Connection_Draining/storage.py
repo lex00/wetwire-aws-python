@@ -8,8 +8,7 @@ class LogsBucket(s3.Bucket):
     deletion_policy = 'Retain'
 
 
-class LogsBucketPolicyAllowStatement0:
-    resource: PolicyStatement
+class LogsBucketPolicyAllowStatement0(PolicyStatement):
     sid = 'ELBAccessLogs20130930'
     principal = {
         'AWS': FindInMap("Region2ELBAccountId", AWS_REGION, 'AccountId'),
@@ -18,8 +17,7 @@ class LogsBucketPolicyAllowStatement0:
     resource_arn = [Sub('arn:${AWS::Partition}:s3:::${LogsBucket}/Logs/AWSLogs/${AWS::AccountId}/*')]
 
 
-class LogsBucketPolicyDenyStatement1:
-    resource: DenyStatement
+class LogsBucketPolicyDenyStatement1(DenyStatement):
     principal = {
         'AWS': '*',
     }
@@ -35,8 +33,7 @@ class LogsBucketPolicyDenyStatement1:
     }
 
 
-class LogsBucketPolicyPolicyDocument:
-    resource: PolicyDocument
+class LogsBucketPolicyPolicyDocument(PolicyDocument):
     statement = [LogsBucketPolicyAllowStatement0, LogsBucketPolicyDenyStatement1]
 
 

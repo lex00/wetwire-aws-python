@@ -1,19 +1,6 @@
-"""Infra resources: VPCFlowLogsCloudWatchStack, VPCFlowLogsS3Stack."""
+"""Infra resources: VPCFlowLogsS3Stack, VPCFlowLogsCloudWatchStack."""
 
 from . import *  # noqa: F403
-
-
-class VPCFlowLogsCloudWatchStack(cloudformation.Stack):
-    template_url = Sub('https://${TemplatesS3BucketName}.s3.${TemplatesS3BucketRegion}.${AWS::URLSuffix}/templates/VPCFlowLogsCloudWatch.cfn.yaml')
-    parameters = {
-        'VPCFlowLogsCloudWatchKMSKey': VPCFlowLogsCloudWatchKMSKey,
-        'VPCFlowLogsLogFormat': VPCFlowLogsLogFormat,
-        'VPCFlowLogsLogGroupRetention': VPCFlowLogsLogGroupRetention,
-        'VPCFlowLogsMaxAggregationInterval': VPCFlowLogsMaxAggregationInterval,
-        'VPCFlowLogsTrafficType': VPCFlowLogsTrafficType,
-        'VPCID': VPCID,
-    }
-    condition = 'VPCFlowLogsToCloudWatchCondition'
 
 
 class VPCFlowLogsS3Stack(cloudformation.Stack):
@@ -29,3 +16,16 @@ class VPCFlowLogsS3Stack(cloudformation.Stack):
         'VPCID': VPCID,
     }
     condition = 'VPCFlowLogsToS3Condition'
+
+
+class VPCFlowLogsCloudWatchStack(cloudformation.Stack):
+    template_url = Sub('https://${TemplatesS3BucketName}.s3.${TemplatesS3BucketRegion}.${AWS::URLSuffix}/templates/VPCFlowLogsCloudWatch.cfn.yaml')
+    parameters = {
+        'VPCFlowLogsCloudWatchKMSKey': VPCFlowLogsCloudWatchKMSKey,
+        'VPCFlowLogsLogFormat': VPCFlowLogsLogFormat,
+        'VPCFlowLogsLogGroupRetention': VPCFlowLogsLogGroupRetention,
+        'VPCFlowLogsMaxAggregationInterval': VPCFlowLogsMaxAggregationInterval,
+        'VPCFlowLogsTrafficType': VPCFlowLogsTrafficType,
+        'VPCID': VPCID,
+    }
+    condition = 'VPCFlowLogsToCloudWatchCondition'

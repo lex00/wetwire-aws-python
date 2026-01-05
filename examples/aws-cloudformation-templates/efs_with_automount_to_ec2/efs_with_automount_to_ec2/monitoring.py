@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class CPUAlarmHighDimension:
-    resource: cloudwatch.Alarm.Dimension
+class CPUAlarmHighDimension(cloudwatch.Alarm.Dimension):
     name = 'AutoScalingGroupName'
     value = AutoScalingGroup
 
@@ -22,8 +21,7 @@ class CPUAlarmHigh(cloudwatch.Alarm):
     threshold = '90'
 
 
-class CPUAlarmLowDimension:
-    resource: cloudwatch.Alarm.Dimension
+class CPUAlarmLowDimension(cloudwatch.Alarm.Dimension):
     name = 'AutoScalingGroupName'
     value = AutoScalingGroup
 

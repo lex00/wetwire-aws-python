@@ -1,10 +1,6 @@
-"""Network resources: InternetGateway, VPC, VPCGatewayAttachment, InstanceSecurityGroup, RouteTablePublic, RouteTablePublicInternetRoute."""
+"""Network resources: VPC, InstanceSecurityGroup, InternetGateway, RouteTablePublic, VPCGatewayAttachment, RouteTablePublicInternetRoute."""
 
 from . import *  # noqa: F403
-
-
-class InternetGateway(ec2.InternetGateway):
-    pass
 
 
 class VPC(ec2.VPC):
@@ -14,13 +10,7 @@ class VPC(ec2.VPC):
     instance_tenancy = 'default'
 
 
-class VPCGatewayAttachment(ec2.VPCGatewayAttachment):
-    vpc_id = VPC
-    internet_gateway_id = InternetGateway
-
-
-class InstanceSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = 22
     to_port = 22
@@ -33,8 +23,17 @@ class InstanceSecurityGroup(ec2.SecurityGroup):
     security_group_ingress = [InstanceSecurityGroupEgress]
 
 
+class InternetGateway(ec2.InternetGateway):
+    pass
+
+
 class RouteTablePublic(ec2.RouteTable):
     vpc_id = VPC
+
+
+class VPCGatewayAttachment(ec2.VPCGatewayAttachment):
+    vpc_id = VPC
+    internet_gateway_id = InternetGateway
 
 
 class RouteTablePublicInternetRoute(ec2.Route):

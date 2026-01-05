@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class AppRunnerRoleAllowStatement0:
-    resource: PolicyStatement
+class AppRunnerRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['build.apprunner.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class AppRunnerRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class AppRunnerRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [AppRunnerRoleAllowStatement0]
 
 
-class AppRunnerRoleAllowStatement0_1:
-    resource: PolicyStatement
+class AppRunnerRoleAllowStatement0_1(PolicyStatement):
     action = [
         'ecr:GetDownloadUrlForLayer',
         'ecr:BatchGetImage',
@@ -28,13 +25,11 @@ class AppRunnerRoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class AppRunnerRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class AppRunnerRolePolicies0PolicyDocument(PolicyDocument):
     statement = [AppRunnerRoleAllowStatement0_1]
 
 
-class AppRunnerRolePolicy:
-    resource: iam.User.Policy
+class AppRunnerRolePolicy(iam.User.Policy):
     policy_name = 'root'
     policy_document = AppRunnerRolePolicies0PolicyDocument
 

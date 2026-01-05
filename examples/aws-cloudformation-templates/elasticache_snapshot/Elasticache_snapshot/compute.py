@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class EnableShapshotCode:
-    resource: lambda_.Function.Code
+class EnableShapshotCode(lambda_.Function.Code):
     zip_file = {
         'Rain::Embed': 'elastic-code.js',
     }

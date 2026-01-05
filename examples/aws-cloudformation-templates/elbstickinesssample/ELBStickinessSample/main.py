@@ -3,22 +3,19 @@
 from . import *  # noqa: F403
 
 
-class ElasticLoadBalancerLBCookieStickinessPolicy:
-    resource: elasticloadbalancing.LoadBalancer.LBCookieStickinessPolicy
+class ElasticLoadBalancerLBCookieStickinessPolicy(elasticloadbalancing.LoadBalancer.LBCookieStickinessPolicy):
     policy_name = 'myLBPolicy'
     cookie_expiration_period = '180'
 
 
-class ElasticLoadBalancerListeners:
-    resource: elasticloadbalancing.LoadBalancer.Listeners
+class ElasticLoadBalancerListeners(elasticloadbalancing.LoadBalancer.Listeners):
     load_balancer_port = '80'
     instance_port = '80'
     protocol = 'HTTP'
     policy_names = ['myLBPolicy']
 
 
-class ElasticLoadBalancerHealthCheck:
-    resource: elasticloadbalancing.LoadBalancer.HealthCheck
+class ElasticLoadBalancerHealthCheck(elasticloadbalancing.LoadBalancer.HealthCheck):
     target = 'HTTP:80/'
     healthy_threshold = '3'
     unhealthy_threshold = '5'

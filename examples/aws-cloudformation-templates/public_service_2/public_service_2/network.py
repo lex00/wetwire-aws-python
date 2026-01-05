@@ -20,14 +20,12 @@ class TargetGroup(elasticloadbalancingv2.TargetGroup):
 ]))
 
 
-class LoadBalancerRuleAction:
-    resource: elasticloadbalancingv2.ListenerRule.Action
+class LoadBalancerRuleAction(elasticloadbalancingv2.ListenerRule.Action):
     target_group_arn = TargetGroup
     type_ = 'forward'
 
 
-class LoadBalancerRuleRuleCondition:
-    resource: elasticloadbalancingv2.ListenerRule.RuleCondition
+class LoadBalancerRuleRuleCondition(elasticloadbalancingv2.ListenerRule.RuleCondition):
     field_ = 'path-pattern'
     values = [Path]
 

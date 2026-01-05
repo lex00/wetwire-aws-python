@@ -1,30 +1,28 @@
-"""Monitoring resources: NeptunePrimaryGremlinRequestsPerSecAlarm, NeptunePrimaryCpuAlarm, NeptunePrimarySparqlRequestsPerSecAlarm, NeptunePrimaryMemoryAlarm."""
+"""Monitoring resources: NeptunePrimarySparqlRequestsPerSecAlarm, NeptunePrimaryCpuAlarm, NeptunePrimaryGremlinRequestsPerSecAlarm, NeptunePrimaryMemoryAlarm."""
 
 from . import *  # noqa: F403
 
 
-class NeptunePrimaryGremlinRequestsPerSecAlarmDimension:
-    resource: cloudwatch.Alarm.Dimension
+class NeptunePrimarySparqlRequestsPerSecAlarmDimension(cloudwatch.Alarm.Dimension):
     name = 'DBClusterIdentifier'
-    value = 'gremlin-cluster'
+    value = NeptuneDBCluster
 
 
-class NeptunePrimaryGremlinRequestsPerSecAlarm(cloudwatch.Alarm):
-    alarm_description = Sub('${Env}-${AppName} primary DB Gremlin Requests Per Second')
+class NeptunePrimarySparqlRequestsPerSecAlarm(cloudwatch.Alarm):
+    alarm_description = Sub('${Env}-${AppName} primary DB Sparql Requests Per Second')
     namespace = 'AWS/Neptune'
-    metric_name = 'GremlinRequestsPerSec'
+    metric_name = 'SparqlRequestsPerSec'
     statistic = 'Average'
     period = 300
     evaluation_periods = 2
-    threshold = GremlinRequestsPerSecThreshold
+    threshold = SparqlRequestsPerSecThreshold
     comparison_operator = 'GreaterThanOrEqualToThreshold'
-    dimensions = [NeptunePrimaryGremlinRequestsPerSecAlarmDimension]
+    dimensions = [NeptunePrimarySparqlRequestsPerSecAlarmDimension]
     alarm_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
     insufficient_data_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
 
 
-class NeptunePrimaryCpuAlarmDimension:
-    resource: cloudwatch.Alarm.Dimension
+class NeptunePrimaryCpuAlarmDimension(cloudwatch.Alarm.Dimension):
     name = 'DBClusterIdentifier'
     value = NeptuneDBCluster
 
@@ -44,28 +42,26 @@ class NeptunePrimaryCpuAlarm(cloudwatch.Alarm):
     insufficient_data_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
 
 
-class NeptunePrimarySparqlRequestsPerSecAlarmDimension:
-    resource: cloudwatch.Alarm.Dimension
+class NeptunePrimaryGremlinRequestsPerSecAlarmDimension(cloudwatch.Alarm.Dimension):
     name = 'DBClusterIdentifier'
-    value = NeptuneDBCluster
+    value = 'gremlin-cluster'
 
 
-class NeptunePrimarySparqlRequestsPerSecAlarm(cloudwatch.Alarm):
-    alarm_description = Sub('${Env}-${AppName} primary DB Sparql Requests Per Second')
+class NeptunePrimaryGremlinRequestsPerSecAlarm(cloudwatch.Alarm):
+    alarm_description = Sub('${Env}-${AppName} primary DB Gremlin Requests Per Second')
     namespace = 'AWS/Neptune'
-    metric_name = 'SparqlRequestsPerSec'
+    metric_name = 'GremlinRequestsPerSec'
     statistic = 'Average'
     period = 300
     evaluation_periods = 2
-    threshold = SparqlRequestsPerSecThreshold
+    threshold = GremlinRequestsPerSecThreshold
     comparison_operator = 'GreaterThanOrEqualToThreshold'
-    dimensions = [NeptunePrimarySparqlRequestsPerSecAlarmDimension]
+    dimensions = [NeptunePrimaryGremlinRequestsPerSecAlarmDimension]
     alarm_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
     insufficient_data_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
 
 
-class NeptunePrimaryMemoryAlarmDimension:
-    resource: cloudwatch.Alarm.Dimension
+class NeptunePrimaryMemoryAlarmDimension(cloudwatch.Alarm.Dimension):
     name = 'DBClusterIdentifier'
     value = NeptuneDBCluster
 

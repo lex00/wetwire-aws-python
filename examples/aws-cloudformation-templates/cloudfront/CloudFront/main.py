@@ -3,26 +3,22 @@
 from . import *  # noqa: F403
 
 
-class EC2InstanceEbs:
-    resource: ec2.Instance.Ebs
+class EC2InstanceEbs(ec2.Instance.Ebs):
     volume_size = BootVolSize
     volume_type = BootVolType
 
 
-class EC2InstanceBlockDeviceMapping:
-    resource: ec2.Instance.BlockDeviceMapping
+class EC2InstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
     device_name = '/dev/sda1'
     ebs = EC2InstanceEbs
 
 
-class EC2InstanceAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class EC2InstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = Sub('${AppName}-${Environment}-ec2-instance')
 
 
-class EC2InstanceAssociationParameter1:
-    resource: ec2.Instance.AssociationParameter
+class EC2InstanceAssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'Environment'
     value = Environment
 
@@ -37,26 +33,22 @@ class EC2Instance(ec2.Instance):
     tags = [EC2InstanceAssociationParameter, EC2InstanceAssociationParameter1]
 
 
-class OriginALBTGTargetGroupAttribute:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
+class OriginALBTGTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
     key = 'deregistration_delay.timeout_seconds'
     value = ALBTargetGroupAttributeDeregistration
 
 
-class OriginALBTGTargetDescription:
-    resource: elasticloadbalancingv2.TargetGroup.TargetDescription
+class OriginALBTGTargetDescription(elasticloadbalancingv2.TargetGroup.TargetDescription):
     id = EC2Instance
     port = OriginALBTGPort
 
 
-class OriginALBTGTargetGroupAttribute1:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
+class OriginALBTGTargetGroupAttribute1(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
     key = 'Name'
     value = Sub('${AppName}-${Environment}-alb-tg')
 
 
-class OriginALBTGTargetGroupAttribute2:
-    resource: elasticloadbalancingv2.TargetGroup.TargetGroupAttribute
+class OriginALBTGTargetGroupAttribute2(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
     key = 'Environment'
     value = Environment
 
@@ -80,14 +72,12 @@ class OriginALBTG(elasticloadbalancingv2.TargetGroup):
     depends_on = [OriginALB]
 
 
-class OriginALBHttpsListenerAction:
-    resource: elasticloadbalancingv2.ListenerRule.Action
+class OriginALBHttpsListenerAction(elasticloadbalancingv2.ListenerRule.Action):
     target_group_arn = OriginALBTG
     type_ = 'forward'
 
 
-class OriginALBHttpsListenerCertificate:
-    resource: elasticloadbalancingv2.ListenerCertificate.Certificate
+class OriginALBHttpsListenerCertificate(elasticloadbalancingv2.ListenerCertificate.Certificate):
     certificate_arn = Sub('arn:${AWS::Partition}:acm:${AWS::Region}:${AWS::AccountId}:certificate/${ACMCertificateIdentifier}')
 
 
@@ -101,14 +91,12 @@ class OriginALBHttpsListener(elasticloadbalancingv2.Listener):
     depends_on = [OriginALBTG]
 
 
-class OriginALBHttpsListenerRuleAction:
-    resource: elasticloadbalancingv2.ListenerRule.Action
+class OriginALBHttpsListenerRuleAction(elasticloadbalancingv2.ListenerRule.Action):
     type_ = 'forward'
     target_group_arn = OriginALBTG
 
 
-class OriginALBHttpsListenerRuleRuleCondition:
-    resource: elasticloadbalancingv2.ListenerRule.RuleCondition
+class OriginALBHttpsListenerRuleRuleCondition(elasticloadbalancingv2.ListenerRule.RuleCondition):
     field_ = 'path-pattern'
     values = ['/*']
 

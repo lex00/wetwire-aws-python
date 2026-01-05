@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class VPCFlowLogstoS3AssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class VPCFlowLogstoS3AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'VPC Flow Logs S3'
 

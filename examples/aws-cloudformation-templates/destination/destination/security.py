@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class KmsKeyAllowStatement0:
-    resource: PolicyStatement
+class KmsKeyAllowStatement0(PolicyStatement):
     sid = 'Allow destination account access to KMS key in destination account'
     principal = {
         'AWS': Sub('arn:${AWS::Partition}:iam::${AWS::AccountId}:root'),
@@ -13,8 +12,7 @@ class KmsKeyAllowStatement0:
     resource_arn = '*'
 
 
-class KmsKeyAllowStatement1:
-    resource: PolicyStatement
+class KmsKeyAllowStatement1(PolicyStatement):
     sid = 'Allow source account access to KMS key in destination account'
     principal = {
         'AWS': Sub('arn:${AWS::Partition}:iam::${AccountIdSource}:root'),
@@ -28,8 +26,7 @@ class KmsKeyAllowStatement1:
     resource_arn = '*'
 
 
-class KmsKeyKeyPolicy:
-    resource: PolicyDocument
+class KmsKeyKeyPolicy(PolicyDocument):
     statement = [KmsKeyAllowStatement0, KmsKeyAllowStatement1]
 
 

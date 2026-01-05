@@ -11,8 +11,7 @@ class ResourceFunction(CloudFormationResource):
     policies = 'AmazonS3FullAccess'
 
 
-class MacroFunctionEnvironment:
-    resource: lambda_.Function.Environment
+class MacroFunctionEnvironment(lambda_.Function.Environment):
     variables = {
         'LAMBDA_ARN': ResourceFunction.Arn,
     }

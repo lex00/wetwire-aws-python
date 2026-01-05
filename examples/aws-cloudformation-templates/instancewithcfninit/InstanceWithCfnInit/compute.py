@@ -3,13 +3,11 @@
 from . import *  # noqa: F403
 
 
-class InstanceEbs:
-    resource: ec2.Instance.Ebs
+class InstanceEbs(ec2.Instance.Ebs):
     volume_size = 32
 
 
-class InstanceBlockDeviceMapping:
-    resource: ec2.Instance.BlockDeviceMapping
+class InstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
     device_name = '/dev/sda1'
     ebs = InstanceEbs
 

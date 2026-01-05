@@ -7,8 +7,7 @@ class ConfigTopic(sns.Topic):
     pass
 
 
-class ConfigTopicPolicyAllowStatement0:
-    resource: PolicyStatement
+class ConfigTopicPolicyAllowStatement0(PolicyStatement):
     principal = {
         'Service': 'config.amazonaws.com',
     }
@@ -16,8 +15,7 @@ class ConfigTopicPolicyAllowStatement0:
     resource_arn = '*'
 
 
-class ConfigTopicPolicyPolicyDocument:
-    resource: PolicyDocument
+class ConfigTopicPolicyPolicyDocument(PolicyDocument):
     statement = [ConfigTopicPolicyAllowStatement0]
 
 

@@ -3,16 +3,14 @@
 from . import *  # noqa: F403
 
 
-class ObjectStorageReplicationRoleAllowStatement0:
-    resource: PolicyStatement
+class ObjectStorageReplicationRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['s3.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class ObjectStorageReplicationRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class ObjectStorageReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [ObjectStorageReplicationRoleAllowStatement0]
 
 
@@ -21,8 +19,7 @@ class ObjectStorageReplicationRole(iam.Role):
     path = '/'
 
 
-class ObjectStorageReplicationPolicyAllowStatement0:
-    resource: PolicyStatement
+class ObjectStorageReplicationPolicyAllowStatement0(PolicyStatement):
     action = [
         's3:GetReplicationConfiguration',
         's3:ListBucket',
@@ -30,8 +27,7 @@ class ObjectStorageReplicationPolicyAllowStatement0:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}')
 
 
-class ObjectStorageReplicationPolicyAllowStatement1:
-    resource: PolicyStatement
+class ObjectStorageReplicationPolicyAllowStatement1(PolicyStatement):
     action = [
         's3:GetObjectVersionForReplication',
         's3:GetObjectVersionAcl',
@@ -40,8 +36,7 @@ class ObjectStorageReplicationPolicyAllowStatement1:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')
 
 
-class ObjectStorageReplicationPolicyAllowStatement2:
-    resource: PolicyStatement
+class ObjectStorageReplicationPolicyAllowStatement2(PolicyStatement):
     action = [
         's3:ReplicateObject',
         's3:ReplicateDelete',
@@ -50,8 +45,7 @@ class ObjectStorageReplicationPolicyAllowStatement2:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*')
 
 
-class ObjectStorageReplicationPolicyPolicyDocument:
-    resource: PolicyDocument
+class ObjectStorageReplicationPolicyPolicyDocument(PolicyDocument):
     statement = [ObjectStorageReplicationPolicyAllowStatement0, ObjectStorageReplicationPolicyAllowStatement1, ObjectStorageReplicationPolicyAllowStatement2]
 
 

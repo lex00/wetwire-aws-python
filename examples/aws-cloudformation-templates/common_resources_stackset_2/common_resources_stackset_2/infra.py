@@ -3,38 +3,32 @@
 from . import *  # noqa: F403
 
 
-class StackSetDeploymentTargets:
-    resource: cloudformation.StackSet.DeploymentTargets
+class StackSetDeploymentTargets(cloudformation.StackSet.DeploymentTargets):
     organizational_unit_ids = [OUID]
 
 
-class StackSetStackInstances:
-    resource: cloudformation.StackSet.StackInstances
+class StackSetStackInstances(cloudformation.StackSet.StackInstances):
     deployment_targets = StackSetDeploymentTargets
     regions = StackSetRegions
 
 
-class StackSetParameter:
-    resource: cloudformation.StackSet.Parameter
+class StackSetParameter(cloudformation.StackSet.Parameter):
     parameter_key = 'AppName'
     parameter_value = 'stackset-logging-sample'
 
 
-class StackSetParameter1:
-    resource: cloudformation.StackSet.Parameter
+class StackSetParameter1(cloudformation.StackSet.Parameter):
     parameter_key = 'KmsKeyId'
     parameter_value = KmsKeyId
 
 
-class StackSetOperationPreferences:
-    resource: cloudformation.StackSet.OperationPreferences
+class StackSetOperationPreferences(cloudformation.StackSet.OperationPreferences):
     failure_tolerance_count = 0
     max_concurrent_count = 2
     region_concurrency_type = 'PARALLEL'
 
 
-class StackSetAutoDeployment:
-    resource: cloudformation.StackSet.AutoDeployment
+class StackSetAutoDeployment(cloudformation.StackSet.AutoDeployment):
     enabled = True
     retain_stacks_on_account_removal = True
 

@@ -999,14 +999,17 @@ role_arn = GetAtt("MyRole", "Arn")
         assert issues[0].rule_id == "WAW020"
         assert "MyRole.Arn" in issues[0].suggestion
 
-    def test_detects_getatt_with_nested_attr(self):
-        """Should detect GetAtt('MyDB', 'Endpoint.Address')."""
+    def test_skips_getatt_with_nested_attr(self):
+        """Should NOT flag nested GetAtt - Resource.Attr.SubAttr doesn't work.
+
+        Nested attributes like "Endpoint.Address" can't use the dot-access pattern
+        because PropertyType class attributes shadow the metaclass __getattr__.
+        """
         code = """
 db_endpoint = GetAtt("MyDB", "Endpoint.Address")
 """
         issues = lint_code(code, rules=[ExplicitGetAttIntrinsic()])
-        assert len(issues) == 1
-        assert "MyDB.Endpoint.Address" in issues[0].suggestion
+        assert len(issues) == 0  # Should not be flagged
 
     def test_ignores_lowercase_get_att(self):
         """Should not flag get_att() helper function - handled by WAW006."""

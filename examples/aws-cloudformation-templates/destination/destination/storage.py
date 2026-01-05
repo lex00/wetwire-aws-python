@@ -3,33 +3,28 @@
 from . import *  # noqa: F403
 
 
-class S3BucketDestinationServerSideEncryptionByDefault:
-    resource: s3.Bucket.ServerSideEncryptionByDefault
+class S3BucketDestinationServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
     sse_algorithm = s3.ServerSideEncryption.AWSKMS
     kms_master_key_id = KmsKey
 
 
-class S3BucketDestinationServerSideEncryptionRule:
-    resource: s3.Bucket.ServerSideEncryptionRule
+class S3BucketDestinationServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
     server_side_encryption_by_default = S3BucketDestinationServerSideEncryptionByDefault
     bucket_key_enabled = True
 
 
-class S3BucketDestinationBucketEncryption:
-    resource: s3.Bucket.BucketEncryption
+class S3BucketDestinationBucketEncryption(s3.Bucket.BucketEncryption):
     server_side_encryption_configuration = [S3BucketDestinationServerSideEncryptionRule]
 
 
-class S3BucketDestinationPublicAccessBlockConfiguration:
-    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
+class S3BucketDestinationPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
     restrict_public_buckets = True
 
 
-class S3BucketDestinationDeleteMarkerReplication:
-    resource: s3.Bucket.DeleteMarkerReplication
+class S3BucketDestinationDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -41,8 +36,7 @@ class S3BucketDestination(s3.Bucket):
     deletion_policy = 'Delete'
 
 
-class S3BucketDestinationPolicyAllowStatement0:
-    resource: PolicyStatement
+class S3BucketDestinationPolicyAllowStatement0(PolicyStatement):
     sid = 'Allow source account access to destination bucket'
     principal = {
         'AWS': AccountIdSource,
@@ -59,8 +53,7 @@ class S3BucketDestinationPolicyAllowStatement0:
 })
 
 
-class S3BucketDestinationPolicyDenyStatement1:
-    resource: DenyStatement
+class S3BucketDestinationPolicyDenyStatement1(DenyStatement):
     principal = {
         'AWS': '*',
     }
@@ -75,8 +68,7 @@ class S3BucketDestinationPolicyDenyStatement1:
     }
 
 
-class S3BucketDestinationPolicyPolicyDocument:
-    resource: PolicyDocument
+class S3BucketDestinationPolicyPolicyDocument(PolicyDocument):
     statement = [S3BucketDestinationPolicyAllowStatement0, S3BucketDestinationPolicyDenyStatement1]
 
 

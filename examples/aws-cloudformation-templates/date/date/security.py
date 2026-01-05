@@ -3,32 +3,27 @@
 from . import *  # noqa: F403
 
 
-class TransformExecutionRoleAllowStatement0:
-    resource: PolicyStatement
+class TransformExecutionRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['lambda.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class TransformExecutionRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class TransformExecutionRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [TransformExecutionRoleAllowStatement0]
 
 
-class TransformExecutionRoleAllowStatement0_1:
-    resource: PolicyStatement
+class TransformExecutionRoleAllowStatement0_1(PolicyStatement):
     action = ['logs:*']
     resource_arn = 'arn:aws:logs:*:*:*'
 
 
-class TransformExecutionRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class TransformExecutionRolePolicies0PolicyDocument(PolicyDocument):
     statement = [TransformExecutionRoleAllowStatement0_1]
 
 
-class TransformExecutionRolePolicy:
-    resource: iam.User.Policy
+class TransformExecutionRolePolicy(iam.User.Policy):
     policy_name = 'root'
     policy_document = TransformExecutionRolePolicies0PolicyDocument
 

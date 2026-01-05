@@ -3,27 +3,23 @@
 from . import *  # noqa: F403
 
 
-class LambdaIamRoleAllowStatement0:
-    resource: PolicyStatement
+class LambdaIamRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['lambda.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class LambdaIamRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class LambdaIamRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [LambdaIamRoleAllowStatement0]
 
 
-class LambdaIamRoleAllowStatement0_1:
-    resource: PolicyStatement
+class LambdaIamRoleAllowStatement0_1(PolicyStatement):
     action = ['logs:CreateLogGroup']
     resource_arn = Sub('arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:*')
 
 
-class LambdaIamRoleAllowStatement1:
-    resource: PolicyStatement
+class LambdaIamRoleAllowStatement1(PolicyStatement):
     action = [
         'logs:CreateLogStream',
         'logs:PutLogEvents',
@@ -31,13 +27,11 @@ class LambdaIamRoleAllowStatement1:
     resource_arn = Sub('arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${LambdaFunctionName}:*')
 
 
-class LambdaIamRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class LambdaIamRolePolicies0PolicyDocument(PolicyDocument):
     statement = [LambdaIamRoleAllowStatement0_1, LambdaIamRoleAllowStatement1]
 
 
-class LambdaIamRolePolicy:
-    resource: iam.User.Policy
+class LambdaIamRolePolicy(iam.User.Policy):
     policy_name = 'LambdaApipolicy'
     policy_document = LambdaIamRolePolicies0PolicyDocument
 

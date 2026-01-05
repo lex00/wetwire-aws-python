@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class rMSDirectoryVpcSettings:
-    resource: directoryservice.SimpleAD.VpcSettings
+class rMSDirectoryVpcSettings(directoryservice.SimpleAD.VpcSettings):
     subnet_ids = [pPrivateSubnet1, pPrivateSubnet2]
     vpc_id = pVPCID
 

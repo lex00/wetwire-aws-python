@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class InstanceSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = '3389'
     to_port = '3389'

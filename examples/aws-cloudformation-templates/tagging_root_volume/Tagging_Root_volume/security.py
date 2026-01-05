@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class InstanceRoleAllowStatement0:
-    resource: PolicyStatement
+class InstanceRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ec2.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class InstanceRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class InstanceRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [InstanceRoleAllowStatement0]
 
 
-class InstanceRoleAllowStatement0_1:
-    resource: PolicyStatement
+class InstanceRoleAllowStatement0_1(PolicyStatement):
     action = [
         'ec2:Describe*',
         'ec2:CreateTags',
@@ -25,13 +22,11 @@ class InstanceRoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class InstanceRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class InstanceRolePolicies0PolicyDocument(PolicyDocument):
     statement = [InstanceRoleAllowStatement0_1]
 
 
-class InstanceRolePolicy:
-    resource: iam.User.Policy
+class InstanceRolePolicy(iam.User.Policy):
     policy_name = 'taginstancepolicy'
     policy_document = InstanceRolePolicies0PolicyDocument
 

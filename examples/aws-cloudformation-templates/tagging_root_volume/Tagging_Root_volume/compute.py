@@ -3,22 +3,19 @@
 from . import *  # noqa: F403
 
 
-class LinuxInstanceAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class LinuxInstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = AWS_STACK_NAME
 
 
-class LinuxInstanceEbs:
-    resource: ec2.Instance.Ebs
+class LinuxInstanceEbs(ec2.Instance.Ebs):
     volume_type = 'io1'
     iops = '200'
     delete_on_termination = 'true'
     volume_size = '10'
 
 
-class LinuxInstanceBlockDeviceMapping:
-    resource: ec2.Instance.BlockDeviceMapping
+class LinuxInstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
     device_name = '/dev/sdm'
     ebs = LinuxInstanceEbs
 
@@ -40,22 +37,19 @@ aws ec2 create-tags --resources $ROOT_VOLUME_IDS --region $AWS_REGION --tags Key
     block_device_mappings = [LinuxInstanceBlockDeviceMapping]
 
 
-class WindowsInstanceAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class WindowsInstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = AWS_STACK_NAME
 
 
-class WindowsInstanceEbs:
-    resource: ec2.Instance.Ebs
+class WindowsInstanceEbs(ec2.Instance.Ebs):
     volume_type = 'io1'
     iops = '200'
     delete_on_termination = 'true'
     volume_size = '10'
 
 
-class WindowsInstanceBlockDeviceMapping:
-    resource: ec2.Instance.BlockDeviceMapping
+class WindowsInstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
     device_name = '/dev/sdm'
     ebs = WindowsInstanceEbs
 

@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class ADConnectorLambdaFunctionEnvironment:
-    resource: lambda_.Function.Environment
+class ADConnectorLambdaFunctionEnvironment(lambda_.Function.Environment):
     variables = {
         'LOG_LEVEL': LambdaLogLevel,
     }
 
 
-class ADConnectorLambdaFunctionContent:
-    resource: lambda_.LayerVersion.Content
+class ADConnectorLambdaFunctionContent(lambda_.LayerVersion.Content):
     s3_bucket = LambdaS3BucketName
     s3_key = LambdaZipFileName
 
 
-class ADConnectorLambdaFunctionCapacityProviderVpcConfig:
-    resource: lambda_.CapacityProvider.CapacityProviderVpcConfig
+class ADConnectorLambdaFunctionCapacityProviderVpcConfig(lambda_.CapacityProvider.CapacityProviderVpcConfig):
     subnet_ids = ['PrivateSubnet1ID', 'PrivateSubnet2ID']
     security_group_ids = [ADConnectorDomainMembersSG]
 

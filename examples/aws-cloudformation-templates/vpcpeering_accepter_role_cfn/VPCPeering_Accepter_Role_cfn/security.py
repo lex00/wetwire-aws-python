@@ -3,32 +3,27 @@
 from . import *  # noqa: F403
 
 
-class PeerRoleAllowStatement0:
-    resource: PolicyStatement
+class PeerRoleAllowStatement0(PolicyStatement):
     principal = {
         'AWS': Split(',', PeerOwnerIds),
     }
     action = 'sts:AssumeRole'
 
 
-class PeerRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class PeerRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [PeerRoleAllowStatement0]
 
 
-class PeerRoleAllowStatement0_1:
-    resource: PolicyStatement
+class PeerRoleAllowStatement0_1(PolicyStatement):
     action = 'ec2:AcceptVpcPeeringConnection'
     resource_arn = '*'
 
 
-class PeerRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class PeerRolePolicies0PolicyDocument(PolicyDocument):
     statement = [PeerRoleAllowStatement0_1]
 
 
-class PeerRolePolicy:
-    resource: iam.User.Policy
+class PeerRolePolicy(iam.User.Policy):
     policy_name = 'AcceptVPCPeering'
     policy_document = PeerRolePolicies0PolicyDocument
 

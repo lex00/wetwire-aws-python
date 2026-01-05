@@ -1,10 +1,9 @@
-"""Infra resources: ConfigRecorder, ConfigRuleForVolumeAutoEnableIO, DeliveryChannel, ConfigRuleForVolumeTags."""
+"""Infra resources: ConfigRecorder, ConfigRuleForVolumeTags, ConfigRuleForVolumeAutoEnableIO, DeliveryChannel."""
 
 from . import *  # noqa: F403
 
 
-class ConfigRecorderExclusionByResourceTypes:
-    resource: config.ConfigurationRecorder.ExclusionByResourceTypes
+class ConfigRecorderExclusionByResourceTypes(config.ConfigurationRecorder.ExclusionByResourceTypes):
     resource_types = ['AWS::EC2::Volume']
 
 
@@ -14,20 +13,35 @@ class ConfigRecorder(config.ConfigurationRecorder):
     role_arn = ConfigRole.Arn
 
 
-class ConfigRuleForVolumeAutoEnableIOScope:
-    resource: config.ConfigRule.Scope
+class ConfigRuleForVolumeTagsScope(config.ConfigRule.Scope):
+    compliance_resource_types = ['AWS::EC2::Volume']
+
+
+class ConfigRuleForVolumeTagsSource(config.ConfigRule.Source):
+    owner = 'AWS'
+    source_identifier = 'REQUIRED_TAGS'
+
+
+class ConfigRuleForVolumeTags(config.ConfigRule):
+    input_parameters = {
+        'tag1Key': 'CostCenter',
+    }
+    scope = ConfigRuleForVolumeTagsScope
+    source = ConfigRuleForVolumeTagsSource
+    depends_on = [ConfigRecorder]
+
+
+class ConfigRuleForVolumeAutoEnableIOScope(config.ConfigRule.Scope):
     compliance_resource_id = Ec2Volume
     compliance_resource_types = ['AWS::EC2::Volume']
 
 
-class ConfigRuleForVolumeAutoEnableIOSourceDetail:
-    resource: config.ConfigRule.SourceDetail
+class ConfigRuleForVolumeAutoEnableIOSourceDetail(config.ConfigRule.SourceDetail):
     event_source = 'aws.config'
     message_type = 'ConfigurationItemChangeNotification'
 
 
-class ConfigRuleForVolumeAutoEnableIOSource:
-    resource: config.ConfigRule.Source
+class ConfigRuleForVolumeAutoEnableIOSource(config.ConfigRule.Source):
     owner = 'CUSTOM_LAMBDA'
     source_details = [ConfigRuleForVolumeAutoEnableIOSourceDetail]
     source_identifier = VolumeAutoEnableIOComplianceCheck.Arn
@@ -40,8 +54,7 @@ class ConfigRuleForVolumeAutoEnableIO(config.ConfigRule):
     depends_on = [ConfigPermissionToCallLambda, ConfigRecorder]
 
 
-class DeliveryChannelConfigSnapshotDeliveryProperties:
-    resource: config.DeliveryChannel.ConfigSnapshotDeliveryProperties
+class DeliveryChannelConfigSnapshotDeliveryProperties(config.DeliveryChannel.ConfigSnapshotDeliveryProperties):
     delivery_frequency = 'Six_Hours'
 
 
@@ -50,23 +63,3 @@ class DeliveryChannel(config.DeliveryChannel):
     s3_bucket_name = ConfigBucket
     sns_topic_arn = ConfigTopic
     condition = 'CreateDeliveryChannel'
-
-
-class ConfigRuleForVolumeTagsScope:
-    resource: config.ConfigRule.Scope
-    compliance_resource_types = ['AWS::EC2::Volume']
-
-
-class ConfigRuleForVolumeTagsSource:
-    resource: config.ConfigRule.Source
-    owner = 'AWS'
-    source_identifier = 'REQUIRED_TAGS'
-
-
-class ConfigRuleForVolumeTags(config.ConfigRule):
-    input_parameters = {
-        'tag1Key': 'CostCenter',
-    }
-    scope = ConfigRuleForVolumeTagsScope
-    source = ConfigRuleForVolumeTagsSource
-    depends_on = [ConfigRecorder]

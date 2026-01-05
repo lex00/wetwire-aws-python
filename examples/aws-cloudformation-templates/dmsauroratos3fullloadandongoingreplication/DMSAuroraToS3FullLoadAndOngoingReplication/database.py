@@ -19,8 +19,7 @@ class AuroraCluster(rds.DBCluster):
     deletion_policy = 'Retain'
 
 
-class AuroraDBTagFormat:
-    resource: rds.DBProxyEndpoint.TagFormat
+class AuroraDBTagFormat(rds.DBProxyEndpoint.TagFormat):
     key = 'Application'
     value = AWS_STACK_ID
 

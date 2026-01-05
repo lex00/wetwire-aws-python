@@ -1,10 +1,18 @@
-"""Network resources: LoadBalancerSecurityGroup, InstanceSecurityGroup, TargetGroup, ElasticLoadBalancer, LoadBalancerListener."""
+"""Network resources: TargetGroup, LoadBalancerSecurityGroup, ElasticLoadBalancer, InstanceSecurityGroup, LoadBalancerListener."""
 
 from . import *  # noqa: F403
 
 
-class LoadBalancerSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class TargetGroup(elasticloadbalancingv2.TargetGroup):
+    health_check_path = '/'
+    name = 'MyTargetGroup'
+    port = 80
+    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
+    target_type = elasticloadbalancingv2.TargetTypeEnum.INSTANCE
+    vpc_id = VPC
+
+
+class LoadBalancerSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = 443
     to_port = 443
@@ -17,16 +25,21 @@ class LoadBalancerSecurityGroup(ec2.SecurityGroup):
     vpc_id = VPC
 
 
-class InstanceSecurityGroupEgress:
-    resource: ec2.SecurityGroup.Egress
+class ElasticLoadBalancer(elasticloadbalancingv2.LoadBalancer):
+    scheme = 'internet-facing'
+    security_groups = [LoadBalancerSecurityGroup]
+    subnets = Subnets
+    type_ = 'application'
+
+
+class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = 22
     to_port = 22
     cidr_ip = SSHLocation
 
 
-class InstanceSecurityGroupIngress:
-    resource: ec2.SecurityGroup.Ingress
+class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
     ip_protocol = 'tcp'
     from_port = 80
     to_port = 80
@@ -38,30 +51,12 @@ class InstanceSecurityGroup(ec2.SecurityGroup):
     security_group_ingress = [InstanceSecurityGroupEgress, InstanceSecurityGroupIngress]
 
 
-class TargetGroup(elasticloadbalancingv2.TargetGroup):
-    health_check_path = '/'
-    name = 'MyTargetGroup'
-    port = 80
-    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
-    target_type = elasticloadbalancingv2.TargetTypeEnum.INSTANCE
-    vpc_id = VPC
-
-
-class ElasticLoadBalancer(elasticloadbalancingv2.LoadBalancer):
-    scheme = 'internet-facing'
-    security_groups = [LoadBalancerSecurityGroup]
-    subnets = Subnets
-    type_ = 'application'
-
-
-class LoadBalancerListenerAction:
-    resource: elasticloadbalancingv2.ListenerRule.Action
+class LoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):
     type_ = 'forward'
     target_group_arn = TargetGroup
 
 
-class LoadBalancerListenerCertificate:
-    resource: elasticloadbalancingv2.ListenerCertificate.Certificate
+class LoadBalancerListenerCertificate(elasticloadbalancingv2.ListenerCertificate.Certificate):
     certificate_arn = CertificateArn
 
 

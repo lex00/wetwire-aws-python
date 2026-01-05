@@ -3,33 +3,28 @@
 from . import *  # noqa: F403
 
 
-class VPCFlowLogsBucketPublicAccessBlockConfiguration:
-    resource: s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration
+class VPCFlowLogsBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
     block_public_acls = True
     block_public_policy = True
     ignore_public_acls = True
     restrict_public_buckets = True
 
 
-class VPCFlowLogsBucketServerSideEncryptionByDefault:
-    resource: s3.Bucket.ServerSideEncryptionByDefault
+class VPCFlowLogsBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
     sse_algorithm = If("VPCFlowLogsBucketKMSKeyCondition", 'aws:kms', 'AES256')
     kms_master_key_id = If("VPCFlowLogsBucketKMSKeyCondition", VPCFlowLogsBucketKMSKey, AWS_NO_VALUE)
 
 
-class VPCFlowLogsBucketServerSideEncryptionRule:
-    resource: s3.Bucket.ServerSideEncryptionRule
+class VPCFlowLogsBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
     server_side_encryption_by_default = VPCFlowLogsBucketServerSideEncryptionByDefault
     bucket_key_enabled = If("VPCFlowLogsBucketKMSKeyCondition", VPCFlowLogsBucketKeyEnabled, AWS_NO_VALUE)
 
 
-class VPCFlowLogsBucketBucketEncryption:
-    resource: s3.Bucket.BucketEncryption
+class VPCFlowLogsBucketBucketEncryption(s3.Bucket.BucketEncryption):
     server_side_encryption_configuration = [VPCFlowLogsBucketServerSideEncryptionRule]
 
 
-class VPCFlowLogsBucketDeleteMarkerReplication:
-    resource: s3.Bucket.DeleteMarkerReplication
+class VPCFlowLogsBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
     status = s3.BucketVersioningStatus.ENABLED
 
 
@@ -44,8 +39,7 @@ class VPCFlowLogsBucket(s3.Bucket):
     condition = 'VPCFlowLogsNewBucketCondition'
 
 
-class VPCFlowLogsBucketPolicyAllowStatement0:
-    resource: PolicyStatement
+class VPCFlowLogsBucketPolicyAllowStatement0(PolicyStatement):
     sid = 'AWSLogDeliveryWrite'
     principal = {
         'Service': 'delivery.logs.amazonaws.com',
@@ -59,8 +53,7 @@ class VPCFlowLogsBucketPolicyAllowStatement0:
     }
 
 
-class VPCFlowLogsBucketPolicyAllowStatement1:
-    resource: PolicyStatement
+class VPCFlowLogsBucketPolicyAllowStatement1(PolicyStatement):
     sid = 'AWSLogDeliveryAclCheck'
     principal = {
         'Service': 'delivery.logs.amazonaws.com',
@@ -69,8 +62,7 @@ class VPCFlowLogsBucketPolicyAllowStatement1:
     resource_arn = Sub('arn:${AWS::Partition}:s3:::${VPCFlowLogsBucket}')
 
 
-class VPCFlowLogsBucketPolicyDenyStatement2:
-    resource: DenyStatement
+class VPCFlowLogsBucketPolicyDenyStatement2(DenyStatement):
     sid = 'DenyNonSSLRequests'
     principal = '*'
     action = 's3:*'
@@ -85,8 +77,7 @@ class VPCFlowLogsBucketPolicyDenyStatement2:
     }
 
 
-class VPCFlowLogsBucketPolicyPolicyDocument:
-    resource: PolicyDocument
+class VPCFlowLogsBucketPolicyPolicyDocument(PolicyDocument):
     statement = [VPCFlowLogsBucketPolicyAllowStatement0, VPCFlowLogsBucketPolicyAllowStatement1, VPCFlowLogsBucketPolicyDenyStatement2]
 
 

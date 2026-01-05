@@ -3,14 +3,12 @@
 from . import *  # noqa: F403
 
 
-class EC2InstanceInstanceNetworkInterfaceSpecification:
-    resource: ec2.SpotFleet.InstanceNetworkInterfaceSpecification
+class EC2InstanceInstanceNetworkInterfaceSpecification(ec2.SpotFleet.InstanceNetworkInterfaceSpecification):
     network_interface_id = Eth0
     device_index = '0'
 
 
-class EC2InstanceAssociationParameter:
-    resource: ec2.Instance.AssociationParameter
+class EC2InstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'myInstance'
 

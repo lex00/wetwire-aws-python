@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class EventRoleAllowStatement0:
-    resource: PolicyStatement
+class EventRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['events.amazonaws.com'],
     }
     action = 'sts:AssumeRole'
 
 
-class EventRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class EventRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [EventRoleAllowStatement0]
 
 
-class EventRoleAllowStatement0_1:
-    resource: PolicyStatement
+class EventRoleAllowStatement0_1(PolicyStatement):
     action = 'codepipeline:StartPipelineExecution'
     resource_arn = Join('', [
     'arn:aws:codepipeline:',
@@ -29,13 +26,11 @@ class EventRoleAllowStatement0_1:
 ])
 
 
-class EventRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class EventRolePolicies0PolicyDocument(PolicyDocument):
     statement = [EventRoleAllowStatement0_1]
 
 
-class EventRolePolicy:
-    resource: iam.User.Policy
+class EventRolePolicy(iam.User.Policy):
     policy_name = 'eb-pipeline-execution'
     policy_document = EventRolePolicies0PolicyDocument
 

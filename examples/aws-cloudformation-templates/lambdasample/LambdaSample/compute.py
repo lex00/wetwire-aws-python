@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class LambdaFunctionCode:
-    resource: lambda_.Function.Code
+class LambdaFunctionCode(lambda_.Function.Code):
     zip_file = """import json
 
 def lambda_handler(event, context):
@@ -16,8 +15,7 @@ def lambda_handler(event, context):
 """
 
 
-class LambdaFunctionEnvironment:
-    resource: lambda_.Function.Environment
+class LambdaFunctionEnvironment(lambda_.Function.Environment):
     variables = {
         'ENV': EnvName,
         'TZ': 'UTC',

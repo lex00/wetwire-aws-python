@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class DBEC2SecurityGroupIngress:
-    resource: ec2.SecurityGroup.Ingress
+class DBEC2SecurityGroupIngress(ec2.SecurityGroup.Ingress):
     ip_protocol = 'tcp'
     from_port = '3306'
     to_port = '3306'

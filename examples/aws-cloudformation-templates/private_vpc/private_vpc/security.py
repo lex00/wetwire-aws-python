@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class AutoscalingRoleAllowStatement0:
-    resource: PolicyStatement
+class AutoscalingRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['application-autoscaling.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class AutoscalingRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class AutoscalingRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [AutoscalingRoleAllowStatement0]
 
 
-class AutoscalingRoleAllowStatement0_1:
-    resource: PolicyStatement
+class AutoscalingRoleAllowStatement0_1(PolicyStatement):
     action = [
         'application-autoscaling:*',
         'cloudwatch:DescribeAlarms',
@@ -28,13 +25,11 @@ class AutoscalingRoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class AutoscalingRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class AutoscalingRolePolicies0PolicyDocument(PolicyDocument):
     statement = [AutoscalingRoleAllowStatement0_1]
 
 
-class AutoscalingRolePolicy:
-    resource: iam.User.Policy
+class AutoscalingRolePolicy(iam.User.Policy):
     policy_name = 'service-autoscaling'
     policy_document = AutoscalingRolePolicies0PolicyDocument
 
@@ -45,21 +40,18 @@ class AutoscalingRole(iam.Role):
     policies = [AutoscalingRolePolicy]
 
 
-class EC2RoleAllowStatement0:
-    resource: PolicyStatement
+class EC2RoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ec2.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class EC2RoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class EC2RoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [EC2RoleAllowStatement0]
 
 
-class EC2RoleAllowStatement0_1:
-    resource: PolicyStatement
+class EC2RoleAllowStatement0_1(PolicyStatement):
     action = [
         'ecs:CreateCluster',
         'ecs:DeregisterContainerInstance',
@@ -77,13 +69,11 @@ class EC2RoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class EC2RolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class EC2RolePolicies0PolicyDocument(PolicyDocument):
     statement = [EC2RoleAllowStatement0_1]
 
 
-class EC2RolePolicy:
-    resource: iam.User.Policy
+class EC2RolePolicy(iam.User.Policy):
     policy_name = 'ecs-service'
     policy_document = EC2RolePolicies0PolicyDocument
 
@@ -99,21 +89,18 @@ class EC2InstanceProfile(iam.InstanceProfile):
     roles = [EC2Role]
 
 
-class ECSRoleAllowStatement0:
-    resource: PolicyStatement
+class ECSRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ecs.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class ECSRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class ECSRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [ECSRoleAllowStatement0]
 
 
-class ECSRoleAllowStatement0_1:
-    resource: PolicyStatement
+class ECSRoleAllowStatement0_1(PolicyStatement):
     action = [
         'ec2:AttachNetworkInterface',
         'ec2:CreateNetworkInterface',
@@ -131,13 +118,11 @@ class ECSRoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class ECSRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class ECSRolePolicies0PolicyDocument(PolicyDocument):
     statement = [ECSRoleAllowStatement0_1]
 
 
-class ECSRolePolicy:
-    resource: iam.User.Policy
+class ECSRolePolicy(iam.User.Policy):
     policy_name = 'ecs-service'
     policy_document = ECSRolePolicies0PolicyDocument
 

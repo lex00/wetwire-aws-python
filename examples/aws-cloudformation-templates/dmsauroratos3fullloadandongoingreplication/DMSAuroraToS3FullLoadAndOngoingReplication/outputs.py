@@ -20,4 +20,4 @@ class S3BucketNameOutput:
 
 class AuroraEndpointOutput:
     resource: Output
-    value = AuroraCluster.Endpoint.Address
+    value = GetAtt("AuroraCluster", "Endpoint.Address")

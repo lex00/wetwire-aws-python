@@ -3,21 +3,18 @@
 from . import *  # noqa: F403
 
 
-class LambdaExecutionRoleAllowStatement0:
-    resource: PolicyStatement
+class LambdaExecutionRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['lambda.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class LambdaExecutionRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class LambdaExecutionRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [LambdaExecutionRoleAllowStatement0]
 
 
-class LambdaExecutionRoleAllowStatement0_1:
-    resource: PolicyStatement
+class LambdaExecutionRoleAllowStatement0_1(PolicyStatement):
     action = [
         'logs:*',
         'config:PutEvaluations',
@@ -26,13 +23,11 @@ class LambdaExecutionRoleAllowStatement0_1:
     resource_arn = '*'
 
 
-class LambdaExecutionRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class LambdaExecutionRolePolicies0PolicyDocument(PolicyDocument):
     statement = [LambdaExecutionRoleAllowStatement0_1]
 
 
-class LambdaExecutionRolePolicy:
-    resource: iam.User.Policy
+class LambdaExecutionRolePolicy(iam.User.Policy):
     policy_name = 'root'
     policy_document = LambdaExecutionRolePolicies0PolicyDocument
 
@@ -42,21 +37,18 @@ class LambdaExecutionRole(iam.Role):
     policies = [LambdaExecutionRolePolicy]
 
 
-class ConfigRoleAllowStatement0:
-    resource: PolicyStatement
+class ConfigRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['config.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class ConfigRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class ConfigRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [ConfigRoleAllowStatement0]
 
 
-class ConfigRoleAllowStatement0_1:
-    resource: PolicyStatement
+class ConfigRoleAllowStatement0_1(PolicyStatement):
     action = 's3:GetBucketAcl'
     resource_arn = Join('', [
     'arn:aws:s3:::',
@@ -64,8 +56,7 @@ class ConfigRoleAllowStatement0_1:
 ])
 
 
-class ConfigRoleAllowStatement1:
-    resource: PolicyStatement
+class ConfigRoleAllowStatement1(PolicyStatement):
     action = 's3:PutObject'
     resource_arn = Join('', [
     'arn:aws:s3:::',
@@ -81,19 +72,16 @@ class ConfigRoleAllowStatement1:
     }
 
 
-class ConfigRoleAllowStatement2:
-    resource: PolicyStatement
+class ConfigRoleAllowStatement2(PolicyStatement):
     action = 'config:Put*'
     resource_arn = '*'
 
 
-class ConfigRolePolicies0PolicyDocument:
-    resource: PolicyDocument
+class ConfigRolePolicies0PolicyDocument(PolicyDocument):
     statement = [ConfigRoleAllowStatement0_1, ConfigRoleAllowStatement1, ConfigRoleAllowStatement2]
 
 
-class ConfigRolePolicy:
-    resource: iam.User.Policy
+class ConfigRolePolicy(iam.User.Policy):
     policy_name = 'root'
     policy_document = ConfigRolePolicies0PolicyDocument
 

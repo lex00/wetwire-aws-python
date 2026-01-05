@@ -1,10 +1,21 @@
-"""Storage resources: Bucket, Object1, Object3, Object4, Object2."""
+"""Storage resources: Bucket, Object2, Object1, Object4, Object3."""
 
 from . import *  # noqa: F403
 
 
 class Bucket(s3.Bucket):
     pass
+
+
+class Object2(CloudFormationResource):
+    # Unknown resource type: AWS::S3::Object
+    target = {
+        'Bucket': Bucket,
+        'Key': '1-pixel.gif',
+        'ContentType': 'image/png',
+    }
+    base64_body = 'R0lGODdhAQABAIABAP///0qIbCwAAAAAAQABAAACAkQBADs='
+    depends_on = [Bucket]
 
 
 class Object1(CloudFormationResource):
@@ -23,27 +34,7 @@ but this one is mine.
     depends_on = [Bucket]
 
 
-class Object3ManifestFileLocation:
-    resource: quicksight.DataSource.ManifestFileLocation
-    bucket = Object1.Bucket
-    key = Object1.Key
-
-
-class Object3ManifestFileLocation1:
-    resource: quicksight.DataSource.ManifestFileLocation
-    bucket = Bucket
-    key = 'README-copy.md'
-
-
-class Object3(CloudFormationResource):
-    # Unknown resource type: AWS::S3::Object
-    source = Object3ManifestFileLocation
-    target = Object3ManifestFileLocation1
-    depends_on = [Bucket]
-
-
-class Object4ManifestFileLocation:
-    resource: quicksight.DataSource.ManifestFileLocation
+class Object4ManifestFileLocation(quicksight.DataSource.ManifestFileLocation):
     bucket = Bucket
     key = 'readme.md'
 
@@ -55,12 +46,18 @@ class Object4(CloudFormationResource):
     depends_on = [Bucket]
 
 
-class Object2(CloudFormationResource):
+class Object3ManifestFileLocation(quicksight.DataSource.ManifestFileLocation):
+    bucket = Object1.Bucket
+    key = Object1.Key
+
+
+class Object3ManifestFileLocation1(quicksight.DataSource.ManifestFileLocation):
+    bucket = Bucket
+    key = 'README-copy.md'
+
+
+class Object3(CloudFormationResource):
     # Unknown resource type: AWS::S3::Object
-    target = {
-        'Bucket': Bucket,
-        'Key': '1-pixel.gif',
-        'ContentType': 'image/png',
-    }
-    base64_body = 'R0lGODdhAQABAIABAP///0qIbCwAAAAAAQABAAACAkQBADs='
+    source = Object3ManifestFileLocation
+    target = Object3ManifestFileLocation1
     depends_on = [Bucket]

@@ -1,10 +1,28 @@
-"""Security resources: NeptuneCloudWatchPolicy, NeptuneS3Policy, NeptuneRole."""
+"""Security resources: NeptuneS3Policy, NeptuneCloudWatchPolicy, NeptuneRole."""
 
 from . import *  # noqa: F403
 
 
-class NeptuneCloudWatchPolicyAllowStatement0:
-    resource: PolicyStatement
+class NeptuneS3PolicyAllowStatement0(PolicyStatement):
+    sid = 'AllowNeptuneAccessToS3'
+    action = [
+        's3:Get*',
+        's3:List*',
+    ]
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::*')]
+
+
+class NeptuneS3PolicyPolicyDocument(PolicyDocument):
+    statement = [NeptuneS3PolicyAllowStatement0]
+
+
+class NeptuneS3Policy(iam.ManagedPolicy):
+    description = 'Neptune default policy for S3 access for data load'
+    managed_policy_name = Sub('${Env}-${AppName}-neptune-s3-policy-${AWS::Region}')
+    policy_document = NeptuneS3PolicyPolicyDocument
+
+
+class NeptuneCloudWatchPolicyAllowStatement0(PolicyStatement):
     sid = 'EnableLogGroups'
     action = [
         'logs:CreateLogGroup',
@@ -13,8 +31,7 @@ class NeptuneCloudWatchPolicyAllowStatement0:
     resource_arn = [Sub('arn:${AWS::Partition}:logs:*:*:log-group:/aws/neptune/*')]
 
 
-class NeptuneCloudWatchPolicyAllowStatement1:
-    resource: PolicyStatement
+class NeptuneCloudWatchPolicyAllowStatement1(PolicyStatement):
     sid = 'EnableLogStreams'
     action = [
         'logs:CreateLogStream',
@@ -25,8 +42,7 @@ class NeptuneCloudWatchPolicyAllowStatement1:
     resource_arn = [Sub('arn:${AWS::Partition}:logs:*:*:log-group:/aws/neptune/*:log-stream:*')]
 
 
-class NeptuneCloudWatchPolicyPolicyDocument:
-    resource: PolicyDocument
+class NeptuneCloudWatchPolicyPolicyDocument(PolicyDocument):
     statement = [NeptuneCloudWatchPolicyAllowStatement0, NeptuneCloudWatchPolicyAllowStatement1]
 
 
@@ -36,29 +52,7 @@ class NeptuneCloudWatchPolicy(iam.ManagedPolicy):
     policy_document = NeptuneCloudWatchPolicyPolicyDocument
 
 
-class NeptuneS3PolicyAllowStatement0:
-    resource: PolicyStatement
-    sid = 'AllowNeptuneAccessToS3'
-    action = [
-        's3:Get*',
-        's3:List*',
-    ]
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::*')]
-
-
-class NeptuneS3PolicyPolicyDocument:
-    resource: PolicyDocument
-    statement = [NeptuneS3PolicyAllowStatement0]
-
-
-class NeptuneS3Policy(iam.ManagedPolicy):
-    description = 'Neptune default policy for S3 access for data load'
-    managed_policy_name = Sub('${Env}-${AppName}-neptune-s3-policy-${AWS::Region}')
-    policy_document = NeptuneS3PolicyPolicyDocument
-
-
-class NeptuneRoleAllowStatement0:
-    resource: PolicyStatement
+class NeptuneRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': [
             'monitoring.rds.amazonaws.com',
@@ -68,8 +62,7 @@ class NeptuneRoleAllowStatement0:
     action = 'sts:AssumeRole'
 
 
-class NeptuneRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class NeptuneRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [NeptuneRoleAllowStatement0]
 
 

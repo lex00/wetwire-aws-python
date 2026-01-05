@@ -3,45 +3,39 @@
 from . import *  # noqa: F403
 
 
-class EMRClusterBootstrapActionConfig:
-    resource: emr.Cluster.BootstrapActionConfig
+class EMRClusterBootstrapActionConfig(emr.Cluster.BootstrapActionConfig):
     name = 'Ganglia'
 
 
-class EMRClusterConfiguration:
-    resource: emr.InstanceGroupConfig.Configuration
+class EMRClusterConfiguration(emr.InstanceGroupConfig.Configuration):
     classification = 'hbase-site'
     configuration_properties = {
         'hbase.rootdir': S3DataUri,
     }
 
 
-class EMRClusterConfiguration1:
-    resource: emr.InstanceGroupConfig.Configuration
+class EMRClusterConfiguration1(emr.InstanceGroupConfig.Configuration):
     classification = 'hbase'
     configuration_properties = {
         'hbase.emr.storageMode': 's3',
     }
 
 
-class EMRClusterInstanceGroupConfig:
-    resource: emr.Cluster.InstanceGroupConfig
+class EMRClusterInstanceGroupConfig(emr.Cluster.InstanceGroupConfig):
     instance_count = 1
     instance_type = MasterInstanceType
     market = 'ON_DEMAND'
     name = 'Master'
 
 
-class EMRClusterInstanceGroupConfig1:
-    resource: emr.Cluster.InstanceGroupConfig
+class EMRClusterInstanceGroupConfig1(emr.Cluster.InstanceGroupConfig):
     instance_count = NumberOfCoreInstances
     instance_type = CoreInstanceType
     market = 'ON_DEMAND'
     name = 'Core'
 
 
-class EMRClusterJobFlowInstancesConfig:
-    resource: emr.Cluster.JobFlowInstancesConfig
+class EMRClusterJobFlowInstancesConfig(emr.Cluster.JobFlowInstancesConfig):
     ec2_key_name = KeyName
     ec2_subnet_id = SubnetID
     additional_master_security_groups = AdditionalPrimaryNodeSecurityGroups

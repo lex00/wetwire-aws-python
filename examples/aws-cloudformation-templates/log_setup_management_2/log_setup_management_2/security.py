@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class CentralEventLogKeyAllowStatement0:
-    resource: PolicyStatement
+class CentralEventLogKeyAllowStatement0(PolicyStatement):
     principal = {
         'AWS': [Sub('arn:aws:iam::${AWS::AccountId}:role/Admin')],
     }
@@ -28,8 +27,7 @@ class CentralEventLogKeyAllowStatement0:
     resource_arn = Sub('arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*')
 
 
-class CentralEventLogKeyAllowStatement1:
-    resource: PolicyStatement
+class CentralEventLogKeyAllowStatement1(PolicyStatement):
     sid = 'Allow CloudWatch Logs to use the key'
     principal = {
         'Service': 'logs.amazonaws.com',
@@ -44,8 +42,7 @@ class CentralEventLogKeyAllowStatement1:
     resource_arn = Sub('arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*')
 
 
-class CentralEventLogKeyKeyPolicy:
-    resource: PolicyDocument
+class CentralEventLogKeyKeyPolicy(PolicyDocument):
     statement = [CentralEventLogKeyAllowStatement0, CentralEventLogKeyAllowStatement1]
 
 

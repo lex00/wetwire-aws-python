@@ -3,16 +3,14 @@
 from . import *  # noqa: F403
 
 
-class EventBridgeRoleAllowStatement0:
-    resource: PolicyStatement
+class EventBridgeRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': 'events.amazonaws.com',
     }
     action = 'sts:AssumeRole'
 
 
-class EventBridgeRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class EventBridgeRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [EventBridgeRoleAllowStatement0]
 
 
@@ -20,14 +18,12 @@ class EventBridgeRole(iam.Role):
     assume_role_policy_document = EventBridgeRoleAssumeRolePolicyDocument
 
 
-class EventBridgeRolePolicyAllowStatement0:
-    resource: PolicyStatement
+class EventBridgeRolePolicyAllowStatement0(PolicyStatement):
     action = 'events:PutEvents'
     resource_arn = CentralEventBusArn
 
 
-class EventBridgeRolePolicyPolicyDocument:
-    resource: PolicyDocument
+class EventBridgeRolePolicyPolicyDocument(PolicyDocument):
     statement = [EventBridgeRolePolicyAllowStatement0]
 
 

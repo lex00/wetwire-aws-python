@@ -3,13 +3,11 @@
 from . import *  # noqa: F403
 
 
-class TaskDefinitionPortMapping:
-    resource: ecs.TaskDefinition.PortMapping
+class TaskDefinitionPortMapping(ecs.TaskDefinition.PortMapping):
     container_port = ContainerPort
 
 
-class TaskDefinitionContainerDefinition:
-    resource: ecs.TaskDefinition.ContainerDefinition
+class TaskDefinitionContainerDefinition(ecs.TaskDefinition.ContainerDefinition):
     name = ServiceName
     essential = True
     cpu = ContainerCpu
@@ -32,14 +30,12 @@ class TaskDefinition(ecs.TaskDefinition):
     container_definitions = [TaskDefinitionContainerDefinition]
 
 
-class ServiceDeploymentConfiguration:
-    resource: ecs.Service.DeploymentConfiguration
+class ServiceDeploymentConfiguration(ecs.Service.DeploymentConfiguration):
     maximum_percent = 200
     minimum_healthy_percent = 75
 
 
-class ServiceAwsVpcConfiguration:
-    resource: ecs.Service.AwsVpcConfiguration
+class ServiceAwsVpcConfiguration(ecs.Service.AwsVpcConfiguration):
     security_groups = [ImportValue(Join(':', [
     StackName,
     'FargateContainerSecurityGroup',
@@ -53,13 +49,11 @@ class ServiceAwsVpcConfiguration:
 ]))]
 
 
-class ServiceNetworkConfiguration:
-    resource: ecs.Service.NetworkConfiguration
+class ServiceNetworkConfiguration(ecs.Service.NetworkConfiguration):
     awsvpc_configuration = ServiceAwsVpcConfiguration
 
 
-class ServiceLoadBalancer:
-    resource: ecs.TaskSet.LoadBalancer
+class ServiceLoadBalancer(ecs.TaskSet.LoadBalancer):
     container_name = ServiceName
     container_port = ContainerPort
     target_group_arn = TargetGroup

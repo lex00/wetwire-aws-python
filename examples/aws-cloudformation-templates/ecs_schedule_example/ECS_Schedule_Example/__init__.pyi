@@ -376,8 +376,8 @@ from wetwire_aws.loader import setup_params, setup_resources
 from .compute import ContainerInstances as ContainerInstances
 from .compute import ECSAutoScalingGroup as ECSAutoScalingGroup
 from .compute import ECSCluster as ECSCluster
-from .main import Service as Service
-from .main import ServiceLoadBalancer as ServiceLoadBalancer
+from .compute import Service as Service
+from .compute import ServiceLoadBalancer as ServiceLoadBalancer
 from .main import ServiceScalingPolicy as ServiceScalingPolicy
 from .main import ServiceScalingPolicyStepAdjustment as ServiceScalingPolicyStepAdjustment
 from .main import ServiceScalingPolicyStepScalingPolicyConfiguration as ServiceScalingPolicyStepScalingPolicyConfiguration

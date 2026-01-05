@@ -38,7 +38,10 @@ from typing import Literal
 # These will be skipped during validation (but still imported for inspection)
 SKIP_TEMPLATES = [
     # Uses custom CloudFormation macro (ExecutionRoleBuilder) with non-standard properties
+    "example",
     "example_2",
+    # Uses !Explode macro which generates incomplete Python code
+    "test_2",
     # Has complex Join-based UserData that generates malformed Python strings
     "efs_with_automount_to_ec2",
 ]

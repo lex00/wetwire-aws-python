@@ -1,11 +1,6 @@
-"""Security resources: myInstanceProfile, myssmdocument, myEC2SSMRole."""
+"""Security resources: myssmdocument, myInstanceProfile, myEC2SSMRole."""
 
 from . import *  # noqa: F403
-
-
-class myInstanceProfile(iam.InstanceProfile):
-    roles = ['DemoEC2SSMRole']
-    instance_profile_name = 'myEC2SSMRole'
 
 
 class myssmdocument(ssm.Document):
@@ -40,16 +35,19 @@ class myssmdocument(ssm.Document):
     }
 
 
-class myEC2SSMRoleAllowStatement0:
-    resource: PolicyStatement
+class myInstanceProfile(iam.InstanceProfile):
+    roles = ['DemoEC2SSMRole']
+    instance_profile_name = 'myEC2SSMRole'
+
+
+class myEC2SSMRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ec2.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class myEC2SSMRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
+class myEC2SSMRoleAssumeRolePolicyDocument(PolicyDocument):
     statement = [myEC2SSMRoleAllowStatement0]
 
 

@@ -3,93 +3,78 @@
 from . import *  # noqa: F403
 
 
-class TableOfBooksAttributeDefinition:
-    resource: dynamodb.Table.AttributeDefinition
+class TableOfBooksAttributeDefinition(dynamodb.Table.AttributeDefinition):
     attribute_name = 'Title'
     attribute_type = dynamodb.ScalarAttributeType.S
 
 
-class TableOfBooksAttributeDefinition1:
-    resource: dynamodb.Table.AttributeDefinition
+class TableOfBooksAttributeDefinition1(dynamodb.Table.AttributeDefinition):
     attribute_name = 'Category'
     attribute_type = dynamodb.ScalarAttributeType.S
 
 
-class TableOfBooksAttributeDefinition2:
-    resource: dynamodb.Table.AttributeDefinition
+class TableOfBooksAttributeDefinition2(dynamodb.Table.AttributeDefinition):
     attribute_name = 'Language'
     attribute_type = dynamodb.ScalarAttributeType.S
 
 
-class TableOfBooksKeySchema:
-    resource: dynamodb.Table.KeySchema
+class TableOfBooksKeySchema(dynamodb.Table.KeySchema):
     attribute_name = 'Category'
     key_type = dynamodb.KeyType.HASH
 
 
-class TableOfBooksKeySchema1:
-    resource: dynamodb.Table.KeySchema
+class TableOfBooksKeySchema1(dynamodb.Table.KeySchema):
     attribute_name = 'Title'
     key_type = dynamodb.KeyType.RANGE
 
 
-class TableOfBooksProvisionedThroughput:
-    resource: dynamodb.Table.ProvisionedThroughput
+class TableOfBooksProvisionedThroughput(dynamodb.Table.ProvisionedThroughput):
     read_capacity_units = ReadCapacityUnits
     write_capacity_units = WriteCapacityUnits
 
 
-class TableOfBooksKeySchema2:
-    resource: dynamodb.Table.KeySchema
+class TableOfBooksKeySchema2(dynamodb.Table.KeySchema):
     attribute_name = 'Category'
     key_type = dynamodb.KeyType.HASH
 
 
-class TableOfBooksKeySchema3:
-    resource: dynamodb.Table.KeySchema
+class TableOfBooksKeySchema3(dynamodb.Table.KeySchema):
     attribute_name = 'Language'
     key_type = dynamodb.KeyType.RANGE
 
 
-class TableOfBooksProjection:
-    resource: dynamodb.Table.Projection
+class TableOfBooksProjection(dynamodb.Table.Projection):
     projection_type = 'KEYS_ONLY'
 
 
-class TableOfBooksLocalSecondaryIndex:
-    resource: dynamodb.Table.LocalSecondaryIndex
+class TableOfBooksLocalSecondaryIndex(dynamodb.Table.LocalSecondaryIndex):
     index_name = 'LanguageIndex'
     key_schema = [TableOfBooksKeySchema2, TableOfBooksKeySchema3]
     projection = TableOfBooksProjection
 
 
-class TableOfBooksKeySchema4:
-    resource: dynamodb.Table.KeySchema
+class TableOfBooksKeySchema4(dynamodb.Table.KeySchema):
     attribute_name = 'Title'
     key_type = dynamodb.KeyType.HASH
 
 
-class TableOfBooksProjection1:
-    resource: dynamodb.Table.Projection
+class TableOfBooksProjection1(dynamodb.Table.Projection):
     projection_type = 'KEYS_ONLY'
 
 
-class TableOfBooksProvisionedThroughput1:
-    resource: dynamodb.Table.ProvisionedThroughput
+class TableOfBooksProvisionedThroughput1(dynamodb.Table.ProvisionedThroughput):
     read_capacity_units = ReadCapacityUnits
     write_capacity_units = WriteCapacityUnits
 
 
-class TableOfBooksGlobalSecondaryIndex:
-    resource: dynamodb.Table.GlobalSecondaryIndex
+class TableOfBooksGlobalSecondaryIndex(dynamodb.Table.GlobalSecondaryIndex):
     index_name = 'TitleIndex'
     key_schema = [TableOfBooksKeySchema4]
     projection = TableOfBooksProjection1
     provisioned_throughput = TableOfBooksProvisionedThroughput1
 
 
-class TableOfBooksPointInTimeRecoverySpecification:
-    resource: dynamodb.Table.PointInTimeRecoverySpecification
+class TableOfBooksPointInTimeRecoverySpecification(dynamodb.Table.PointInTimeRecoverySpecification):
     point_in_time_recovery_enabled = True
 
 
