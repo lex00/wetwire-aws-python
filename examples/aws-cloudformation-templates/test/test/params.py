@@ -3,14 +3,13 @@
 from . import *  # noqa: F403
 
 
-class BucketMapMapping:
-    resource: Mapping
-    map_data = {
-        'Monthly': {
-            'ResourceName': 'MyThirtyDayBucket',
-            'Retention': 30,
-        },
-        'Yearly': {
-            'Retention': 365,
-        },
-    }
+class TestCount:
+    resource: Parameter
+    type = NUMBER
+    default = 3
+
+
+class TestList:
+    resource: Parameter
+    type = COMMA_DELIMITED_LIST
+    default = 'foo,bar'

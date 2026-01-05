@@ -1,6 +1,233 @@
-=== [1;33m⚠[0m efs_with_automount_to_ec2 (skipped - known malformed template) ===
-No __init__.py found in package
+=== config (Config) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import Config
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/config/Config/__init__.py", line 11, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 423, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/config/Config/outputs.py", line 16, in <module>
+    class ConfigRuleForVolumeAutoEnableIOComplianceTypeOutput:
+        resource: Output
+        value = ConfigRuleForVolumeAutoEnableIO.Compliance.Type
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 511, in metaclass_applying_build_class
+    cls: type = original_build_class(func, name, *bases, **kwargs)
+                ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/config/Config/outputs.py", line 18, in ConfigRuleForVolumeAutoEnableIOComplianceTypeOutput
+    value = ConfigRuleForVolumeAutoEnableIO.Compliance.Type
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Compliance' has no attribute 'Type'. Did you mean: 'type_'?
 
-=== [1;33m⚠[0m example_2 (skipped - known malformed template) ===
-No __init__.py found in package
+
+=== example (example) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import example
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/example/example/__init__.py", line 9, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 423, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/example/example/security.py", line 6, in <module>
+    class ExecutionRoleBuilderMacroTestRole(iam.Role):
+    ...<12 lines>...
+        }]
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 511, in metaclass_applying_build_class
+    cls: type = original_build_class(func, name, *bases, **kwargs)
+                ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/example/example/security.py", line 10, in ExecutionRoleBuilderMacroTestRole
+    permissions_boundary = PermissionBoundaryArn
+                           ^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'PermissionBoundaryArn' is not defined
+
+
+=== dmsauroratos3fullloadandongoingreplication (DMSAuroraToS3FullLoadAndOngoingReplication) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import DMSAuroraToS3FullLoadAndOngoingReplication
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/dmsauroratos3fullloadandongoingreplication/DMSAuroraToS3FullLoadAndOngoingReplication/__init__.py", line 11, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 423, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/dmsauroratos3fullloadandongoingreplication/DMSAuroraToS3FullLoadAndOngoingReplication/main.py", line 35, in <module>
+    class AuroraSourceEndpoint(dms.Endpoint):
+    ...<6 lines>...
+        depends_on = [DMSReplicationInstance, AuroraCluster, AuroraDB]
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 511, in metaclass_applying_build_class
+    cls: type = original_build_class(func, name, *bases, **kwargs)
+                ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/dmsauroratos3fullloadandongoingreplication/DMSAuroraToS3FullLoadAndOngoingReplication/main.py", line 40, in AuroraSourceEndpoint
+    server_name = AuroraCluster.Endpoint.Address
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Endpoint' has no attribute 'Address'. Did you mean: 'address'?
+
+
+=== rds_with_dbparametergroup (RDS_with_DBParameterGroup) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import RDS_with_DBParameterGroup
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/rds_with_dbparametergroup/RDS_with_DBParameterGroup/__init__.py", line 13, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 423, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/rds_with_dbparametergroup/RDS_with_DBParameterGroup/outputs.py", line 6, in <module>
+    class JDBCConnectionStringOutput:
+    ...<11 lines>...
+        description = 'JDBC connection string for the database'
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 511, in metaclass_applying_build_class
+    cls: type = original_build_class(func, name, *bases, **kwargs)
+                ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/rds_with_dbparametergroup/RDS_with_DBParameterGroup/outputs.py", line 12, in JDBCConnectionStringOutput
+    MyDB.Endpoint.Address,
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Endpoint' has no attribute 'Address'. Did you mean: 'address'?
+
+
+=== rds_snapshot_on_delete (RDS_Snapshot_On_Delete) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import RDS_Snapshot_On_Delete
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/rds_snapshot_on_delete/RDS_Snapshot_On_Delete/__init__.py", line 11, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 423, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/rds_snapshot_on_delete/RDS_Snapshot_On_Delete/outputs.py", line 6, in <module>
+    class JDBCConnectionStringOutput:
+    ...<10 lines>...
+        description = 'JDBC connection string for the database'
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 511, in metaclass_applying_build_class
+    cls: type = original_build_class(func, name, *bases, **kwargs)
+                ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/rds_snapshot_on_delete/RDS_Snapshot_On_Delete/outputs.py", line 12, in JDBCConnectionStringOutput
+    MyDB.Endpoint.Address,
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Endpoint' has no attribute 'Address'. Did you mean: 'address'?
+
+
+=== rds_mysql_with_read_replica (RDS_MySQL_With_Read_Replica) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import RDS_MySQL_With_Read_Replica
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/rds_mysql_with_read_replica/RDS_MySQL_With_Read_Replica/__init__.py", line 11, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 423, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/rds_mysql_with_read_replica/RDS_MySQL_With_Read_Replica/outputs.py", line 22, in <module>
+    class JDBCConnectionStringOutput:
+    ...<11 lines>...
+        description = 'JDBC connection string for the master database'
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 511, in metaclass_applying_build_class
+    cls: type = original_build_class(func, name, *bases, **kwargs)
+                ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/rds_mysql_with_read_replica/RDS_MySQL_With_Read_Replica/outputs.py", line 28, in JDBCConnectionStringOutput
+    MainDB.Endpoint.Address,
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Endpoint' has no attribute 'Address'. Did you mean: 'address'?
 

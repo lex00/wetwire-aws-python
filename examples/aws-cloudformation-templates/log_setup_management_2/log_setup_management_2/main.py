@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class CentralEventLog:
-    resource: logs.LogGroup
+class CentralEventLog(logs.LogGroup):
     log_group_class = logs.LogGroupClass.STANDARD
     log_group_name = CentralEventLogName
     kms_key_id = CentralEventLogKey.Arn

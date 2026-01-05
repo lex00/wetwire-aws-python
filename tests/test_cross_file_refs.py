@@ -46,13 +46,13 @@ class TestCrossFileReferences:
         assert AppFunction is not None
 
         # Verify the no-parens cross-file reference is detected
-        # With no-parens pattern, the value is an AttrRef at the class level
-        role_default = AppFunction.__dataclass_fields__["role"].default
-        assert is_attr_ref(role_default), (
+        # With inheritance pattern, the value is a class attribute
+        role_value = getattr(AppFunction, "role", None)
+        assert is_attr_ref(role_value), (
             "role should be an AttrRef (no-parens pattern)"
         )
-        assert role_default.target is AppRole, "AttrRef should reference AppRole"
-        assert role_default.attr == "Arn", "AttrRef should reference 'Arn' attribute"
+        assert role_value.target is AppRole, "AttrRef should reference AppRole"
+        assert role_value.attr == "Arn", "AttrRef should reference 'Arn' attribute"
 
     def test_cross_file_serialization(self):
         """Test that cross-file references serialize correctly to CloudFormation."""

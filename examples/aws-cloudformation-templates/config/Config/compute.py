@@ -40,8 +40,7 @@ function evaluateCompliance(event, doReturn) {
 """
 
 
-class VolumeAutoEnableIOComplianceCheck:
-    resource: lambda_.Function
+class VolumeAutoEnableIOComplianceCheck(lambda_.Function):
     code = VolumeAutoEnableIOComplianceCheckCode
     handler = 'index.handler'
     runtime = lambda_.Runtime.NODEJS20_X
@@ -49,8 +48,7 @@ class VolumeAutoEnableIOComplianceCheck:
     role = LambdaExecutionRole.Arn
 
 
-class ConfigPermissionToCallLambda:
-    resource: lambda_.Permission
+class ConfigPermissionToCallLambda(lambda_.Permission):
     function_name = VolumeAutoEnableIOComplianceCheck.Arn
     action = 'lambda:InvokeFunction'
     principal = 'config.amazonaws.com'
@@ -62,8 +60,7 @@ class Ec2VolumeAssociationParameter:
     value = 'Ec2VolumeTagValue'
 
 
-class Ec2Volume:
-    resource: ec2.Volume
+class Ec2Volume(ec2.Volume):
     auto_enable_io = Ec2VolumeAutoEnableIO
     size = '5'
     availability_zone = Select(0, GetAZs())

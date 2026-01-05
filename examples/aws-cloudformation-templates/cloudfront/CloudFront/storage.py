@@ -42,8 +42,7 @@ class LoggingBucketDeleteMarkerReplication:
     status = LoggingBucketVersioning
 
 
-class LoggingBucket:
-    resource: s3.Bucket
+class LoggingBucket(s3.Bucket):
     bucket_name = Sub('${AppName}-logging-${Environment}-${AWS::AccountId}-${AWS::Region}')
     ownership_controls = LoggingBucketOwnershipControls
     public_access_block_configuration = LoggingBucketPublicAccessBlockConfiguration
@@ -83,7 +82,6 @@ class LoggingBucketPolicyPolicyDocument:
     statement = [LoggingBucketPolicyAllowStatement0, LoggingBucketPolicyDenyStatement1]
 
 
-class LoggingBucketPolicy:
-    resource: s3.BucketPolicy
+class LoggingBucketPolicy(s3.BucketPolicy):
     bucket = LoggingBucket
     policy_document = LoggingBucketPolicyPolicyDocument

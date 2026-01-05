@@ -3,6 +3,5 @@
 from . import *  # noqa: F403
 
 
-class TestQ:
-    resource: sqs.Queue
+class TestQ(sqs.Queue):
     queue_name = 'test-events17'

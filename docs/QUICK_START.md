@@ -28,8 +28,7 @@ setup_resources(__file__, __name__, globals())
 ```python
 from . import *
 
-class DataBucket:
-    resource: s3.Bucket
+class DataBucket(s3.Bucket):
     bucket_name = "my-data-bucket"
 ```
 
@@ -50,8 +49,7 @@ Reference other resources using the no-parens style:
 ```python
 from . import *
 
-class DataBucket:
-    resource: s3.Bucket
+class DataBucket(s3.Bucket):
     bucket_name = "data"
 
 # Policy statement as wrapper class (flattened)
@@ -66,13 +64,11 @@ class LambdaAssumeRolePolicy:
     version = "2012-10-17"
     statement = [LambdaAssumeRoleStatement]
 
-class ProcessorRole:
-    resource: iam.Role
+class ProcessorRole(iam.Role):
     role_name = "processor"
     assume_role_policy_document = LambdaAssumeRolePolicy
 
-class ProcessorFunction:
-    resource: lambda_.Function
+class ProcessorFunction(lambda_.Function):
     function_name = "processor"
     runtime = lambda_.Runtime.PYTHON3_12
     handler = "index.handler"
@@ -88,12 +84,10 @@ For introspectable references, use type annotations:
 ```python
 from . import *  # Includes Annotated, Attr, Ref from dataclass-dsl
 
-class ProcessorRole:
-    resource: iam.Role
+class ProcessorRole(iam.Role):
     role_name = "processor"
 
-class ProcessorFunction:
-    resource: lambda_.Function
+class ProcessorFunction(lambda_.Function):
     function_name = "processor"
     runtime = lambda_.Runtime.PYTHON3_12
     # Type annotation enables dependency introspection
@@ -159,8 +153,7 @@ from . import *
 
 __all__ = ["DataBucket"]
 
-class DataBucket:
-    resource: s3.Bucket
+class DataBucket(s3.Bucket):
     bucket_name = "data"
 ```
 
@@ -170,8 +163,7 @@ from . import *  # Includes Annotated, Ref, all exported symbols
 
 __all__ = ["ProcessorFunction"]
 
-class ProcessorFunction:
-    resource: lambda_.Function
+class ProcessorFunction(lambda_.Function):
     function_name = "processor"
     runtime = lambda_.Runtime.PYTHON3_12
     # Cross-file reference - DataBucket is injected by setup_resources()
@@ -194,8 +186,7 @@ Use generated enum classes for type safety:
 ```python
 from . import *
 
-class MyFunction:
-    resource: lambda_.Function
+class MyFunction(lambda_.Function):
     runtime = lambda_.Runtime.PYTHON3_12    # Not "python3.12"
     architectures = [lambda_.Architecture.ARM64]
 
@@ -209,8 +200,7 @@ class MyTableAttributeDefinition:
     attribute_name = "pk"
     attribute_type = dynamodb.ScalarAttributeType.S
 
-class MyTable:
-    resource: dynamodb.Table
+class MyTable(dynamodb.Table):
     key_schema = [MyTableKeySchema]
     attribute_definitions = [MyTableAttributeDefinition]
 ```

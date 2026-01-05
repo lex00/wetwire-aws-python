@@ -33,8 +33,7 @@ class StackSetAutoDeployment:
     retain_stacks_on_account_removal = True
 
 
-class StackSet:
-    resource: cloudformation.StackSet
+class StackSet(cloudformation.StackSet):
     template_body = """Description: |
   This template has resources that will be installed into all managed accounts
   in the OU. For the purposes of the sample it's not important what exactly we

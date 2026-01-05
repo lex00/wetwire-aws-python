@@ -33,8 +33,7 @@ class TargetAccountLoggingAutoDeployment:
     retain_stacks_on_account_removal = True
 
 
-class TargetAccountLogging:
-    resource: cloudformation.StackSet
+class TargetAccountLogging(cloudformation.StackSet):
     template_body = {
         'Rain::Embed': 'log-setup-target-accounts.yaml',
     }

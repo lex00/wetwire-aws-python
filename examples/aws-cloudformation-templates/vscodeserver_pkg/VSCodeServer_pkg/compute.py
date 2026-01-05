@@ -20,8 +20,7 @@ class ServerAssociationParameter:
     value = 'vscode-server'
 
 
-class Server:
-    resource: ec2.Instance
+class Server(ec2.Instance):
     availability_zone = Select(0, GetAZs())
     block_device_mappings = [ServerBlockDeviceMapping]
     iam_instance_profile = InstanceProfile

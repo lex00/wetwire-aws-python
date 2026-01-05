@@ -1,4 +1,4 @@
-"""Compute resources: LaunchTemplate, WebServerGroup, WebServerScaleDownPolicy, WebServerScaleUpPolicy."""
+"""Compute resources: LaunchTemplate, WebServerGroup, WebServerScaleUpPolicy, WebServerScaleDownPolicy."""
 
 from . import *  # noqa: F403
 
@@ -37,8 +37,7 @@ class LaunchTemplateLaunchTemplateData:
     tag_specifications = [LaunchTemplateTagSpecification]
 
 
-class LaunchTemplate:
-    resource: ec2.LaunchTemplate
+class LaunchTemplate(ec2.LaunchTemplate):
     launch_template_name = Sub('${AWS::StackName}-LaunchTemplate')
     launch_template_data = LaunchTemplateLaunchTemplateData
 
@@ -55,8 +54,7 @@ class WebServerGroupNotificationConfiguration:
     notification_types = ['autoscaling:EC2_INSTANCE_LAUNCH', 'autoscaling:EC2_INSTANCE_LAUNCH_ERROR', 'autoscaling:EC2_INSTANCE_TERMINATE', 'autoscaling:EC2_INSTANCE_TERMINATE_ERROR']
 
 
-class WebServerGroup:
-    resource: autoscaling.AutoScalingGroup
+class WebServerGroup(autoscaling.AutoScalingGroup):
     availability_zones = AZs
     launch_template = WebServerGroupLaunchTemplateSpecification
     min_size = '1'
@@ -67,17 +65,15 @@ class WebServerGroup:
     vpc_zone_identifier = Subnets
 
 
-class WebServerScaleDownPolicy:
-    resource: autoscaling.ScalingPolicy
-    adjustment_type = 'ChangeInCapacity'
-    auto_scaling_group_name = WebServerGroup
-    cooldown = '60'
-    scaling_adjustment = -1
-
-
-class WebServerScaleUpPolicy:
-    resource: autoscaling.ScalingPolicy
+class WebServerScaleUpPolicy(autoscaling.ScalingPolicy):
     adjustment_type = 'ChangeInCapacity'
     auto_scaling_group_name = WebServerGroup
     cooldown = '60'
     scaling_adjustment = 1
+
+
+class WebServerScaleDownPolicy(autoscaling.ScalingPolicy):
+    adjustment_type = 'ChangeInCapacity'
+    auto_scaling_group_name = WebServerGroup
+    cooldown = '60'
+    scaling_adjustment = -1

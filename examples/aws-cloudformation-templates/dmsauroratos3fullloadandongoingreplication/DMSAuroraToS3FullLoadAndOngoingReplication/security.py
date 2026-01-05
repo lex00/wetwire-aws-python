@@ -1,28 +1,6 @@
-"""Security resources: DMSCloudwatchRole, DMSVpcRole, S3TargetDMSRole."""
+"""Security resources: DMSVpcRole, DMSCloudwatchRole, S3TargetDMSRole."""
 
 from . import *  # noqa: F403
-
-
-class DMSCloudwatchRoleAllowStatement0:
-    resource: PolicyStatement
-    principal = {
-        'Service': ['dms.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class DMSCloudwatchRoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
-    statement = [DMSCloudwatchRoleAllowStatement0]
-
-
-class DMSCloudwatchRole:
-    resource: iam.Role
-    role_name = 'dms-cloudwatch-logs-role'
-    assume_role_policy_document = DMSCloudwatchRoleAssumeRolePolicyDocument
-    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSCloudWatchLogsRole']
-    path = '/'
-    condition = 'NotExistsDMSCloudwatchRole'
 
 
 class DMSVpcRoleAllowStatement0:
@@ -38,13 +16,33 @@ class DMSVpcRoleAssumeRolePolicyDocument:
     statement = [DMSVpcRoleAllowStatement0]
 
 
-class DMSVpcRole:
-    resource: iam.Role
+class DMSVpcRole(iam.Role):
     role_name = 'dms-vpc-role'
     assume_role_policy_document = DMSVpcRoleAssumeRolePolicyDocument
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole']
     path = '/'
     condition = 'NotExistsDMSVPCRole'
+
+
+class DMSCloudwatchRoleAllowStatement0:
+    resource: PolicyStatement
+    principal = {
+        'Service': ['dms.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class DMSCloudwatchRoleAssumeRolePolicyDocument:
+    resource: PolicyDocument
+    statement = [DMSCloudwatchRoleAllowStatement0]
+
+
+class DMSCloudwatchRole(iam.Role):
+    role_name = 'dms-cloudwatch-logs-role'
+    assume_role_policy_document = DMSCloudwatchRoleAssumeRolePolicyDocument
+    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSCloudWatchLogsRole']
+    path = '/'
+    condition = 'NotExistsDMSCloudwatchRole'
 
 
 class S3TargetDMSRoleAllowStatement0:
@@ -89,8 +87,7 @@ class S3TargetDMSRolePolicy:
     policy_document = S3TargetDMSRolePolicies0PolicyDocument
 
 
-class S3TargetDMSRole:
-    resource: iam.Role
+class S3TargetDMSRole(iam.Role):
     role_name = 'dms-s3-target-role'
     assume_role_policy_document = S3TargetDMSRoleAssumeRolePolicyDocument
     path = '/'

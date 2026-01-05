@@ -33,8 +33,7 @@ class PeerRolePolicy:
     policy_document = PeerRolePolicies0PolicyDocument
 
 
-class PeerRole:
-    resource: iam.Role
+class PeerRole(iam.Role):
     assume_role_policy_document = PeerRoleAssumeRolePolicyDocument
     path = '/'
     tags = [{

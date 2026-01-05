@@ -16,8 +16,7 @@ class StorageReplicationRoleAssumeRolePolicyDocument:
     statement = [StorageReplicationRoleAllowStatement0]
 
 
-class StorageReplicationRole:
-    resource: iam.Role
+class StorageReplicationRole(iam.Role):
     assume_role_policy_document = StorageReplicationRoleAssumeRolePolicyDocument
     path = '/'
 
@@ -56,8 +55,7 @@ class StorageReplicationPolicyPolicyDocument:
     statement = [StorageReplicationPolicyAllowStatement0, StorageReplicationPolicyAllowStatement1, StorageReplicationPolicyAllowStatement2]
 
 
-class StorageReplicationPolicy:
-    resource: iam.RolePolicy
+class StorageReplicationPolicy(iam.RolePolicy):
     policy_document = StorageReplicationPolicyPolicyDocument
     policy_name = 'bucket-replication-policy'
     role_name = StorageReplicationRole

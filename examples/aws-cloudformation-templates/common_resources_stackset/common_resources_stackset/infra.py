@@ -33,8 +33,7 @@ class StackSetAutoDeployment:
     retain_stacks_on_account_removal = True
 
 
-class StackSet:
-    resource: cloudformation.StackSet
+class StackSet(cloudformation.StackSet):
     template_body = {
         'Rain::Embed': 'common-resources-pkg.yaml',
     }

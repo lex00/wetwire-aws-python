@@ -1,4 +1,4 @@
-"""Network resources: VPC, DBSubnet1, DBSubnet2, DMSSecurityGroup, AuroraSecurityGroup, RouteTable, SubnetRouteTableAssociation1, InternetGateway, AttachGateway, Route, SubnetRouteTableAssociation."""
+"""Network resources: VPC, DBSubnet1, DBSubnet2, AuroraSecurityGroup, RouteTable, DMSSecurityGroup, SubnetRouteTableAssociation, SubnetRouteTableAssociation1, InternetGateway, AttachGateway, Route."""
 
 from . import *  # noqa: F403
 
@@ -15,8 +15,7 @@ class VPCAssociationParameter1:
     value = AWS_STACK_NAME
 
 
-class VPC:
-    resource: ec2.VPC
+class VPC(ec2.VPC):
     cidr_block = '10.0.0.0/24'
     enable_dns_support = 'true'
     enable_dns_hostnames = 'true'
@@ -29,8 +28,7 @@ class DBSubnet1AssociationParameter:
     value = AWS_STACK_ID
 
 
-class DBSubnet1:
-    resource: ec2.Subnet
+class DBSubnet1(ec2.Subnet):
     vpc_id = VPC
     cidr_block = '10.0.0.0/26'
     availability_zone = Select(0, GetAZs())
@@ -43,19 +41,11 @@ class DBSubnet2AssociationParameter:
     value = AWS_STACK_ID
 
 
-class DBSubnet2:
-    resource: ec2.Subnet
+class DBSubnet2(ec2.Subnet):
     vpc_id = VPC
     cidr_block = '10.0.0.64/26'
     availability_zone = Select(1, GetAZs())
     tags = [DBSubnet2AssociationParameter]
-
-
-class DMSSecurityGroup:
-    resource: ec2.SecurityGroup
-    group_description = 'Security group for DMS Instance'
-    group_name = 'DMS Demo Security Group'
-    vpc_id = VPC
 
 
 class AuroraSecurityGroupEgress:
@@ -74,8 +64,7 @@ class AuroraSecurityGroupEgress1:
     cidr_ip = '10.0.0.0/24'
 
 
-class AuroraSecurityGroup:
-    resource: ec2.SecurityGroup
+class AuroraSecurityGroup(ec2.SecurityGroup):
     group_description = 'Security group for Aurora SampleDB DB Instance'
     group_name = 'Aurora SampleDB Security Group'
     vpc_id = VPC
@@ -88,14 +77,23 @@ class RouteTableAssociationParameter:
     value = AWS_STACK_ID
 
 
-class RouteTable:
-    resource: ec2.RouteTable
+class RouteTable(ec2.RouteTable):
     vpc_id = VPC
     tags = [RouteTableAssociationParameter]
 
 
-class SubnetRouteTableAssociation1:
-    resource: ec2.SubnetRouteTableAssociation
+class DMSSecurityGroup(ec2.SecurityGroup):
+    group_description = 'Security group for DMS Instance'
+    group_name = 'DMS Demo Security Group'
+    vpc_id = VPC
+
+
+class SubnetRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    subnet_id = DBSubnet1
+    route_table_id = RouteTable
+
+
+class SubnetRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
     subnet_id = DBSubnet2
     route_table_id = RouteTable
 
@@ -106,26 +104,17 @@ class InternetGatewayAssociationParameter:
     value = AWS_STACK_ID
 
 
-class InternetGateway:
-    resource: ec2.InternetGateway
+class InternetGateway(ec2.InternetGateway):
     tags = [InternetGatewayAssociationParameter]
 
 
-class AttachGateway:
-    resource: ec2.VPCGatewayAttachment
+class AttachGateway(ec2.VPCGatewayAttachment):
     vpc_id = VPC
     internet_gateway_id = InternetGateway
 
 
-class Route:
-    resource: ec2.Route
+class Route(ec2.Route):
     route_table_id = RouteTable
     destination_cidr_block = '0.0.0.0/0'
     gateway_id = InternetGateway
     depends_on = [AttachGateway]
-
-
-class SubnetRouteTableAssociation:
-    resource: ec2.SubnetRouteTableAssociation
-    subnet_id = DBSubnet1
-    route_table_id = RouteTable

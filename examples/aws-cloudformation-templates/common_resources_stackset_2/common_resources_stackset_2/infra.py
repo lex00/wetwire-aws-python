@@ -39,8 +39,7 @@ class StackSetAutoDeployment:
     retain_stacks_on_account_removal = True
 
 
-class StackSet:
-    resource: cloudformation.StackSet
+class StackSet(cloudformation.StackSet):
     template_body = """AWSTemplateFormatVersion: "2010-09-09"
 Description: |
   This template has resources that will be installed into all managed accounts

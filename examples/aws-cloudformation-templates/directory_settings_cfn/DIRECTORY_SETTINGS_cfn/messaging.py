@@ -9,8 +9,7 @@ class DirectoryMonitoringTopicSubscription:
     protocol = 'email'
 
 
-class DirectoryMonitoringTopic:
-    resource: sns.Topic
+class DirectoryMonitoringTopic(sns.Topic):
     kms_master_key_id = If("DirectoryMonitoringSNSTopicKMSKeyCondition", DirectoryMonitoringSNSTopicKMSKey, 'aws/sns')
     subscription = [DirectoryMonitoringTopicSubscription]
     tags = [{

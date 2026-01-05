@@ -69,8 +69,7 @@ class TaskDefinitionKeyValuePair:
     name = 'my-vol'
 
 
-class TaskDefinition:
-    resource: ecs.TaskDefinition
+class TaskDefinition(ecs.TaskDefinition):
     family = Join('', [
     AWS_STACK_NAME,
     '-ecs-demo-app',
@@ -86,8 +85,7 @@ class ServiceLoadBalancer:
     target_group_arn = ECSTG
 
 
-class Service:
-    resource: ecs.Service
+class Service(ecs.Service):
     cluster = ECSCluster
     desired_count = '1'
     load_balancers = [ServiceLoadBalancer]
@@ -96,8 +94,7 @@ class Service:
     depends_on = [ALBListener]
 
 
-class ServiceScalingTarget:
-    resource: applicationautoscaling.ScalableTarget
+class ServiceScalingTarget(applicationautoscaling.ScalableTarget):
     max_capacity = 2
     min_capacity = 1
     resource_id = Join('', [
@@ -126,8 +123,7 @@ class ServiceScalingPolicyStepScalingPolicyConfiguration:
     step_adjustments = [ServiceScalingPolicyStepAdjustment]
 
 
-class ServiceScalingPolicy:
-    resource: applicationautoscaling.ScalingPolicy
+class ServiceScalingPolicy(applicationautoscaling.ScalingPolicy):
     policy_name = 'AStepPolicy'
     policy_type = 'StepScaling'
     scaling_target_id = ServiceScalingTarget

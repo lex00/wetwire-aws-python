@@ -9,8 +9,7 @@ class MyLambdaCode:
 """
 
 
-class MyLambda:
-    resource: lambda_.Function
+class MyLambda(lambda_.Function):
     runtime = lambda_.Runtime.NODEJS20_X
     handler = 'index.handler'
     code = MyLambdaCode
@@ -18,14 +17,12 @@ class MyLambda:
     role = MyLambdaRole.Arn
 
 
-class MyLambdaVersion:
-    resource: lambda_.Version
+class MyLambdaVersion(lambda_.Version):
     function_name = AWS_STACK_NAME
     depends_on = [MyLambda]
 
 
-class MyLambdaPermission:
-    resource: lambda_.Permission
+class MyLambdaPermission(lambda_.Permission):
     action = 'lambda:InvokeFunction'
     function_name = AWS_STACK_NAME
     principal = 'iot.amazonaws.com'

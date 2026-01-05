@@ -29,10 +29,8 @@ class TestGenerateSimpleBucket:
         assert "from wetwire_aws" in code
 
     def test_has_resource_class(self, code):
-        # Invisible decorator pattern: no @wetwire_aws needed
-        assert "class MyBucket:" in code
-        # Bucket exists in multiple modules, so qualified name may be used
-        assert "resource:" in code
+        # Inheritance pattern: class MyBucket(s3.Bucket)
+        assert "class MyBucket(s3.Bucket):" in code
         assert "bucket_name = 'my-test-bucket'" in code
 
     def test_has_output_class(self, code):
@@ -134,7 +132,8 @@ class TestGenerateFromJSON:
         return generate_code(template)
 
     def test_has_resource(self, code):
-        assert "class MyBucket:" in code
+        # Inheritance pattern
+        assert "class MyBucket(s3.Bucket):" in code
 
     def test_generated_code_is_valid_python(self, code):
         compile(code, "<test>", "exec")
@@ -150,13 +149,14 @@ class TestBlockModeWithTags:
 
     def test_has_wrapper_classes(self, code):
         # Block mode uses wrapper classes for PropertyTypes
-        # Invisible decorator pattern: no @wetwire_aws needed
-        assert "class ProdBucket:" in code
+        # Inheritance pattern: class ProdBucket(s3.Bucket)
+        assert "class ProdBucket(s3.Bucket):" in code
 
     def test_all_resources_present(self, code):
-        assert "class ProdBucket:" in code
-        assert "class StagingBucket:" in code
-        assert "class DevBucket:" in code
+        # Inheritance pattern
+        assert "class ProdBucket(s3.Bucket):" in code
+        assert "class StagingBucket(s3.Bucket):" in code
+        assert "class DevBucket(s3.Bucket):" in code
 
     def test_generated_code_is_valid_python(self, code):
         compile(code, "<test>", "exec")
@@ -244,11 +244,11 @@ class TestGeneratePackage:
             and not f.endswith("outputs.py")
         ]
 
-        # Check that at least one resource file has the MyBucket class
+        # Check that at least one resource file has the MyBucket class (inheritance pattern)
         found_bucket = False
         for filename in resource_files:
             content = files[filename]
-            if "class MyBucket:" in content:
+            if "class MyBucket(s3.Bucket):" in content:
                 found_bucket = True
                 assert "from . import *" in content
                 break

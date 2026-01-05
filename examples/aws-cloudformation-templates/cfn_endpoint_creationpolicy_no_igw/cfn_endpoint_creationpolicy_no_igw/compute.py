@@ -9,8 +9,7 @@ class PrivateInstanceAssociationParameter:
     value = 'Private'
 
 
-class PrivateInstance:
-    resource: ec2.Instance
+class PrivateInstance(ec2.Instance):
     instance_type = 't3.micro'
     security_group_ids = [PrivateSG]
     subnet_id = PrivateSubnet1

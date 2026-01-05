@@ -375,10 +375,10 @@ from wetwire_aws.loader import setup_params, setup_resources
 
 from .compute import BastionInstance as BastionInstance
 from .compute import BastionInstanceAssociationParameter as BastionInstanceAssociationParameter
-from .compute import PrivateInstance as PrivateInstance
-from .compute import PrivateInstanceAssociationParameter as PrivateInstanceAssociationParameter
+from .infra import PrivateWaitCondition as PrivateWaitCondition
 from .infra import PrivateWaitHandle as PrivateWaitHandle
-from .main import PrivateWaitCondition as PrivateWaitCondition
+from .main import PrivateInstance as PrivateInstance
+from .main import PrivateInstanceAssociationParameter as PrivateInstanceAssociationParameter
 from .network import BastionSG as BastionSG
 from .network import BastionSGAssociationParameter as BastionSGAssociationParameter
 from .network import BastionSGEgress as BastionSGEgress

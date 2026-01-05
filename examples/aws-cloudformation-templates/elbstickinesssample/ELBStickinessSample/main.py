@@ -26,8 +26,7 @@ class ElasticLoadBalancerHealthCheck:
     timeout = '5'
 
 
-class ElasticLoadBalancer:
-    resource: elasticloadbalancing.LoadBalancer
+class ElasticLoadBalancer(elasticloadbalancing.LoadBalancer):
     availability_zones = GetAZs()
     cross_zone = 'true'
     instances = [EC2Instance1, EC2Instance2]

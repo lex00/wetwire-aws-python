@@ -41,8 +41,7 @@ def handler(event, context):
 """
 
 
-class ASCPrivateLinkLambdaFunction:
-    resource: lambda_.Function
+class ASCPrivateLinkLambdaFunction(lambda_.Function):
     description = 'Lambda function to help with private link infrastructure setup'
     handler = 'index.handler'
     role = ASCPrivateLinkLambdaRole.Arn

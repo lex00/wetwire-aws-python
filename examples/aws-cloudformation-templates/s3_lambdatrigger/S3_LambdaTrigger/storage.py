@@ -37,8 +37,7 @@ class S3BucketNotificationNotificationConfiguration:
     lambda_configurations = [S3BucketNotificationLambdaConfiguration]
 
 
-class S3BucketNotification:
-    resource: s3.Bucket
+class S3BucketNotification(s3.Bucket):
     bucket_name = NotificationBucket
     bucket_encryption = S3BucketNotificationBucketEncryption
     public_access_block_configuration = S3BucketNotificationPublicAccessBlockConfiguration

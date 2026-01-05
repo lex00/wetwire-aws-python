@@ -33,8 +33,7 @@ class AWSCloudFormationStackSetAdministrationRolePolicy:
     policy_document = AWSCloudFormationStackSetAdministrationRolePolicies0PolicyDocument
 
 
-class AWSCloudFormationStackSetAdministrationRole:
-    resource: iam.Role
+class AWSCloudFormationStackSetAdministrationRole(iam.Role):
     role_name = 'AWSCloudFormationStackSetAdministrationRole'
     assume_role_policy_document = AWSCloudFormationStackSetAdministrationRoleAssumeRolePolicyDocument
     policies = [AWSCloudFormationStackSetAdministrationRolePolicy]

@@ -33,8 +33,7 @@ class TransformExecutionRolePolicy:
     policy_document = TransformExecutionRolePolicies0PolicyDocument
 
 
-class TransformExecutionRole:
-    resource: iam.Role
+class TransformExecutionRole(iam.Role):
     assume_role_policy_document = TransformExecutionRoleAssumeRolePolicyDocument
     path = '/'
     policies = [TransformExecutionRolePolicy]

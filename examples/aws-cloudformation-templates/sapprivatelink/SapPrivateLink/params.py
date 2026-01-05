@@ -85,17 +85,17 @@ class InVpc:
     resource: Parameter
     type = STRING
     description = 'Choose Yes if SAP resides in above VPC; choose No otherwise (in cases of above VPC just peers with another SAP residing VPC)'
-    default = True
+    default = 'Yes'
     allowed_values = [
-    True,
-    False,
+    'Yes',
+    'No',
 ]
 
 
 class IpInVpcCondition:
     resource: TemplateCondition
     logical_id = 'IpInVpc'
-    expression = Equals(InVpc, True)
+    expression = Equals(InVpc, 'Yes')
 
 
 class SapUseHttpsCondition:

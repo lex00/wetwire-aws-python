@@ -9,8 +9,7 @@ class VPCFlowLogsToCloudWatchAssociationParameter:
     value = 'VPC Flow Logs CloudWatch'
 
 
-class VPCFlowLogsToCloudWatch:
-    resource: ec2.FlowLog
+class VPCFlowLogsToCloudWatch(ec2.FlowLog):
     log_destination_type = 'cloud-watch-logs'
     log_group_name = VPCFlowLogsLogGroup
     deliver_logs_permission_arn = VPCFlowLogsRole.Arn

@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class CloudWatchDashboard:
-    resource: cloudwatch.Dashboard
+class CloudWatchDashboard(cloudwatch.Dashboard):
     dashboard_name = Sub('${NatGatewayID}-Traffic-Dashboard')
     dashboard_body = Sub("""{
   "widgets": [

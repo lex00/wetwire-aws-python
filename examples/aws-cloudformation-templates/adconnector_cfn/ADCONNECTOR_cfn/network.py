@@ -37,8 +37,7 @@ class ADConnectorDomainMembersSGAssociationParameter:
     value = Sub('${DomainNetBiosName}-DomainMembersSG-ADConnector')
 
 
-class ADConnectorDomainMembersSG:
-    resource: ec2.SecurityGroup
+class ADConnectorDomainMembersSG(ec2.SecurityGroup):
     group_description = Sub('${DomainNetBiosName} Domain Members SG via AD Connector')
     vpc_id = VPCID
     security_group_ingress = [ADConnectorDomainMembersSGEgress, ADConnectorDomainMembersSGEgress1, ADConnectorDomainMembersSGEgress2]
@@ -53,16 +52,14 @@ class DHCPOptionsAssociationParameter:
     value = DomainDNSName
 
 
-class DHCPOptions:
-    resource: ec2.DHCPOptions
+class DHCPOptions(ec2.DHCPOptions):
     domain_name = DomainDNSName
     domain_name_servers = [DomainDNSServers]
     tags = [DHCPOptionsAssociationParameter]
     condition = 'DHCPOptionSetCondition'
 
 
-class DHCPOptionsVPCAssociation:
-    resource: ec2.VPCDHCPOptionsAssociation
+class DHCPOptionsVPCAssociation(ec2.VPCDHCPOptionsAssociation):
     vpc_id = VPCID
     dhcp_options_id = DHCPOptions
     condition = 'DHCPOptionSetCondition'

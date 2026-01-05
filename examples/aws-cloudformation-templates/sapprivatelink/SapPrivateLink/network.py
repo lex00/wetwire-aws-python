@@ -9,16 +9,14 @@ class ASCPrivateLinkNLBTargetGroupAttribute:
     value = True
 
 
-class ASCPrivateLinkNLB:
-    resource: elasticloadbalancingv2.LoadBalancer
+class ASCPrivateLinkNLB(elasticloadbalancingv2.LoadBalancer):
     type_ = 'network'
     scheme = 'internal'
     subnets = Subnets
     load_balancer_attributes = [ASCPrivateLinkNLBTargetGroupAttribute]
 
 
-class ASCPrivateLinkVPCES:
-    resource: ec2.VPCEndpointService
+class ASCPrivateLinkVPCES(ec2.VPCEndpointService):
     acceptance_required = False
     network_load_balancer_arns = [ASCPrivateLinkNLB]
 
@@ -30,8 +28,7 @@ class ASCPrivateLinkTargetGroupTargetDescription:
     port = Port
 
 
-class ASCPrivateLinkTargetGroup:
-    resource: elasticloadbalancingv2.TargetGroup
+class ASCPrivateLinkTargetGroup(elasticloadbalancingv2.TargetGroup):
     vpc_id = VpcId
     protocol = If("SapUseHttps", 'TLS', 'TCP')
     port = 443
@@ -52,8 +49,7 @@ class ASCPrivateLinkListenerAction:
     target_group_arn = ASCPrivateLinkTargetGroup
 
 
-class ASCPrivateLinkListener:
-    resource: elasticloadbalancingv2.Listener
+class ASCPrivateLinkListener(elasticloadbalancingv2.Listener):
     load_balancer_arn = ASCPrivateLinkNLB
     protocol = elasticloadbalancingv2.ProtocolEnum.TLS
     port = 443
@@ -62,7 +58,6 @@ class ASCPrivateLinkListener:
     default_actions = [ASCPrivateLinkListenerAction]
 
 
-class ASCPrivateLinkVPCESPermission:
-    resource: ec2.VPCEndpointServicePermissions
+class ASCPrivateLinkVPCESPermission(ec2.VPCEndpointServicePermissions):
     allowed_principals = ['appflow.amazonaws.com']
     service_id = ASCPrivateLinkVPCES

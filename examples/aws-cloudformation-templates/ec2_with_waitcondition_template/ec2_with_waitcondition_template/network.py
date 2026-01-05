@@ -43,8 +43,7 @@ class KWOSSecurityGroupEgress4:
     cidr_ip = SSHLocation
 
 
-class KWOSSecurityGroup:
-    resource: ec2.SecurityGroup
+class KWOSSecurityGroup(ec2.SecurityGroup):
     vpc_id = VpcId
     group_description = 'Enable HTTP access via port 80/22/443 and ICMP access via port *'
     security_group_ingress = [KWOSSecurityGroupEgress, KWOSSecurityGroupEgress1, KWOSSecurityGroupEgress2, KWOSSecurityGroupEgress3, KWOSSecurityGroupEgress4]

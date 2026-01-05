@@ -14,8 +14,7 @@ class OriginAccessControlOriginAccessControlConfig:
     signing_protocol = 'sigv4'
 
 
-class OriginAccessControl:
-    resource: cloudfront.OriginAccessControl
+class OriginAccessControl(cloudfront.OriginAccessControl):
     origin_access_control_config = OriginAccessControlOriginAccessControlConfig
 
 
@@ -63,6 +62,5 @@ class DistributionDistributionConfig:
     web_acl_id = WebACL
 
 
-class Distribution:
-    resource: cloudfront.Distribution
+class Distribution(cloudfront.Distribution):
     distribution_config = DistributionDistributionConfig

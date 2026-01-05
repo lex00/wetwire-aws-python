@@ -44,8 +44,7 @@ If you're happy with your current tooling, you probably don't need this library.
 
 ```python
 # wetwire-aws: Infrastructure as DATA
-class MyBucket:
-    resource: s3.Bucket
+class MyBucket(s3.Bucket):
     bucket_name = "data"
     versioning = MyVersioning  # Type-safe reference - no parens
 ```
@@ -158,8 +157,7 @@ wetwire-aws uses dataclass-dsl for static dependency analysis:
 ```python
 from dataclass_dsl import get_dependencies
 
-class ProcessorFunction:
-    resource: lambda_.Function
+class ProcessorFunction(lambda_.Function):
     role = ProcessorRole.Arn  # Introspectable via no-parens style
 
 # Get dependencies without instantiation
@@ -235,8 +233,7 @@ class MyBucketEncryption:
     resource: s3.Bucket.BucketEncryption
     server_side_encryption_configuration = [MyBucketEncryptionRule]
 
-class MyBucket:
-    resource: s3.Bucket
+class MyBucket(s3.Bucket):
     bucket_name = "my-app-data"
     bucket_encryption = MyBucketEncryption
 ```
@@ -269,15 +266,13 @@ class LambdaAssumeRolePolicy:
     version = "2012-10-17"
     statement = [LambdaAssumeRoleStatement]
 
-class MyRole:
-    resource: iam.Role
+class MyRole(iam.Role):
     assume_role_policy_document = LambdaAssumeRolePolicy
     managed_policy_arns = [
         "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
     ]
 
-class MyFunction:
-    resource: lambda_.Function
+class MyFunction(lambda_.Function):
     function_name = "my-handler"
     runtime = lambda_.Runtime.PYTHON3_12
     handler = "index.handler"

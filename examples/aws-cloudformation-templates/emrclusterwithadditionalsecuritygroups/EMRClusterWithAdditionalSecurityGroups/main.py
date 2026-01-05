@@ -51,8 +51,7 @@ class EMRClusterJobFlowInstancesConfig:
     termination_protected = False
 
 
-class EMRCluster:
-    resource: emr.Cluster
+class EMRCluster(emr.Cluster):
     applications = [EMRClusterBootstrapActionConfig, If("Spark", {
     'Name': 'Spark',
 }, AWS_NO_VALUE), If("Hbase", {

@@ -9,8 +9,7 @@ class BastionInstanceAssociationParameter:
     value = 'Bastion'
 
 
-class BastionInstance:
-    resource: ec2.Instance
+class BastionInstance(ec2.Instance):
     key_name = KeyName
     instance_type = 't2.micro'
     security_group_ids = [BastionSG]
@@ -26,8 +25,7 @@ class PrivateInstanceAssociationParameter:
     value = 'Private'
 
 
-class PrivateInstance:
-    resource: ec2.Instance
+class PrivateInstance(ec2.Instance):
     key_name = KeyName
     instance_type = 't2.micro'
     security_group_ids = [PrivateSG]

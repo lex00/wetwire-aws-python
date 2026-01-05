@@ -9,22 +9,19 @@ class EFSFileSystemAccessPointTag:
     value = EFSFileSystemName
 
 
-class EFSFileSystem:
-    resource: efs.FileSystem
+class EFSFileSystem(efs.FileSystem):
     encrypted = True
     performance_mode = 'generalPurpose'
     file_system_tags = [EFSFileSystemAccessPointTag]
 
 
-class EFSMountTarget2:
-    resource: efs.MountTarget
+class EFSMountTarget2(efs.MountTarget):
     file_system_id = EFSFileSystem
     security_groups = [SecurityGroup2]
     subnet_id = Subnet2
 
 
-class EFSMountTarget3:
-    resource: efs.MountTarget
+class EFSMountTarget3(efs.MountTarget):
     file_system_id = EFSFileSystem
     security_groups = [SecurityGroup3]
     subnet_id = Subnet3
@@ -36,14 +33,12 @@ class EFSAccessPointAccessPointTag:
     value = AccessPointName
 
 
-class EFSAccessPoint:
-    resource: efs.AccessPoint
+class EFSAccessPoint(efs.AccessPoint):
     file_system_id = EFSFileSystem
     access_point_tags = [EFSAccessPointAccessPointTag]
 
 
-class EFSMountTarget1:
-    resource: efs.MountTarget
+class EFSMountTarget1(efs.MountTarget):
     file_system_id = EFSFileSystem
     security_groups = [SecurityGroup1]
     subnet_id = Subnet1

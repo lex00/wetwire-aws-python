@@ -46,8 +46,7 @@ class ECSRolePolicy:
     policy_document = ECSRolePolicies0PolicyDocument
 
 
-class ECSRole:
-    resource: iam.Role
+class ECSRole(iam.Role):
     assume_role_policy_document = ECSRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ECSRolePolicy]
@@ -90,8 +89,7 @@ class ECSTaskExecutionRolePolicy:
     policy_document = ECSTaskExecutionRolePolicies0PolicyDocument
 
 
-class ECSTaskExecutionRole:
-    resource: iam.Role
+class ECSTaskExecutionRole(iam.Role):
     assume_role_policy_document = ECSTaskExecutionRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ECSTaskExecutionRolePolicy]

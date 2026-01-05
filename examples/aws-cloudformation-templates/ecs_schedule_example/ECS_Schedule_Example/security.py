@@ -1,4 +1,4 @@
-"""Security resources: EC2Role, EC2InstanceProfile, AutoscalingRole, ECSServiceRole, LogsKmsKey, ECSEventRole."""
+"""Security resources: EC2Role, EC2InstanceProfile, AutoscalingRole, LogsKmsKey, ECSServiceRole, ECSEventRole."""
 
 from . import *  # noqa: F403
 
@@ -43,15 +43,13 @@ class EC2RolePolicy:
     policy_document = EC2RolePolicies0PolicyDocument
 
 
-class EC2Role:
-    resource: iam.Role
+class EC2Role(iam.Role):
     assume_role_policy_document = EC2RoleAssumeRolePolicyDocument
     path = '/'
     policies = [EC2RolePolicy]
 
 
-class EC2InstanceProfile:
-    resource: iam.InstanceProfile
+class EC2InstanceProfile(iam.InstanceProfile):
     path = '/'
     roles = [EC2Role]
 
@@ -92,11 +90,15 @@ class AutoscalingRolePolicy:
     policy_document = AutoscalingRolePolicies0PolicyDocument
 
 
-class AutoscalingRole:
-    resource: iam.Role
+class AutoscalingRole(iam.Role):
     assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
     path = '/'
     policies = [AutoscalingRolePolicy]
+
+
+class LogsKmsKey(kms.Key):
+    description = 'ECS Logs Encryption Key'
+    enable_key_rotation = True
 
 
 class ECSServiceRoleAllowStatement0:
@@ -137,17 +139,10 @@ class ECSServiceRolePolicy:
     policy_document = ECSServiceRolePolicies0PolicyDocument
 
 
-class ECSServiceRole:
-    resource: iam.Role
+class ECSServiceRole(iam.Role):
     assume_role_policy_document = ECSServiceRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ECSServiceRolePolicy]
-
-
-class LogsKmsKey:
-    resource: kms.Key
-    description = 'ECS Logs Encryption Key'
-    enable_key_rotation = True
 
 
 class ECSEventRoleAllowStatement0:
@@ -180,8 +175,7 @@ class ECSEventRolePolicy:
     policy_document = ECSEventRolePolicies0PolicyDocument
 
 
-class ECSEventRole:
-    resource: iam.Role
+class ECSEventRole(iam.Role):
     assume_role_policy_document = ECSEventRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ECSEventRolePolicy]

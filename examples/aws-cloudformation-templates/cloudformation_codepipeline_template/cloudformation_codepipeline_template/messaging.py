@@ -17,8 +17,7 @@ class EventRuleTarget:
     id = 'codepipeline-Pipeline'
 
 
-class EventRule:
-    resource: events.Rule
+class EventRule(events.Rule):
     event_pattern = {
         'source': ['aws.codecommit'],
         'detail-type': ['CodeCommit Repository State Change'],

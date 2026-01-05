@@ -1,62 +1,6 @@
-"""Security resources: EC2Role, EC2InstanceProfile, ECSRole, AutoscalingRole."""
+"""Security resources: ECSRole, AutoscalingRole, EC2Role, EC2InstanceProfile."""
 
 from . import *  # noqa: F403
-
-
-class EC2RoleAllowStatement0:
-    resource: PolicyStatement
-    principal = {
-        'Service': ['ec2.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class EC2RoleAssumeRolePolicyDocument:
-    resource: PolicyDocument
-    statement = [EC2RoleAllowStatement0]
-
-
-class EC2RoleAllowStatement0_1:
-    resource: PolicyStatement
-    action = [
-        'ecs:CreateCluster',
-        'ecs:DeregisterContainerInstance',
-        'ecs:DiscoverPollEndpoint',
-        'ecs:Poll',
-        'ecs:RegisterContainerInstance',
-        'ecs:StartTelemetrySession',
-        'ecs:Submit*',
-        'logs:CreateLogStream',
-        'logs:PutLogEvents',
-        'ecr:GetAuthorizationToken',
-        'ecr:BatchGetImage',
-        'ecr:GetDownloadUrlForLayer',
-    ]
-    resource_arn = '*'
-
-
-class EC2RolePolicies0PolicyDocument:
-    resource: PolicyDocument
-    statement = [EC2RoleAllowStatement0_1]
-
-
-class EC2RolePolicy:
-    resource: iam.User.Policy
-    policy_name = 'ecs-service'
-    policy_document = EC2RolePolicies0PolicyDocument
-
-
-class EC2Role:
-    resource: iam.Role
-    assume_role_policy_document = EC2RoleAssumeRolePolicyDocument
-    path = '/'
-    policies = [EC2RolePolicy]
-
-
-class EC2InstanceProfile:
-    resource: iam.InstanceProfile
-    path = '/'
-    roles = [EC2Role]
 
 
 class ECSRoleAllowStatement0:
@@ -102,8 +46,7 @@ class ECSRolePolicy:
     policy_document = ECSRolePolicies0PolicyDocument
 
 
-class ECSRole:
-    resource: iam.Role
+class ECSRole(iam.Role):
     assume_role_policy_document = ECSRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ECSRolePolicy]
@@ -145,8 +88,61 @@ class AutoscalingRolePolicy:
     policy_document = AutoscalingRolePolicies0PolicyDocument
 
 
-class AutoscalingRole:
-    resource: iam.Role
+class AutoscalingRole(iam.Role):
     assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
     path = '/'
     policies = [AutoscalingRolePolicy]
+
+
+class EC2RoleAllowStatement0:
+    resource: PolicyStatement
+    principal = {
+        'Service': ['ec2.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class EC2RoleAssumeRolePolicyDocument:
+    resource: PolicyDocument
+    statement = [EC2RoleAllowStatement0]
+
+
+class EC2RoleAllowStatement0_1:
+    resource: PolicyStatement
+    action = [
+        'ecs:CreateCluster',
+        'ecs:DeregisterContainerInstance',
+        'ecs:DiscoverPollEndpoint',
+        'ecs:Poll',
+        'ecs:RegisterContainerInstance',
+        'ecs:StartTelemetrySession',
+        'ecs:Submit*',
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+        'ecr:GetAuthorizationToken',
+        'ecr:BatchGetImage',
+        'ecr:GetDownloadUrlForLayer',
+    ]
+    resource_arn = '*'
+
+
+class EC2RolePolicies0PolicyDocument:
+    resource: PolicyDocument
+    statement = [EC2RoleAllowStatement0_1]
+
+
+class EC2RolePolicy:
+    resource: iam.User.Policy
+    policy_name = 'ecs-service'
+    policy_document = EC2RolePolicies0PolicyDocument
+
+
+class EC2Role(iam.Role):
+    assume_role_policy_document = EC2RoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [EC2RolePolicy]
+
+
+class EC2InstanceProfile(iam.InstanceProfile):
+    path = '/'
+    roles = [EC2Role]

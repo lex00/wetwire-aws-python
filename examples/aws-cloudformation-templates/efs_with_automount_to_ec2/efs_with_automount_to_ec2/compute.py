@@ -1,30 +1,28 @@
-"""Compute resources: LaunchConfig, AutoScalingGroup, ScaleDownPolicy, ScaleUpPolicy."""
+"""Compute resources: LaunchConfig, AutoScalingGroup, ScaleUpPolicy, ScaleDownPolicy."""
 
 from . import *  # noqa: F403
 
 
-class LaunchConfig:
-    resource: autoscaling.LaunchConfiguration
+class LaunchConfig(autoscaling.LaunchConfiguration):
     iam_instance_profile = InstanceProfile
     image_id = FindInMap("EC2RegionMap", AWS_REGION, '64')
     instance_type = InstanceType
     key_name = KeyName
     security_groups = [InstanceSecurityGroup.GroupId]
-    user_data = Base64(Sub("""#!/bin/bash -x
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-apt-get update
-apt-get install -y curl nfs-common
-EC2_REGION=${AWS::Region}
-DIR_TGT=/mnt/efs/
-EFS_FILE_SYSTEM_ID=${EFSFileSystem}
-mkdir -p $DIR_TGT
-DIR_SRC=$EFS_FILE_SYSTEM_ID.efs.$EC2_REGION.amazonaws.com
-mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 $DIR_SRC:/ $DIR_TGT"""))
+    user_data = Base64(Sub(""""#!/bin/bash -x\n",
+"export LC_CTYPE=en_US.UTF-8\n",
+"export LC_ALL=en_US.UTF-8\n",
+"apt-get update\n",
+"apt-get install -y curl nfs-common\n",
+"EC2_REGION=${AWS::Region}\n",
+"DIR_TGT=/mnt/efs/\n",
+"EFS_FILE_SYSTEM_ID=${EFSFileSystem}\n"
+"mkdir -p $DIR_TGT\n",
+"DIR_SRC=$EFS_FILE_SYSTEM_ID.efs.$EC2_REGION.amazonaws.com\n",
+"mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 $DIR_SRC:/ $DIR_TGT\n""""))
 
 
-class AutoScalingGroup:
-    resource: autoscaling.AutoScalingGroup
+class AutoScalingGroup(autoscaling.AutoScalingGroup):
     launch_configuration_name = LaunchConfig
     load_balancer_names = [ElasticLoadBalancer]
     max_size = '3'
@@ -32,17 +30,15 @@ class AutoScalingGroup:
     vpc_zone_identifier = Subnets
 
 
-class ScaleDownPolicy:
-    resource: autoscaling.ScalingPolicy
-    adjustment_type = 'ChangeInCapacity'
-    auto_scaling_group_name = AutoScalingGroup
-    cooldown = '60'
-    scaling_adjustment = '-1'
-
-
-class ScaleUpPolicy:
-    resource: autoscaling.ScalingPolicy
+class ScaleUpPolicy(autoscaling.ScalingPolicy):
     adjustment_type = 'ChangeInCapacity'
     auto_scaling_group_name = AutoScalingGroup
     cooldown = '60'
     scaling_adjustment = '1'
+
+
+class ScaleDownPolicy(autoscaling.ScalingPolicy):
+    adjustment_type = 'ChangeInCapacity'
+    auto_scaling_group_name = AutoScalingGroup
+    cooldown = '60'
+    scaling_adjustment = '-1'

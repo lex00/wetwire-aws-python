@@ -12,8 +12,7 @@ class LoadBalancerSecurityGroupEgress:
     to_port = 443
 
 
-class LoadBalancerSecurityGroup:
-    resource: ec2.SecurityGroup
+class LoadBalancerSecurityGroup(ec2.SecurityGroup):
     group_description = 'Automatically created Security Group for ELB'
     security_group_ingress = [LoadBalancerSecurityGroupEgress]
     vpc_id = VPCId
@@ -31,8 +30,7 @@ class LoadBalancerTargetGroupAttribute1:
     value = True
 
 
-class LoadBalancer:
-    resource: elasticloadbalancingv2.LoadBalancer
+class LoadBalancer(elasticloadbalancingv2.LoadBalancer):
     load_balancer_attributes = [LoadBalancerTargetGroupAttribute, LoadBalancerTargetGroupAttribute1]
     scheme = 'internet-facing'
     security_groups = [LoadBalancerSecurityGroup.GroupId]
@@ -52,8 +50,7 @@ class TargetGroupTargetGroupAttribute1:
     value = 'false'
 
 
-class TargetGroup:
-    resource: elasticloadbalancingv2.TargetGroup
+class TargetGroup(elasticloadbalancingv2.TargetGroup):
     port = 80
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
     target_group_attributes = [TargetGroupTargetGroupAttribute, TargetGroupTargetGroupAttribute1]
@@ -72,8 +69,7 @@ class LoadBalancerListenerCertificate:
     certificate_arn = CertificateArn
 
 
-class LoadBalancerListener:
-    resource: elasticloadbalancingv2.Listener
+class LoadBalancerListener(elasticloadbalancingv2.Listener):
     default_actions = [LoadBalancerListenerAction]
     load_balancer_arn = LoadBalancer
     port = 443
@@ -82,8 +78,7 @@ class LoadBalancerListener:
     ssl_policy = 'ELBSecurityPolicy-TLS13-1-2-2021-06'
 
 
-class LoadBalancerEgress:
-    resource: ec2.SecurityGroupEgress
+class LoadBalancerEgress(ec2.SecurityGroupEgress):
     description = 'Load balancer to target'
     destination_security_group_id = DestinationSecurityGroupId
     from_port = 80

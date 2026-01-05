@@ -195,8 +195,7 @@ class DynamoDBInputS3OutputHivePipelineObject5:
     fields = [DynamoDBInputS3OutputHiveField20, DynamoDBInputS3OutputHiveField21, DynamoDBInputS3OutputHiveField22, DynamoDBInputS3OutputHiveField23, DynamoDBInputS3OutputHiveField24]
 
 
-class DynamoDBInputS3OutputHive:
-    resource: datapipeline.Pipeline
+class DynamoDBInputS3OutputHive(datapipeline.Pipeline):
     name = 'DynamoDBInputS3OutputHive'
     description = 'Pipeline to backup DynamoDB data to S3'
     activate = 'true'

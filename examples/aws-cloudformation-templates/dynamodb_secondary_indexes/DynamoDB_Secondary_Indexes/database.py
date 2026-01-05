@@ -93,8 +93,7 @@ class TableOfBooksPointInTimeRecoverySpecification:
     point_in_time_recovery_enabled = True
 
 
-class TableOfBooks:
-    resource: dynamodb.Table
+class TableOfBooks(dynamodb.Table):
     attribute_definitions = [TableOfBooksAttributeDefinition, TableOfBooksAttributeDefinition1, TableOfBooksAttributeDefinition2]
     key_schema = [TableOfBooksKeySchema, TableOfBooksKeySchema1]
     provisioned_throughput = TableOfBooksProvisionedThroughput

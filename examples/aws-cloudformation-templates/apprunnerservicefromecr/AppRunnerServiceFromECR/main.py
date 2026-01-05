@@ -27,8 +27,7 @@ class AppRunnerSourceConfiguration:
     image_repository = AppRunnerImageRepository
 
 
-class AppRunner:
-    resource: apprunner.Service
+class AppRunner(apprunner.Service):
     service_name = Join('', [
     AWS_STACK_NAME,
     '-service',

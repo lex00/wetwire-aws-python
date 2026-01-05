@@ -88,8 +88,7 @@ class S3BucketSourceReplicationConfiguration:
     rules = [S3BucketSourceReplicationRule]
 
 
-class S3BucketSource:
-    resource: s3.Bucket
+class S3BucketSource(s3.Bucket):
     bucket_name = Sub('${AWS::StackName}-${AWS::AccountId}-bucket')
     bucket_encryption = S3BucketSourceBucketEncryption
     public_access_block_configuration = S3BucketSourcePublicAccessBlockConfiguration

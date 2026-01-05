@@ -3,5 +3,5 @@
 from . import *  # noqa: F403
 
 
-class Bucket1:
-    resource: s3.Bucket
+class Bucket1(s3.Bucket):
+    pass

@@ -26,7 +26,6 @@ class S3BucketPublicAccessBlockConfiguration:
     restrict_public_buckets = True
 
 
-class S3Bucket:
-    resource: s3.Bucket
+class S3Bucket(s3.Bucket):
     bucket_encryption = S3BucketBucketEncryption
     public_access_block_configuration = S3BucketPublicAccessBlockConfiguration

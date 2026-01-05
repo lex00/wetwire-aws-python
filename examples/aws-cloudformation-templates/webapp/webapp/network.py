@@ -14,6 +14,5 @@ class SiteOriginAccessControlOriginAccessControlConfig:
     signing_protocol = 'sigv4'
 
 
-class SiteOriginAccessControl:
-    resource: cloudfront.OriginAccessControl
+class SiteOriginAccessControl(cloudfront.OriginAccessControl):
     origin_access_control_config = SiteOriginAccessControlOriginAccessControlConfig

@@ -18,14 +18,12 @@ class KmsKeyKeyPolicy:
     statement = [KmsKeyAllowStatement0]
 
 
-class KmsKey:
-    resource: kms.Key
+class KmsKey(kms.Key):
     enable_key_rotation = True
     key_policy = KmsKeyKeyPolicy
 
 
-class KmsKeyAlias:
-    resource: kms.Alias
+class KmsKeyAlias(kms.Alias):
     alias_name = Sub('alias/${AWS::StackName}-${AWS::AccountId}-kms-key')
     target_key_id = KmsKey
 
@@ -104,8 +102,7 @@ class ReplicationRolePolicy:
     policy_document = ReplicationRolePolicies0PolicyDocument
 
 
-class ReplicationRole:
-    resource: iam.Role
+class ReplicationRole(iam.Role):
     role_name = Sub('${AWS::StackName}-${AccountIdDestination}-role')
     description = 'IAM Role used by S3 bucket replication'
     assume_role_policy_document = ReplicationRoleAssumeRolePolicyDocument

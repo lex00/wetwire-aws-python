@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-01-05
+
+### Changed
+
+- **Breaking:** Wrapper classes now use inheritance pattern instead of `resource:` annotation
+  - Old: `class MyBucket: resource: s3.Bucket`
+  - New: `class MyBucket(s3.Bucket):`
+  - Enables full IDE field suggestions and autocomplete
+- Importer codegen now generates inheritance pattern for resource wrappers
+- Regenerated 261 AWS CloudFormation example packages with inheritance pattern
+
+### Added
+
+- `ResourceMeta` metaclass for `__getattr__` support on resource classes
+- Empty resource classes now generate `pass` to avoid syntax errors
+
 ## [1.3.0] - 2026-01-05
 
 ### Changed

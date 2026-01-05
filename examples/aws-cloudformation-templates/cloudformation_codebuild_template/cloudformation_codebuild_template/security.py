@@ -83,7 +83,6 @@ class CodeBuildRolePolicy2:
     policy_document = CodeBuildRolePolicies2PolicyDocument
 
 
-class CodeBuildRole:
-    resource: iam.Role
+class CodeBuildRole(iam.Role):
     assume_role_policy_document = CodeBuildRoleAssumeRolePolicyDocument
     policies = [CodeBuildRolePolicy, CodeBuildRolePolicy1, CodeBuildRolePolicy2]

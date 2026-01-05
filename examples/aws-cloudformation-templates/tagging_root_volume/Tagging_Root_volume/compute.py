@@ -23,8 +23,7 @@ class LinuxInstanceBlockDeviceMapping:
     ebs = LinuxInstanceEbs
 
 
-class LinuxInstance:
-    resource: ec2.Instance
+class LinuxInstance(ec2.Instance):
     image_id = LinuxAMIID
     subnet_id = SubnetId
     instance_type = InstanceType
@@ -61,8 +60,7 @@ class WindowsInstanceBlockDeviceMapping:
     ebs = WindowsInstanceEbs
 
 
-class WindowsInstance:
-    resource: ec2.Instance
+class WindowsInstance(ec2.Instance):
     image_id = WindowsAMIID
     subnet_id = SubnetId
     instance_type = InstanceType

@@ -10,16 +10,14 @@ class TransformFunctionCode:
     }
 
 
-class TransformFunction:
-    resource: lambda_.Function
+class TransformFunction(lambda_.Function):
     code = TransformFunctionCode
     handler = 'index.handler'
     runtime = lambda_.Runtime.PYTHON3_12
     role = TransformExecutionRole.Arn
 
 
-class TransformFunctionPermissions:
-    resource: lambda_.Permission
+class TransformFunctionPermissions(lambda_.Permission):
     action = 'lambda:InvokeFunction'
     function_name = TransformFunction.Arn
     principal = 'cloudformation.amazonaws.com'

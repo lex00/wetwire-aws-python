@@ -7,7 +7,7 @@ serialization of references, attributes, and resources.
 
 from __future__ import annotations
 
-from typing import Any, get_type_hints
+from typing import Any
 
 from dataclass_dsl import Provider, is_attr_ref, is_class_ref
 
@@ -77,7 +77,7 @@ class CloudFormationProvider(Provider):
         """
         Serialize a wrapper resource to CloudFormation format.
 
-        Extracts the resource type from the 'resource' annotation and
+        Extracts the resource type from base class inheritance and
         builds the CloudFormation resource definition.
 
         Args:
@@ -86,28 +86,34 @@ class CloudFormationProvider(Provider):
         Returns:
             CloudFormation resource dict with Type and Properties
         """
+        from wetwire_aws.base import CloudFormationResource
+
         wrapper_cls = type(resource)
 
-        # Get resource type from 'resource' annotation
-        try:
-            hints = get_type_hints(wrapper_cls)
-            resource_type_cls = hints.get("resource")
-        except Exception:
-            annotations = getattr(wrapper_cls, "__annotations__", {})
-            resource_type_cls = annotations.get("resource")
+        # Get resource type from base class inheritance
+        resource_type_cls = None
+        for base in wrapper_cls.__mro__[1:]:  # Skip the class itself
+            if (
+                base is not CloudFormationResource
+                and isinstance(base, type)
+                and issubclass(base, CloudFormationResource)
+                and hasattr(base, "_resource_type")
+                and base._resource_type
+            ):
+                resource_type_cls = base
+                break
 
-        has_resource_type = hasattr(resource_type_cls, "_resource_type")
-        if resource_type_cls is None or not has_resource_type:
+        if resource_type_cls is None:
             raise ValueError(
-                f"Wrapper class {wrapper_cls.__name__} must have a 'resource' "
-                "annotation pointing to a CloudFormationResource subclass"
+                f"Wrapper class {wrapper_cls.__name__} must inherit from a "
+                "CloudFormationResource subclass (e.g., s3.Bucket, iam.Role)"
             )
 
         # Get the AWS resource type string
         cf_type = resource_type_cls._resource_type
 
         # Build properties from wrapper instance
-        properties = self._build_properties(resource, resource_type_cls)
+        properties = self._build_properties(resource, wrapper_cls, resource_type_cls)
 
         return {
             "Type": cf_type,
@@ -117,6 +123,7 @@ class CloudFormationProvider(Provider):
     def _build_properties(
         self,
         wrapper_instance: Any,
+        wrapper_cls: type[Any],
         resource_type_cls: type[Any],
     ) -> dict[str, Any]:
         """
@@ -124,17 +131,40 @@ class CloudFormationProvider(Provider):
 
         Args:
             wrapper_instance: The wrapper resource instance
+            wrapper_cls: The wrapper class
             resource_type_cls: The resource type class
 
         Returns:
             Dict of CloudFormation properties (PascalCase keys)
         """
+        from wetwire_aws.base import CloudFormationResource
         from wetwire_aws.intrinsics.refs import resolve_refs_from_annotations
 
-        # Collect non-private, non-None attributes
+        # Collect properties from class attributes (inheritance pattern stores
+        # overridden values as class attributes)
         props: dict[str, Any] = {}
-        for name, value in wrapper_instance.__dict__.items():
-            if name.startswith("_") or name == "resource" or value is None:
+
+        # Get field names from the resource type's dataclass fields
+        if hasattr(resource_type_cls, "__dataclass_fields__"):
+            field_names = set(resource_type_cls.__dataclass_fields__.keys())
+        else:
+            field_names = set()
+
+        # Check class attributes that override dataclass field defaults
+        for name in field_names:
+            if name.startswith("_"):
+                continue
+
+            # Get from class dict to find overridden values
+            # Check wrapper class's own __dict__ first, then instance
+            if name in wrapper_cls.__dict__:
+                value = wrapper_cls.__dict__[name]
+            elif name in wrapper_instance.__dict__:
+                value = wrapper_instance.__dict__[name]
+            else:
+                continue
+
+            if value is None:
                 continue
 
             # Handle no-parens pattern: runtime AttrRef markers
@@ -145,8 +175,8 @@ class CloudFormationProvider(Provider):
             elif is_class_ref(value):
                 # MyBucket -> {"Ref": "MyBucket"}
                 props[name] = Ref(value.__name__)
-            elif isinstance(value, type) and hasattr(value, "_refs_marker"):
-                # Fallback for refs classes without explicit is_class_ref
+            elif isinstance(value, type) and issubclass(value, CloudFormationResource):
+                # Fallback for inherited classes
                 props[name] = Ref(value.__name__)
             else:
                 props[name] = value

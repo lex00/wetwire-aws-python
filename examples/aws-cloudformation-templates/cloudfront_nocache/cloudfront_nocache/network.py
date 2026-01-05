@@ -36,8 +36,7 @@ class CachePolicyCachePolicyConfig:
     parameters_in_cache_key_and_forwarded_to_origin = CachePolicyParametersInCacheKeyAndForwardedToOrigin
 
 
-class CachePolicy:
-    resource: cloudfront.CachePolicy
+class CachePolicy(cloudfront.CachePolicy):
     cache_policy_config = CachePolicyCachePolicyConfig
 
 
@@ -83,8 +82,7 @@ class DistributionDistributionConfig:
     origins = [DistributionOrigin]
 
 
-class Distribution:
-    resource: cloudfront.Distribution
+class Distribution(cloudfront.Distribution):
     tags = [{
         'Key': 'Name',
         'Value': Name,

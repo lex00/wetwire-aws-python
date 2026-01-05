@@ -45,8 +45,7 @@ class CloudFrontDistributionDistributionConfig:
     origins = [CloudFrontDistributionOrigin]
 
 
-class CloudFrontDistribution:
-    resource: cloudfront.Distribution
+class CloudFrontDistribution(cloudfront.Distribution):
     tags = [{
         'Key': 'Name',
         'Value': 'gitlab-server',

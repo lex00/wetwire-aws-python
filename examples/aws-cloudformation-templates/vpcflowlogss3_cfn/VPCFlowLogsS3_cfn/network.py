@@ -9,8 +9,7 @@ class VPCFlowLogstoS3AssociationParameter:
     value = 'VPC Flow Logs S3'
 
 
-class VPCFlowLogstoS3:
-    resource: ec2.FlowLog
+class VPCFlowLogstoS3(ec2.FlowLog):
     log_destination_type = 's3'
     log_destination = If("VPCFlowLogsNewBucketCondition", VPCFlowLogsBucket.Arn, Sub('arn:${AWS::Partition}:s3:::${VPCFlowLogsBucketName}'))
     log_format = VPCFlowLogsLogFormat

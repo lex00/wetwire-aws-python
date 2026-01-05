@@ -3,8 +3,8 @@
 from . import *  # noqa: F403
 
 
-class NonExplodingBucket:
-    resource: s3.Bucket
+class NonExplodingBucket(s3.Bucket):
+    pass
 
 
 class BucketOwnershipControlsRule:
@@ -18,6 +18,5 @@ class BucketOwnershipControls:
     rules = [BucketOwnershipControlsRule]
 
 
-class Bucket:
-    resource: s3.Bucket
+class Bucket(s3.Bucket):
     lifecycle_configuration = BucketOwnershipControls

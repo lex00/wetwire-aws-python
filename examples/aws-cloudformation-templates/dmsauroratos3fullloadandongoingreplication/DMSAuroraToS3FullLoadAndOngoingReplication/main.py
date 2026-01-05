@@ -3,14 +3,12 @@
 from . import *  # noqa: F403
 
 
-class DMSReplicationSubnetGroup:
-    resource: dms.ReplicationSubnetGroup
+class DMSReplicationSubnetGroup(dms.ReplicationSubnetGroup):
     replication_subnet_group_description = 'Subnets available for DMS'
     subnet_ids = [DBSubnet1, DBSubnet2]
 
 
-class DMSReplicationInstance:
-    resource: dms.ReplicationInstance
+class DMSReplicationInstance(dms.ReplicationInstance):
     availability_zone = DBSubnet1.AvailabilityZone
     publicly_accessible = False
     replication_instance_class = 'dms.t3.medium'
@@ -20,8 +18,21 @@ class DMSReplicationInstance:
     depends_on = [DMSReplicationSubnetGroup, DMSSecurityGroup]
 
 
-class AuroraSourceEndpoint:
-    resource: dms.Endpoint
+class S3TargetEndpointRedshiftSettings:
+    resource: dms.Endpoint.RedshiftSettings
+    bucket_name = S3Bucket
+    service_access_role_arn = S3TargetDMSRole.Arn
+
+
+class S3TargetEndpoint(dms.Endpoint):
+    endpoint_type = 'target'
+    engine_name = 'S3'
+    extra_connection_attributes = 'addColumnName=true'
+    s3_settings = S3TargetEndpointRedshiftSettings
+    depends_on = [DMSReplicationInstance, S3Bucket, S3TargetDMSRole]
+
+
+class AuroraSourceEndpoint(dms.Endpoint):
     endpoint_type = 'source'
     engine_name = 'AURORA'
     password = '{{resolve:secretsmanager:aurora-source-enpoint-password:SecretString:password}}'
@@ -31,23 +42,7 @@ class AuroraSourceEndpoint:
     depends_on = [DMSReplicationInstance, AuroraCluster, AuroraDB]
 
 
-class S3TargetEndpointRedshiftSettings:
-    resource: dms.Endpoint.RedshiftSettings
-    bucket_name = S3Bucket
-    service_access_role_arn = S3TargetDMSRole.Arn
-
-
-class S3TargetEndpoint:
-    resource: dms.Endpoint
-    endpoint_type = 'target'
-    engine_name = 'S3'
-    extra_connection_attributes = 'addColumnName=true'
-    s3_settings = S3TargetEndpointRedshiftSettings
-    depends_on = [DMSReplicationInstance, S3Bucket, S3TargetDMSRole]
-
-
-class DMSReplicationTask:
-    resource: dms.ReplicationTask
+class DMSReplicationTask(dms.ReplicationTask):
     migration_type = 'full-load-and-cdc'
     replication_instance_arn = DMSReplicationInstance
     replication_task_settings = '{ "Logging" : { "EnableLogging" : true, "LogComponents": [ { "Id" : "SOURCE_UNLOAD", "Severity" : "LOGGER_SEVERITY_DEFAULT" }, { "Id" : "SOURCE_CAPTURE", "Severity" : "LOGGER_SEVERITY_DEFAULT" }, { "Id" : "TARGET_LOAD", "Severity" : "LOGGER_SEVERITY_DEFAULT" }, { "Id" : "TARGET_APPLY", "Severity" : "LOGGER_SEVERITY_DEFAULT" } ] } }'

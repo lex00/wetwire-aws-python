@@ -27,8 +27,7 @@ class EC2InstanceAssociationParameter1:
     value = Environment
 
 
-class EC2Instance:
-    resource: ec2.Instance
+class EC2Instance(ec2.Instance):
     image_id = EC2ImageId
     instance_type = EC2InstanceType
     subnet_id = PublicSubnetId1
@@ -62,8 +61,7 @@ class OriginALBTGTargetGroupAttribute2:
     value = Environment
 
 
-class OriginALBTG:
-    resource: elasticloadbalancingv2.TargetGroup
+class OriginALBTG(elasticloadbalancingv2.TargetGroup):
     name = Sub('${AppName}-${Environment}-alb-tg')
     health_check_protocol = HealthCheckProtocol
     health_check_path = HealthCheckPath
@@ -93,8 +91,7 @@ class OriginALBHttpsListenerCertificate:
     certificate_arn = Sub('arn:${AWS::Partition}:acm:${AWS::Region}:${AWS::AccountId}:certificate/${ACMCertificateIdentifier}')
 
 
-class OriginALBHttpsListener:
-    resource: elasticloadbalancingv2.Listener
+class OriginALBHttpsListener(elasticloadbalancingv2.Listener):
     default_actions = [OriginALBHttpsListenerAction]
     load_balancer_arn = OriginALB
     port = 443
@@ -116,8 +113,7 @@ class OriginALBHttpsListenerRuleRuleCondition:
     values = ['/*']
 
 
-class OriginALBHttpsListenerRule:
-    resource: elasticloadbalancingv2.ListenerRule
+class OriginALBHttpsListenerRule(elasticloadbalancingv2.ListenerRule):
     actions = [OriginALBHttpsListenerRuleAction]
     conditions = [OriginALBHttpsListenerRuleRuleCondition]
     listener_arn = OriginALBHttpsListener

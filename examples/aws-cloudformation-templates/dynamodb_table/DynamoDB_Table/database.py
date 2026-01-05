@@ -26,8 +26,7 @@ class myDynamoDBTablePointInTimeRecoverySpecification:
     point_in_time_recovery_enabled = True
 
 
-class myDynamoDBTable:
-    resource: dynamodb.Table
+class myDynamoDBTable(dynamodb.Table):
     attribute_definitions = [myDynamoDBTableAttributeDefinition]
     key_schema = [myDynamoDBTableKeySchema]
     provisioned_throughput = myDynamoDBTableProvisionedThroughput

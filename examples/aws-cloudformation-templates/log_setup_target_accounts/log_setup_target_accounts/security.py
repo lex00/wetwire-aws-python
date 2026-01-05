@@ -16,8 +16,7 @@ class EventBridgeRoleAssumeRolePolicyDocument:
     statement = [EventBridgeRoleAllowStatement0]
 
 
-class EventBridgeRole:
-    resource: iam.Role
+class EventBridgeRole(iam.Role):
     assume_role_policy_document = EventBridgeRoleAssumeRolePolicyDocument
 
 
@@ -32,8 +31,7 @@ class EventBridgeRolePolicyPolicyDocument:
     statement = [EventBridgeRolePolicyAllowStatement0]
 
 
-class EventBridgeRolePolicy:
-    resource: iam.RolePolicy
+class EventBridgeRolePolicy(iam.RolePolicy):
     policy_name = 'EventBridgeRolePolicy'
     policy_document = EventBridgeRolePolicyPolicyDocument
     role_name = EventBridgeRole

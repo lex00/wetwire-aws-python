@@ -3,6 +3,15 @@
 from . import *  # noqa: F403
 
 
+class SSMKey:
+    """Name of parameter store which contains the json configuration of CWAgent."""
+
+    resource: Parameter
+    type = STRING
+    description = 'Name of parameter store which contains the json configuration of CWAgent.'
+    default = 'AmazonCloudWatch-DefaultLinuxConfigCloudFormation'
+
+
 class KeyName:
     """Name of an existing EC2 KeyPair to enable SSH access to the instance"""
 
