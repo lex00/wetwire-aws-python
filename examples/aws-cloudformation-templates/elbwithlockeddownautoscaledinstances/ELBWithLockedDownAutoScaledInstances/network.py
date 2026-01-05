@@ -28,8 +28,8 @@ class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
     ip_protocol = 'tcp'
     from_port = '80'
     to_port = '80'
-    source_security_group_owner_id = GetAtt("ElasticLoadBalancer", "SourceSecurityGroup.OwnerAlias")
-    source_security_group_name = GetAtt("ElasticLoadBalancer", "SourceSecurityGroup.GroupName")
+    source_security_group_owner_id = ElasticLoadBalancer.SourceSecurityGroup.OwnerAlias
+    source_security_group_name = ElasticLoadBalancer.SourceSecurityGroup.GroupName
 
 
 class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):

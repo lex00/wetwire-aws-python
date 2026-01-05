@@ -1,4 +1,4 @@
-"""Security resources: AdministratorAccessIAMRole, LoggingBucketKMSKey, LoggingBucketKMSKeyAlias, LambdaEdgeIAMRole."""
+"""Security resources: AdministratorAccessIAMRole, LoggingBucketKMSKey, LambdaEdgeIAMRole, LoggingBucketKMSKeyAlias."""
 
 from . import *  # noqa: F403
 
@@ -63,11 +63,6 @@ class LoggingBucketKMSKey(kms.Key):
     depends_on = [AdministratorAccessIAMRole]
 
 
-class LoggingBucketKMSKeyAlias(kms.Alias):
-    alias_name = Sub('alias/${AppName}/${Environment}/s3-logging-kms')
-    target_key_id = LoggingBucketKMSKey
-
-
 class LambdaEdgeIAMRoleAllowStatement0(PolicyStatement):
     sid = 'AllowLambdaServiceToAssumeRole'
     principal = {
@@ -103,3 +98,8 @@ class LambdaEdgeIAMRole(iam.Role):
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole', 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess']
     path = '/'
     policies = [LambdaEdgeIAMRolePolicy]
+
+
+class LoggingBucketKMSKeyAlias(kms.Alias):
+    alias_name = Sub('alias/${AppName}/${Environment}/s3-logging-kms')
+    target_key_id = LoggingBucketKMSKey

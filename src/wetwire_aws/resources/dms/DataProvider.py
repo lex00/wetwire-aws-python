@@ -114,3 +114,14 @@ class Settings(PropertyType):
     oracle_settings: OracleSettings | None = None
     postgre_sql_settings: PostgreSqlSettings | None = None
     redshift_settings: RedshiftSettings | None = None
+    sybase_ase_settings: SybaseAseSettings | None = None
+
+
+@dataclass
+class SybaseAseSettings(PropertyType):
+    port: int | None = None
+    server_name: str | None = None
+    ssl_mode: str | None = None
+    certificate_arn: str | None = None
+    database_name: str | None = None
+    encrypt_password: bool | None = None

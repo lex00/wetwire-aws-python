@@ -732,13 +732,8 @@ class RefShouldBeNoParens(LintRule):
                         target = target_arg.id
                         attr_name = self._extract_attr_name(attr_arg, context)
 
-                        # Skip nested attributes like "Endpoint.Address" or "Compliance.Type"
-                        # These can't use the Resource.Attr.SubAttr pattern because
-                        # PropertyType class attributes shadow the metaclass __getattr__.
-                        if attr_name and "." in attr_name:
-                            continue
-
-                        # Convert simple attributes: get_att(MyRole, "Arn") -> MyRole.Arn
+                        # Convert all attributes: get_att(MyRole, "Arn") -> MyRole.Arn
+                        # Nested attributes like "Endpoint.Address" also work via PropertyTypeProxy
                         if attr_name:
                             original = ast.get_source_segment(context.source, node)
                             suggestion = f"{target}.{attr_name}"
@@ -2008,13 +2003,8 @@ class ExplicitGetAttIntrinsic(LintRule):
                                     attr = attr_arg.id
 
                                 if attr:
-                                    # Skip nested attributes like "Endpoint.Address"
-                                    # or "Compliance.Type" - these can't use the
-                                    # Resource.Attr.SubAttr pattern because PropertyType
-                                    # class attributes shadow the metaclass __getattr__.
-                                    if isinstance(attr, str) and "." in attr:
-                                        continue
-
+                                    # All attributes work with dot notation
+                                    # Nested attributes like "Endpoint.Address" work via PropertyTypeProxy
                                     original = ast.get_source_segment(
                                         context.source, node
                                     )

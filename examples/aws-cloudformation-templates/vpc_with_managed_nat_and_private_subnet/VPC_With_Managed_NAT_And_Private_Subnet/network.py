@@ -1,4 +1,4 @@
-"""Network resources: VPC, PublicSubnet0, ElasticIP0, NATGateway0, PrivateRouteTable1, ElasticIP1, PublicSubnet1, NATGateway1, InternetGateway, PublicNetworkAcl, PrivateSubnet0, PrivateRouteTable0, PrivateRouteToInternet0, PublicSubnetNetworkAclAssociation0, PublicSubnetNetworkAclAssociation1, PublicRouteTable, PublicSubnetRouteTableAssociation0, PrivateRouteToInternet1, GatewayToInternet, InboundHTTPPublicNetworkAclEntry, PrivateSubnetRouteTableAssociation0, OutboundPublicNetworkAclEntry, PrivateSubnet1, PublicSubnetRouteTableAssociation1, PrivateSubnetRouteTableAssociation1, PublicRoute."""
+"""Network resources: VPC, PrivateSubnet1, PublicRouteTable, PublicSubnet0, PublicSubnetRouteTableAssociation0, PublicSubnet1, PublicSubnetRouteTableAssociation1, InternetGateway, GatewayToInternet, PublicRoute, ElasticIP1, PublicNetworkAcl, PublicSubnetNetworkAclAssociation0, ElasticIP0, PrivateRouteTable1, PrivateSubnetRouteTableAssociation1, NATGateway1, PrivateSubnet0, PrivateRouteToInternet1, PrivateRouteTable0, PrivateSubnetRouteTableAssociation0, InboundHTTPPublicNetworkAclEntry, OutboundPublicNetworkAclEntry, NATGateway0, PrivateRouteToInternet0, PublicSubnetNetworkAclAssociation1."""
 
 from . import *  # noqa: F403
 
@@ -23,6 +23,55 @@ class VPC(ec2.VPC):
     enable_dns_hostnames = 'true'
     cidr_block = FindInMap("SubnetConfig", 'VPC', 'CIDR')
     tags = [VPCAssociationParameter, VPCAssociationParameter1, VPCAssociationParameter2]
+
+
+class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_NAME
+
+
+class PrivateSubnet1AssociationParameter1(ec2.Instance.AssociationParameter):
+    key = 'Network'
+    value = 'Private'
+
+
+class PrivateSubnet1AssociationParameter2(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Join('', [
+    VPCName,
+    '-private-',
+    Select(1, GetAZs()),
+])
+
+
+class PrivateSubnet1(ec2.Subnet):
+    vpc_id = VPC
+    availability_zone = Select(1, GetAZs())
+    cidr_block = FindInMap("SubnetConfig", 'Private1', 'CIDR')
+    tags = [PrivateSubnet1AssociationParameter, PrivateSubnet1AssociationParameter1, PrivateSubnet1AssociationParameter2]
+
+
+class PublicRouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_NAME
+
+
+class PublicRouteTableAssociationParameter1(ec2.Instance.AssociationParameter):
+    key = 'Network'
+    value = 'Public'
+
+
+class PublicRouteTableAssociationParameter2(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Join('', [
+    VPCName,
+    '-public-route-table',
+])
+
+
+class PublicRouteTable(ec2.RouteTable):
+    vpc_id = VPC
+    tags = [PublicRouteTableAssociationParameter, PublicRouteTableAssociationParameter1, PublicRouteTableAssociationParameter2]
 
 
 class PublicSubnet0AssociationParameter(ec2.Instance.AssociationParameter):
@@ -52,30 +101,9 @@ class PublicSubnet0(ec2.Subnet):
     tags = [PublicSubnet0AssociationParameter, PublicSubnet0AssociationParameter1, PublicSubnet0AssociationParameter2]
 
 
-class ElasticIP0(ec2.EIP):
-    domain = 'vpc'
-
-
-class NATGateway0(ec2.NatGateway):
-    allocation_id = ElasticIP0.AllocationId
+class PublicSubnetRouteTableAssociation0(ec2.SubnetRouteTableAssociation):
     subnet_id = PublicSubnet0
-
-
-class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Join('', [
-    VPCName,
-    '-private-route-table-1',
-])
-
-
-class PrivateRouteTable1(ec2.RouteTable):
-    vpc_id = VPC
-    tags = [PrivateRouteTable1AssociationParameter]
-
-
-class ElasticIP1(ec2.EIP):
-    domain = 'vpc'
+    route_table_id = PublicRouteTable
 
 
 class PublicSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
@@ -105,9 +133,9 @@ class PublicSubnet1(ec2.Subnet):
     tags = [PublicSubnet1AssociationParameter, PublicSubnet1AssociationParameter1, PublicSubnet1AssociationParameter2]
 
 
-class NATGateway1(ec2.NatGateway):
-    allocation_id = ElasticIP1.AllocationId
+class PublicSubnetRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
     subnet_id = PublicSubnet1
+    route_table_id = PublicRouteTable
 
 
 class InternetGatewayAssociationParameter(ec2.Instance.AssociationParameter):
@@ -132,6 +160,22 @@ class InternetGateway(ec2.InternetGateway):
     tags = [InternetGatewayAssociationParameter, InternetGatewayAssociationParameter1, InternetGatewayAssociationParameter2]
 
 
+class GatewayToInternet(ec2.VPCGatewayAttachment):
+    vpc_id = VPC
+    internet_gateway_id = InternetGateway
+
+
+class PublicRoute(ec2.Route):
+    route_table_id = PublicRouteTable
+    destination_cidr_block = '0.0.0.0/0'
+    gateway_id = InternetGateway
+    depends_on = [GatewayToInternet]
+
+
+class ElasticIP1(ec2.EIP):
+    domain = 'vpc'
+
+
 class PublicNetworkAclAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Application'
     value = AWS_STACK_NAME
@@ -153,6 +197,38 @@ class PublicNetworkAclAssociationParameter2(ec2.Instance.AssociationParameter):
 class PublicNetworkAcl(ec2.NetworkAcl):
     vpc_id = VPC
     tags = [PublicNetworkAclAssociationParameter, PublicNetworkAclAssociationParameter1, PublicNetworkAclAssociationParameter2]
+
+
+class PublicSubnetNetworkAclAssociation0(ec2.SubnetNetworkAclAssociation):
+    subnet_id = PublicSubnet0
+    network_acl_id = PublicNetworkAcl
+
+
+class ElasticIP0(ec2.EIP):
+    domain = 'vpc'
+
+
+class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Join('', [
+    VPCName,
+    '-private-route-table-1',
+])
+
+
+class PrivateRouteTable1(ec2.RouteTable):
+    vpc_id = VPC
+    tags = [PrivateRouteTable1AssociationParameter]
+
+
+class PrivateSubnetRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
+    subnet_id = PrivateSubnet1
+    route_table_id = PrivateRouteTable1
+
+
+class NATGateway1(ec2.NatGateway):
+    allocation_id = ElasticIP1.AllocationId
+    subnet_id = PublicSubnet1
 
 
 class PrivateSubnet0AssociationParameter(ec2.Instance.AssociationParameter):
@@ -181,6 +257,12 @@ class PrivateSubnet0(ec2.Subnet):
     tags = [PrivateSubnet0AssociationParameter, PrivateSubnet0AssociationParameter1, PrivateSubnet0AssociationParameter2]
 
 
+class PrivateRouteToInternet1(ec2.Route):
+    route_table_id = PrivateRouteTable1
+    destination_cidr_block = '0.0.0.0/0'
+    nat_gateway_id = NATGateway1
+
+
 class PrivateRouteTable0AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = Join('', [
@@ -194,59 +276,9 @@ class PrivateRouteTable0(ec2.RouteTable):
     tags = [PrivateRouteTable0AssociationParameter]
 
 
-class PrivateRouteToInternet0(ec2.Route):
+class PrivateSubnetRouteTableAssociation0(ec2.SubnetRouteTableAssociation):
+    subnet_id = PrivateSubnet0
     route_table_id = PrivateRouteTable0
-    destination_cidr_block = '0.0.0.0/0'
-    nat_gateway_id = NATGateway0
-
-
-class PublicSubnetNetworkAclAssociation0(ec2.SubnetNetworkAclAssociation):
-    subnet_id = PublicSubnet0
-    network_acl_id = PublicNetworkAcl
-
-
-class PublicSubnetNetworkAclAssociation1(ec2.SubnetNetworkAclAssociation):
-    subnet_id = PublicSubnet1
-    network_acl_id = PublicNetworkAcl
-
-
-class PublicRouteTableAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Application'
-    value = AWS_STACK_NAME
-
-
-class PublicRouteTableAssociationParameter1(ec2.Instance.AssociationParameter):
-    key = 'Network'
-    value = 'Public'
-
-
-class PublicRouteTableAssociationParameter2(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Join('', [
-    VPCName,
-    '-public-route-table',
-])
-
-
-class PublicRouteTable(ec2.RouteTable):
-    vpc_id = VPC
-    tags = [PublicRouteTableAssociationParameter, PublicRouteTableAssociationParameter1, PublicRouteTableAssociationParameter2]
-
-
-class PublicSubnetRouteTableAssociation0(ec2.SubnetRouteTableAssociation):
-    subnet_id = PublicSubnet0
-    route_table_id = PublicRouteTable
-
-
-class PrivateRouteToInternet1(ec2.Route):
-    route_table_id = PrivateRouteTable1
-    destination_cidr_block = '0.0.0.0/0'
-    nat_gateway_id = NATGateway1
-
-
-class GatewayToInternet(ec2.VPCGatewayAttachment):
-    vpc_id = VPC
-    internet_gateway_id = InternetGateway
 
 
 class InboundHTTPPublicNetworkAclEntryPortRange(ec2.NetworkAclEntry.PortRange):
@@ -264,11 +296,6 @@ class InboundHTTPPublicNetworkAclEntry(ec2.NetworkAclEntry):
     port_range = InboundHTTPPublicNetworkAclEntryPortRange
 
 
-class PrivateSubnetRouteTableAssociation0(ec2.SubnetRouteTableAssociation):
-    subnet_id = PrivateSubnet0
-    route_table_id = PrivateRouteTable0
-
-
 class OutboundPublicNetworkAclEntryPortRange(ec2.NetworkAclEntry.PortRange):
     from_ = '0'
     to = '65535'
@@ -284,44 +311,17 @@ class OutboundPublicNetworkAclEntry(ec2.NetworkAclEntry):
     port_range = OutboundPublicNetworkAclEntryPortRange
 
 
-class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Application'
-    value = AWS_STACK_NAME
+class NATGateway0(ec2.NatGateway):
+    allocation_id = ElasticIP0.AllocationId
+    subnet_id = PublicSubnet0
 
 
-class PrivateSubnet1AssociationParameter1(ec2.Instance.AssociationParameter):
-    key = 'Network'
-    value = 'Private'
-
-
-class PrivateSubnet1AssociationParameter2(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Join('', [
-    VPCName,
-    '-private-',
-    Select(1, GetAZs()),
-])
-
-
-class PrivateSubnet1(ec2.Subnet):
-    vpc_id = VPC
-    availability_zone = Select(1, GetAZs())
-    cidr_block = FindInMap("SubnetConfig", 'Private1', 'CIDR')
-    tags = [PrivateSubnet1AssociationParameter, PrivateSubnet1AssociationParameter1, PrivateSubnet1AssociationParameter2]
-
-
-class PublicSubnetRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
-    subnet_id = PublicSubnet1
-    route_table_id = PublicRouteTable
-
-
-class PrivateSubnetRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
-    subnet_id = PrivateSubnet1
-    route_table_id = PrivateRouteTable1
-
-
-class PublicRoute(ec2.Route):
-    route_table_id = PublicRouteTable
+class PrivateRouteToInternet0(ec2.Route):
+    route_table_id = PrivateRouteTable0
     destination_cidr_block = '0.0.0.0/0'
-    gateway_id = InternetGateway
-    depends_on = [GatewayToInternet]
+    nat_gateway_id = NATGateway0
+
+
+class PublicSubnetNetworkAclAssociation1(ec2.SubnetNetworkAclAssociation):
+    subnet_id = PublicSubnet1
+    network_acl_id = PublicNetworkAcl

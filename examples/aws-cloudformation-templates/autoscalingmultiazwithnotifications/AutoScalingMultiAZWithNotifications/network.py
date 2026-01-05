@@ -1,4 +1,4 @@
-"""Network resources: TargetGroup, LoadBalancerSecurityGroup, ElasticLoadBalancer, InstanceSecurityGroup, LoadBalancerListener."""
+"""Network resources: TargetGroup, LoadBalancerSecurityGroup, InstanceSecurityGroup, ElasticLoadBalancer, LoadBalancerListener."""
 
 from . import *  # noqa: F403
 
@@ -25,13 +25,6 @@ class LoadBalancerSecurityGroup(ec2.SecurityGroup):
     vpc_id = VPC
 
 
-class ElasticLoadBalancer(elasticloadbalancingv2.LoadBalancer):
-    scheme = 'internet-facing'
-    security_groups = [LoadBalancerSecurityGroup]
-    subnets = Subnets
-    type_ = 'application'
-
-
 class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
     ip_protocol = 'tcp'
     from_port = 22
@@ -49,6 +42,13 @@ class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
 class InstanceSecurityGroup(ec2.SecurityGroup):
     group_description = 'Enable SSH access and HTTP from the load balancer only'
     security_group_ingress = [InstanceSecurityGroupEgress, InstanceSecurityGroupIngress]
+
+
+class ElasticLoadBalancer(elasticloadbalancingv2.LoadBalancer):
+    scheme = 'internet-facing'
+    security_groups = [LoadBalancerSecurityGroup]
+    subnets = Subnets
+    type_ = 'application'
 
 
 class LoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):

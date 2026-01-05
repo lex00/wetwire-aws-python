@@ -77,6 +77,7 @@ class CustomOriginConfig(PropertyType):
     https_port: int | None = None
     ip_address_type: str | None = None
     origin_keepalive_timeout: int | None = None
+    origin_mtls_config: OriginMtlsConfig | None = None
     origin_read_timeout: int | None = None
     origin_ssl_protocols: list[String] = field(default_factory=list)
 
@@ -277,6 +278,11 @@ class OriginGroupMembers(PropertyType):
 class OriginGroups(PropertyType):
     quantity: int | None = None
     items: list[OriginGroup] = field(default_factory=list)
+
+
+@dataclass
+class OriginMtlsConfig(PropertyType):
+    client_certificate_arn: str | None = None
 
 
 @dataclass

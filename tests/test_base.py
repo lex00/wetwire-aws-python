@@ -204,3 +204,93 @@ class TestSnakeToPascal:
 
         assert "Type" in result
         assert "Class" in result
+
+
+class TestPropertyTypeProxy:
+    """Tests for PropertyTypeProxy and PropertyTypeDescriptor."""
+
+    def test_nested_attribute_returns_attrref(self):
+        """Nested attribute access returns AttrRef for GetAtt."""
+        from dataclass_dsl import AttrRef
+
+        from wetwire_aws.resources import rds
+
+        class MyDB(rds.DBInstance):
+            pass
+
+        # Access nested attribute via PropertyTypeProxy
+        result = MyDB.Endpoint.Address
+
+        # Should return an AttrRef with nested path
+        assert isinstance(result, AttrRef)
+        assert result.target is MyDB
+        assert result.attr == "Endpoint.Address"
+
+    def test_nested_attribute_serializes_to_getatt(self):
+        """Nested attribute serializes to CloudFormation GetAtt."""
+        from wetwire_aws.base import _serialize_value
+        from wetwire_aws.resources import rds
+
+        class MyDB(rds.DBInstance):
+            pass
+
+        result = _serialize_value(MyDB.Endpoint.Address)
+
+        assert result == {"Fn::GetAtt": ["MyDB", "Endpoint.Address"]}
+
+    def test_proxy_is_callable(self):
+        """PropertyTypeProxy can instantiate the PropertyType."""
+        from wetwire_aws.resources import rds
+
+        # Access the proxy
+        proxy = rds.DBInstance.Endpoint
+
+        # Call it to create an instance
+        instance = proxy(address="mydb.cluster-xxx.us-east-1.rds.amazonaws.com", port=5432)
+
+        # Should be an instance of the PropertyType
+        assert hasattr(instance, "address")
+        assert instance.address == "mydb.cluster-xxx.us-east-1.rds.amazonaws.com"
+
+    def test_proxy_repr(self):
+        """PropertyTypeProxy has useful repr."""
+        from wetwire_aws.resources import rds
+
+        class MyDB(rds.DBInstance):
+            pass
+
+        proxy = MyDB.Endpoint
+        assert "PropertyTypeProxy" in repr(proxy)
+        assert "MyDB" in repr(proxy)
+        assert "Endpoint" in repr(proxy)
+
+    def test_simple_attribute_still_works(self):
+        """Simple attribute access (no PropertyType) still returns AttrRef."""
+        from dataclass_dsl import AttrRef
+
+        from wetwire_aws.resources import rds
+
+        class MyDB(rds.DBInstance):
+            pass
+
+        # Simple attribute should use metaclass __getattr__
+        result = MyDB.Arn
+
+        assert isinstance(result, AttrRef)
+        assert result.target is MyDB
+        assert result.attr == "Arn"
+
+    def test_multiple_nested_levels(self):
+        """Multiple levels of nested attribute access work."""
+        from dataclass_dsl import AttrRef
+
+        from wetwire_aws.resources import rds
+
+        class MyDB(rds.DBInstance):
+            pass
+
+        # Multi-level nesting
+        result = MyDB.Endpoint.HostedZoneId
+
+        assert isinstance(result, AttrRef)
+        assert result.attr == "Endpoint.HostedZoneId"

@@ -1,25 +1,6 @@
-"""Security resources: DMSVpcRole, S3TargetDMSRole, DMSCloudwatchRole."""
+"""Security resources: S3TargetDMSRole, DMSVpcRole, DMSCloudwatchRole."""
 
 from . import *  # noqa: F403
-
-
-class DMSVpcRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['dms.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class DMSVpcRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [DMSVpcRoleAllowStatement0]
-
-
-class DMSVpcRole(iam.Role):
-    role_name = 'dms-vpc-role'
-    assume_role_policy_document = DMSVpcRoleAssumeRolePolicyDocument
-    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole']
-    path = '/'
-    condition = 'NotExistsDMSVPCRole'
 
 
 class S3TargetDMSRoleAllowStatement0(PolicyStatement):
@@ -64,6 +45,25 @@ class S3TargetDMSRole(iam.Role):
     path = '/'
     policies = [S3TargetDMSRolePolicy]
     depends_on = [S3Bucket]
+
+
+class DMSVpcRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['dms.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class DMSVpcRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [DMSVpcRoleAllowStatement0]
+
+
+class DMSVpcRole(iam.Role):
+    role_name = 'dms-vpc-role'
+    assume_role_policy_document = DMSVpcRoleAssumeRolePolicyDocument
+    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole']
+    path = '/'
+    condition = 'NotExistsDMSVPCRole'
 
 
 class DMSCloudwatchRoleAllowStatement0(PolicyStatement):

@@ -1,4 +1,4 @@
-"""Network resources: EcsSecurityGroup, ECSALB, ECSTG, ALBListener, EcsSecurityGroupALBports, EcsSecurityGroupSSHinbound, ECSALBListenerRule, EcsSecurityGroupHTTPinbound."""
+"""Network resources: EcsSecurityGroup, ECSALB, ECSTG, ALBListener, ECSALBListenerRule, EcsSecurityGroupALBports, EcsSecurityGroupSSHinbound, EcsSecurityGroupHTTPinbound."""
 
 from . import *  # noqa: F403
 
@@ -48,22 +48,6 @@ class ALBListener(elasticloadbalancingv2.Listener):
     depends_on = [ECSServiceRole]
 
 
-class EcsSecurityGroupALBports(ec2.SecurityGroupIngress):
-    group_id = EcsSecurityGroup
-    ip_protocol = 'tcp'
-    from_port = '31000'
-    to_port = '61000'
-    source_security_group_id = EcsSecurityGroup
-
-
-class EcsSecurityGroupSSHinbound(ec2.SecurityGroupIngress):
-    group_id = EcsSecurityGroup
-    ip_protocol = 'tcp'
-    from_port = '22'
-    to_port = '22'
-    cidr_ip = '192.168.1.0/0'
-
-
 class ECSALBListenerRuleAction(elasticloadbalancingv2.ListenerRule.Action):
     type_ = 'forward'
     target_group_arn = ECSTG
@@ -80,6 +64,22 @@ class ECSALBListenerRule(elasticloadbalancingv2.ListenerRule):
     listener_arn = ALBListener
     priority = 1
     depends_on = [ALBListener]
+
+
+class EcsSecurityGroupALBports(ec2.SecurityGroupIngress):
+    group_id = EcsSecurityGroup
+    ip_protocol = 'tcp'
+    from_port = '31000'
+    to_port = '61000'
+    source_security_group_id = EcsSecurityGroup
+
+
+class EcsSecurityGroupSSHinbound(ec2.SecurityGroupIngress):
+    group_id = EcsSecurityGroup
+    ip_protocol = 'tcp'
+    from_port = '22'
+    to_port = '22'
+    cidr_ip = '192.168.1.0/0'
 
 
 class EcsSecurityGroupHTTPinbound(ec2.SecurityGroupIngress):

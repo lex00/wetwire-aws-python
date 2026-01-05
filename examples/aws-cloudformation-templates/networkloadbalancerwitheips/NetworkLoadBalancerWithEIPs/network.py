@@ -1,13 +1,17 @@
-"""Network resources: EIP1, EIP2, loadBalancer, TargetGroup, Listener, SecondEIP, FirstEIP."""
+"""Network resources: FirstEIP, EIP2, EIP1, loadBalancer, TargetGroup, Listener, SecondEIP."""
 
 from . import *  # noqa: F403
 
 
-class EIP1(ec2.EIP):
+class FirstEIP(ec2.EIP):
     domain = 'vpc'
 
 
 class EIP2(ec2.EIP):
+    domain = 'vpc'
+
+
+class EIP1(ec2.EIP):
     domain = 'vpc'
 
 
@@ -54,8 +58,4 @@ class Listener(elasticloadbalancingv2.Listener):
 
 
 class SecondEIP(ec2.EIP):
-    domain = 'vpc'
-
-
-class FirstEIP(ec2.EIP):
     domain = 'vpc'

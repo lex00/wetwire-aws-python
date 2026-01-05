@@ -1,4 +1,4 @@
-"""Monitoring resources: CentralEventLog, CentralEventLogPolicy, CentralEventLogQueryReason, CentralEventLogQuery."""
+"""Monitoring resources: CentralEventLog, CentralEventLogPolicy, CentralEventLogQuery, CentralEventLogQueryReason."""
 
 from . import *  # noqa: F403
 
@@ -34,13 +34,13 @@ class CentralEventLogPolicy(logs.ResourcePolicy):
 """)
 
 
-class CentralEventLogQueryReason(logs.QueryDefinition):
-    name = 'CentralCloudFormationFailures'
-    query_string = 'fields time, account, region, `detail.resource-type`, `detail.logical-resource-id`, `detail.status-details.status` as status, `detail.status-details.status-reason` as reason | sort @timestamp desc | filter status like "FAILED" | filter reason not like "canceled" | filter resource not like "AWS::CloudFormation::Stack" '
-    log_group_names = [CentralEventLogName]
-
-
 class CentralEventLogQuery(logs.QueryDefinition):
     name = 'CentralCloudFormationEventLogs'
     query_string = 'fields time, account, region, `detail.resource-type`, `detail.logical-resource-id`, `detail.status-details.status` | sort @timestamp desc'
+    log_group_names = [CentralEventLogName]
+
+
+class CentralEventLogQueryReason(logs.QueryDefinition):
+    name = 'CentralCloudFormationFailures'
+    query_string = 'fields time, account, region, `detail.resource-type`, `detail.logical-resource-id`, `detail.status-details.status` as status, `detail.status-details.status-reason` as reason | sort @timestamp desc | filter status like "FAILED" | filter reason not like "canceled" | filter resource not like "AWS::CloudFormation::Stack" '
     log_group_names = [CentralEventLogName]

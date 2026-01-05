@@ -1,6 +1,18 @@
-"""Compute resources: VolumeAutoEnableIOComplianceCheck, ConfigPermissionToCallLambda, Ec2Volume."""
+"""Compute resources: Ec2Volume, VolumeAutoEnableIOComplianceCheck, ConfigPermissionToCallLambda."""
 
 from . import *  # noqa: F403
+
+
+class Ec2VolumeAssociationParameter(ec2.Instance.AssociationParameter):
+    key = Ec2VolumeTagKey
+    value = 'Ec2VolumeTagValue'
+
+
+class Ec2Volume(ec2.Volume):
+    auto_enable_io = Ec2VolumeAutoEnableIO
+    size = '5'
+    availability_zone = Select(0, GetAZs())
+    tags = [Ec2VolumeAssociationParameter]
 
 
 class VolumeAutoEnableIOComplianceCheckCode(lambda_.Function.Code):
@@ -51,15 +63,3 @@ class ConfigPermissionToCallLambda(lambda_.Permission):
     function_name = VolumeAutoEnableIOComplianceCheck.Arn
     action = 'lambda:InvokeFunction'
     principal = 'config.amazonaws.com'
-
-
-class Ec2VolumeAssociationParameter(ec2.Instance.AssociationParameter):
-    key = Ec2VolumeTagKey
-    value = 'Ec2VolumeTagValue'
-
-
-class Ec2Volume(ec2.Volume):
-    auto_enable_io = Ec2VolumeAutoEnableIO
-    size = '5'
-    availability_zone = Select(0, GetAZs())
-    tags = [Ec2VolumeAssociationParameter]

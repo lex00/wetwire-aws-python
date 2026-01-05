@@ -12,6 +12,7 @@ from wetwire_aws.base import PropertyType, Tag
 class DataFilterExpression(PropertyType):
     dimensions: Dimensions | None = None
     tags: Tags | None = None
+    time_range: TimeRange | None = None
 
 
 @dataclass
@@ -24,3 +25,9 @@ class Dimensions(PropertyType):
 class Tags(PropertyType):
     key: str | None = None
     values: list[String] = field(default_factory=list)
+
+
+@dataclass
+class TimeRange(PropertyType):
+    begin_date_inclusive: str | None = None
+    end_date_inclusive: str | None = None

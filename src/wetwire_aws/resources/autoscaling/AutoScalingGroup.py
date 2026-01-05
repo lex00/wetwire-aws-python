@@ -60,6 +60,11 @@ class CpuPerformanceFactorRequest(PropertyType):
 
 
 @dataclass
+class InstanceLifecyclePolicy(PropertyType):
+    retention_triggers: RetentionTriggers | None = None
+
+
+@dataclass
 class InstanceMaintenancePolicy(PropertyType):
     max_healthy_percentage: int | None = None
     min_healthy_percentage: int | None = None
@@ -116,6 +121,7 @@ class LaunchTemplate(PropertyType):
 
 @dataclass
 class LaunchTemplateOverrides(PropertyType):
+    image_id: str | None = None
     instance_requirements: InstanceRequirements | None = None
     instance_type: str | None = None
     launch_template_specification: LaunchTemplateSpecification | None = None
@@ -194,6 +200,11 @@ class NotificationConfiguration(PropertyType):
 @dataclass
 class PerformanceFactorReferenceRequest(PropertyType):
     instance_family: str | None = None
+
+
+@dataclass
+class RetentionTriggers(PropertyType):
+    terminate_hook_abandon: str | None = None
 
 
 @dataclass

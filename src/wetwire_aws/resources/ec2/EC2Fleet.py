@@ -75,6 +75,7 @@ class FleetLaunchTemplateConfigRequest(PropertyType):
 @dataclass
 class FleetLaunchTemplateOverridesRequest(PropertyType):
     availability_zone: str | None = None
+    availability_zone_id: str | None = None
     block_device_mappings: list[BlockDeviceMapping] = field(default_factory=list)
     instance_requirements: InstanceRequirementsRequest | None = None
     instance_type: str | None = None

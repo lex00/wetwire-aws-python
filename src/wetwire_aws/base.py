@@ -7,12 +7,15 @@ Context is the base class for environment-specific configuration.
 """
 
 from dataclasses import dataclass, field
-from typing import Annotated, Any, ClassVar
+from typing import Annotated, Any, ClassVar, Generic, TypeVar, overload
 
 from dataclass_dsl import AttrRef, ContextRef, Resource, is_attr_ref, is_class_ref
 from dataclass_dsl import PropertyType as PropertyTypeBase
 from dataclass_dsl._decorator import RefMeta
 from dataclass_dsl._loader import _ClassPlaceholder
+
+# TypeVar for generic PropertyType proxy
+_PT = TypeVar("_PT", bound="PropertyType")
 
 
 class ResourceMeta(RefMeta, type(Resource)):
@@ -38,6 +41,133 @@ class ResourceMeta(RefMeta, type(Resource)):
             )
         # Return an AttrRef marker for CloudFormation attributes
         return AttrRef(cls, name)
+
+
+class PropertyTypeProxy(Generic[_PT]):
+    """Proxy for PropertyType access that enables nested AttrRef chaining.
+
+    When accessing a PropertyType at class level (e.g., MyDB.Endpoint), this proxy
+    is returned instead of the PropertyType class directly. This enables:
+
+    - Nested attribute access: MyDB.Endpoint.Address -> AttrRef("MyDB", "Endpoint.Address")
+    - Instantiation: MyDB.Endpoint(...) -> creates Endpoint instance
+
+    Without this proxy, PropertyType classes attached to resources would shadow
+    the metaclass __getattr__, preventing nested GetAtt references.
+
+    Example:
+        >>> class MyDB(rds.DBInstance): pass
+        >>> MyDB.Endpoint  # Returns PropertyTypeProxy
+        >>> MyDB.Endpoint.Address  # Returns AttrRef("MyDB", "Endpoint.Address")
+        >>> MyDB.Endpoint(address="...", port=3306)  # Creates Endpoint instance
+    """
+
+    __slots__ = ("_resource", "_name", "_class")
+
+    def __init__(self, resource_class: type, pt_name: str, pt_class: type[_PT]) -> None:
+        """Initialize the proxy.
+
+        Args:
+            resource_class: The resource class this PropertyType belongs to
+            pt_name: The name of the PropertyType (e.g., "Endpoint")
+            pt_class: The actual PropertyType class
+        """
+        object.__setattr__(self, "_resource", resource_class)
+        object.__setattr__(self, "_name", pt_name)
+        object.__setattr__(self, "_class", pt_class)
+
+    def __getattr__(self, name: str) -> AttrRef:
+        """Return AttrRef for nested attribute access.
+
+        Enables: MyDB.Endpoint.Address -> AttrRef("MyDB", "Endpoint.Address")
+        """
+        # Don't intercept dunder attributes
+        if name.startswith("__") and name.endswith("__"):
+            raise AttributeError(
+                f"'{type(self).__name__}' object has no attribute '{name}'"
+            )
+        resource = object.__getattribute__(self, "_resource")
+        pt_name = object.__getattribute__(self, "_name")
+        return AttrRef(resource, f"{pt_name}.{name}")
+
+    def __call__(self, *args: Any, **kwargs: Any) -> _PT:
+        """Instantiate the PropertyType.
+
+        Enables: MyDB.Endpoint(address="...", port=3306)
+        """
+        pt_class = object.__getattribute__(self, "_class")
+        return pt_class(*args, **kwargs)
+
+    def __repr__(self) -> str:
+        resource = object.__getattribute__(self, "_resource")
+        pt_name = object.__getattribute__(self, "_name")
+        return f"<PropertyTypeProxy {resource.__name__}.{pt_name}>"
+
+    # Support isinstance/issubclass checks against the wrapped class
+    @property
+    def __wrapped__(self) -> type[_PT]:
+        """Return the wrapped PropertyType class."""
+        return object.__getattribute__(self, "_class")
+
+
+class PropertyTypeDescriptor(Generic[_PT]):
+    """Descriptor that returns PropertyTypeProxy for class-level access.
+
+    This descriptor wraps PropertyType classes attached to resources,
+    returning a PropertyTypeProxy when accessed at class level to enable
+    nested GetAtt references.
+
+    Example:
+        # In generated code:
+        DBInstance.Endpoint = PropertyTypeDescriptor(_DBInstance.Endpoint, "Endpoint")
+
+        # Usage:
+        class MyDB(rds.DBInstance): pass
+        MyDB.Endpoint  # Returns PropertyTypeProxy (enables .Address etc.)
+    """
+
+    __slots__ = ("_class", "_name")
+
+    def __init__(self, pt_class: type[_PT], pt_name: str) -> None:
+        """Initialize the descriptor.
+
+        Args:
+            pt_class: The PropertyType class to wrap
+            pt_name: The name of the PropertyType
+        """
+        self._class = pt_class
+        self._name = pt_name
+
+    @overload
+    def __get__(self, obj: None, owner: type) -> PropertyTypeProxy[_PT]: ...
+
+    @overload
+    def __get__(self, obj: object, owner: type) -> type[_PT]: ...
+
+    def __get__(
+        self, obj: object | None, owner: type
+    ) -> PropertyTypeProxy[_PT] | type[_PT]:
+        """Return PropertyTypeProxy for class access, actual class for instance access.
+
+        Args:
+            obj: Instance (None for class-level access)
+            owner: The class that owns this descriptor
+
+        Returns:
+            PropertyTypeProxy for class-level access, PropertyType class otherwise
+        """
+        if obj is None:
+            # Class-level access: MyDB.Endpoint
+            return PropertyTypeProxy(owner, self._name, self._class)
+        # Instance-level access (rare, but return the actual class)
+        return self._class
+
+    def __set_name__(self, owner: type, name: str) -> None:
+        """Called when descriptor is assigned to a class attribute."""
+        self._name = name
+
+    def __repr__(self) -> str:
+        return f"<PropertyTypeDescriptor {self._name}={self._class.__name__}>"
 
 
 def _is_property_type_wrapper(cls: type) -> bool:

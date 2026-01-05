@@ -1,4 +1,4 @@
-"""Network resources: NetworkVPC, NetworkPublicSubnet1, NetworkPublicSubnet1RouteTable, NetworkPublicSubnet1RouteTableAssociation, NetworkInternetGateway, NetworkVPCGW, NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1EIP, NetworkPublicSubnet1NATGateway, CloudFrontCachePolicy, InstanceSecurityGroup, NetworkPrivateSubnet1RouteTable, NetworkPrivateSubnet1DefaultRoute, NetworkPublicSubnet2EIP, NetworkPublicSubnet2RouteTable, NetworkPublicSubnet2, NetworkPublicSubnet2RouteTableAssociation, NetworkPublicSubnet2DefaultRoute, NetworkPublicSubnet2NATGateway, NetworkPrivateSubnet2RouteTable, NetworkPrivateSubnet2DefaultRoute, NetworkPrivateSubnet1Subnet, NetworkPrivateSubnet1RouteTableAssociation, NetworkPrivateSubnet2Subnet, NetworkPrivateSubnet2RouteTableAssociation."""
+"""Network resources: NetworkVPC, NetworkPrivateSubnet1Subnet, NetworkPrivateSubnet1RouteTable, NetworkPrivateSubnet1RouteTableAssociation, NetworkPublicSubnet1EIP, NetworkPublicSubnet1, NetworkInternetGateway, NetworkVPCGW, NetworkPublicSubnet1RouteTable, NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1RouteTableAssociation, NetworkPublicSubnet1NATGateway, NetworkPrivateSubnet1DefaultRoute, CloudFrontCachePolicy, NetworkPublicSubnet2RouteTable, NetworkPublicSubnet2, NetworkPrivateSubnet2RouteTable, InstanceSecurityGroup, NetworkPublicSubnet2DefaultRoute, NetworkPublicSubnet2EIP, NetworkPublicSubnet2RouteTableAssociation, NetworkPublicSubnet2NATGateway, NetworkPrivateSubnet2DefaultRoute, NetworkPrivateSubnet2Subnet, NetworkPrivateSubnet2RouteTableAssociation."""
 
 from . import *  # noqa: F403
 
@@ -16,6 +16,44 @@ class NetworkVPC(ec2.VPC):
     tags = [NetworkVPCAssociationParameter]
 
 
+class NetworkPrivateSubnet1SubnetAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-private-subnet-1'
+
+
+class NetworkPrivateSubnet1Subnet(ec2.Subnet):
+    availability_zone = Select(0, GetAZs(AWS_REGION))
+    cidr_block = '10.0.128.0/18'
+    map_public_ip_on_launch = False
+    vpc_id = NetworkVPC
+    tags = [NetworkPrivateSubnet1SubnetAssociationParameter]
+
+
+class NetworkPrivateSubnet1RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-private-subnet-1-rt'
+
+
+class NetworkPrivateSubnet1RouteTable(ec2.RouteTable):
+    vpc_id = NetworkVPC
+    tags = [NetworkPrivateSubnet1RouteTableAssociationParameter]
+
+
+class NetworkPrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = NetworkPrivateSubnet1RouteTable
+    subnet_id = NetworkPrivateSubnet1Subnet
+
+
+class NetworkPublicSubnet1EIPAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-public-subnet-1-eip'
+
+
+class NetworkPublicSubnet1EIP(ec2.EIP):
+    domain = 'vpc'
+    tags = [NetworkPublicSubnet1EIPAssociationParameter]
+
+
 class NetworkPublicSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = 'gitlab-server-public-subnet-1'
@@ -27,21 +65,6 @@ class NetworkPublicSubnet1(ec2.Subnet):
     map_public_ip_on_launch = True
     vpc_id = NetworkVPC
     tags = [NetworkPublicSubnet1AssociationParameter]
-
-
-class NetworkPublicSubnet1RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = 'gitlab-server-public-subnet-1-rt'
-
-
-class NetworkPublicSubnet1RouteTable(ec2.RouteTable):
-    vpc_id = NetworkVPC
-    tags = [NetworkPublicSubnet1RouteTableAssociationParameter]
-
-
-class NetworkPublicSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    route_table_id = NetworkPublicSubnet1RouteTable
-    subnet_id = NetworkPublicSubnet1
 
 
 class NetworkInternetGatewayAssociationParameter(ec2.Instance.AssociationParameter):
@@ -58,6 +81,16 @@ class NetworkVPCGW(ec2.VPCGatewayAttachment):
     vpc_id = NetworkVPC
 
 
+class NetworkPublicSubnet1RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-public-subnet-1-rt'
+
+
+class NetworkPublicSubnet1RouteTable(ec2.RouteTable):
+    vpc_id = NetworkVPC
+    tags = [NetworkPublicSubnet1RouteTableAssociationParameter]
+
+
 class NetworkPublicSubnet1DefaultRoute(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
     gateway_id = NetworkInternetGateway
@@ -65,14 +98,9 @@ class NetworkPublicSubnet1DefaultRoute(ec2.Route):
     depends_on = [NetworkVPCGW]
 
 
-class NetworkPublicSubnet1EIPAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = 'gitlab-server-public-subnet-1-eip'
-
-
-class NetworkPublicSubnet1EIP(ec2.EIP):
-    domain = 'vpc'
-    tags = [NetworkPublicSubnet1EIPAssociationParameter]
+class NetworkPublicSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = NetworkPublicSubnet1RouteTable
+    subnet_id = NetworkPublicSubnet1
 
 
 class NetworkPublicSubnet1NATGatewayAssociationParameter(ec2.Instance.AssociationParameter):
@@ -85,6 +113,12 @@ class NetworkPublicSubnet1NATGateway(ec2.NatGateway):
     subnet_id = NetworkPublicSubnet1
     tags = [NetworkPublicSubnet1NATGatewayAssociationParameter]
     depends_on = [NetworkPublicSubnet1DefaultRoute, NetworkPublicSubnet1RouteTableAssociation]
+
+
+class NetworkPrivateSubnet1DefaultRoute(ec2.Route):
+    destination_cidr_block = '0.0.0.0/0'
+    nat_gateway_id = NetworkPublicSubnet1NATGateway
+    route_table_id = NetworkPrivateSubnet1RouteTable
 
 
 class CloudFrontCachePolicyCookiesConfig(cloudfront.CachePolicy.CookiesConfig):
@@ -119,6 +153,39 @@ class CloudFrontCachePolicy(cloudfront.CachePolicy):
     cache_policy_config = CloudFrontCachePolicyCachePolicyConfig
 
 
+class NetworkPublicSubnet2RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-public-subnet-2-rt'
+
+
+class NetworkPublicSubnet2RouteTable(ec2.RouteTable):
+    vpc_id = NetworkVPC
+    tags = [NetworkPublicSubnet2RouteTableAssociationParameter]
+
+
+class NetworkPublicSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-public-subnet-2'
+
+
+class NetworkPublicSubnet2(ec2.Subnet):
+    availability_zone = Select(1, GetAZs(AWS_REGION))
+    cidr_block = '10.0.64.0/18'
+    map_public_ip_on_launch = True
+    vpc_id = NetworkVPC
+    tags = [NetworkPublicSubnet2AssociationParameter]
+
+
+class NetworkPrivateSubnet2RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'gitlab-server-private-subnet-2-rt'
+
+
+class NetworkPrivateSubnet2RouteTable(ec2.RouteTable):
+    vpc_id = NetworkVPC
+    tags = [NetworkPrivateSubnet2RouteTableAssociationParameter]
+
+
 class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
     description = 'Allow HTTP from com.amazonaws.global.cloudfront.origin-facing'
     ip_protocol = 'tcp'
@@ -146,20 +213,11 @@ class InstanceSecurityGroup(ec2.SecurityGroup):
     vpc_id = NetworkVPC
 
 
-class NetworkPrivateSubnet1RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = 'gitlab-server-private-subnet-1-rt'
-
-
-class NetworkPrivateSubnet1RouteTable(ec2.RouteTable):
-    vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet1RouteTableAssociationParameter]
-
-
-class NetworkPrivateSubnet1DefaultRoute(ec2.Route):
+class NetworkPublicSubnet2DefaultRoute(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
-    nat_gateway_id = NetworkPublicSubnet1NATGateway
-    route_table_id = NetworkPrivateSubnet1RouteTable
+    gateway_id = NetworkInternetGateway
+    route_table_id = NetworkPublicSubnet2RouteTable
+    depends_on = [NetworkVPCGW]
 
 
 class NetworkPublicSubnet2EIPAssociationParameter(ec2.Instance.AssociationParameter):
@@ -172,39 +230,9 @@ class NetworkPublicSubnet2EIP(ec2.EIP):
     tags = [NetworkPublicSubnet2EIPAssociationParameter]
 
 
-class NetworkPublicSubnet2RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = 'gitlab-server-public-subnet-2-rt'
-
-
-class NetworkPublicSubnet2RouteTable(ec2.RouteTable):
-    vpc_id = NetworkVPC
-    tags = [NetworkPublicSubnet2RouteTableAssociationParameter]
-
-
-class NetworkPublicSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = 'gitlab-server-public-subnet-2'
-
-
-class NetworkPublicSubnet2(ec2.Subnet):
-    availability_zone = Select(1, GetAZs(AWS_REGION))
-    cidr_block = '10.0.64.0/18'
-    map_public_ip_on_launch = True
-    vpc_id = NetworkVPC
-    tags = [NetworkPublicSubnet2AssociationParameter]
-
-
 class NetworkPublicSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
     route_table_id = NetworkPublicSubnet2RouteTable
     subnet_id = NetworkPublicSubnet2
-
-
-class NetworkPublicSubnet2DefaultRoute(ec2.Route):
-    destination_cidr_block = '0.0.0.0/0'
-    gateway_id = NetworkInternetGateway
-    route_table_id = NetworkPublicSubnet2RouteTable
-    depends_on = [NetworkVPCGW]
 
 
 class NetworkPublicSubnet2NATGatewayAssociationParameter(ec2.Instance.AssociationParameter):
@@ -219,38 +247,10 @@ class NetworkPublicSubnet2NATGateway(ec2.NatGateway):
     depends_on = [NetworkPublicSubnet2DefaultRoute, NetworkPublicSubnet2RouteTableAssociation]
 
 
-class NetworkPrivateSubnet2RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = 'gitlab-server-private-subnet-2-rt'
-
-
-class NetworkPrivateSubnet2RouteTable(ec2.RouteTable):
-    vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet2RouteTableAssociationParameter]
-
-
 class NetworkPrivateSubnet2DefaultRoute(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
     nat_gateway_id = NetworkPublicSubnet2NATGateway
     route_table_id = NetworkPrivateSubnet2RouteTable
-
-
-class NetworkPrivateSubnet1SubnetAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = 'gitlab-server-private-subnet-1'
-
-
-class NetworkPrivateSubnet1Subnet(ec2.Subnet):
-    availability_zone = Select(0, GetAZs(AWS_REGION))
-    cidr_block = '10.0.128.0/18'
-    map_public_ip_on_launch = False
-    vpc_id = NetworkVPC
-    tags = [NetworkPrivateSubnet1SubnetAssociationParameter]
-
-
-class NetworkPrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    route_table_id = NetworkPrivateSubnet1RouteTable
-    subnet_id = NetworkPrivateSubnet1Subnet
 
 
 class NetworkPrivateSubnet2SubnetAssociationParameter(ec2.Instance.AssociationParameter):

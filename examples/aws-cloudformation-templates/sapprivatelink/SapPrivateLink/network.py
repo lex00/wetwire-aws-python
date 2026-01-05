@@ -1,6 +1,22 @@
-"""Network resources: ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkTargetGroup, ASCPrivateLinkListener, ASCPrivateLinkVPCESPermission."""
+"""Network resources: ASCPrivateLinkTargetGroup, ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkListener, ASCPrivateLinkVPCESPermission."""
 
 from . import *  # noqa: F403
+
+
+class ASCPrivateLinkTargetGroupTargetDescription(elasticloadbalancingv2.TargetGroup.TargetDescription):
+    availability_zone = If("IpInVpc", AWS_NO_VALUE, 'all')
+    id = IP
+    port = Port
+
+
+class ASCPrivateLinkTargetGroup(elasticloadbalancingv2.TargetGroup):
+    vpc_id = VpcId
+    protocol = If("SapUseHttps", 'TLS', 'TCP')
+    port = 443
+    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
+    targets = [ASCPrivateLinkTargetGroupTargetDescription]
+    health_check_path = HealthCheckPath
+    health_check_protocol = Protocol
 
 
 class ASCPrivateLinkNLBTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
@@ -18,22 +34,6 @@ class ASCPrivateLinkNLB(elasticloadbalancingv2.LoadBalancer):
 class ASCPrivateLinkVPCES(ec2.VPCEndpointService):
     acceptance_required = False
     network_load_balancer_arns = [ASCPrivateLinkNLB]
-
-
-class ASCPrivateLinkTargetGroupTargetDescription(elasticloadbalancingv2.TargetGroup.TargetDescription):
-    availability_zone = If("IpInVpc", AWS_NO_VALUE, 'all')
-    id = IP
-    port = Port
-
-
-class ASCPrivateLinkTargetGroup(elasticloadbalancingv2.TargetGroup):
-    vpc_id = VpcId
-    protocol = If("SapUseHttps", 'TLS', 'TCP')
-    port = 443
-    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
-    targets = [ASCPrivateLinkTargetGroupTargetDescription]
-    health_check_path = HealthCheckPath
-    health_check_protocol = Protocol
 
 
 class ASCPrivateLinkListenerCertificate(elasticloadbalancingv2.ListenerCertificate.Certificate):

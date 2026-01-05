@@ -378,8 +378,6 @@ from .compute import CreateThingFunctionCode as CreateThingFunctionCode
 from .compute import GGSampleFunction as GGSampleFunction
 from .compute import GGSampleFunctionCode as GGSampleFunctionCode
 from .compute import GGSampleFunctionVersion as GGSampleFunctionVersion
-from .compute import GreengrassInstance as GreengrassInstance
-from .compute import GreengrassInstanceAssociationParameter as GreengrassInstanceAssociationParameter
 from .compute import GroupDeploymentResetFunction as GroupDeploymentResetFunction
 from .compute import GroupDeploymentResetFunctionCode as GroupDeploymentResetFunctionCode
 from .compute import GroupDeploymentResetFunctionEnvironment as GroupDeploymentResetFunctionEnvironment
@@ -399,9 +397,12 @@ from .main import GreengrassCoreDefinitionVersion as GreengrassCoreDefinitionVer
 from .main import GreengrassCoreDefinitionVersionCore as GreengrassCoreDefinitionVersionCore
 from .main import GreengrassGroup as GreengrassGroup
 from .main import GreengrassGroupGroupVersion as GreengrassGroupGroupVersion
+from .main import GreengrassInstance as GreengrassInstance
+from .main import GreengrassInstanceAssociationParameter as GreengrassInstanceAssociationParameter
 from .main import GroupDeploymentReset as GroupDeploymentReset
 from .main import InstanceAZ as InstanceAZ
 from .main import IoTThing as IoTThing
+from .main import RouteTableAssociationAPublic as RouteTableAssociationAPublic
 from .main import SubnetAPublic as SubnetAPublic
 from .main import SubscriptionDefinition as SubscriptionDefinition
 from .main import SubscriptionDefinitionSubscription as SubscriptionDefinitionSubscription
@@ -411,7 +412,6 @@ from .main import SubscriptionDefinitionSubscriptionDefinitionVersion as Subscri
 from .network import InstanceSecurityGroup as InstanceSecurityGroup
 from .network import InstanceSecurityGroupEgress as InstanceSecurityGroupEgress
 from .network import InternetGateway as InternetGateway
-from .network import RouteTableAssociationAPublic as RouteTableAssociationAPublic
 from .network import RouteTablePublic as RouteTablePublic
 from .network import RouteTablePublicInternetRoute as RouteTablePublicInternetRoute
 from .network import VPC as VPC

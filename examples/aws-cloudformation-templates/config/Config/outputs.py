@@ -15,4 +15,4 @@ class ConfigRuleForVolumeTagsConfigRuleIdOutput:
 
 class ConfigRuleForVolumeAutoEnableIOComplianceTypeOutput:
     resource: Output
-    value = GetAtt("ConfigRuleForVolumeAutoEnableIO", "Compliance.Type")
+    value = ConfigRuleForVolumeAutoEnableIO.Compliance.Type

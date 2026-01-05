@@ -236,7 +236,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
-from wetwire_aws.base import CloudFormationResource, PropertyType, Tag
+from wetwire_aws.base import CloudFormationResource, PropertyType, PropertyTypeDescriptor, Tag
 
 '''
 
@@ -529,14 +529,17 @@ def generate_service_package(
     if submodules:
         init_lines.append("")
         init_lines.append("")
-        init_lines.append("# Attach PropertyTypes to resource classes for convenient access")
+        init_lines.append("# Attach PropertyTypes to resource classes via descriptors for nested GetAtt support")
         init_lines.append("# e.g., s3.Bucket.BucketEncryption instead of s3._Bucket.BucketEncryption")
+        init_lines.append("# Using PropertyTypeDescriptor enables MyDB.Endpoint.Address syntax")
         for resource in sorted(resources, key=lambda r: r.name):
             if resource.name in nested_by_resource:
                 resource_nested = nested_by_resource[resource.name]
                 for nested in sorted(resource_nested, key=lambda n: n.name):
-                    # Attach each PropertyType class to the resource class
-                    init_lines.append(f"{resource.name}.{nested.name} = _{resource.name}.{nested.name}")
+                    # Wrap each PropertyType in a descriptor for nested attribute access
+                    init_lines.append(
+                        f'{resource.name}.{nested.name} = PropertyTypeDescriptor(_{resource.name}.{nested.name}, "{nested.name}")'
+                    )
 
     init_lines.append("")
 
