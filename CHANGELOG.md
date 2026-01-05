@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ResourceMeta` metaclass for `__getattr__` support on resource classes
 - Empty resource classes now generate `pass` to avoid syntax errors
 
+### Fixed
+
+- Nested GetAtt patterns like `Resource.Endpoint.Address` now correctly generate explicit `GetAtt()` intrinsics (#22)
+  - PropertyType class attributes (e.g., `Endpoint`) shadow metaclass `__getattr__`, preventing no-parens pattern
+  - Linter rules WAW006/WAW020 now skip nested attributes to avoid incorrectly converting them
+
 ## [1.3.0] - 2026-01-05
 
 ### Changed
