@@ -82,7 +82,7 @@ class ProcessorFunction(lambda_.Function):
 For introspectable references, use type annotations:
 
 ```python
-from . import *  # Includes Annotated, Attr, Ref from dataclass-dsl
+from . import *  # Includes Attr, Ref from dataclass-dsl (Annotated is from typing)
 
 class ProcessorRole(iam.Role):
     role_name = "processor"
@@ -226,10 +226,10 @@ template.add_parameter(
     allowed_values=["dev", "staging", "prod"],
 )
 
-# Add outputs
+# Add outputs (use type-safe reference)
 template.add_output(
     "BucketArn",
-    value={"Fn::GetAtt": ["DataBucket", "Arn"]},
+    value=DataBucket.Arn,  # Type-safe attribute reference
     description="Data bucket ARN",
 )
 

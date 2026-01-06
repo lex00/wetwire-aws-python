@@ -289,10 +289,13 @@ Initialize a new wetwire-aws project.
 
 ```bash
 # Create a new project
-wetwire-aws init -o myapp/
+wetwire-aws init myapp
+
+# Create in a specific directory
+wetwire-aws init myapp -o /path/to/output
 ```
 
-Creates a minimal project structure with `__init__.py`, `params.py`, and example resources.
+Creates a minimal project structure with `__init__.py` containing `setup_resources()`.
 
 ---
 

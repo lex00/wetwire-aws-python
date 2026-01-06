@@ -27,6 +27,9 @@ from . import *
 class MyBucket(s3.Bucket):
     bucket_name = "my-data"
 
+class MyRole(iam.Role):
+    assume_role_policy_document = {...}  # Lambda trust policy
+
 class MyFunction(lambda_.Function):
     function_name = "processor"
     runtime = lambda_.Runtime.PYTHON3_12
@@ -72,6 +75,7 @@ Requires `wetwire-core` and `ANTHROPIC_API_KEY`. See [CLI Reference](docs/CLI.md
 - [Quick Start](docs/QUICK_START.md) - Full tutorial
 - [CLI Reference](docs/CLI.md) - All commands
 - [Comparison](docs/COMPARISON.md) - vs CDK, Terraform
+- [FAQ](docs/FAQ.md) - Frequently asked questions
 
 ## Development
 
