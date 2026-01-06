@@ -1344,6 +1344,310 @@ SAM_PROPERTY_TYPES: dict[str, dict] = {
             },
         },
     },
+    # Additional nested property types referenced by other types
+    "AWS::Serverless::Api.ApiAuthorizer": {
+        "Documentation": "API Gateway authorizer configuration.",
+        "Properties": {
+            "AuthorizationScopes": {
+                "Type": "List",
+                "PrimitiveItemType": "String",
+                "Required": False,
+                "Documentation": "List of authorization scopes.",
+            },
+            "Identity": {
+                "PrimitiveType": "Json",
+                "Required": False,
+                "Documentation": "Identity source configuration.",
+            },
+            "FunctionArn": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Lambda authorizer function ARN.",
+            },
+            "FunctionPayloadType": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Payload type (TOKEN or REQUEST).",
+            },
+            "UserPoolArn": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Cognito User Pool ARN.",
+            },
+        },
+    },
+    "AWS::Serverless::Function.ApiEventAuth": {
+        "Documentation": "Auth configuration for API event.",
+        "Properties": {
+            "Authorizer": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Authorizer name.",
+            },
+            "AuthorizationScopes": {
+                "Type": "List",
+                "PrimitiveItemType": "String",
+                "Required": False,
+                "Documentation": "Authorization scopes.",
+            },
+            "ApiKeyRequired": {
+                "PrimitiveType": "Boolean",
+                "Required": False,
+                "Documentation": "Whether API key is required.",
+            },
+            "ResourcePolicy": {
+                "PrimitiveType": "Json",
+                "Required": False,
+                "Documentation": "Resource policy for the endpoint.",
+            },
+        },
+    },
+    "AWS::Serverless::Function.DeadLetterConfig": {
+        "Documentation": "Dead letter queue configuration.",
+        "Properties": {
+            "Arn": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "ARN of the SQS queue or SNS topic.",
+            },
+            "Type": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Type of destination (SQS or SNS).",
+            },
+            "QueueLogicalId": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Logical ID of an SQS queue in the same template.",
+            },
+        },
+    },
+    "AWS::Serverless::Function.RetryPolicy": {
+        "Documentation": "Retry policy for event source.",
+        "Properties": {
+            "MaximumEventAgeInSeconds": {
+                "PrimitiveType": "Integer",
+                "Required": False,
+                "Documentation": "Maximum age of event in seconds.",
+            },
+            "MaximumRetryAttempts": {
+                "PrimitiveType": "Integer",
+                "Required": False,
+                "Documentation": "Maximum retry attempts.",
+            },
+        },
+    },
+    "AWS::Serverless::Function.FunctionUrlCors": {
+        "Documentation": "CORS configuration for function URL.",
+        "Properties": {
+            "AllowCredentials": {
+                "PrimitiveType": "Boolean",
+                "Required": False,
+                "Documentation": "Whether credentials are allowed.",
+            },
+            "AllowHeaders": {
+                "Type": "List",
+                "PrimitiveItemType": "String",
+                "Required": False,
+                "Documentation": "Allowed headers.",
+            },
+            "AllowMethods": {
+                "Type": "List",
+                "PrimitiveItemType": "String",
+                "Required": False,
+                "Documentation": "Allowed methods.",
+            },
+            "AllowOrigins": {
+                "Type": "List",
+                "PrimitiveItemType": "String",
+                "Required": False,
+                "Documentation": "Allowed origins.",
+            },
+            "ExposeHeaders": {
+                "Type": "List",
+                "PrimitiveItemType": "String",
+                "Required": False,
+                "Documentation": "Exposed headers.",
+            },
+            "MaxAge": {
+                "PrimitiveType": "Integer",
+                "Required": False,
+                "Documentation": "Max age for preflight cache.",
+            },
+        },
+    },
+    "AWS::Serverless::Function.HttpApiEventAuth": {
+        "Documentation": "Auth configuration for HTTP API event.",
+        "Properties": {
+            "Authorizer": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Authorizer name.",
+            },
+            "AuthorizationScopes": {
+                "Type": "List",
+                "PrimitiveItemType": "String",
+                "Required": False,
+                "Documentation": "Authorization scopes.",
+            },
+        },
+    },
+    "AWS::Serverless::Function.S3NotificationFilter": {
+        "Documentation": "S3 notification filter configuration.",
+        "Properties": {
+            "S3Key": {
+                "PrimitiveType": "Json",
+                "Required": False,
+                "Documentation": "S3 key filter rules.",
+            },
+        },
+    },
+    "AWS::Serverless::GraphQLApi.AdditionalAuth": {
+        "Documentation": "Additional auth provider configuration.",
+        "Properties": {
+            "Type": {
+                "PrimitiveType": "String",
+                "Required": True,
+                "Documentation": "Auth type.",
+            },
+            "UserPool": {
+                "Type": "CognitoUserPoolConfig",
+                "Required": False,
+                "Documentation": "Cognito User Pool configuration.",
+            },
+            "OpenIdConnect": {
+                "Type": "OpenIdConnectConfig",
+                "Required": False,
+                "Documentation": "OpenID Connect configuration.",
+            },
+            "LambdaAuthorizer": {
+                "Type": "LambdaAuthorizerConfig",
+                "Required": False,
+                "Documentation": "Lambda authorizer configuration.",
+            },
+        },
+    },
+    "AWS::Serverless::GraphQLApi.LambdaAuthorizerConfig": {
+        "Documentation": "Lambda authorizer configuration for GraphQL API.",
+        "Properties": {
+            "AuthorizerUri": {
+                "PrimitiveType": "String",
+                "Required": True,
+                "Documentation": "Lambda function URI.",
+            },
+            "AuthorizerResultTtlInSeconds": {
+                "PrimitiveType": "Integer",
+                "Required": False,
+                "Documentation": "TTL for cached authorizer results.",
+            },
+            "IdentityValidationExpression": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Regex for identity validation.",
+            },
+        },
+    },
+    "AWS::Serverless::GraphQLApi.OpenIdConnectConfig": {
+        "Documentation": "OpenID Connect configuration.",
+        "Properties": {
+            "Issuer": {
+                "PrimitiveType": "String",
+                "Required": True,
+                "Documentation": "OIDC issuer URL.",
+            },
+            "AuthTTL": {
+                "PrimitiveType": "Integer",
+                "Required": False,
+                "Documentation": "Auth token TTL.",
+            },
+            "ClientId": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "OIDC client ID.",
+            },
+            "IatTTL": {
+                "PrimitiveType": "Integer",
+                "Required": False,
+                "Documentation": "Issued-at token TTL.",
+            },
+        },
+    },
+    "AWS::Serverless::GraphQLApi.CognitoUserPoolConfig": {
+        "Documentation": "Cognito User Pool configuration.",
+        "Properties": {
+            "UserPoolId": {
+                "PrimitiveType": "String",
+                "Required": True,
+                "Documentation": "Cognito User Pool ID.",
+            },
+            "AwsRegion": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "AWS region for the User Pool.",
+            },
+            "AppIdClientRegex": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Regex for allowed app client IDs.",
+            },
+            "DefaultAction": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Default action (ALLOW or DENY).",
+            },
+        },
+    },
+    "AWS::Serverless::HttpApi.HttpApiAuthorizer": {
+        "Documentation": "HTTP API authorizer configuration.",
+        "Properties": {
+            "AuthorizationScopes": {
+                "Type": "List",
+                "PrimitiveItemType": "String",
+                "Required": False,
+                "Documentation": "Authorization scopes.",
+            },
+            "IdentitySource": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Identity source expression.",
+            },
+            "JwtConfiguration": {
+                "PrimitiveType": "Json",
+                "Required": False,
+                "Documentation": "JWT configuration.",
+            },
+            "FunctionArn": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Lambda authorizer function ARN.",
+            },
+            "FunctionInvokeRole": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "IAM role for invoking the authorizer.",
+            },
+            "AuthorizerPayloadFormatVersion": {
+                "PrimitiveType": "String",
+                "Required": False,
+                "Documentation": "Payload format version (1.0 or 2.0).",
+            },
+            "EnableSimpleResponses": {
+                "PrimitiveType": "Boolean",
+                "Required": False,
+                "Documentation": "Enable simple responses.",
+            },
+        },
+    },
+    "AWS::Serverless::StateMachine.LogDestination": {
+        "Documentation": "Log destination for state machine.",
+        "Properties": {
+            "CloudWatchLogsLogGroup": {
+                "PrimitiveType": "Json",
+                "Required": False,
+                "Documentation": "CloudWatch Logs log group configuration.",
+            },
+        },
+    },
 }
 
 

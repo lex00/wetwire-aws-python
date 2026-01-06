@@ -234,32 +234,26 @@ class IntermediateSchema:
 
 
 def python_type_for_property(prop: PropertyDef) -> str:
-    """Get the Python type annotation for a property."""
-    base_type = prop.type
+    """Get the Python type annotation for a property.
 
-    # Handle list types
-    if prop.is_list:
-        if prop.nested_type:
-            return f"list[{prop.nested_type}]"
-        elif prop.item_type:
-            return f"list[{prop.item_type}]"
-        else:
-            return "list[Any]"
+    The type is already correctly computed in parse.py, so we just return it.
+    For lists/maps with nested types, we reconstruct the type to use the
+    nested type reference.
+    """
+    # For lists with nested types (not primitives), use the nested type reference
+    if prop.is_list and prop.nested_type:
+        return f"list[{prop.nested_type}]"
 
-    # Handle map types
-    if prop.is_map:
-        if prop.nested_type:
-            return f"dict[str, {prop.nested_type}]"
-        elif prop.item_type:
-            return f"dict[str, {prop.item_type}]"
-        else:
-            return "dict[str, Any]"
+    # For maps with nested types (not primitives), use the nested type reference
+    if prop.is_map and prop.nested_type:
+        return f"dict[str, {prop.nested_type}]"
 
-    # Handle nested types
-    if prop.nested_type:
+    # Handle standalone nested types
+    if prop.nested_type and not prop.is_list and not prop.is_map:
         return prop.nested_type
 
-    return base_type
+    # Use the pre-computed type from parse.py (handles primitives correctly)
+    return prop.type
 
 
 def format_file(content: str) -> str:
