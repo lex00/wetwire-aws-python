@@ -137,6 +137,8 @@ CF_TO_BOTOCORE_SERVICE = {
     "wafv2": "wafv2",
     "workspaces": "workspaces",
     "xray": "xray",
+    # SAM resources have no botocore equivalent
+    "serverless": None,
 }
 
 
@@ -183,6 +185,9 @@ def load_enums_for_service(service: str) -> dict[str, dict]:
 
         # Try botocore service name mapping
         botocore_name = CF_TO_BOTOCORE_SERVICE.get(service, service)
+        # Handle services without botocore mapping (e.g., serverless)
+        if botocore_name is None:
+            return {}
         if botocore_name in services:
             return services[botocore_name]
 
