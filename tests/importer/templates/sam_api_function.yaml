@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM function with API Gateway event
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+
+Resources:
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Environment
+
+  GetItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/items.handler
+      Runtime: python3.12
+      CodeUri: .
+      MemorySize: 256
+      Timeout: 30
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+      Events:
+        GetItems:
+          Type: Api
+          Properties:
+            Path: /items
+            Method: GET
+            RestApiId: !Ref MyApi
+
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"
