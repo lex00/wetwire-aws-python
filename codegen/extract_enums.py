@@ -56,6 +56,8 @@ CF_TO_BOTOCORE_SERVICE = {
     "ssm": "ssm",
     "stepfunctions": "stepfunctions",
     "wafv2": "wafv2",
+    # SAM resources have no botocore equivalent
+    "serverless": None,
 }
 
 
@@ -74,9 +76,14 @@ KNOWN_ENUM_MAPPINGS = {
 }
 
 
-def get_botocore_service(cf_service: str) -> str:
-    """Get the botocore service name for a CloudFormation service."""
-    return CF_TO_BOTOCORE_SERVICE.get(cf_service, cf_service)
+def get_botocore_service(cf_service: str) -> str | None:
+    """Get the botocore service name for a CloudFormation service.
+
+    Returns None for services without a botocore equivalent (e.g., serverless).
+    """
+    if cf_service in CF_TO_BOTOCORE_SERVICE:
+        return CF_TO_BOTOCORE_SERVICE[cf_service]
+    return cf_service
 
 
 def to_python_enum_name(value: str) -> str:
@@ -163,6 +170,10 @@ def extract_enums_for_services(services: list[str]) -> dict[str, dict[str, list[
     for cf_service in services:
         botocore_service = get_botocore_service(cf_service)
 
+        # Skip services without botocore equivalent (e.g., serverless)
+        if botocore_service is None:
+            continue
+
         try:
             service_model = loader.load_service_model(botocore_service, "service-2")
             shapes = service_model.get("shapes", {})
@@ -200,6 +211,26 @@ def generate_enum_class(enum_name: str, values: list[str]) -> dict:
             if to_python_enum_name(v)  # Filter out empty names
         ],
     }
+
+
+def get_sam_enums() -> dict[str, dict]:
+    """
+    Get SAM-specific enum definitions.
+
+    SAM resources have their own enum values (Runtime, Architecture, PackageType)
+    that are not in botocore. This function returns them in the same format as
+    generate_enum_class for consistency.
+
+    Returns:
+        Dict mapping enum_name -> {"name": name, "values": [...]}
+    """
+    from codegen.sam_spec import SAM_ENUMS
+
+    result = {}
+    for enum_name, values in SAM_ENUMS.items():
+        result[enum_name] = generate_enum_class(enum_name, values)
+
+    return result
 
 
 def extract_and_save(output_path: Path | None = None) -> dict:
