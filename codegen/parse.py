@@ -260,6 +260,41 @@ def try_extract_enums_from_botocore(
         return None
 
 
+def parse_sam_resources() -> IntermediateSchema:
+    """
+    Parse SAM resource definitions into intermediate schema.
+
+    This parses the static SAM spec (from sam_spec.py) into the same
+    intermediate format used for CloudFormation resources.
+    """
+    from codegen.sam_spec import SAM_PROPERTY_TYPES, SAM_RESOURCES
+
+    schema = IntermediateSchema(
+        schema_version="1.0",
+        domain="aws",
+        generated_at=datetime.now(UTC).isoformat(),
+        source_version="SAM-2016-10-31",
+        sdk_version="",
+    )
+
+    # Parse SAM resources
+    for resource_type, resource_spec in SAM_RESOURCES.items():
+        resource = parse_resource(resource_type, resource_spec, SAM_PROPERTY_TYPES)
+        schema.resources.append(resource)
+
+    # Parse SAM property types
+    for prop_type_name, prop_type_spec in SAM_PROPERTY_TYPES.items():
+        nested = parse_property_type(prop_type_name, prop_type_spec, SAM_PROPERTY_TYPES)
+        if nested:
+            schema.nested_types.append(nested)
+
+    # Sort everything
+    schema.resources.sort(key=lambda r: (r.service, r.name))
+    schema.nested_types.sort(key=lambda n: (n.service, n.name))
+
+    return schema
+
+
 def parse(validate: bool = False) -> IntermediateSchema:
     """
     Run the parse stage.
