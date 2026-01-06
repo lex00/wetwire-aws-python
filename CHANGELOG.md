@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- AWS SAM (Serverless Application Model) resource type support (#28)
+  - 9 SAM resource types: `Function`, `Api`, `HttpApi`, `SimpleTable`, `LayerVersion`, `StateMachine`, `Application`, `Connector`, `GraphQLApi`
+  - SAM-specific enums: `Runtime`, `Architecture`, `PackageType`, `AuthType`, `HttpApiAuthType`
+  - Full PropertyType support for nested SAM structures (events, auth configs, etc.)
+  - SAM Transform header automatically included in templates
+- `codegen/sam_spec.py` - Static SAM resource definitions
+- `scripts/generate_serverless.py` - Script to regenerate serverless package
+- `scripts/import_sam_samples.py` - Import SAM templates from official AWS repos
+- 85 new tests for SAM functionality across 4 test files
+- SAM documentation in Quick Start guide
+
+### Changed
+
+- `codegen/parse.py` - Now loads SAM resources alongside CloudFormation resources
+- `codegen/generate.py` - Added "serverless" service mapping
+- `codegen/extract_enums.py` - Handles missing botocore service gracefully
+
 ## [1.5.0] - 2026-01-05
 
 ### Added

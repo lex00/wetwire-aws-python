@@ -377,8 +377,7 @@ from wetwire_aws import (
 
 Usage:
 ```python
-class MyBucket:
-    resource: Bucket
+class MyBucket(s3.Bucket):
     bucket_name = Sub("${AWS::StackName}-data")
 ```
 
@@ -392,8 +391,7 @@ Use type annotations for introspectable references:
 from typing import Annotated
 from dataclass_dsl import Attr
 
-class ProcessorFunction:
-    resource: Function
+class ProcessorFunction(lambda_.Function):
     # Type annotation for introspection
     role: Annotated[str, Attr(ProcessorRole, "Arn")] = None
 ```

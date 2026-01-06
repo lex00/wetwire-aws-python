@@ -37,6 +37,22 @@ class MyFunction(lambda_.Function):
 wetwire-aws build --module myapp > template.json
 ```
 
+## Serverless (SAM) Support
+
+Build serverless applications with type-safe SAM resources:
+
+```python
+from . import *
+
+class ProcessorFunction(serverless.Function):
+    function_name = "processor"
+    runtime = serverless.Runtime.PYTHON3_12
+    handler = "app.handler"
+    code_uri = "./src"
+```
+
+All 9 SAM resource types supported: `Function`, `Api`, `HttpApi`, `SimpleTable`, `LayerVersion`, `StateMachine`, `Application`, `Connector`, `GraphQLApi`.
+
 ## AI-Assisted Design
 
 Create infrastructure interactively with AI:
@@ -60,7 +76,8 @@ Requires `wetwire-core` and `ANTHROPIC_API_KEY`. See [CLI Reference](docs/CLI.md
 ## Development
 
 ```bash
-cd python/packages/wetwire-aws
+git clone https://github.com/lex00/wetwire-aws-python.git
+cd wetwire-aws-python
 uv sync
 ./scripts/dev-setup.sh    # First-time setup (generate resources)
 ./scripts/regenerate.sh   # Re-generate resources (after spec updates)
@@ -71,4 +88,4 @@ See [Developer Guide](docs/DEVELOPERS.md) for details.
 
 ## License
 
-Apache 2.0 - See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.
+MIT - See [LICENSE](LICENSE) for details. Third-party attributions in [NOTICE](NOTICE).

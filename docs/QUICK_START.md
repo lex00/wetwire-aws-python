@@ -253,6 +253,75 @@ aws cloudformation deploy \
 
 ---
 
+## AWS SAM (Serverless) Support
+
+Build serverless applications with type-safe SAM resources:
+
+```python
+from . import *
+
+class ProcessorFunction(serverless.Function):
+    function_name = "processor"
+    runtime = serverless.Runtime.PYTHON3_12
+    handler = "app.handler"
+    code_uri = "./src"
+    memory_size = 256
+    timeout = 30
+
+class ItemsApi(serverless.Api):
+    stage_name = "prod"
+
+class ItemsTable(serverless.SimpleTable):
+    table_name = "items"
+    primary_key = serverless.SimpleTable.PrimaryKey(
+        name="id",
+        type_="String",
+    )
+```
+
+**Generate SAM template:**
+```bash
+wetwire-aws build --module myapp --format yaml > template.yaml
+```
+
+The output automatically includes the SAM Transform header:
+```yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+```
+
+### Supported SAM Resources
+
+| Resource | Description |
+|----------|-------------|
+| `serverless.Function` | Lambda function with events, policies, auto-role |
+| `serverless.Api` | REST API Gateway |
+| `serverless.HttpApi` | HTTP API Gateway v2 |
+| `serverless.SimpleTable` | DynamoDB table wrapper |
+| `serverless.LayerVersion` | Lambda layer |
+| `serverless.StateMachine` | Step Functions state machine |
+| `serverless.Application` | Nested SAM applications |
+| `serverless.Connector` | Resource permission connectors |
+| `serverless.GraphQLApi` | AppSync GraphQL API |
+
+### SAM Enums
+
+```python
+# Lambda runtimes
+serverless.Runtime.PYTHON3_12
+serverless.Runtime.NODEJS20_X
+
+# Architectures
+serverless.Architecture.ARM64
+serverless.Architecture.X86_64
+
+# Package types
+serverless.PackageType.ZIP
+serverless.PackageType.IMAGE
+```
+
+---
+
 ## Next Steps
 
 - See the full [CLI Reference](CLI.md)
