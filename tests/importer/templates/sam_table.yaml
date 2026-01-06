@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM SimpleTable template
+
+Resources:
+  ItemsTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: items-table
+      PrimaryKey:
+        Name: id
+        Type: String
+
+Outputs:
+  TableArn:
+    Description: Table ARN
+    Value: !GetAtt ItemsTable.Arn
