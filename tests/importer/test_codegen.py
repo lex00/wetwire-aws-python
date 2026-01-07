@@ -34,8 +34,8 @@ class TestGenerateSimpleBucket:
         assert "bucket_name = 'my-test-bucket'" in code
 
     def test_has_output_class(self, code):
-        assert "class BucketNameOutput:" in code
-        assert "resource: Output" in code
+        # Inheritance pattern: class BucketNameOutput(Output)
+        assert "class BucketNameOutput(Output):" in code
         # Uses no-parens pattern: bare class name instead of ref()
         assert "value = MyBucket" in code
 
@@ -65,8 +65,8 @@ class TestGenerateBucketWithRef:
         return generate_code(template)
 
     def test_has_parameter_class(self, code):
-        assert "class BucketNameParam:" in code
-        assert "resource: Parameter" in code
+        # Inheritance pattern: class BucketNameParam(Parameter)
+        assert "class BucketNameParam(Parameter):" in code
         # Uses constant or string for type
         assert "type =" in code
         assert "default = 'my-default-bucket'" in code
@@ -107,7 +107,8 @@ class TestGenerateIntrinsics:
         assert "IsProd" in code
 
     def test_has_condition_class(self, code):
-        assert "class IsProdCondition:" in code
+        # Inheritance pattern: class IsProdCondition(TemplateCondition)
+        assert "class IsProdCondition(TemplateCondition):" in code
         assert "Equals(" in code
 
     def test_generated_code_is_valid_python(self, code):

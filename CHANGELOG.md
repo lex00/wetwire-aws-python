@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking:** Template elements now use inheritance pattern like Resources (#47)
+  - Old: `class MyParam: resource: Parameter`
+  - New: `class MyParam(Parameter):`
+  - Applies to Parameter, Output, Mapping, and Condition classes
+  - Enables consistent syntax across all template elements
+- Auto-registration for template elements in `setup_resources()`
+  - No explicit decorator needed for Parameter, Output, Mapping, Condition subclasses
+- Importer codegen generates inheritance pattern for all template elements
+
 ### Fixed
 
 - Inheritance-based resource classes now include `resource:` annotation for `auto_decorate` detection (#48)
@@ -14,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Resources now have both inheritance (for `_resource_type`) and annotation (for `auto_decorate`)
 - Added build verification step to `import_aws_samples.py` to catch resource registration regressions
 - Fixed `test_version` test to not check for hardcoded version number
+- Fixed `test_test_invalid_persona` to accept either error message
 
 ## [1.6.0] - 2026-01-05
 
