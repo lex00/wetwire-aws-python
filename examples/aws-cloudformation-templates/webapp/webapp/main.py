@@ -3,18 +3,6 @@
 from . import *  # noqa: F403
 
 
-class RestApi(apigateway.RestApi):
-    resource: apigateway.RestApi
-    name = AppName
-
-
-class TestResourceResource(apigateway.Resource):
-    resource: apigateway.Resource
-    parent_id = Sub('${RestApi.RootResourceId}')
-    path_part = 'test'
-    rest_api_id = RestApi
-
-
 class SiteDistributionDefaultCacheBehavior(cloudfront.Distribution.DefaultCacheBehavior):
     cache_policy_id = '658327ea-f89d-4fab-a63d-7e88639e58f6'
     compress = True
@@ -58,6 +46,71 @@ class SiteDistribution(cloudfront.Distribution):
     distribution_config = SiteDistributionDistributionConfig
 
 
+class RestApi(apigateway.RestApi):
+    resource: apigateway.RestApi
+    name = AppName
+
+
+class JwtResourceResource(apigateway.Resource):
+    resource: apigateway.Resource
+    parent_id = Sub('${RestApi.RootResourceId}')
+    path_part = 'jwt'
+    rest_api_id = RestApi
+
+
+class JwtResourceOptionsIntegration(apigateway.Method.Integration):
+    integration_http_method = 'POST'
+    type_ = 'AWS_PROXY'
+    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JwtResourceHandler.Arn}/invocations')
+
+
+class JwtResourceOptions(apigateway.Method):
+    resource: apigateway.Method
+    http_method = 'OPTIONS'
+    resource_id = JwtResourceResource
+    rest_api_id = RestApi
+    authorization_type = 'NONE'
+    integration = JwtResourceOptionsIntegration
+
+
+class TestResourceResource(apigateway.Resource):
+    resource: apigateway.Resource
+    parent_id = Sub('${RestApi.RootResourceId}')
+    path_part = 'test'
+    rest_api_id = RestApi
+
+
+class TestResourceOptionsIntegration(apigateway.Method.Integration):
+    integration_http_method = 'POST'
+    type_ = 'AWS_PROXY'
+    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestResourceHandler.Arn}/invocations')
+
+
+class TestResourceOptions(apigateway.Method):
+    resource: apigateway.Method
+    http_method = 'OPTIONS'
+    resource_id = TestResourceResource
+    rest_api_id = RestApi
+    authorization_type = 'NONE'
+    integration = TestResourceOptionsIntegration
+
+
+class JwtResourceGetIntegration(apigateway.Method.Integration):
+    integration_http_method = 'POST'
+    type_ = 'AWS_PROXY'
+    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JwtResourceHandler.Arn}/invocations')
+
+
+class JwtResourceGet(apigateway.Method):
+    resource: apigateway.Method
+    http_method = 'GET'
+    resource_id = JwtResourceResource
+    rest_api_id = RestApi
+    authorization_type = 'NONE'
+    authorizer_id = 'AWS::NoValue'
+    integration = JwtResourceGetIntegration
+
+
 class RestApiAuthorizer(apigateway.Authorizer):
     resource: apigateway.Authorizer
     identity_source = 'method.request.header.authorization'
@@ -81,59 +134,6 @@ class TestResourceGet(apigateway.Method):
     authorization_type = 'COGNITO_USER_POOLS'
     authorizer_id = RestApiAuthorizer
     integration = TestResourceGetIntegration
-
-
-class JwtResourceResource(apigateway.Resource):
-    resource: apigateway.Resource
-    parent_id = Sub('${RestApi.RootResourceId}')
-    path_part = 'jwt'
-    rest_api_id = RestApi
-
-
-class JwtResourceGetIntegration(apigateway.Method.Integration):
-    integration_http_method = 'POST'
-    type_ = 'AWS_PROXY'
-    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JwtResourceHandler.Arn}/invocations')
-
-
-class JwtResourceGet(apigateway.Method):
-    resource: apigateway.Method
-    http_method = 'GET'
-    resource_id = JwtResourceResource
-    rest_api_id = RestApi
-    authorization_type = 'NONE'
-    authorizer_id = 'AWS::NoValue'
-    integration = JwtResourceGetIntegration
-
-
-class TestResourceOptionsIntegration(apigateway.Method.Integration):
-    integration_http_method = 'POST'
-    type_ = 'AWS_PROXY'
-    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestResourceHandler.Arn}/invocations')
-
-
-class TestResourceOptions(apigateway.Method):
-    resource: apigateway.Method
-    http_method = 'OPTIONS'
-    resource_id = TestResourceResource
-    rest_api_id = RestApi
-    authorization_type = 'NONE'
-    integration = TestResourceOptionsIntegration
-
-
-class JwtResourceOptionsIntegration(apigateway.Method.Integration):
-    integration_http_method = 'POST'
-    type_ = 'AWS_PROXY'
-    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${JwtResourceHandler.Arn}/invocations')
-
-
-class JwtResourceOptions(apigateway.Method):
-    resource: apigateway.Method
-    http_method = 'OPTIONS'
-    resource_id = JwtResourceResource
-    rest_api_id = RestApi
-    authorization_type = 'NONE'
-    integration = JwtResourceOptionsIntegration
 
 
 class RestApiDeployment(apigateway.Deployment):

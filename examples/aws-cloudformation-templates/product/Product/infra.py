@@ -1,4 +1,4 @@
-"""Infra resources: ServiceCatalogCloudFormationProduct, ServiceCatalogCustomTagOptionsAssociation, ServiceCatalogPortfolioProductAssociation."""
+"""Infra resources: ServiceCatalogCloudFormationProduct, ServiceCatalogPortfolioProductAssociation, ServiceCatalogCustomTagOptionsAssociation."""
 
 from . import *  # noqa: F403
 
@@ -54,14 +54,14 @@ class ServiceCatalogCloudFormationProduct(servicecatalog.CloudFormationProduct):
     provisioning_artifact_parameters = [ServiceCatalogCloudFormationProductProvisioningArtifactProperties]
 
 
-class ServiceCatalogCustomTagOptionsAssociation(servicecatalog.TagOptionAssociation):
-    resource: servicecatalog.TagOptionAssociation
-    tag_option_id = ImportValue(Sub('${ServiceCatalogPortfolioStackName}-ServiceCatalogProductTagOptionsDept'))
-    resource_id = ServiceCatalogCloudFormationProduct
-
-
 class ServiceCatalogPortfolioProductAssociation(servicecatalog.PortfolioProductAssociation):
     resource: servicecatalog.PortfolioProductAssociation
     portfolio_id = ImportValue(Sub('${ServiceCatalogPortfolioStackName}-ServiceCatalogPortfolio'))
     product_id = ServiceCatalogCloudFormationProduct
     depends_on = [ServiceCatalogCloudFormationProduct]
+
+
+class ServiceCatalogCustomTagOptionsAssociation(servicecatalog.TagOptionAssociation):
+    resource: servicecatalog.TagOptionAssociation
+    tag_option_id = ImportValue(Sub('${ServiceCatalogPortfolioStackName}-ServiceCatalogProductTagOptionsDept'))
+    resource_id = ServiceCatalogCloudFormationProduct

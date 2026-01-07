@@ -1,4 +1,4 @@
-"""Storage resources: Bucket, Object1, Object3, Object4, Object2."""
+"""Storage resources: Bucket, Object1, Object2, Object4, Object3."""
 
 from . import *  # noqa: F403
 
@@ -24,21 +24,15 @@ but this one is mine.
     depends_on = [Bucket]
 
 
-class Object3ManifestFileLocation(quicksight.DataSource.ManifestFileLocation):
-    bucket = Object1.Bucket
-    key = Object1.Key
-
-
-class Object3ManifestFileLocation1(quicksight.DataSource.ManifestFileLocation):
-    bucket = Bucket
-    key = 'README-copy.md'
-
-
-class Object3(CloudFormationResource):
+class Object2(CloudFormationResource):
     # Unknown resource type: AWS::S3::Object
     resource: CloudFormationResource
-    source = Object3ManifestFileLocation
-    target = Object3ManifestFileLocation1
+    target = {
+        'Bucket': Bucket,
+        'Key': '1-pixel.gif',
+        'ContentType': 'image/png',
+    }
+    base64_body = 'R0lGODdhAQABAIABAP///0qIbCwAAAAAAQABAAACAkQBADs='
     depends_on = [Bucket]
 
 
@@ -55,13 +49,19 @@ class Object4(CloudFormationResource):
     depends_on = [Bucket]
 
 
-class Object2(CloudFormationResource):
+class Object3ManifestFileLocation(quicksight.DataSource.ManifestFileLocation):
+    bucket = Object1.Bucket
+    key = Object1.Key
+
+
+class Object3ManifestFileLocation1(quicksight.DataSource.ManifestFileLocation):
+    bucket = Bucket
+    key = 'README-copy.md'
+
+
+class Object3(CloudFormationResource):
     # Unknown resource type: AWS::S3::Object
     resource: CloudFormationResource
-    target = {
-        'Bucket': Bucket,
-        'Key': '1-pixel.gif',
-        'ContentType': 'image/png',
-    }
-    base64_body = 'R0lGODdhAQABAIABAP///0qIbCwAAAAAAQABAAACAkQBADs='
+    source = Object3ManifestFileLocation
+    target = Object3ManifestFileLocation1
     depends_on = [Bucket]

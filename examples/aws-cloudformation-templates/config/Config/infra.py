@@ -1,18 +1,6 @@
-"""Infra resources: DeliveryChannel, ConfigRecorder, ConfigRuleForVolumeAutoEnableIO, ConfigRuleForVolumeTags."""
+"""Infra resources: ConfigRecorder, ConfigRuleForVolumeAutoEnableIO, DeliveryChannel, ConfigRuleForVolumeTags."""
 
 from . import *  # noqa: F403
-
-
-class DeliveryChannelConfigSnapshotDeliveryProperties(config.DeliveryChannel.ConfigSnapshotDeliveryProperties):
-    delivery_frequency = 'Six_Hours'
-
-
-class DeliveryChannel(config.DeliveryChannel):
-    resource: config.DeliveryChannel
-    config_snapshot_delivery_properties = DeliveryChannelConfigSnapshotDeliveryProperties
-    s3_bucket_name = ConfigBucket
-    sns_topic_arn = ConfigTopic
-    condition = 'CreateDeliveryChannel'
 
 
 class ConfigRecorderExclusionByResourceTypes(config.ConfigurationRecorder.ExclusionByResourceTypes):
@@ -48,6 +36,18 @@ class ConfigRuleForVolumeAutoEnableIO(config.ConfigRule):
     scope = ConfigRuleForVolumeAutoEnableIOScope
     source = ConfigRuleForVolumeAutoEnableIOSource
     depends_on = [ConfigPermissionToCallLambda, ConfigRecorder]
+
+
+class DeliveryChannelConfigSnapshotDeliveryProperties(config.DeliveryChannel.ConfigSnapshotDeliveryProperties):
+    delivery_frequency = 'Six_Hours'
+
+
+class DeliveryChannel(config.DeliveryChannel):
+    resource: config.DeliveryChannel
+    config_snapshot_delivery_properties = DeliveryChannelConfigSnapshotDeliveryProperties
+    s3_bucket_name = ConfigBucket
+    sns_topic_arn = ConfigTopic
+    condition = 'CreateDeliveryChannel'
 
 
 class ConfigRuleForVolumeTagsScope(config.ConfigRule.Scope):

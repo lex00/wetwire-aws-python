@@ -1,4 +1,4 @@
-"""Compute resources: DomainMember2WithSsmAssociationInstance, DomainMember4LinuxWithSsmAssociationInstance, DomainMember3WithSsmAssociationTag, DomainMember1WithInlineSsmAssociation."""
+"""Compute resources: DomainMember2WithSsmAssociationInstance, DomainMember3WithSsmAssociationTag, DomainMember4LinuxWithSsmAssociationInstance, DomainMember1WithInlineSsmAssociation."""
 
 from . import *  # noqa: F403
 
@@ -43,47 +43,6 @@ Rename-Computer -NewName ${DomainMember2NetBIOSName} -Force
 Install-WindowsFeature -IncludeAllSubFeature RSAT
 Restart-Computer -Force
 </powershell>
-"""))
-
-
-class DomainMember4LinuxWithSsmAssociationInstanceAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = DomainMember4NetBIOSName
-
-
-class DomainMember4LinuxWithSsmAssociationInstanceEbs(ec2.Instance.Ebs):
-    encrypted = True
-    volume_type = 'gp3'
-    delete_on_termination = True
-    volume_size = 100
-    kms_key_id = If("EBSKMSKeyCondition", EBSKMSKey, AWS_NO_VALUE)
-
-
-class DomainMember4LinuxWithSsmAssociationInstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
-    device_name = '/dev/sda1'
-    ebs = DomainMember4LinuxWithSsmAssociationInstanceEbs
-
-
-class DomainMember4LinuxWithSsmAssociationInstance(ec2.Instance):
-    resource: ec2.Instance
-    image_id = AMAZONLINUX2
-    iam_instance_profile = DomainMembersLinuxInstanceProfile
-    instance_type = DomainMembersInstanceType
-    subnet_id = PrivateSubnet2ID
-    tags = [DomainMember4LinuxWithSsmAssociationInstanceAssociationParameter]
-    block_device_mappings = [DomainMember4LinuxWithSsmAssociationInstanceBlockDeviceMapping]
-    security_group_ids = [DomainMembersSGID]
-    key_name = KeyPairName
-    user_data = Base64(Sub("""# Set HostName
-LowerEc2Name=$(echo ${DomainMember4NetBIOSName} | tr '[:upper:]' '[:lower:]')
-hostnamectl set-hostname $LowerEc2Name
-# Set TimeZone
-# sed -i 's|^ZONE=.*|ZONE="America/New_York"|' /etc/sysconfig/clock
-# ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
-# Patch System Up
-yum update -y
-# Reboot
-reboot
 """))
 
 
@@ -132,6 +91,47 @@ Rename-Computer -NewName ${DomainMember3NetBIOSName} -Force
 Install-WindowsFeature -IncludeAllSubFeature RSAT
 Restart-Computer -Force
 </powershell>
+"""))
+
+
+class DomainMember4LinuxWithSsmAssociationInstanceAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = DomainMember4NetBIOSName
+
+
+class DomainMember4LinuxWithSsmAssociationInstanceEbs(ec2.Instance.Ebs):
+    encrypted = True
+    volume_type = 'gp3'
+    delete_on_termination = True
+    volume_size = 100
+    kms_key_id = If("EBSKMSKeyCondition", EBSKMSKey, AWS_NO_VALUE)
+
+
+class DomainMember4LinuxWithSsmAssociationInstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
+    device_name = '/dev/sda1'
+    ebs = DomainMember4LinuxWithSsmAssociationInstanceEbs
+
+
+class DomainMember4LinuxWithSsmAssociationInstance(ec2.Instance):
+    resource: ec2.Instance
+    image_id = AMAZONLINUX2
+    iam_instance_profile = DomainMembersLinuxInstanceProfile
+    instance_type = DomainMembersInstanceType
+    subnet_id = PrivateSubnet2ID
+    tags = [DomainMember4LinuxWithSsmAssociationInstanceAssociationParameter]
+    block_device_mappings = [DomainMember4LinuxWithSsmAssociationInstanceBlockDeviceMapping]
+    security_group_ids = [DomainMembersSGID]
+    key_name = KeyPairName
+    user_data = Base64(Sub("""# Set HostName
+LowerEc2Name=$(echo ${DomainMember4NetBIOSName} | tr '[:upper:]' '[:lower:]')
+hostnamectl set-hostname $LowerEc2Name
+# Set TimeZone
+# sed -i 's|^ZONE=.*|ZONE="America/New_York"|' /etc/sysconfig/clock
+# ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+# Patch System Up
+yum update -y
+# Reboot
+reboot
 """))
 
 

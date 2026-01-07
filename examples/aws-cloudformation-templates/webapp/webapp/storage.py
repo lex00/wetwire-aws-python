@@ -1,4 +1,4 @@
-"""Storage resources: SiteContentLogBucket, SiteContentReplicaBucket, SiteContentBucket, SiteCloudFrontLogsReplicaBucket, SiteCloudFrontLogsLogBucket, SiteCloudFrontLogsBucket, SiteCloudFrontLogsBucketAccessPolicy, SiteContentBucketAccessPolicy, SiteContentLogBucketAccessPolicy, SiteCloudFrontLogsLogBucketAccessPolicy, SiteContentReplicaBucketAccessPolicy, SiteCloudFrontLogsReplicaBucketAccessPolicy."""
+"""Storage resources: SiteContentLogBucket, SiteContentReplicaBucket, SiteContentBucket, SiteCloudFrontLogsReplicaBucket, SiteCloudFrontLogsLogBucket, SiteCloudFrontLogsBucket, SiteContentReplicaBucketAccessPolicy, SiteCloudFrontLogsLogBucketAccessPolicy, SiteContentBucketAccessPolicy, SiteCloudFrontLogsReplicaBucketAccessPolicy, SiteContentLogBucketAccessPolicy, SiteCloudFrontLogsBucketAccessPolicy."""
 
 from . import *  # noqa: F403
 
@@ -274,14 +274,14 @@ class SiteCloudFrontLogsBucket(s3.Bucket):
     ownership_controls = SiteCloudFrontLogsBucketOwnershipControls
 
 
-class SiteCloudFrontLogsBucketAccessPolicyDenyStatement0(DenyStatement):
+class SiteContentReplicaBucketAccessPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
     }
     action = 's3:*'
     resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*'),
     ]
     condition = {
         BOOL: {
@@ -290,15 +290,15 @@ class SiteCloudFrontLogsBucketAccessPolicyDenyStatement0(DenyStatement):
     }
 
 
-class SiteCloudFrontLogsBucketAccessPolicyAllowStatement1(PolicyStatement):
+class SiteContentReplicaBucketAccessPolicyAllowStatement1(PolicyStatement):
     principal = {
         'Service': 'logging.s3.amazonaws.com',
     }
     action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*')]
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*')]
     condition = {
         ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}'),
         },
         STRING_EQUALS: {
             'aws:SourceAccount': AWS_ACCOUNT_ID,
@@ -306,14 +306,56 @@ class SiteCloudFrontLogsBucketAccessPolicyAllowStatement1(PolicyStatement):
     }
 
 
-class SiteCloudFrontLogsBucketAccessPolicyPolicyDocument(PolicyDocument):
-    statement = [SiteCloudFrontLogsBucketAccessPolicyDenyStatement0, SiteCloudFrontLogsBucketAccessPolicyAllowStatement1]
+class SiteContentReplicaBucketAccessPolicyPolicyDocument(PolicyDocument):
+    statement = [SiteContentReplicaBucketAccessPolicyDenyStatement0, SiteContentReplicaBucketAccessPolicyAllowStatement1]
 
 
-class SiteCloudFrontLogsBucketAccessPolicy(s3.BucketPolicy):
+class SiteContentReplicaBucketAccessPolicy(s3.BucketPolicy):
     resource: s3.BucketPolicy
-    bucket = SiteCloudFrontLogsBucket
-    policy_document = SiteCloudFrontLogsBucketAccessPolicyPolicyDocument
+    bucket = SiteContentReplicaBucket
+    policy_document = SiteContentReplicaBucketAccessPolicyPolicyDocument
+
+
+class SiteCloudFrontLogsLogBucketAccessPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class SiteCloudFrontLogsLogBucketAccessPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class SiteCloudFrontLogsLogBucketAccessPolicyPolicyDocument(PolicyDocument):
+    statement = [SiteCloudFrontLogsLogBucketAccessPolicyDenyStatement0, SiteCloudFrontLogsLogBucketAccessPolicyAllowStatement1]
+
+
+class SiteCloudFrontLogsLogBucketAccessPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
+    bucket = SiteCloudFrontLogsLogBucket
+    policy_document = SiteCloudFrontLogsLogBucketAccessPolicyPolicyDocument
 
 
 class SiteContentBucketAccessPolicyAllowStatement0(PolicyStatement):
@@ -371,6 +413,48 @@ class SiteContentBucketAccessPolicy(s3.BucketPolicy):
     policy_document = SiteContentBucketAccessPolicyPolicyDocument
 
 
+class SiteCloudFrontLogsReplicaBucketAccessPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class SiteCloudFrontLogsReplicaBucketAccessPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class SiteCloudFrontLogsReplicaBucketAccessPolicyPolicyDocument(PolicyDocument):
+    statement = [SiteCloudFrontLogsReplicaBucketAccessPolicyDenyStatement0, SiteCloudFrontLogsReplicaBucketAccessPolicyAllowStatement1]
+
+
+class SiteCloudFrontLogsReplicaBucketAccessPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
+    bucket = SiteCloudFrontLogsReplicaBucket
+    policy_document = SiteCloudFrontLogsReplicaBucketAccessPolicyPolicyDocument
+
+
 class SiteContentLogBucketAccessPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
@@ -413,14 +497,14 @@ class SiteContentLogBucketAccessPolicy(s3.BucketPolicy):
     policy_document = SiteContentLogBucketAccessPolicyPolicyDocument
 
 
-class SiteCloudFrontLogsLogBucketAccessPolicyDenyStatement0(DenyStatement):
+class SiteCloudFrontLogsBucketAccessPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
     }
     action = 's3:*'
     resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}/*'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*'),
     ]
     condition = {
         BOOL: {
@@ -429,15 +513,15 @@ class SiteCloudFrontLogsLogBucketAccessPolicyDenyStatement0(DenyStatement):
     }
 
 
-class SiteCloudFrontLogsLogBucketAccessPolicyAllowStatement1(PolicyStatement):
+class SiteCloudFrontLogsBucketAccessPolicyAllowStatement1(PolicyStatement):
     principal = {
         'Service': 'logging.s3.amazonaws.com',
     }
     action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}/*')]
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*')]
     condition = {
         ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}'),
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
         },
         STRING_EQUALS: {
             'aws:SourceAccount': AWS_ACCOUNT_ID,
@@ -445,95 +529,11 @@ class SiteCloudFrontLogsLogBucketAccessPolicyAllowStatement1(PolicyStatement):
     }
 
 
-class SiteCloudFrontLogsLogBucketAccessPolicyPolicyDocument(PolicyDocument):
-    statement = [SiteCloudFrontLogsLogBucketAccessPolicyDenyStatement0, SiteCloudFrontLogsLogBucketAccessPolicyAllowStatement1]
+class SiteCloudFrontLogsBucketAccessPolicyPolicyDocument(PolicyDocument):
+    statement = [SiteCloudFrontLogsBucketAccessPolicyDenyStatement0, SiteCloudFrontLogsBucketAccessPolicyAllowStatement1]
 
 
-class SiteCloudFrontLogsLogBucketAccessPolicy(s3.BucketPolicy):
+class SiteCloudFrontLogsBucketAccessPolicy(s3.BucketPolicy):
     resource: s3.BucketPolicy
-    bucket = SiteCloudFrontLogsLogBucket
-    policy_document = SiteCloudFrontLogsLogBucketAccessPolicyPolicyDocument
-
-
-class SiteContentReplicaBucketAccessPolicyDenyStatement0(DenyStatement):
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class SiteContentReplicaBucketAccessPolicyAllowStatement1(PolicyStatement):
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class SiteContentReplicaBucketAccessPolicyPolicyDocument(PolicyDocument):
-    statement = [SiteContentReplicaBucketAccessPolicyDenyStatement0, SiteContentReplicaBucketAccessPolicyAllowStatement1]
-
-
-class SiteContentReplicaBucketAccessPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
-    bucket = SiteContentReplicaBucket
-    policy_document = SiteContentReplicaBucketAccessPolicyPolicyDocument
-
-
-class SiteCloudFrontLogsReplicaBucketAccessPolicyDenyStatement0(DenyStatement):
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class SiteCloudFrontLogsReplicaBucketAccessPolicyAllowStatement1(PolicyStatement):
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class SiteCloudFrontLogsReplicaBucketAccessPolicyPolicyDocument(PolicyDocument):
-    statement = [SiteCloudFrontLogsReplicaBucketAccessPolicyDenyStatement0, SiteCloudFrontLogsReplicaBucketAccessPolicyAllowStatement1]
-
-
-class SiteCloudFrontLogsReplicaBucketAccessPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
-    bucket = SiteCloudFrontLogsReplicaBucket
-    policy_document = SiteCloudFrontLogsReplicaBucketAccessPolicyPolicyDocument
+    bucket = SiteCloudFrontLogsBucket
+    policy_document = SiteCloudFrontLogsBucketAccessPolicyPolicyDocument

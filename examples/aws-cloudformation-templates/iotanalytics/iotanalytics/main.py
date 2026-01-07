@@ -3,15 +3,6 @@
 from . import *  # noqa: F403
 
 
-class Datastore(iotanalytics.Datastore):
-    resource: iotanalytics.Datastore
-    datastore_name = Sub('${ProjectName}_datastore')
-    tags = [{
-        'Key': 'Project',
-        'Value': ProjectName,
-    }]
-
-
 class Channel(iotanalytics.Channel):
     resource: iotanalytics.Channel
     channel_name = Sub('${ProjectName}_channel')
@@ -21,31 +12,13 @@ class Channel(iotanalytics.Channel):
     }]
 
 
-class PipelineChannel(iotanalytics.Pipeline.Channel):
-    name = 'ChannelActivity'
-    channel_name = Sub('${ProjectName}_channel')
-    next = 'DatastoreActivity'
-
-
-class PipelineDatastore(iotanalytics.Pipeline.Datastore):
-    name = 'DatastoreActivity'
+class Datastore(iotanalytics.Datastore):
+    resource: iotanalytics.Datastore
     datastore_name = Sub('${ProjectName}_datastore')
-
-
-class PipelineActivity(iotanalytics.Pipeline.Activity):
-    channel = PipelineChannel
-    datastore = PipelineDatastore
-
-
-class Pipeline(iotanalytics.Pipeline):
-    resource: iotanalytics.Pipeline
-    pipeline_name = Sub('${ProjectName}_pipeline')
-    pipeline_activities = [PipelineActivity]
     tags = [{
         'Key': 'Project',
         'Value': ProjectName,
     }]
-    depends_on = [Channel, Datastore]
 
 
 class SqlDatasetQueryAction(iotanalytics.Dataset.QueryAction):
@@ -81,3 +54,30 @@ class SqlDataset(iotanalytics.Dataset):
         'Value': ProjectName,
     }]
     depends_on = [Datastore]
+
+
+class PipelineChannel(iotanalytics.Pipeline.Channel):
+    name = 'ChannelActivity'
+    channel_name = Sub('${ProjectName}_channel')
+    next = 'DatastoreActivity'
+
+
+class PipelineDatastore(iotanalytics.Pipeline.Datastore):
+    name = 'DatastoreActivity'
+    datastore_name = Sub('${ProjectName}_datastore')
+
+
+class PipelineActivity(iotanalytics.Pipeline.Activity):
+    channel = PipelineChannel
+    datastore = PipelineDatastore
+
+
+class Pipeline(iotanalytics.Pipeline):
+    resource: iotanalytics.Pipeline
+    pipeline_name = Sub('${ProjectName}_pipeline')
+    pipeline_activities = [PipelineActivity]
+    tags = [{
+        'Key': 'Project',
+        'Value': ProjectName,
+    }]
+    depends_on = [Channel, Datastore]

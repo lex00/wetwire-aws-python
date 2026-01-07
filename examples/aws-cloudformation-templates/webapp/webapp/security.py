@@ -1,23 +1,6 @@
-"""Security resources: TestResourceHandlerRole, SiteContentReplicationRole, SiteCloudFrontLogsReplicationRole, SiteWebACL, CognitoUserPool, CognitoClient, JwtResourceHandlerRole, CognitoDomain, TestResourceHandlerPolicy, SiteContentReplicationPolicy, SiteCloudFrontLogsReplicationPolicy."""
+"""Security resources: SiteContentReplicationRole, SiteWebACL, SiteCloudFrontLogsReplicationRole, CognitoUserPool, CognitoClient, JwtResourceHandlerRole, TestResourceHandlerRole, SiteContentReplicationPolicy, TestResourceHandlerPolicy, CognitoDomain, SiteCloudFrontLogsReplicationPolicy."""
 
 from . import *  # noqa: F403
-
-
-class TestResourceHandlerRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['lambda.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class TestResourceHandlerRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [TestResourceHandlerRoleAllowStatement0]
-
-
-class TestResourceHandlerRole(iam.Role):
-    resource: iam.Role
-    assume_role_policy_document = TestResourceHandlerRoleAssumeRolePolicyDocument
-    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole']
 
 
 class SiteContentReplicationRoleAllowStatement0(PolicyStatement):
@@ -34,23 +17,6 @@ class SiteContentReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
 class SiteContentReplicationRole(iam.Role):
     resource: iam.Role
     assume_role_policy_document = SiteContentReplicationRoleAssumeRolePolicyDocument
-    path = '/'
-
-
-class SiteCloudFrontLogsReplicationRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['s3.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class SiteCloudFrontLogsReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [SiteCloudFrontLogsReplicationRoleAllowStatement0]
-
-
-class SiteCloudFrontLogsReplicationRole(iam.Role):
-    resource: iam.Role
-    assume_role_policy_document = SiteCloudFrontLogsReplicationRoleAssumeRolePolicyDocument
     path = '/'
 
 
@@ -114,6 +80,23 @@ class SiteWebACL(wafv2.WebACL):
     rules = [SiteWebACLRule]
 
 
+class SiteCloudFrontLogsReplicationRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['s3.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class SiteCloudFrontLogsReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [SiteCloudFrontLogsReplicationRoleAllowStatement0]
+
+
+class SiteCloudFrontLogsReplicationRole(iam.Role):
+    resource: iam.Role
+    assume_role_policy_document = SiteCloudFrontLogsReplicationRoleAssumeRolePolicyDocument
+    path = '/'
+
+
 class CognitoUserPoolAdminCreateUserConfig(cognito.UserPool.AdminCreateUserConfig):
     allow_admin_create_user_only = True
 
@@ -171,34 +154,21 @@ class JwtResourceHandlerRole(iam.Role):
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole']
 
 
-class CognitoDomain(cognito.UserPoolDomain):
-    resource: cognito.UserPoolDomain
-    domain = AppName
-    user_pool_id = CognitoUserPool
+class TestResourceHandlerRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['lambda.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
 
 
-class TestResourceHandlerPolicyAllowStatement0(PolicyStatement):
-    action = [
-        'dynamodb:BatchGetItem',
-        'dynamodb:GetItem',
-        'dynamodb:Query',
-        'dynamodb:Scan',
-        'dynamodb:BatchWriteItem',
-        'dynamodb:PutItem',
-        'dynamodb:UpdateItem',
-    ]
-    resource_arn = [TestTable.Arn]
+class TestResourceHandlerRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [TestResourceHandlerRoleAllowStatement0]
 
 
-class TestResourceHandlerPolicyPolicyDocument(PolicyDocument):
-    statement = [TestResourceHandlerPolicyAllowStatement0]
-
-
-class TestResourceHandlerPolicy(iam.RolePolicy):
-    resource: iam.RolePolicy
-    policy_document = TestResourceHandlerPolicyPolicyDocument
-    policy_name = 'handler-policy'
-    role_name = TestResourceHandlerRole
+class TestResourceHandlerRole(iam.Role):
+    resource: iam.Role
+    assume_role_policy_document = TestResourceHandlerRoleAssumeRolePolicyDocument
+    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole']
 
 
 class SiteContentReplicationPolicyAllowStatement0(PolicyStatement):
@@ -236,6 +206,36 @@ class SiteContentReplicationPolicy(iam.RolePolicy):
     policy_document = SiteContentReplicationPolicyPolicyDocument
     policy_name = 'bucket-replication-policy'
     role_name = SiteContentReplicationRole
+
+
+class TestResourceHandlerPolicyAllowStatement0(PolicyStatement):
+    action = [
+        'dynamodb:BatchGetItem',
+        'dynamodb:GetItem',
+        'dynamodb:Query',
+        'dynamodb:Scan',
+        'dynamodb:BatchWriteItem',
+        'dynamodb:PutItem',
+        'dynamodb:UpdateItem',
+    ]
+    resource_arn = [TestTable.Arn]
+
+
+class TestResourceHandlerPolicyPolicyDocument(PolicyDocument):
+    statement = [TestResourceHandlerPolicyAllowStatement0]
+
+
+class TestResourceHandlerPolicy(iam.RolePolicy):
+    resource: iam.RolePolicy
+    policy_document = TestResourceHandlerPolicyPolicyDocument
+    policy_name = 'handler-policy'
+    role_name = TestResourceHandlerRole
+
+
+class CognitoDomain(cognito.UserPoolDomain):
+    resource: cognito.UserPoolDomain
+    domain = AppName
+    user_pool_id = CognitoUserPool
 
 
 class SiteCloudFrontLogsReplicationPolicyAllowStatement0(PolicyStatement):

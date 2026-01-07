@@ -1,4 +1,4 @@
-"""Security resources: DirectorySettingsLambdaRole, DirectoryConsoleDelegatedAccessEC2ReadOnlyRole, DirectoryConsoleDelegatedAccessSecurityAuditRole."""
+"""Security resources: DirectorySettingsLambdaRole, DirectoryConsoleDelegatedAccessSecurityAuditRole, DirectoryConsoleDelegatedAccessEC2ReadOnlyRole."""
 
 from . import *  # noqa: F403
 
@@ -86,30 +86,6 @@ class DirectorySettingsLambdaRole(iam.Role):
     policies = [DirectorySettingsLambdaRolePolicy, DirectorySettingsLambdaRolePolicy1]
 
 
-class DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['ds.amazonaws.com'],
-    }
-    action = 'sts:AssumeRole'
-
-
-class DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAllowStatement0]
-
-
-class DirectoryConsoleDelegatedAccessEC2ReadOnlyRole(iam.Role):
-    resource: iam.Role
-    description = 'IAM Role for Directory Service \'AWS Management Console\' Delegated Access for "EC2 ReadOnly"'
-    assume_role_policy_document = DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAssumeRolePolicyDocument
-    managed_policy_arns = [Sub('arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ReadOnlyAccess')]
-    path = '/'
-    tags = [{
-        'Key': 'StackName',
-        'Value': AWS_STACK_NAME,
-    }]
-    condition = 'DirectoryConsoleDelegatedAccessRolesCondition'
-
-
 class DirectoryConsoleDelegatedAccessSecurityAuditRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['ds.amazonaws.com'],
@@ -126,6 +102,30 @@ class DirectoryConsoleDelegatedAccessSecurityAuditRole(iam.Role):
     description = 'IAM Role for Directory Service \'AWS Management Console\' Delegated Access for "Security Audit"'
     assume_role_policy_document = DirectoryConsoleDelegatedAccessSecurityAuditRoleAssumeRolePolicyDocument
     managed_policy_arns = [Sub('arn:${AWS::Partition}:iam::aws:policy/SecurityAudit')]
+    path = '/'
+    tags = [{
+        'Key': 'StackName',
+        'Value': AWS_STACK_NAME,
+    }]
+    condition = 'DirectoryConsoleDelegatedAccessRolesCondition'
+
+
+class DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['ds.amazonaws.com'],
+    }
+    action = 'sts:AssumeRole'
+
+
+class DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAllowStatement0]
+
+
+class DirectoryConsoleDelegatedAccessEC2ReadOnlyRole(iam.Role):
+    resource: iam.Role
+    description = 'IAM Role for Directory Service \'AWS Management Console\' Delegated Access for "EC2 ReadOnly"'
+    assume_role_policy_document = DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAssumeRolePolicyDocument
+    managed_policy_arns = [Sub('arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ReadOnlyAccess')]
     path = '/'
     tags = [{
         'Key': 'StackName',

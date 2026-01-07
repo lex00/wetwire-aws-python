@@ -35,20 +35,6 @@ class IoTThingPrincipalAttachment(iot.ThingPrincipalAttachment):
     thing_name = IoTThing
 
 
-class OpenIoTStarPolicyAllowStatement0(PolicyStatement):
-    action = 'iot:*'
-    resource_arn = '*'
-
-
-class OpenIoTStarPolicyPolicyDocument(PolicyDocument):
-    statement = [OpenIoTStarPolicyAllowStatement0]
-
-
-class OpenIoTStarPolicy(iot.Policy):
-    resource: iot.Policy
-    policy_document = OpenIoTStarPolicyPolicyDocument
-
-
 class IoTPolicyAllowStatement0(PolicyStatement):
     action = 'iot:Connect'
     resource_arn = [Sub('arn:${AWS::Partition}:iot:${AWS::Region}:${AWS::AccountId}:client/*')]
@@ -82,3 +68,17 @@ class IoTPolicyPrincipalAttachment(iot.PolicyPrincipalAttachment):
     resource: iot.PolicyPrincipalAttachment
     policy_name = IoTPolicy
     principal = CertificateARN
+
+
+class OpenIoTStarPolicyAllowStatement0(PolicyStatement):
+    action = 'iot:*'
+    resource_arn = '*'
+
+
+class OpenIoTStarPolicyPolicyDocument(PolicyDocument):
+    statement = [OpenIoTStarPolicyAllowStatement0]
+
+
+class OpenIoTStarPolicy(iot.Policy):
+    resource: iot.Policy
+    policy_document = OpenIoTStarPolicyPolicyDocument

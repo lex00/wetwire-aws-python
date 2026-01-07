@@ -1,4 +1,4 @@
-"""Security resources: KmsKey, ReplicationRole, KmsKeyAlias."""
+"""Security resources: KmsKey, KmsKeyAlias, ReplicationRole."""
 
 from . import *  # noqa: F403
 
@@ -20,6 +20,12 @@ class KmsKey(kms.Key):
     resource: kms.Key
     enable_key_rotation = True
     key_policy = KmsKeyKeyPolicy
+
+
+class KmsKeyAlias(kms.Alias):
+    resource: kms.Alias
+    alias_name = Sub('alias/${AWS::StackName}-${AWS::AccountId}-kms-key')
+    target_key_id = KmsKey
 
 
 class ReplicationRoleAllowStatement0(PolicyStatement):
@@ -94,9 +100,3 @@ class ReplicationRole(iam.Role):
     description = 'IAM Role used by S3 bucket replication'
     assume_role_policy_document = ReplicationRoleAssumeRolePolicyDocument
     policies = [ReplicationRolePolicy]
-
-
-class KmsKeyAlias(kms.Alias):
-    resource: kms.Alias
-    alias_name = Sub('alias/${AWS::StackName}-${AWS::AccountId}-kms-key')
-    target_key_id = KmsKey

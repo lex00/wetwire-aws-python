@@ -1,6 +1,90 @@
-"""Storage resources: ContentReplicaBucket, CloudFrontLogsLogBucket, ContentLogBucket, ContentBucket, CloudFrontLogsReplicaBucket, CloudFrontLogsBucket, ContentReplicaBucketPolicyPolicy, CloudFrontLogsReplicaBucketPolicyPolicy, ContentLogBucketPolicyPolicy, CloudFrontLogsLogBucketPolicyPolicy, ContentBucketPolicyPolicy, CloudFrontLogsBucketPolicyPolicy."""
+"""Storage resources: CloudFrontLogsBucketPolicyPolicy, CloudFrontLogsLogBucketPolicyPolicy, ContentReplicaBucket, ContentReplicaBucketPolicyPolicy, CloudFrontLogsLogBucket, CloudFrontLogsReplicaBucket, CloudFrontLogsBucket, CloudFrontLogsReplicaBucketPolicyPolicy, ContentBucketPolicyPolicy, ContentLogBucket, ContentBucket, ContentLogBucketPolicyPolicy."""
 
 from . import *  # noqa: F403
+
+
+class CloudFrontLogsBucketPolicyPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class CloudFrontLogsBucketPolicyPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class CloudFrontLogsBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [CloudFrontLogsBucketPolicyPolicyDenyStatement0, CloudFrontLogsBucketPolicyPolicyAllowStatement1]
+
+
+class CloudFrontLogsBucketPolicyPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
+    bucket = CloudFrontLogsBucket
+    policy_document = CloudFrontLogsBucketPolicyPolicyPolicyDocument
+
+
+class CloudFrontLogsLogBucketPolicyPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class CloudFrontLogsLogBucketPolicyPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class CloudFrontLogsLogBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [CloudFrontLogsLogBucketPolicyPolicyDenyStatement0, CloudFrontLogsLogBucketPolicyPolicyAllowStatement1]
+
+
+class CloudFrontLogsLogBucketPolicyPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
+    bucket = CloudFrontLogsLogBucket
+    policy_document = CloudFrontLogsLogBucketPolicyPolicyPolicyDocument
 
 
 class ContentReplicaBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
@@ -33,6 +117,48 @@ class ContentReplicaBucket(s3.Bucket):
     object_lock_enabled = False
     public_access_block_configuration = ContentReplicaBucketPublicAccessBlockConfiguration
     versioning_configuration = ContentReplicaBucketDeleteMarkerReplication
+
+
+class ContentReplicaBucketPolicyPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class ContentReplicaBucketPolicyPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class ContentReplicaBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [ContentReplicaBucketPolicyPolicyDenyStatement0, ContentReplicaBucketPolicyPolicyAllowStatement1]
+
+
+class ContentReplicaBucketPolicyPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
+    bucket = ContentReplicaBucket
+    policy_document = ContentReplicaBucketPolicyPolicyPolicyDocument
 
 
 class CloudFrontLogsLogBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
@@ -80,6 +206,174 @@ class CloudFrontLogsLogBucket(s3.Bucket):
     object_lock_enabled = True
     public_access_block_configuration = CloudFrontLogsLogBucketPublicAccessBlockConfiguration
     versioning_configuration = CloudFrontLogsLogBucketDeleteMarkerReplication
+
+
+class CloudFrontLogsReplicaBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
+    sse_algorithm = s3.ServerSideEncryption.AES256
+
+
+class CloudFrontLogsReplicaBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
+    server_side_encryption_by_default = CloudFrontLogsReplicaBucketServerSideEncryptionByDefault
+
+
+class CloudFrontLogsReplicaBucketBucketEncryption(s3.Bucket.BucketEncryption):
+    server_side_encryption_configuration = [CloudFrontLogsReplicaBucketServerSideEncryptionRule]
+
+
+class CloudFrontLogsReplicaBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
+    block_public_acls = True
+    block_public_policy = True
+    ignore_public_acls = True
+    restrict_public_buckets = True
+
+
+class CloudFrontLogsReplicaBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
+    status = s3.BucketVersioningStatus.ENABLED
+
+
+class CloudFrontLogsReplicaBucket(s3.Bucket):
+    resource: s3.Bucket
+    bucket_encryption = CloudFrontLogsReplicaBucketBucketEncryption
+    bucket_name = Sub('${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}')
+    object_lock_enabled = False
+    public_access_block_configuration = CloudFrontLogsReplicaBucketPublicAccessBlockConfiguration
+    versioning_configuration = CloudFrontLogsReplicaBucketDeleteMarkerReplication
+
+
+class CloudFrontLogsBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
+    sse_algorithm = s3.ServerSideEncryption.AES256
+
+
+class CloudFrontLogsBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
+    server_side_encryption_by_default = CloudFrontLogsBucketServerSideEncryptionByDefault
+
+
+class CloudFrontLogsBucketBucketEncryption(s3.Bucket.BucketEncryption):
+    server_side_encryption_configuration = [CloudFrontLogsBucketServerSideEncryptionRule]
+
+
+class CloudFrontLogsBucketLoggingConfiguration(s3.Bucket.LoggingConfiguration):
+    destination_bucket_name = CloudFrontLogsLogBucket
+
+
+class CloudFrontLogsBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
+    block_public_acls = True
+    block_public_policy = True
+    ignore_public_acls = True
+    restrict_public_buckets = True
+
+
+class CloudFrontLogsBucketReplicationDestination(s3.Bucket.ReplicationDestination):
+    bucket = CloudFrontLogsReplicaBucket.Arn
+
+
+class CloudFrontLogsBucketReplicationRule(s3.Bucket.ReplicationRule):
+    destination = CloudFrontLogsBucketReplicationDestination
+    status = s3.BucketVersioningStatus.ENABLED
+
+
+class CloudFrontLogsBucketReplicationConfiguration(s3.Bucket.ReplicationConfiguration):
+    role = CloudFrontLogsReplicationRole.Arn
+    rules = [CloudFrontLogsBucketReplicationRule]
+
+
+class CloudFrontLogsBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
+    status = s3.BucketVersioningStatus.ENABLED
+
+
+class CloudFrontLogsBucket(s3.Bucket):
+    resource: s3.Bucket
+    bucket_encryption = CloudFrontLogsBucketBucketEncryption
+    bucket_name = Sub('${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}')
+    logging_configuration = CloudFrontLogsBucketLoggingConfiguration
+    object_lock_enabled = False
+    public_access_block_configuration = CloudFrontLogsBucketPublicAccessBlockConfiguration
+    replication_configuration = CloudFrontLogsBucketReplicationConfiguration
+    versioning_configuration = CloudFrontLogsBucketDeleteMarkerReplication
+
+
+class CloudFrontLogsReplicaBucketPolicyPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class CloudFrontLogsReplicaBucketPolicyPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class CloudFrontLogsReplicaBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [CloudFrontLogsReplicaBucketPolicyPolicyDenyStatement0, CloudFrontLogsReplicaBucketPolicyPolicyAllowStatement1]
+
+
+class CloudFrontLogsReplicaBucketPolicyPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
+    bucket = CloudFrontLogsReplicaBucket
+    policy_document = CloudFrontLogsReplicaBucketPolicyPolicyPolicyDocument
+
+
+class ContentBucketPolicyPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class ContentBucketPolicyPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class ContentBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [ContentBucketPolicyPolicyDenyStatement0, ContentBucketPolicyPolicyAllowStatement1]
+
+
+class ContentBucketPolicyPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
+    bucket = ContentBucket
+    policy_document = ContentBucketPolicyPolicyPolicyDocument
 
 
 class ContentLogBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
@@ -181,174 +475,6 @@ class ContentBucket(s3.Bucket):
     versioning_configuration = ContentBucketDeleteMarkerReplication
 
 
-class CloudFrontLogsReplicaBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
-    sse_algorithm = s3.ServerSideEncryption.AES256
-
-
-class CloudFrontLogsReplicaBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
-    server_side_encryption_by_default = CloudFrontLogsReplicaBucketServerSideEncryptionByDefault
-
-
-class CloudFrontLogsReplicaBucketBucketEncryption(s3.Bucket.BucketEncryption):
-    server_side_encryption_configuration = [CloudFrontLogsReplicaBucketServerSideEncryptionRule]
-
-
-class CloudFrontLogsReplicaBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
-    block_public_acls = True
-    block_public_policy = True
-    ignore_public_acls = True
-    restrict_public_buckets = True
-
-
-class CloudFrontLogsReplicaBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
-    status = s3.BucketVersioningStatus.ENABLED
-
-
-class CloudFrontLogsReplicaBucket(s3.Bucket):
-    resource: s3.Bucket
-    bucket_encryption = CloudFrontLogsReplicaBucketBucketEncryption
-    bucket_name = Sub('${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}')
-    object_lock_enabled = False
-    public_access_block_configuration = CloudFrontLogsReplicaBucketPublicAccessBlockConfiguration
-    versioning_configuration = CloudFrontLogsReplicaBucketDeleteMarkerReplication
-
-
-class CloudFrontLogsBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
-    sse_algorithm = s3.ServerSideEncryption.AES256
-
-
-class CloudFrontLogsBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
-    server_side_encryption_by_default = CloudFrontLogsBucketServerSideEncryptionByDefault
-
-
-class CloudFrontLogsBucketBucketEncryption(s3.Bucket.BucketEncryption):
-    server_side_encryption_configuration = [CloudFrontLogsBucketServerSideEncryptionRule]
-
-
-class CloudFrontLogsBucketLoggingConfiguration(s3.Bucket.LoggingConfiguration):
-    destination_bucket_name = CloudFrontLogsLogBucket
-
-
-class CloudFrontLogsBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
-    block_public_acls = True
-    block_public_policy = True
-    ignore_public_acls = True
-    restrict_public_buckets = True
-
-
-class CloudFrontLogsBucketReplicationDestination(s3.Bucket.ReplicationDestination):
-    bucket = CloudFrontLogsReplicaBucket.Arn
-
-
-class CloudFrontLogsBucketReplicationRule(s3.Bucket.ReplicationRule):
-    destination = CloudFrontLogsBucketReplicationDestination
-    status = s3.BucketVersioningStatus.ENABLED
-
-
-class CloudFrontLogsBucketReplicationConfiguration(s3.Bucket.ReplicationConfiguration):
-    role = CloudFrontLogsReplicationRole.Arn
-    rules = [CloudFrontLogsBucketReplicationRule]
-
-
-class CloudFrontLogsBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
-    status = s3.BucketVersioningStatus.ENABLED
-
-
-class CloudFrontLogsBucket(s3.Bucket):
-    resource: s3.Bucket
-    bucket_encryption = CloudFrontLogsBucketBucketEncryption
-    bucket_name = Sub('${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}')
-    logging_configuration = CloudFrontLogsBucketLoggingConfiguration
-    object_lock_enabled = False
-    public_access_block_configuration = CloudFrontLogsBucketPublicAccessBlockConfiguration
-    replication_configuration = CloudFrontLogsBucketReplicationConfiguration
-    versioning_configuration = CloudFrontLogsBucketDeleteMarkerReplication
-
-
-class ContentReplicaBucketPolicyPolicyDenyStatement0(DenyStatement):
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class ContentReplicaBucketPolicyPolicyAllowStatement1(PolicyStatement):
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class ContentReplicaBucketPolicyPolicyPolicyDocument(PolicyDocument):
-    statement = [ContentReplicaBucketPolicyPolicyDenyStatement0, ContentReplicaBucketPolicyPolicyAllowStatement1]
-
-
-class ContentReplicaBucketPolicyPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
-    bucket = ContentReplicaBucket
-    policy_document = ContentReplicaBucketPolicyPolicyPolicyDocument
-
-
-class CloudFrontLogsReplicaBucketPolicyPolicyDenyStatement0(DenyStatement):
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class CloudFrontLogsReplicaBucketPolicyPolicyAllowStatement1(PolicyStatement):
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class CloudFrontLogsReplicaBucketPolicyPolicyPolicyDocument(PolicyDocument):
-    statement = [CloudFrontLogsReplicaBucketPolicyPolicyDenyStatement0, CloudFrontLogsReplicaBucketPolicyPolicyAllowStatement1]
-
-
-class CloudFrontLogsReplicaBucketPolicyPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
-    bucket = CloudFrontLogsReplicaBucket
-    policy_document = CloudFrontLogsReplicaBucketPolicyPolicyPolicyDocument
-
-
 class ContentLogBucketPolicyPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
@@ -389,129 +515,3 @@ class ContentLogBucketPolicyPolicy(s3.BucketPolicy):
     resource: s3.BucketPolicy
     bucket = ContentLogBucket
     policy_document = ContentLogBucketPolicyPolicyPolicyDocument
-
-
-class CloudFrontLogsLogBucketPolicyPolicyDenyStatement0(DenyStatement):
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class CloudFrontLogsLogBucketPolicyPolicyAllowStatement1(PolicyStatement):
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class CloudFrontLogsLogBucketPolicyPolicyPolicyDocument(PolicyDocument):
-    statement = [CloudFrontLogsLogBucketPolicyPolicyDenyStatement0, CloudFrontLogsLogBucketPolicyPolicyAllowStatement1]
-
-
-class CloudFrontLogsLogBucketPolicyPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
-    bucket = CloudFrontLogsLogBucket
-    policy_document = CloudFrontLogsLogBucketPolicyPolicyPolicyDocument
-
-
-class ContentBucketPolicyPolicyDenyStatement0(DenyStatement):
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class ContentBucketPolicyPolicyAllowStatement1(PolicyStatement):
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class ContentBucketPolicyPolicyPolicyDocument(PolicyDocument):
-    statement = [ContentBucketPolicyPolicyDenyStatement0, ContentBucketPolicyPolicyAllowStatement1]
-
-
-class ContentBucketPolicyPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
-    bucket = ContentBucket
-    policy_document = ContentBucketPolicyPolicyPolicyDocument
-
-
-class CloudFrontLogsBucketPolicyPolicyDenyStatement0(DenyStatement):
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class CloudFrontLogsBucketPolicyPolicyAllowStatement1(PolicyStatement):
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class CloudFrontLogsBucketPolicyPolicyPolicyDocument(PolicyDocument):
-    statement = [CloudFrontLogsBucketPolicyPolicyDenyStatement0, CloudFrontLogsBucketPolicyPolicyAllowStatement1]
-
-
-class CloudFrontLogsBucketPolicyPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
-    bucket = CloudFrontLogsBucket
-    policy_document = CloudFrontLogsBucketPolicyPolicyPolicyDocument

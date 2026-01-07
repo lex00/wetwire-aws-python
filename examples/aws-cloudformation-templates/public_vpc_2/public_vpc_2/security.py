@@ -1,45 +1,6 @@
-"""Security resources: ECSTaskExecutionRole, ECSRole."""
+"""Security resources: ECSRole, ECSTaskExecutionRole."""
 
 from . import *  # noqa: F403
-
-
-class ECSTaskExecutionRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['ecs-tasks.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class ECSTaskExecutionRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [ECSTaskExecutionRoleAllowStatement0]
-
-
-class ECSTaskExecutionRoleAllowStatement0_1(PolicyStatement):
-    action = [
-        'ecr:GetAuthorizationToken',
-        'ecr:BatchCheckLayerAvailability',
-        'ecr:GetDownloadUrlForLayer',
-        'ecr:BatchGetImage',
-        'logs:CreateLogStream',
-        'logs:PutLogEvents',
-    ]
-    resource_arn = '*'
-
-
-class ECSTaskExecutionRolePolicies0PolicyDocument(PolicyDocument):
-    statement = [ECSTaskExecutionRoleAllowStatement0_1]
-
-
-class ECSTaskExecutionRolePolicy(iam.User.Policy):
-    policy_name = 'AmazonECSTaskExecutionRolePolicy'
-    policy_document = ECSTaskExecutionRolePolicies0PolicyDocument
-
-
-class ECSTaskExecutionRole(iam.Role):
-    resource: iam.Role
-    assume_role_policy_document = ECSTaskExecutionRoleAssumeRolePolicyDocument
-    path = '/'
-    policies = [ECSTaskExecutionRolePolicy]
 
 
 class ECSRoleAllowStatement0(PolicyStatement):
@@ -85,3 +46,42 @@ class ECSRole(iam.Role):
     assume_role_policy_document = ECSRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ECSRolePolicy]
+
+
+class ECSTaskExecutionRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['ecs-tasks.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class ECSTaskExecutionRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [ECSTaskExecutionRoleAllowStatement0]
+
+
+class ECSTaskExecutionRoleAllowStatement0_1(PolicyStatement):
+    action = [
+        'ecr:GetAuthorizationToken',
+        'ecr:BatchCheckLayerAvailability',
+        'ecr:GetDownloadUrlForLayer',
+        'ecr:BatchGetImage',
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+    ]
+    resource_arn = '*'
+
+
+class ECSTaskExecutionRolePolicies0PolicyDocument(PolicyDocument):
+    statement = [ECSTaskExecutionRoleAllowStatement0_1]
+
+
+class ECSTaskExecutionRolePolicy(iam.User.Policy):
+    policy_name = 'AmazonECSTaskExecutionRolePolicy'
+    policy_document = ECSTaskExecutionRolePolicies0PolicyDocument
+
+
+class ECSTaskExecutionRole(iam.Role):
+    resource: iam.Role
+    assume_role_policy_document = ECSTaskExecutionRoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [ECSTaskExecutionRolePolicy]

@@ -1,6 +1,24 @@
-"""Network resources: ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkVPCESPermission, ASCPrivateLinkTargetGroup, ASCPrivateLinkListener."""
+"""Network resources: ASCPrivateLinkTargetGroup, ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkVPCESPermission, ASCPrivateLinkListener."""
 
 from . import *  # noqa: F403
+
+
+class ASCPrivateLinkTargetGroupTargetDescription(elasticloadbalancingv2.TargetGroup.TargetDescription):
+    availability_zone = If("IpInVpc", AWS_NO_VALUE, 'all')
+    id = IP
+    port = Port
+
+
+class ASCPrivateLinkTargetGroup(elasticloadbalancingv2.TargetGroup):
+    resource: elasticloadbalancingv2.TargetGroup
+    vpc_id = VpcId
+    protocol = If("SapUseHttps", 'TLS', 'TCP')
+    port = 443
+    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
+    targets = [ASCPrivateLinkTargetGroupTargetDescription]
+    health_check_path = HealthCheckPath
+    health_check_protocol = Protocol
+    depends_on = [ASCPrivateLinkCertificate]
 
 
 class ASCPrivateLinkNLBTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
@@ -27,24 +45,6 @@ class ASCPrivateLinkVPCESPermission(ec2.VPCEndpointServicePermissions):
     resource: ec2.VPCEndpointServicePermissions
     allowed_principals = ['appflow.amazonaws.com']
     service_id = ASCPrivateLinkVPCES
-
-
-class ASCPrivateLinkTargetGroupTargetDescription(elasticloadbalancingv2.TargetGroup.TargetDescription):
-    availability_zone = If("IpInVpc", AWS_NO_VALUE, 'all')
-    id = IP
-    port = Port
-
-
-class ASCPrivateLinkTargetGroup(elasticloadbalancingv2.TargetGroup):
-    resource: elasticloadbalancingv2.TargetGroup
-    vpc_id = VpcId
-    protocol = If("SapUseHttps", 'TLS', 'TCP')
-    port = 443
-    target_type = elasticloadbalancingv2.TargetTypeEnum.IP
-    targets = [ASCPrivateLinkTargetGroupTargetDescription]
-    health_check_path = HealthCheckPath
-    health_check_protocol = Protocol
-    depends_on = [ASCPrivateLinkCertificate]
 
 
 class ASCPrivateLinkListenerCertificate(elasticloadbalancingv2.ListenerCertificate.Certificate):

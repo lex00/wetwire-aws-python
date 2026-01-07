@@ -1,40 +1,13 @@
-"""Network resources: PeerRoute2, PeerIngressRule2, PeerRoute5, PeerIngressRule3, PeerIngressRule5, PeerRoute3, PeerRoute6, PeerRoute1, PeerIngressRule1, PeerIngressRule4, PeerRoute4, PeerIngressRule6."""
+"""Network resources: PeerRoute1, PeerIngressRule5, PeerRoute6, PeerIngressRule6, PeerRoute3, PeerIngressRule1, PeerRoute5, PeerIngressRule2, PeerRoute2, PeerIngressRule4, PeerRoute4, PeerIngressRule3."""
 
 from . import *  # noqa: F403
 
 
-class PeerRoute2(ec2.Route):
+class PeerRoute1(ec2.Route):
     resource: ec2.Route
-    route_table_id = Select(1, Split(',', RouteTableIds))
+    route_table_id = Select(0, Split(',', RouteTableIds))
     destination_cidr_block = PeerVPCCIDR
     vpc_peering_connection_id = VPCPeeringConnectionId
-    condition = '2RouteTableCondition'
-
-
-class PeerIngressRule2(ec2.SecurityGroupIngress):
-    resource: ec2.SecurityGroupIngress
-    ip_protocol = '-1'
-    description = Sub('LAB - Allow All Inbound Communications from VPC Peer CIDR, ${PeerName}')
-    group_id = Select(1, SecurityGroupIds)
-    cidr_ip = PeerVPCCIDR
-    condition = '2SecurityGroupCondition'
-
-
-class PeerRoute5(ec2.Route):
-    resource: ec2.Route
-    route_table_id = Select(4, Split(',', RouteTableIds))
-    destination_cidr_block = PeerVPCCIDR
-    vpc_peering_connection_id = VPCPeeringConnectionId
-    condition = '5RouteTableCondition'
-
-
-class PeerIngressRule3(ec2.SecurityGroupIngress):
-    resource: ec2.SecurityGroupIngress
-    ip_protocol = '-1'
-    description = Sub('LAB - Allow All Inbound Communications from VPC Peer, ${PeerName}')
-    group_id = Select(2, SecurityGroupIds)
-    cidr_ip = PeerVPCCIDR
-    condition = '3SecurityGroupCondition'
 
 
 class PeerIngressRule5(ec2.SecurityGroupIngress):
@@ -46,14 +19,6 @@ class PeerIngressRule5(ec2.SecurityGroupIngress):
     condition = '5SecurityGroupCondition'
 
 
-class PeerRoute3(ec2.Route):
-    resource: ec2.Route
-    route_table_id = Select(2, Split(',', RouteTableIds))
-    destination_cidr_block = PeerVPCCIDR
-    vpc_peering_connection_id = VPCPeeringConnectionId
-    condition = '3RouteTableCondition'
-
-
 class PeerRoute6(ec2.Route):
     resource: ec2.Route
     route_table_id = Select(5, Split(',', RouteTableIds))
@@ -62,11 +27,21 @@ class PeerRoute6(ec2.Route):
     condition = '6RouteTableCondition'
 
 
-class PeerRoute1(ec2.Route):
+class PeerIngressRule6(ec2.SecurityGroupIngress):
+    resource: ec2.SecurityGroupIngress
+    ip_protocol = '-1'
+    description = Sub('LAB - Allow All Inbound Communications from VPC Peer, ${PeerName}')
+    group_id = Select(5, SecurityGroupIds)
+    cidr_ip = PeerVPCCIDR
+    condition = '6SecurityGroupCondition'
+
+
+class PeerRoute3(ec2.Route):
     resource: ec2.Route
-    route_table_id = Select(0, Split(',', RouteTableIds))
+    route_table_id = Select(2, Split(',', RouteTableIds))
     destination_cidr_block = PeerVPCCIDR
     vpc_peering_connection_id = VPCPeeringConnectionId
+    condition = '3RouteTableCondition'
 
 
 class PeerIngressRule1(ec2.SecurityGroupIngress):
@@ -75,6 +50,31 @@ class PeerIngressRule1(ec2.SecurityGroupIngress):
     description = Sub('LAB - Allow All Inbound Communications from VPC Peer, ${PeerName}')
     group_id = Select(0, SecurityGroupIds)
     cidr_ip = PeerVPCCIDR
+
+
+class PeerRoute5(ec2.Route):
+    resource: ec2.Route
+    route_table_id = Select(4, Split(',', RouteTableIds))
+    destination_cidr_block = PeerVPCCIDR
+    vpc_peering_connection_id = VPCPeeringConnectionId
+    condition = '5RouteTableCondition'
+
+
+class PeerIngressRule2(ec2.SecurityGroupIngress):
+    resource: ec2.SecurityGroupIngress
+    ip_protocol = '-1'
+    description = Sub('LAB - Allow All Inbound Communications from VPC Peer CIDR, ${PeerName}')
+    group_id = Select(1, SecurityGroupIds)
+    cidr_ip = PeerVPCCIDR
+    condition = '2SecurityGroupCondition'
+
+
+class PeerRoute2(ec2.Route):
+    resource: ec2.Route
+    route_table_id = Select(1, Split(',', RouteTableIds))
+    destination_cidr_block = PeerVPCCIDR
+    vpc_peering_connection_id = VPCPeeringConnectionId
+    condition = '2RouteTableCondition'
 
 
 class PeerIngressRule4(ec2.SecurityGroupIngress):
@@ -94,10 +94,10 @@ class PeerRoute4(ec2.Route):
     condition = '4RouteTableCondition'
 
 
-class PeerIngressRule6(ec2.SecurityGroupIngress):
+class PeerIngressRule3(ec2.SecurityGroupIngress):
     resource: ec2.SecurityGroupIngress
     ip_protocol = '-1'
     description = Sub('LAB - Allow All Inbound Communications from VPC Peer, ${PeerName}')
-    group_id = Select(5, SecurityGroupIds)
+    group_id = Select(2, SecurityGroupIds)
     cidr_ip = PeerVPCCIDR
-    condition = '6SecurityGroupCondition'
+    condition = '3SecurityGroupCondition'

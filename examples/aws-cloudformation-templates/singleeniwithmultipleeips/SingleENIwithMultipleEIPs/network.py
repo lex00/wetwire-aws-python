@@ -1,11 +1,6 @@
-"""Network resources: EIP2, EIP1, ENI, Association1, Association2."""
+"""Network resources: EIP1, ENI, EIP2, Association2, Association1."""
 
 from . import *  # noqa: F403
-
-
-class EIP2(ec2.EIP):
-    resource: ec2.EIP
-    domain = 'vpc'
 
 
 class EIP1(ec2.EIP):
@@ -20,12 +15,9 @@ class ENI(ec2.NetworkInterface):
     subnet_id = Select(0, Subnet)
 
 
-class Association1(ec2.EIPAssociation):
-    resource: ec2.EIPAssociation
-    allocation_id = EIP1.AllocationId
-    network_interface_id = ENI
-    private_ip_address = Select(0, ENI.SecondaryPrivateIpAddresses)
-    depends_on = [ENI, EIP1]
+class EIP2(ec2.EIP):
+    resource: ec2.EIP
+    domain = 'vpc'
 
 
 class Association2(ec2.EIPAssociation):
@@ -34,3 +26,11 @@ class Association2(ec2.EIPAssociation):
     network_interface_id = ENI
     private_ip_address = Select(1, ENI.SecondaryPrivateIpAddresses)
     depends_on = [ENI, EIP2]
+
+
+class Association1(ec2.EIPAssociation):
+    resource: ec2.EIPAssociation
+    allocation_id = EIP1.AllocationId
+    network_interface_id = ENI
+    private_ip_address = Select(0, ENI.SecondaryPrivateIpAddresses)
+    depends_on = [ENI, EIP1]

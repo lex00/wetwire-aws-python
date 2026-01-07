@@ -1,27 +1,6 @@
-"""Compute resources: TestResourceHandler, JwtResourceHandler, TestResourcePermission, JwtResourceRootPermission, TestResourceRootPermission, JwtResourcePermission."""
+"""Compute resources: JwtResourceHandler, TestResourceHandler, TestResourcePermission, JwtResourceRootPermission, TestResourceRootPermission, JwtResourcePermission."""
 
 from . import *  # noqa: F403
-
-
-class TestResourceHandlerContent(lambda_.LayerVersion.Content):
-    s3_bucket = LambdaCodeS3Bucket
-    s3_key = LambdaCodeS3Key
-
-
-class TestResourceHandlerEnvironment(lambda_.Function.Environment):
-    variables = {
-        'TABLE_NAME': TestTable,
-    }
-
-
-class TestResourceHandler(lambda_.Function):
-    resource: lambda_.Function
-    handler = 'bootstrap'
-    function_name = Sub('${AppName}-test-handler')
-    runtime = lambda_.Runtime.PROVIDED_AL2023
-    code = TestResourceHandlerContent
-    role = TestResourceHandlerRole.Arn
-    environment = TestResourceHandlerEnvironment
 
 
 class JwtResourceHandlerContent(lambda_.LayerVersion.Content):
@@ -47,6 +26,27 @@ class JwtResourceHandler(lambda_.Function):
     code = JwtResourceHandlerContent
     role = JwtResourceHandlerRole.Arn
     environment = JwtResourceHandlerEnvironment
+
+
+class TestResourceHandlerContent(lambda_.LayerVersion.Content):
+    s3_bucket = LambdaCodeS3Bucket
+    s3_key = LambdaCodeS3Key
+
+
+class TestResourceHandlerEnvironment(lambda_.Function.Environment):
+    variables = {
+        'TABLE_NAME': TestTable,
+    }
+
+
+class TestResourceHandler(lambda_.Function):
+    resource: lambda_.Function
+    handler = 'bootstrap'
+    function_name = Sub('${AppName}-test-handler')
+    runtime = lambda_.Runtime.PROVIDED_AL2023
+    code = TestResourceHandlerContent
+    role = TestResourceHandlerRole.Arn
+    environment = TestResourceHandlerEnvironment
 
 
 class TestResourcePermission(lambda_.Permission):

@@ -3,78 +3,6 @@
 from . import *  # noqa: F403
 
 
-class InstanceAZ(CloudFormationResource):
-    # Unknown resource type: Custom::InstanceAZ
-    resource: CloudFormationResource
-    region = AWS_REGION
-    service_token = InstanceAZFunction.Arn
-
-
-class SubnetAPublic(ec2.Subnet):
-    resource: ec2.Subnet
-    availability_zone = InstanceAZ.AvailabilityZone
-    cidr_block = '172.31.0.0/24'
-    map_public_ip_on_launch = True
-    vpc_id = VPC
-
-
-class IoTThing(CloudFormationResource):
-    # Unknown resource type: Custom::IoTThing
-    resource: CloudFormationResource
-    service_token = CreateThingFunction.Arn
-    thing_name = Join('_', [
-    CoreName,
-    'Core',
-])
-
-
-class GreengrassCoreDefinition(greengrass.CoreDefinition):
-    resource: greengrass.CoreDefinition
-    name = Join('_', [
-    CoreName,
-    'Core',
-])
-
-
-class GreengrassCoreDefinitionVersionCore(greengrass.CoreDefinition.Core):
-    certificate_arn = Join(':', [
-    'arn:',
-    AWS_PARTITION,
-    ':iot',
-    AWS_REGION,
-    AWS_ACCOUNT_ID,
-    Join('/', [
-    'cert',
-    IoTThing.certificateId,
-]),
-])
-    id = Join('_', [
-    CoreName,
-    'Core',
-])
-    sync_shadow = 'false'
-    thing_arn = Join(':', [
-    'arn:',
-    AWS_PARTITION,
-    ':iot',
-    AWS_REGION,
-    AWS_ACCOUNT_ID,
-    Join('/', [
-    'thing',
-    Join('_', [
-    CoreName,
-    'Core',
-]),
-]),
-])
-
-
-class GreengrassCoreDefinitionVersion(greengrass.CoreDefinitionVersion):
-    resource: greengrass.CoreDefinitionVersion
-    core_definition_id = GreengrassCoreDefinition
-    cores = [GreengrassCoreDefinitionVersionCore]
-
-
 class FunctionDefinitionExecution(greengrass.FunctionDefinition.Execution):
     isolation_mode = 'GreengrassContainer'
 
@@ -130,6 +58,84 @@ class FunctionDefinition(greengrass.FunctionDefinition):
     name = 'FunctionDefinition'
 
 
+class GreengrassCoreDefinition(greengrass.CoreDefinition):
+    resource: greengrass.CoreDefinition
+    name = Join('_', [
+    CoreName,
+    'Core',
+])
+
+
+class InstanceAZ(CloudFormationResource):
+    # Unknown resource type: Custom::InstanceAZ
+    resource: CloudFormationResource
+    region = AWS_REGION
+    service_token = InstanceAZFunction.Arn
+
+
+class SubnetAPublic(ec2.Subnet):
+    resource: ec2.Subnet
+    availability_zone = InstanceAZ.AvailabilityZone
+    cidr_block = '172.31.0.0/24'
+    map_public_ip_on_launch = True
+    vpc_id = VPC
+
+
+class RouteTableAssociationAPublic(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = RouteTablePublic
+    subnet_id = SubnetAPublic
+
+
+class IoTThing(CloudFormationResource):
+    # Unknown resource type: Custom::IoTThing
+    resource: CloudFormationResource
+    service_token = CreateThingFunction.Arn
+    thing_name = Join('_', [
+    CoreName,
+    'Core',
+])
+
+
+class GreengrassCoreDefinitionVersionCore(greengrass.CoreDefinition.Core):
+    certificate_arn = Join(':', [
+    'arn:',
+    AWS_PARTITION,
+    ':iot',
+    AWS_REGION,
+    AWS_ACCOUNT_ID,
+    Join('/', [
+    'cert',
+    IoTThing.certificateId,
+]),
+])
+    id = Join('_', [
+    CoreName,
+    'Core',
+])
+    sync_shadow = 'false'
+    thing_arn = Join(':', [
+    'arn:',
+    AWS_PARTITION,
+    ':iot',
+    AWS_REGION,
+    AWS_ACCOUNT_ID,
+    Join('/', [
+    'thing',
+    Join('_', [
+    CoreName,
+    'Core',
+]),
+]),
+])
+
+
+class GreengrassCoreDefinitionVersion(greengrass.CoreDefinitionVersion):
+    resource: greengrass.CoreDefinitionVersion
+    core_definition_id = GreengrassCoreDefinition
+    cores = [GreengrassCoreDefinitionVersionCore]
+
+
 class SubscriptionDefinitionSubscription(greengrass.SubscriptionDefinitionVersion.Subscription):
     id = 'Subscription1'
     source = 'cloud'
@@ -181,6 +187,18 @@ class GreengrassGroup(greengrass.Group):
     initial_version = GreengrassGroupGroupVersion
     name = CoreName
     role_arn = GreengrassResourceRole.Arn
+
+
+class GroupDeploymentReset(CloudFormationResource):
+    # Unknown resource type: Custom::GroupDeploymentReset
+    resource: CloudFormationResource
+    region = AWS_REGION
+    service_token = GroupDeploymentResetFunction.Arn
+    thing_name = Join('_', [
+    CoreName,
+    'Core',
+])
+    depends_on = [GreengrassGroup]
 
 
 class GreengrassInstanceAssociationParameter(ec2.Instance.AssociationParameter):
@@ -268,22 +286,4 @@ cp greengrass.service /etc/systemd/system
 systemctl enable greengrass.service
 reboot
 """))
-    depends_on = [GreengrassGroup]
-
-
-class RouteTableAssociationAPublic(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = RouteTablePublic
-    subnet_id = SubnetAPublic
-
-
-class GroupDeploymentReset(CloudFormationResource):
-    # Unknown resource type: Custom::GroupDeploymentReset
-    resource: CloudFormationResource
-    region = AWS_REGION
-    service_token = GroupDeploymentResetFunction.Arn
-    thing_name = Join('_', [
-    CoreName,
-    'Core',
-])
     depends_on = [GreengrassGroup]

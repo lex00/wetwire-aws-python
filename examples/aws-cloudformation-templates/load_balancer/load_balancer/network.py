@@ -1,4 +1,4 @@
-"""Network resources: LoadBalancerSecurityGroup, LoadBalancerEgress, TargetGroup, LoadBalancer, LoadBalancerListener."""
+"""Network resources: LoadBalancerSecurityGroup, LoadBalancer, LoadBalancerEgress, TargetGroup, LoadBalancerListener."""
 
 from . import *  # noqa: F403
 
@@ -16,6 +16,25 @@ class LoadBalancerSecurityGroup(ec2.SecurityGroup):
     group_description = 'Automatically created Security Group for ELB'
     security_group_ingress = [LoadBalancerSecurityGroupEgress]
     vpc_id = VPCId
+
+
+class LoadBalancerTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'deletion_protection.enabled'
+    value = False
+
+
+class LoadBalancerTargetGroupAttribute1(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'routing.http.drop_invalid_header_fields.enabled'
+    value = True
+
+
+class LoadBalancer(elasticloadbalancingv2.LoadBalancer):
+    resource: elasticloadbalancingv2.LoadBalancer
+    load_balancer_attributes = [LoadBalancerTargetGroupAttribute, LoadBalancerTargetGroupAttribute1]
+    scheme = 'internet-facing'
+    security_groups = [LoadBalancerSecurityGroup.GroupId]
+    subnets = [PublicSubnet1, PublicSubnet2]
+    type_ = 'application'
 
 
 class LoadBalancerEgress(ec2.SecurityGroupEgress):
@@ -45,25 +64,6 @@ class TargetGroup(elasticloadbalancingv2.TargetGroup):
     target_group_attributes = [TargetGroupTargetGroupAttribute, TargetGroupTargetGroupAttribute1]
     target_type = elasticloadbalancingv2.TargetTypeEnum.IP
     vpc_id = VPCId
-
-
-class LoadBalancerTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
-    key = 'deletion_protection.enabled'
-    value = False
-
-
-class LoadBalancerTargetGroupAttribute1(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
-    key = 'routing.http.drop_invalid_header_fields.enabled'
-    value = True
-
-
-class LoadBalancer(elasticloadbalancingv2.LoadBalancer):
-    resource: elasticloadbalancingv2.LoadBalancer
-    load_balancer_attributes = [LoadBalancerTargetGroupAttribute, LoadBalancerTargetGroupAttribute1]
-    scheme = 'internet-facing'
-    security_groups = [LoadBalancerSecurityGroup.GroupId]
-    subnets = [PublicSubnet1, PublicSubnet2]
-    type_ = 'application'
 
 
 class LoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):
