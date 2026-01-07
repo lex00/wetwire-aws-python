@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Inheritance-based resource classes now include `resource:` annotation for `auto_decorate` detection (#48)
+  - Imported examples were producing empty CloudFormation templates
+  - Resources now have both inheritance (for `_resource_type`) and annotation (for `auto_decorate`)
+- Added build verification step to `import_aws_samples.py` to catch resource registration regressions
+- Fixed `test_version` test to not check for hardcoded version number
+
 ## [1.6.0] - 2026-01-05
 
 ### Added

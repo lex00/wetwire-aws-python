@@ -511,7 +511,75 @@ def main() -> int:
         else:
             warn("Skipping validation (--skip-validation flag)")
 
-        # Step 10: Report
+        # Step 10: Verify build produces non-empty templates
+        header("Verifying Build Output")
+
+        # Find a package to test (prefer cloudfront as it's a good representative example)
+        test_packages = ["cloudfront", "public_vpc_1", "private_vpc_1"]
+        test_pkg = None
+        test_pkg_inner = None
+
+        for pkg_name in test_packages:
+            pkg_dir = output_dir / pkg_name
+            if pkg_dir.exists() and pkg_name not in validation_failed:
+                # Find inner package name
+                for d in pkg_dir.iterdir():
+                    if d.is_dir() and (d / "__init__.py").exists():
+                        test_pkg = pkg_dir
+                        test_pkg_inner = d.name
+                        break
+                if test_pkg:
+                    break
+
+        if test_pkg and test_pkg_inner:
+            info(f"Testing build output with {test_pkg.name}/{test_pkg_inner}")
+
+            env = os.environ.copy()
+            env["PYTHONPATH"] = f"{project_root / 'src'}:{test_pkg}"
+
+            try:
+                result = subprocess.run(
+                    [
+                        "uv",
+                        "run",
+                        "wetwire-aws",
+                        "build",
+                        "--module",
+                        test_pkg_inner,
+                    ],
+                    cwd=project_root,
+                    env=env,
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
+
+                import json
+
+                template = json.loads(result.stdout)
+                resources = template.get("Resources", {})
+
+                if not resources:
+                    error(
+                        "Build produced empty template! "
+                        "Resources may not be registering correctly."
+                    )
+                    error(f"Template: {result.stdout[:500]}")
+                    return 1
+                else:
+                    success(
+                        f"Build output verified: {len(resources)} resources in template"
+                    )
+            except subprocess.CalledProcessError as e:
+                error(f"Build failed: {e.stderr}")
+                return 1
+            except json.JSONDecodeError as e:
+                error(f"Build produced invalid JSON: {e}")
+                return 1
+        else:
+            warn("No suitable test package found for build verification")
+
+        # Step 11: Report
         header("Summary")
 
         print()
