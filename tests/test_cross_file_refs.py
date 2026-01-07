@@ -81,10 +81,20 @@ class TestCrossFileReferences:
         """Test that cross-file dependencies are ordered correctly."""
         from tests.cross_file_test import AppFunction, AppRole
 
-        # Re-register
+        # Re-register (fixture already cleared registry)
         registry = get_aws_registry()
+        print(f"\nRegistry before register: {[c.__name__ for c in registry.get_all()]}")
         registry.register(AppRole, "AWS::IAM::Role")
         registry.register(AppFunction, "AWS::Lambda::Function")
+        print(f"Registry after register: {[c.__name__ for c in registry.get_all()]}")
+
+        # Debug: Check if role attribute is detected as AttrRef
+        role_attr = getattr(AppFunction, "role", None)
+        print(f"AppFunction.role = {role_attr}")
+        print(f"is_attr_ref(role_attr) = {is_attr_ref(role_attr)}")
+        if is_attr_ref(role_attr):
+            print(f"  role_attr.target = {role_attr.target}")
+            print(f"  role_attr.target is AppRole = {role_attr.target is AppRole}")
 
         # Generate template
         template = CloudFormationTemplate.from_registry()
@@ -92,6 +102,7 @@ class TestCrossFileReferences:
 
         # Get resource order
         resource_names = list(output["Resources"].keys())
+        print(f"Template resource order: {resource_names}")
 
         # AppRole should come before AppFunction (dependency order)
         role_idx = resource_names.index("AppRole")
