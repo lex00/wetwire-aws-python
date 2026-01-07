@@ -1,6 +1,19 @@
-"""Compute resources: LaunchTemplate, ControlPlane, ManagedNodeGroup."""
+"""Compute resources: ControlPlane, LaunchTemplate, ManagedNodeGroup."""
 
 from . import *  # noqa: F403
+
+
+class ControlPlaneResourcesVpcConfig(eks.Cluster.ResourcesVpcConfig):
+    security_group_ids = [ControlPlaneSecurityGroup]
+    subnet_ids = [PublicSubnet1, PublicSubnet2, PublicSubnet3, PrivateSubnet1, PrivateSubnet2, PrivateSubnet3]
+
+
+class ControlPlane(eks.Cluster):
+    resource: eks.Cluster
+    name = Sub('${AWS::StackName}-cluster')
+    resources_vpc_config = ControlPlaneResourcesVpcConfig
+    role_arn = EKSClusterRole.Arn
+    version = EKSClusterVersion
 
 
 class LaunchTemplateEbs(ec2.LaunchTemplate.Ebs):
@@ -73,19 +86,6 @@ class LaunchTemplate(ec2.LaunchTemplate):
     resource: ec2.LaunchTemplate
     launch_template_data = LaunchTemplateLaunchTemplateData
     launch_template_name = Sub('${AWS::StackName}-LaunchTemplate')
-
-
-class ControlPlaneResourcesVpcConfig(eks.Cluster.ResourcesVpcConfig):
-    security_group_ids = [ControlPlaneSecurityGroup]
-    subnet_ids = [PublicSubnet1, PublicSubnet2, PublicSubnet3, PrivateSubnet1, PrivateSubnet2, PrivateSubnet3]
-
-
-class ControlPlane(eks.Cluster):
-    resource: eks.Cluster
-    name = Sub('${AWS::StackName}-cluster')
-    resources_vpc_config = ControlPlaneResourcesVpcConfig
-    role_arn = EKSClusterRole.Arn
-    version = EKSClusterVersion
 
 
 class ManagedNodeGroupSsoIdentity(eks.Capability.SsoIdentity):

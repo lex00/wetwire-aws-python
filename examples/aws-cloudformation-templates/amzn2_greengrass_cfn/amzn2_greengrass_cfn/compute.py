@@ -1,76 +1,6 @@
-"""Compute resources: InstanceAZFunction, GGSampleFunction, CreateThingFunction, GGSampleFunctionVersion, GroupDeploymentResetFunction, GreengrassInstance."""
+"""Compute resources: GGSampleFunction, CreateThingFunction, GGSampleFunctionVersion, InstanceAZFunction, GroupDeploymentResetFunction."""
 
 from . import *  # noqa: F403
-
-
-class InstanceAZFunctionCode(lambda_.Function.Code):
-    zip_file = """import sys
-import cfnresponse
-import boto3
-from botocore.exceptions import ClientError
-import json
-import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
-c = boto3.client('ec2')
-
-
-def handler(event, context):
-    responseData = {}
-    try:
-        logger.info('Received event: {}'.format(json.dumps(event)))
-        result = cfnresponse.FAILED
-        if event['RequestType'] == 'Create':
-            r = c.describe_reserved_instances_offerings(
-                Filters=[
-                    {
-                        'Name': 'scope',
-                        'Values': [
-                            'Availability Zone',
-                        ]
-                    },
-                ],
-                IncludeMarketplace=False,
-                InstanceType='t3.micro',
-            )
-            x = r['ReservedInstancesOfferings']
-            while 'NextToken' in r:
-                r = c.describe_reserved_instances_offerings(
-                    Filters=[
-                        {
-                            'Name': 'scope',
-                            'Values': [
-                                'Availability Zone',
-                            ]
-                        },
-                    ],
-                    IncludeMarketplace=False,
-                    InstanceType='t3.micro',
-                    NextToken=r['NextToken']
-                )
-                x.extend(r['ReservedInstancesOfferings'])
-            responseData['AvailabilityZone'] = set(d['AvailabilityZone'] for d in x).pop()
-            result = cfnresponse.SUCCESS
-        else:
-            result = cfnresponse.SUCCESS
-    except ClientError as e:
-        logger.error('Error: {}'.format(e))
-        result = cfnresponse.FAILED
-    logger.info('Returning response of: %s, with result of: %s' % (result, responseData))
-    sys.stdout.flush()
-    cfnresponse.send(event, context, result, responseData)
-"""
-
-
-class InstanceAZFunction(lambda_.Function):
-    resource: lambda_.Function
-    description = 'Queries account and region for supported AZ'
-    handler = 'index.handler'
-    runtime = lambda_.Runtime.PYTHON3_12
-    role = LambdaExecutionRole.Arn
-    timeout = 60
-    code = InstanceAZFunctionCode
 
 
 class GGSampleFunctionCode(lambda_.Function.Code):
@@ -239,6 +169,76 @@ class GGSampleFunctionVersion(lambda_.Version):
     function_name = GGSampleFunction.Arn
 
 
+class InstanceAZFunctionCode(lambda_.Function.Code):
+    zip_file = """import sys
+import cfnresponse
+import boto3
+from botocore.exceptions import ClientError
+import json
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+c = boto3.client('ec2')
+
+
+def handler(event, context):
+    responseData = {}
+    try:
+        logger.info('Received event: {}'.format(json.dumps(event)))
+        result = cfnresponse.FAILED
+        if event['RequestType'] == 'Create':
+            r = c.describe_reserved_instances_offerings(
+                Filters=[
+                    {
+                        'Name': 'scope',
+                        'Values': [
+                            'Availability Zone',
+                        ]
+                    },
+                ],
+                IncludeMarketplace=False,
+                InstanceType='t3.micro',
+            )
+            x = r['ReservedInstancesOfferings']
+            while 'NextToken' in r:
+                r = c.describe_reserved_instances_offerings(
+                    Filters=[
+                        {
+                            'Name': 'scope',
+                            'Values': [
+                                'Availability Zone',
+                            ]
+                        },
+                    ],
+                    IncludeMarketplace=False,
+                    InstanceType='t3.micro',
+                    NextToken=r['NextToken']
+                )
+                x.extend(r['ReservedInstancesOfferings'])
+            responseData['AvailabilityZone'] = set(d['AvailabilityZone'] for d in x).pop()
+            result = cfnresponse.SUCCESS
+        else:
+            result = cfnresponse.SUCCESS
+    except ClientError as e:
+        logger.error('Error: {}'.format(e))
+        result = cfnresponse.FAILED
+    logger.info('Returning response of: %s, with result of: %s' % (result, responseData))
+    sys.stdout.flush()
+    cfnresponse.send(event, context, result, responseData)
+"""
+
+
+class InstanceAZFunction(lambda_.Function):
+    resource: lambda_.Function
+    description = 'Queries account and region for supported AZ'
+    handler = 'index.handler'
+    runtime = lambda_.Runtime.PYTHON3_12
+    role = LambdaExecutionRole.Arn
+    timeout = 60
+    code = InstanceAZFunctionCode
+
+
 class GroupDeploymentResetFunctionEnvironment(lambda_.Function.Environment):
     variables = {
         'STACK_NAME': AWS_STACK_NAME,
@@ -260,91 +260,3 @@ class GroupDeploymentResetFunction(lambda_.Function):
     timeout = 60
     environment = GroupDeploymentResetFunctionEnvironment
     code = GroupDeploymentResetFunctionCode
-
-
-class GreengrassInstanceAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Join('-', [
-    'Greengrass Core Blog ',
-    CoreName,
-])
-
-
-class GreengrassInstance(ec2.Instance):
-    resource: ec2.Instance
-    image_id = LatestAmiId
-    instance_type = InstanceType
-    key_name = myKeyPair
-    security_group_ids = Split(',', InstanceSecurityGroup.GroupId)
-    tags = [GreengrassInstanceAssociationParameter]
-    subnet_id = SubnetAPublic
-    user_data = Base64(Sub("""#!/bin/bash
-yum -y install python3-pip
-pip3 install greengrasssdk
-adduser --system ggc_user
-groupadd --system ggc_group
-
-# https://docs.aws.amazon.com/greengrass/latest/developerguide/what-is-gg.html#gg-core-download-tab
-curl -O https://d1onfpft10uf5o.cloudfront.net/greengrass-core/downloads/1.9.1/greengrass-linux-x86-64-1.9.1.tar.gz
-tar xf greengrass-linux-x86*.gz -C /
-echo -n "${IoTThing.certificatePem}" > /greengrass/certs/${IoTThing.certificateId}.pem
-echo -n "${IoTThing.privateKey}" > /greengrass/certs/${IoTThing.certificateId}.key
-cd /greengrass/config
-# Create Greengrass config file from inputs and parameters
-# Can be enhanced to manage complete installation of Greengrass and credentials
-cat <<EOT > config.json          
-{
-  "coreThing" : {
-    "caPath" : "root.ca.pem",
-    "certPath" : "${IoTThing.certificateId}.pem",
-    "keyPath" : "${IoTThing.certificateId}.key",
-    "thingArn" : "arn:${AWS::Partition}:iot:${AWS::Region}:${AWS::AccountId}:thing/${CoreName}_Core",
-    "iotHost" : "${IoTThing.iotEndpoint}",
-    "ggHost" : "greengrass-ats.iot.${AWS::Region}.amazonaws.com"
-  },
-  "runtime" : {
-    "cgroup" : {
-      "useSystemd" : "yes"
-    }
-  },
-  "managedRespawn" : false,
-  "crypto" : {
-    "principals" : {
-      "SecretsManager" : {
-        "privateKeyPath" : "file:///greengrass/certs/${IoTThing.certificateId}.key"
-      },
-      "IoTCertificate" : {
-        "privateKeyPath" : "file:///greengrass/certs/${IoTThing.certificateId}.key",
-        "certificatePath" : "file:///greengrass/certs/${IoTThing.certificateId}.pem"
-      }
-    },
-    "caPath" : "file:///greengrass/certs/root.ca.pem"
-  }
-}
-EOT
-
-cd /greengrass/certs/
-curl -o root.ca.pem https://www.amazontrust.com/repository/AmazonRootCA1.pem
-cd /tmp
-# Create Greengrass systemd file - thanks to: https://gist.github.com/matthewberryman/fa21ca796c3a2e0dfe8224934b7b055c
-cat <<EOT > greengrass.service
-[Unit]
-Description=greengrass daemon
-After=network.target
-
-[Service]
-ExecStart=/greengrass/ggc/core/greengrassd start
-Type=simple
-RestartSec=2
-Restart=always
-User=root
-PIDFile=/var/run/greengrassd.pid
-
-[Install]
-WantedBy=multi-user.target
-EOT
-cp greengrass.service /etc/systemd/system
-systemctl enable greengrass.service
-reboot
-"""))
-    depends_on = [GreengrassGroup]

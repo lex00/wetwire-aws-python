@@ -1,4 +1,4 @@
-"""Security resources: ContentReplicationRole, CloudFrontLogsReplicationRole, ContentReplicationPolicy, CloudFrontLogsReplicationPolicy."""
+"""Security resources: ContentReplicationRole, CloudFrontLogsReplicationRole, CloudFrontLogsReplicationPolicy, ContentReplicationPolicy."""
 
 from . import *  # noqa: F403
 
@@ -37,43 +37,6 @@ class CloudFrontLogsReplicationRole(iam.Role):
     path = '/'
 
 
-class ContentReplicationPolicyAllowStatement0(PolicyStatement):
-    action = [
-        's3:GetReplicationConfiguration',
-        's3:ListBucket',
-    ]
-    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}')
-
-
-class ContentReplicationPolicyAllowStatement1(PolicyStatement):
-    action = [
-        's3:GetObjectVersionForReplication',
-        's3:GetObjectVersionAcl',
-        's3:GetObjectVersionTagging',
-    ]
-    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')
-
-
-class ContentReplicationPolicyAllowStatement2(PolicyStatement):
-    action = [
-        's3:ReplicateObject',
-        's3:ReplicateDelete',
-        's3:ReplicationTags',
-    ]
-    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*')
-
-
-class ContentReplicationPolicyPolicyDocument(PolicyDocument):
-    statement = [ContentReplicationPolicyAllowStatement0, ContentReplicationPolicyAllowStatement1, ContentReplicationPolicyAllowStatement2]
-
-
-class ContentReplicationPolicy(iam.RolePolicy):
-    resource: iam.RolePolicy
-    policy_document = ContentReplicationPolicyPolicyDocument
-    policy_name = 'bucket-replication-policy'
-    role_name = ContentReplicationRole
-
-
 class CloudFrontLogsReplicationPolicyAllowStatement0(PolicyStatement):
     action = [
         's3:GetReplicationConfiguration',
@@ -109,3 +72,40 @@ class CloudFrontLogsReplicationPolicy(iam.RolePolicy):
     policy_document = CloudFrontLogsReplicationPolicyPolicyDocument
     policy_name = 'bucket-replication-policy'
     role_name = CloudFrontLogsReplicationRole
+
+
+class ContentReplicationPolicyAllowStatement0(PolicyStatement):
+    action = [
+        's3:GetReplicationConfiguration',
+        's3:ListBucket',
+    ]
+    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}')
+
+
+class ContentReplicationPolicyAllowStatement1(PolicyStatement):
+    action = [
+        's3:GetObjectVersionForReplication',
+        's3:GetObjectVersionAcl',
+        's3:GetObjectVersionTagging',
+    ]
+    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')
+
+
+class ContentReplicationPolicyAllowStatement2(PolicyStatement):
+    action = [
+        's3:ReplicateObject',
+        's3:ReplicateDelete',
+        's3:ReplicationTags',
+    ]
+    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-replicas-${AWS::Region}-${AWS::AccountId}/*')
+
+
+class ContentReplicationPolicyPolicyDocument(PolicyDocument):
+    statement = [ContentReplicationPolicyAllowStatement0, ContentReplicationPolicyAllowStatement1, ContentReplicationPolicyAllowStatement2]
+
+
+class ContentReplicationPolicy(iam.RolePolicy):
+    resource: iam.RolePolicy
+    policy_document = ContentReplicationPolicyPolicyDocument
+    policy_name = 'bucket-replication-policy'
+    role_name = ContentReplicationRole

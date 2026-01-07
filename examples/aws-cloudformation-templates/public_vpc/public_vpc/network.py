@@ -1,4 +1,4 @@
-"""Network resources: VPC, PublicSubnetOne, EcsHostSecurityGroup, PublicSubnetTwo, PublicLoadBalancerSG, PublicLoadBalancer, InternetGateway, GatewayAttachement, PublicRouteTable, PublicSubnetOneRouteTableAssociation, EcsSecurityGroupIngressFromSelf, EcsSecurityGroupIngressFromPublicALB, PublicRoute, DummyTargetGroupPublic, PublicLoadBalancerListener, PublicSubnetTwoRouteTableAssociation."""
+"""Network resources: VPC, PublicSubnetTwo, EcsHostSecurityGroup, PublicSubnetOne, DummyTargetGroupPublic, PublicRouteTable, PublicSubnetOneRouteTableAssociation, PublicLoadBalancerSG, PublicLoadBalancer, InternetGateway, GatewayAttachement, PublicRoute, PublicSubnetTwoRouteTableAssociation, EcsSecurityGroupIngressFromPublicALB, EcsSecurityGroupIngressFromSelf, PublicLoadBalancerListener."""
 
 from . import *  # noqa: F403
 
@@ -10,11 +10,11 @@ class VPC(ec2.VPC):
     cidr_block = FindInMap("SubnetConfig", 'VPC', 'CIDR')
 
 
-class PublicSubnetOne(ec2.Subnet):
+class PublicSubnetTwo(ec2.Subnet):
     resource: ec2.Subnet
-    availability_zone = Select(0, GetAZs(AWS_REGION))
+    availability_zone = Select(1, GetAZs(AWS_REGION))
     vpc_id = VPC
-    cidr_block = FindInMap("SubnetConfig", 'PublicOne', 'CIDR')
+    cidr_block = FindInMap("SubnetConfig", 'PublicTwo', 'CIDR')
     map_public_ip_on_launch = True
 
 
@@ -24,12 +24,40 @@ class EcsHostSecurityGroup(ec2.SecurityGroup):
     vpc_id = VPC
 
 
-class PublicSubnetTwo(ec2.Subnet):
+class PublicSubnetOne(ec2.Subnet):
     resource: ec2.Subnet
-    availability_zone = Select(1, GetAZs(AWS_REGION))
+    availability_zone = Select(0, GetAZs(AWS_REGION))
     vpc_id = VPC
-    cidr_block = FindInMap("SubnetConfig", 'PublicTwo', 'CIDR')
+    cidr_block = FindInMap("SubnetConfig", 'PublicOne', 'CIDR')
     map_public_ip_on_launch = True
+
+
+class DummyTargetGroupPublic(elasticloadbalancingv2.TargetGroup):
+    resource: elasticloadbalancingv2.TargetGroup
+    health_check_interval_seconds = 6
+    health_check_path = '/'
+    health_check_protocol = 'HTTP'
+    health_check_timeout_seconds = 5
+    healthy_threshold_count = 2
+    name = Join('-', [
+    AWS_STACK_NAME,
+    'drop-1',
+])
+    port = 80
+    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
+    unhealthy_threshold_count = 2
+    vpc_id = VPC
+
+
+class PublicRouteTable(ec2.RouteTable):
+    resource: ec2.RouteTable
+    vpc_id = VPC
+
+
+class PublicSubnetOneRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    subnet_id = PublicSubnetOne
+    route_table_id = PublicRouteTable
 
 
 class PublicLoadBalancerSGEgress(ec2.SecurityGroup.Egress):
@@ -67,23 +95,18 @@ class GatewayAttachement(ec2.VPCGatewayAttachment):
     internet_gateway_id = InternetGateway
 
 
-class PublicRouteTable(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-
-
-class PublicSubnetOneRouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    subnet_id = PublicSubnetOne
+class PublicRoute(ec2.Route):
+    resource: ec2.Route
     route_table_id = PublicRouteTable
+    destination_cidr_block = '0.0.0.0/0'
+    gateway_id = InternetGateway
+    depends_on = [GatewayAttachement]
 
 
-class EcsSecurityGroupIngressFromSelf(ec2.SecurityGroupIngress):
-    resource: ec2.SecurityGroupIngress
-    description = 'Ingress from other hosts in the same security group'
-    group_id = EcsHostSecurityGroup
-    ip_protocol = -1
-    source_security_group_id = EcsHostSecurityGroup
+class PublicSubnetTwoRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    subnet_id = PublicSubnetTwo
+    route_table_id = PublicRouteTable
 
 
 class EcsSecurityGroupIngressFromPublicALB(ec2.SecurityGroupIngress):
@@ -94,29 +117,12 @@ class EcsSecurityGroupIngressFromPublicALB(ec2.SecurityGroupIngress):
     source_security_group_id = PublicLoadBalancerSG
 
 
-class PublicRoute(ec2.Route):
-    resource: ec2.Route
-    route_table_id = PublicRouteTable
-    destination_cidr_block = '0.0.0.0/0'
-    gateway_id = InternetGateway
-    depends_on = [GatewayAttachement]
-
-
-class DummyTargetGroupPublic(elasticloadbalancingv2.TargetGroup):
-    resource: elasticloadbalancingv2.TargetGroup
-    health_check_interval_seconds = 6
-    health_check_path = '/'
-    health_check_protocol = 'HTTP'
-    health_check_timeout_seconds = 5
-    healthy_threshold_count = 2
-    name = Join('-', [
-    AWS_STACK_NAME,
-    'drop-1',
-])
-    port = 80
-    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
-    unhealthy_threshold_count = 2
-    vpc_id = VPC
+class EcsSecurityGroupIngressFromSelf(ec2.SecurityGroupIngress):
+    resource: ec2.SecurityGroupIngress
+    description = 'Ingress from other hosts in the same security group'
+    group_id = EcsHostSecurityGroup
+    ip_protocol = -1
+    source_security_group_id = EcsHostSecurityGroup
 
 
 class PublicLoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):
@@ -131,9 +137,3 @@ class PublicLoadBalancerListener(elasticloadbalancingv2.Listener):
     port = 80
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
     depends_on = [PublicLoadBalancer]
-
-
-class PublicSubnetTwoRouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    subnet_id = PublicSubnetTwo
-    route_table_id = PublicRouteTable

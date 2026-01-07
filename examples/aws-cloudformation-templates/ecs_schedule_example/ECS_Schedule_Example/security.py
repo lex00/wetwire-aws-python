@@ -1,6 +1,12 @@
-"""Security resources: ECSServiceRole, ECSEventRole, LogsKmsKey, AutoscalingRole, EC2Role, EC2InstanceProfile."""
+"""Security resources: LogsKmsKey, ECSServiceRole, AutoscalingRole, ECSEventRole, EC2Role, EC2InstanceProfile."""
 
 from . import *  # noqa: F403
+
+
+class LogsKmsKey(kms.Key):
+    resource: kms.Key
+    description = 'ECS Logs Encryption Key'
+    enable_key_rotation = True
 
 
 class ECSServiceRoleAllowStatement0(PolicyStatement):
@@ -43,44 +49,6 @@ class ECSServiceRole(iam.Role):
     policies = [ECSServiceRolePolicy]
 
 
-class ECSEventRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['events.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class ECSEventRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [ECSEventRoleAllowStatement0]
-
-
-class ECSEventRoleAllowStatement0_1(PolicyStatement):
-    action = ['ecs:RunTask']
-    resource_arn = '*'
-
-
-class ECSEventRolePolicies0PolicyDocument(PolicyDocument):
-    statement = [ECSEventRoleAllowStatement0_1]
-
-
-class ECSEventRolePolicy(iam.User.Policy):
-    policy_name = 'ecs-service'
-    policy_document = ECSEventRolePolicies0PolicyDocument
-
-
-class ECSEventRole(iam.Role):
-    resource: iam.Role
-    assume_role_policy_document = ECSEventRoleAssumeRolePolicyDocument
-    path = '/'
-    policies = [ECSEventRolePolicy]
-
-
-class LogsKmsKey(kms.Key):
-    resource: kms.Key
-    description = 'ECS Logs Encryption Key'
-    enable_key_rotation = True
-
-
 class AutoscalingRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['application-autoscaling.amazonaws.com'],
@@ -117,6 +85,38 @@ class AutoscalingRole(iam.Role):
     assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
     path = '/'
     policies = [AutoscalingRolePolicy]
+
+
+class ECSEventRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['events.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class ECSEventRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [ECSEventRoleAllowStatement0]
+
+
+class ECSEventRoleAllowStatement0_1(PolicyStatement):
+    action = ['ecs:RunTask']
+    resource_arn = '*'
+
+
+class ECSEventRolePolicies0PolicyDocument(PolicyDocument):
+    statement = [ECSEventRoleAllowStatement0_1]
+
+
+class ECSEventRolePolicy(iam.User.Policy):
+    policy_name = 'ecs-service'
+    policy_document = ECSEventRolePolicies0PolicyDocument
+
+
+class ECSEventRole(iam.Role):
+    resource: iam.Role
+    assume_role_policy_document = ECSEventRoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [ECSEventRolePolicy]
 
 
 class EC2RoleAllowStatement0(PolicyStatement):

@@ -1,4 +1,4 @@
-"""Network resources: TargetGroup, LoadBalancerSecurityGroup, ElasticLoadBalancer, LoadBalancerListener, InstanceSecurityGroup."""
+"""Network resources: TargetGroup, LoadBalancerSecurityGroup, InstanceSecurityGroup, ElasticLoadBalancer, LoadBalancerListener."""
 
 from . import *  # noqa: F403
 
@@ -27,6 +27,26 @@ class LoadBalancerSecurityGroup(ec2.SecurityGroup):
     vpc_id = VPC
 
 
+class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
+    ip_protocol = 'tcp'
+    from_port = 22
+    to_port = 22
+    cidr_ip = SSHLocation
+
+
+class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
+    ip_protocol = 'tcp'
+    from_port = 80
+    to_port = 80
+    source_security_group_id = LoadBalancerSecurityGroup
+
+
+class InstanceSecurityGroup(ec2.SecurityGroup):
+    resource: ec2.SecurityGroup
+    group_description = 'Enable SSH access and HTTP from the load balancer only'
+    security_group_ingress = [InstanceSecurityGroupEgress, InstanceSecurityGroupIngress]
+
+
 class ElasticLoadBalancer(elasticloadbalancingv2.LoadBalancer):
     resource: elasticloadbalancingv2.LoadBalancer
     scheme = 'internet-facing'
@@ -52,23 +72,3 @@ class LoadBalancerListener(elasticloadbalancingv2.Listener):
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTPS
     ssl_policy = 'ELBSecurityPolicy-2016-08'
     certificates = [LoadBalancerListenerCertificate]
-
-
-class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
-    ip_protocol = 'tcp'
-    from_port = 22
-    to_port = 22
-    cidr_ip = SSHLocation
-
-
-class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
-    ip_protocol = 'tcp'
-    from_port = 80
-    to_port = 80
-    source_security_group_id = LoadBalancerSecurityGroup
-
-
-class InstanceSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
-    group_description = 'Enable SSH access and HTTP from the load balancer only'
-    security_group_ingress = [InstanceSecurityGroupEgress, InstanceSecurityGroupIngress]

@@ -1,6 +1,16 @@
-"""Storage resources: BucketToCopyA, BucketToCopyC, BucketToCopyD, BucketToCopyB."""
+"""Storage resources: BucketToCopyD, BucketToCopyA, BucketToCopyC, BucketToCopyB."""
 
 from . import *  # noqa: F403
+
+
+class BucketToCopyDTagFilter(s3.Bucket.TagFilter):
+    key = 'TestKey'
+    value = 'my %s bucket %d'
+
+
+class BucketToCopyD(s3.Bucket):
+    resource: s3.Bucket
+    tags = [BucketToCopyDTagFilter]
 
 
 class BucketToCopyATagFilter(s3.Bucket.TagFilter):
@@ -21,16 +31,6 @@ class BucketToCopyCTagFilter(s3.Bucket.TagFilter):
 class BucketToCopyC(s3.Bucket):
     resource: s3.Bucket
     tags = [BucketToCopyCTagFilter]
-
-
-class BucketToCopyDTagFilter(s3.Bucket.TagFilter):
-    key = 'TestKey'
-    value = 'my %s bucket %d'
-
-
-class BucketToCopyD(s3.Bucket):
-    resource: s3.Bucket
-    tags = [BucketToCopyDTagFilter]
 
 
 class BucketToCopyBTagFilter(s3.Bucket.TagFilter):

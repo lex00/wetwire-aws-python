@@ -102,8 +102,6 @@ from wetwire_aws import (
     ARN_LIKE,
     ARN_NOT_LIKE,
     NULL,
-    # Loader
-    setup_resources,
 )
 from wetwire_aws.resources import (
     accessanalyzer,

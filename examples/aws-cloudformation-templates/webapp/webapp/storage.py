@@ -1,188 +1,6 @@
-"""Storage resources: SiteContentReplicaBucketAccessPolicy, SiteCloudFrontLogsLogBucket, SiteCloudFrontLogsReplicaBucket, SiteCloudFrontLogsBucket, SiteContentLogBucket, SiteContentReplicaBucket, SiteContentBucket, SiteContentBucketAccessPolicy, SiteContentLogBucketAccessPolicy, SiteCloudFrontLogsLogBucketAccessPolicy, SiteCloudFrontLogsBucketAccessPolicy, SiteCloudFrontLogsReplicaBucketAccessPolicy."""
+"""Storage resources: SiteContentLogBucket, SiteContentReplicaBucket, SiteContentBucket, SiteCloudFrontLogsReplicaBucket, SiteCloudFrontLogsLogBucket, SiteCloudFrontLogsBucket, SiteCloudFrontLogsBucketAccessPolicy, SiteContentBucketAccessPolicy, SiteContentLogBucketAccessPolicy, SiteCloudFrontLogsLogBucketAccessPolicy, SiteContentReplicaBucketAccessPolicy, SiteCloudFrontLogsReplicaBucketAccessPolicy."""
 
 from . import *  # noqa: F403
-
-
-class SiteContentReplicaBucketAccessPolicyDenyStatement0(DenyStatement):
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class SiteContentReplicaBucketAccessPolicyAllowStatement1(PolicyStatement):
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class SiteContentReplicaBucketAccessPolicyPolicyDocument(PolicyDocument):
-    statement = [SiteContentReplicaBucketAccessPolicyDenyStatement0, SiteContentReplicaBucketAccessPolicyAllowStatement1]
-
-
-class SiteContentReplicaBucketAccessPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
-    bucket = SiteContentReplicaBucket
-    policy_document = SiteContentReplicaBucketAccessPolicyPolicyDocument
-
-
-class SiteCloudFrontLogsLogBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
-    sse_algorithm = s3.ServerSideEncryption.AES256
-
-
-class SiteCloudFrontLogsLogBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
-    server_side_encryption_by_default = SiteCloudFrontLogsLogBucketServerSideEncryptionByDefault
-
-
-class SiteCloudFrontLogsLogBucketBucketEncryption(s3.Bucket.BucketEncryption):
-    server_side_encryption_configuration = [SiteCloudFrontLogsLogBucketServerSideEncryptionRule]
-
-
-class SiteCloudFrontLogsLogBucketDefaultRetention(s3.Bucket.DefaultRetention):
-    mode = 'COMPLIANCE'
-    years = 1
-
-
-class SiteCloudFrontLogsLogBucketObjectLockRule(s3.Bucket.ObjectLockRule):
-    default_retention = SiteCloudFrontLogsLogBucketDefaultRetention
-
-
-class SiteCloudFrontLogsLogBucketObjectLockConfiguration(s3.Bucket.ObjectLockConfiguration):
-    object_lock_enabled = 'Enabled'
-    rule = SiteCloudFrontLogsLogBucketObjectLockRule
-
-
-class SiteCloudFrontLogsLogBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
-    block_public_acls = True
-    block_public_policy = True
-    ignore_public_acls = True
-    restrict_public_buckets = True
-
-
-class SiteCloudFrontLogsLogBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
-    status = s3.BucketVersioningStatus.ENABLED
-
-
-class SiteCloudFrontLogsLogBucket(s3.Bucket):
-    resource: s3.Bucket
-    bucket_encryption = SiteCloudFrontLogsLogBucketBucketEncryption
-    bucket_name = Sub('${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}')
-    object_lock_configuration = SiteCloudFrontLogsLogBucketObjectLockConfiguration
-    object_lock_enabled = True
-    public_access_block_configuration = SiteCloudFrontLogsLogBucketPublicAccessBlockConfiguration
-    versioning_configuration = SiteCloudFrontLogsLogBucketDeleteMarkerReplication
-
-
-class SiteCloudFrontLogsReplicaBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
-    sse_algorithm = s3.ServerSideEncryption.AES256
-
-
-class SiteCloudFrontLogsReplicaBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
-    server_side_encryption_by_default = SiteCloudFrontLogsReplicaBucketServerSideEncryptionByDefault
-
-
-class SiteCloudFrontLogsReplicaBucketBucketEncryption(s3.Bucket.BucketEncryption):
-    server_side_encryption_configuration = [SiteCloudFrontLogsReplicaBucketServerSideEncryptionRule]
-
-
-class SiteCloudFrontLogsReplicaBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
-    block_public_acls = True
-    block_public_policy = True
-    ignore_public_acls = True
-    restrict_public_buckets = True
-
-
-class SiteCloudFrontLogsReplicaBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
-    status = s3.BucketVersioningStatus.ENABLED
-
-
-class SiteCloudFrontLogsReplicaBucket(s3.Bucket):
-    resource: s3.Bucket
-    bucket_encryption = SiteCloudFrontLogsReplicaBucketBucketEncryption
-    bucket_name = Sub('${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}')
-    object_lock_enabled = False
-    public_access_block_configuration = SiteCloudFrontLogsReplicaBucketPublicAccessBlockConfiguration
-    versioning_configuration = SiteCloudFrontLogsReplicaBucketDeleteMarkerReplication
-
-
-class SiteCloudFrontLogsBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
-    sse_algorithm = s3.ServerSideEncryption.AES256
-
-
-class SiteCloudFrontLogsBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
-    server_side_encryption_by_default = SiteCloudFrontLogsBucketServerSideEncryptionByDefault
-
-
-class SiteCloudFrontLogsBucketBucketEncryption(s3.Bucket.BucketEncryption):
-    server_side_encryption_configuration = [SiteCloudFrontLogsBucketServerSideEncryptionRule]
-
-
-class SiteCloudFrontLogsBucketLoggingConfiguration(s3.Bucket.LoggingConfiguration):
-    destination_bucket_name = SiteCloudFrontLogsLogBucket
-
-
-class SiteCloudFrontLogsBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
-    block_public_acls = True
-    block_public_policy = True
-    ignore_public_acls = True
-    restrict_public_buckets = True
-
-
-class SiteCloudFrontLogsBucketReplicationDestination(s3.Bucket.ReplicationDestination):
-    bucket = SiteCloudFrontLogsReplicaBucket.Arn
-
-
-class SiteCloudFrontLogsBucketReplicationRule(s3.Bucket.ReplicationRule):
-    destination = SiteCloudFrontLogsBucketReplicationDestination
-    status = s3.BucketVersioningStatus.ENABLED
-
-
-class SiteCloudFrontLogsBucketReplicationConfiguration(s3.Bucket.ReplicationConfiguration):
-    role = SiteCloudFrontLogsReplicationRole.Arn
-    rules = [SiteCloudFrontLogsBucketReplicationRule]
-
-
-class SiteCloudFrontLogsBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
-    status = s3.BucketVersioningStatus.ENABLED
-
-
-class SiteCloudFrontLogsBucketOwnershipControlsRule(s3.Bucket.OwnershipControlsRule):
-    object_ownership = 'BucketOwnerPreferred'
-
-
-class SiteCloudFrontLogsBucketOwnershipControls(s3.Bucket.OwnershipControls):
-    rules = [SiteCloudFrontLogsBucketOwnershipControlsRule]
-
-
-class SiteCloudFrontLogsBucket(s3.Bucket):
-    resource: s3.Bucket
-    bucket_encryption = SiteCloudFrontLogsBucketBucketEncryption
-    bucket_name = Sub('${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}')
-    logging_configuration = SiteCloudFrontLogsBucketLoggingConfiguration
-    object_lock_enabled = False
-    public_access_block_configuration = SiteCloudFrontLogsBucketPublicAccessBlockConfiguration
-    replication_configuration = SiteCloudFrontLogsBucketReplicationConfiguration
-    versioning_configuration = SiteCloudFrontLogsBucketDeleteMarkerReplication
-    ownership_controls = SiteCloudFrontLogsBucketOwnershipControls
 
 
 class SiteContentLogBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
@@ -314,6 +132,188 @@ class SiteContentBucket(s3.Bucket):
     public_access_block_configuration = SiteContentBucketPublicAccessBlockConfiguration
     replication_configuration = SiteContentBucketReplicationConfiguration
     versioning_configuration = SiteContentBucketDeleteMarkerReplication
+
+
+class SiteCloudFrontLogsReplicaBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
+    sse_algorithm = s3.ServerSideEncryption.AES256
+
+
+class SiteCloudFrontLogsReplicaBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
+    server_side_encryption_by_default = SiteCloudFrontLogsReplicaBucketServerSideEncryptionByDefault
+
+
+class SiteCloudFrontLogsReplicaBucketBucketEncryption(s3.Bucket.BucketEncryption):
+    server_side_encryption_configuration = [SiteCloudFrontLogsReplicaBucketServerSideEncryptionRule]
+
+
+class SiteCloudFrontLogsReplicaBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
+    block_public_acls = True
+    block_public_policy = True
+    ignore_public_acls = True
+    restrict_public_buckets = True
+
+
+class SiteCloudFrontLogsReplicaBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
+    status = s3.BucketVersioningStatus.ENABLED
+
+
+class SiteCloudFrontLogsReplicaBucket(s3.Bucket):
+    resource: s3.Bucket
+    bucket_encryption = SiteCloudFrontLogsReplicaBucketBucketEncryption
+    bucket_name = Sub('${AppName}-cflogs-replicas-${AWS::Region}-${AWS::AccountId}')
+    object_lock_enabled = False
+    public_access_block_configuration = SiteCloudFrontLogsReplicaBucketPublicAccessBlockConfiguration
+    versioning_configuration = SiteCloudFrontLogsReplicaBucketDeleteMarkerReplication
+
+
+class SiteCloudFrontLogsLogBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
+    sse_algorithm = s3.ServerSideEncryption.AES256
+
+
+class SiteCloudFrontLogsLogBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
+    server_side_encryption_by_default = SiteCloudFrontLogsLogBucketServerSideEncryptionByDefault
+
+
+class SiteCloudFrontLogsLogBucketBucketEncryption(s3.Bucket.BucketEncryption):
+    server_side_encryption_configuration = [SiteCloudFrontLogsLogBucketServerSideEncryptionRule]
+
+
+class SiteCloudFrontLogsLogBucketDefaultRetention(s3.Bucket.DefaultRetention):
+    mode = 'COMPLIANCE'
+    years = 1
+
+
+class SiteCloudFrontLogsLogBucketObjectLockRule(s3.Bucket.ObjectLockRule):
+    default_retention = SiteCloudFrontLogsLogBucketDefaultRetention
+
+
+class SiteCloudFrontLogsLogBucketObjectLockConfiguration(s3.Bucket.ObjectLockConfiguration):
+    object_lock_enabled = 'Enabled'
+    rule = SiteCloudFrontLogsLogBucketObjectLockRule
+
+
+class SiteCloudFrontLogsLogBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
+    block_public_acls = True
+    block_public_policy = True
+    ignore_public_acls = True
+    restrict_public_buckets = True
+
+
+class SiteCloudFrontLogsLogBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
+    status = s3.BucketVersioningStatus.ENABLED
+
+
+class SiteCloudFrontLogsLogBucket(s3.Bucket):
+    resource: s3.Bucket
+    bucket_encryption = SiteCloudFrontLogsLogBucketBucketEncryption
+    bucket_name = Sub('${AppName}-cflogs-logs-${AWS::Region}-${AWS::AccountId}')
+    object_lock_configuration = SiteCloudFrontLogsLogBucketObjectLockConfiguration
+    object_lock_enabled = True
+    public_access_block_configuration = SiteCloudFrontLogsLogBucketPublicAccessBlockConfiguration
+    versioning_configuration = SiteCloudFrontLogsLogBucketDeleteMarkerReplication
+
+
+class SiteCloudFrontLogsBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
+    sse_algorithm = s3.ServerSideEncryption.AES256
+
+
+class SiteCloudFrontLogsBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
+    server_side_encryption_by_default = SiteCloudFrontLogsBucketServerSideEncryptionByDefault
+
+
+class SiteCloudFrontLogsBucketBucketEncryption(s3.Bucket.BucketEncryption):
+    server_side_encryption_configuration = [SiteCloudFrontLogsBucketServerSideEncryptionRule]
+
+
+class SiteCloudFrontLogsBucketLoggingConfiguration(s3.Bucket.LoggingConfiguration):
+    destination_bucket_name = SiteCloudFrontLogsLogBucket
+
+
+class SiteCloudFrontLogsBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAccessBlockConfiguration):
+    block_public_acls = True
+    block_public_policy = True
+    ignore_public_acls = True
+    restrict_public_buckets = True
+
+
+class SiteCloudFrontLogsBucketReplicationDestination(s3.Bucket.ReplicationDestination):
+    bucket = SiteCloudFrontLogsReplicaBucket.Arn
+
+
+class SiteCloudFrontLogsBucketReplicationRule(s3.Bucket.ReplicationRule):
+    destination = SiteCloudFrontLogsBucketReplicationDestination
+    status = s3.BucketVersioningStatus.ENABLED
+
+
+class SiteCloudFrontLogsBucketReplicationConfiguration(s3.Bucket.ReplicationConfiguration):
+    role = SiteCloudFrontLogsReplicationRole.Arn
+    rules = [SiteCloudFrontLogsBucketReplicationRule]
+
+
+class SiteCloudFrontLogsBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
+    status = s3.BucketVersioningStatus.ENABLED
+
+
+class SiteCloudFrontLogsBucketOwnershipControlsRule(s3.Bucket.OwnershipControlsRule):
+    object_ownership = 'BucketOwnerPreferred'
+
+
+class SiteCloudFrontLogsBucketOwnershipControls(s3.Bucket.OwnershipControls):
+    rules = [SiteCloudFrontLogsBucketOwnershipControlsRule]
+
+
+class SiteCloudFrontLogsBucket(s3.Bucket):
+    resource: s3.Bucket
+    bucket_encryption = SiteCloudFrontLogsBucketBucketEncryption
+    bucket_name = Sub('${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}')
+    logging_configuration = SiteCloudFrontLogsBucketLoggingConfiguration
+    object_lock_enabled = False
+    public_access_block_configuration = SiteCloudFrontLogsBucketPublicAccessBlockConfiguration
+    replication_configuration = SiteCloudFrontLogsBucketReplicationConfiguration
+    versioning_configuration = SiteCloudFrontLogsBucketDeleteMarkerReplication
+    ownership_controls = SiteCloudFrontLogsBucketOwnershipControls
+
+
+class SiteCloudFrontLogsBucketAccessPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class SiteCloudFrontLogsBucketAccessPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class SiteCloudFrontLogsBucketAccessPolicyPolicyDocument(PolicyDocument):
+    statement = [SiteCloudFrontLogsBucketAccessPolicyDenyStatement0, SiteCloudFrontLogsBucketAccessPolicyAllowStatement1]
+
+
+class SiteCloudFrontLogsBucketAccessPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
+    bucket = SiteCloudFrontLogsBucket
+    policy_document = SiteCloudFrontLogsBucketAccessPolicyPolicyDocument
 
 
 class SiteContentBucketAccessPolicyAllowStatement0(PolicyStatement):
@@ -455,14 +455,14 @@ class SiteCloudFrontLogsLogBucketAccessPolicy(s3.BucketPolicy):
     policy_document = SiteCloudFrontLogsLogBucketAccessPolicyPolicyDocument
 
 
-class SiteCloudFrontLogsBucketAccessPolicyDenyStatement0(DenyStatement):
+class SiteContentReplicaBucketAccessPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
     }
     action = 's3:*'
     resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*'),
     ]
     condition = {
         BOOL: {
@@ -471,15 +471,15 @@ class SiteCloudFrontLogsBucketAccessPolicyDenyStatement0(DenyStatement):
     }
 
 
-class SiteCloudFrontLogsBucketAccessPolicyAllowStatement1(PolicyStatement):
+class SiteContentReplicaBucketAccessPolicyAllowStatement1(PolicyStatement):
     principal = {
         'Service': 'logging.s3.amazonaws.com',
     }
     action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}/*')]
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*')]
     condition = {
         ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-cflogs-${AWS::Region}-${AWS::AccountId}'),
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}'),
         },
         STRING_EQUALS: {
             'aws:SourceAccount': AWS_ACCOUNT_ID,
@@ -487,14 +487,14 @@ class SiteCloudFrontLogsBucketAccessPolicyAllowStatement1(PolicyStatement):
     }
 
 
-class SiteCloudFrontLogsBucketAccessPolicyPolicyDocument(PolicyDocument):
-    statement = [SiteCloudFrontLogsBucketAccessPolicyDenyStatement0, SiteCloudFrontLogsBucketAccessPolicyAllowStatement1]
+class SiteContentReplicaBucketAccessPolicyPolicyDocument(PolicyDocument):
+    statement = [SiteContentReplicaBucketAccessPolicyDenyStatement0, SiteContentReplicaBucketAccessPolicyAllowStatement1]
 
 
-class SiteCloudFrontLogsBucketAccessPolicy(s3.BucketPolicy):
+class SiteContentReplicaBucketAccessPolicy(s3.BucketPolicy):
     resource: s3.BucketPolicy
-    bucket = SiteCloudFrontLogsBucket
-    policy_document = SiteCloudFrontLogsBucketAccessPolicyPolicyDocument
+    bucket = SiteContentReplicaBucket
+    policy_document = SiteContentReplicaBucketAccessPolicyPolicyDocument
 
 
 class SiteCloudFrontLogsReplicaBucketAccessPolicyDenyStatement0(DenyStatement):

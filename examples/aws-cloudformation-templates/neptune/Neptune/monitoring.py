@@ -1,26 +1,6 @@
-"""Monitoring resources: NeptunePrimarySparqlRequestsPerSecAlarm, NeptunePrimaryGremlinRequestsPerSecAlarm, NeptunePrimaryCpuAlarm, NeptunePrimaryMemoryAlarm."""
+"""Monitoring resources: NeptunePrimaryGremlinRequestsPerSecAlarm, NeptunePrimaryCpuAlarm, NeptunePrimaryMemoryAlarm, NeptunePrimarySparqlRequestsPerSecAlarm."""
 
 from . import *  # noqa: F403
-
-
-class NeptunePrimarySparqlRequestsPerSecAlarmDimension(cloudwatch.Alarm.Dimension):
-    name = 'DBClusterIdentifier'
-    value = NeptuneDBCluster
-
-
-class NeptunePrimarySparqlRequestsPerSecAlarm(cloudwatch.Alarm):
-    resource: cloudwatch.Alarm
-    alarm_description = Sub('${Env}-${AppName} primary DB Sparql Requests Per Second')
-    namespace = 'AWS/Neptune'
-    metric_name = 'SparqlRequestsPerSec'
-    statistic = 'Average'
-    period = 300
-    evaluation_periods = 2
-    threshold = SparqlRequestsPerSecThreshold
-    comparison_operator = 'GreaterThanOrEqualToThreshold'
-    dimensions = [NeptunePrimarySparqlRequestsPerSecAlarmDimension]
-    alarm_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
-    insufficient_data_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
 
 
 class NeptunePrimaryGremlinRequestsPerSecAlarmDimension(cloudwatch.Alarm.Dimension):
@@ -81,5 +61,25 @@ class NeptunePrimaryMemoryAlarm(cloudwatch.Alarm):
     threshold = LowMemoryAlarmThreshold
     comparison_operator = 'LessThanOrEqualToThreshold'
     dimensions = [NeptunePrimaryMemoryAlarmDimension]
+    alarm_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
+    insufficient_data_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
+
+
+class NeptunePrimarySparqlRequestsPerSecAlarmDimension(cloudwatch.Alarm.Dimension):
+    name = 'DBClusterIdentifier'
+    value = NeptuneDBCluster
+
+
+class NeptunePrimarySparqlRequestsPerSecAlarm(cloudwatch.Alarm):
+    resource: cloudwatch.Alarm
+    alarm_description = Sub('${Env}-${AppName} primary DB Sparql Requests Per Second')
+    namespace = 'AWS/Neptune'
+    metric_name = 'SparqlRequestsPerSec'
+    statistic = 'Average'
+    period = 300
+    evaluation_periods = 2
+    threshold = SparqlRequestsPerSecThreshold
+    comparison_operator = 'GreaterThanOrEqualToThreshold'
+    dimensions = [NeptunePrimarySparqlRequestsPerSecAlarmDimension]
     alarm_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]
     insufficient_data_actions = [If("CreateSnsTopic", NeptuneAlarmTopic, NeptuneSNSTopicArn)]

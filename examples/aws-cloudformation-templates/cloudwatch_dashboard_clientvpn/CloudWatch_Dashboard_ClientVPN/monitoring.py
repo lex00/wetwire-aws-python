@@ -1,6 +1,134 @@
-"""Monitoring resources: Dashboard, MixAuthDistinctUsersConnectionDuration, MutualAuthDistinctUsersConnectionDuration, MutualAuthDistinctUsers, TotalUsagePerClientVPNEndpoint, MixAuthDistinctUsers, MixAuthUsersConnectionDuration, ADSAMLAuthDistinctUsersConnectionDuration, MutualAuthTotalUsageReport, MixAuthTotalUsageReport, ADSAMLAuthUsersConnectionDuration, MutualAuthUsersConnectionDuration, ADSAMLAuthTotalUsageReport, ADSAMLAuthDistinctUsers."""
+"""Monitoring resources: MutualAuthDistinctUsers, MutualAuthDistinctUsersConnectionDuration, MixAuthDistinctUsersConnectionDuration, MutualAuthTotalUsageReport, ADSAMLAuthDistinctUsers, ADSAMLAuthTotalUsageReport, MutualAuthUsersConnectionDuration, ADSAMLAuthDistinctUsersConnectionDuration, MixAuthDistinctUsers, MixAuthUsersConnectionDuration, MixAuthTotalUsageReport, Dashboard, TotalUsagePerClientVPNEndpoint, ADSAMLAuthUsersConnectionDuration."""
 
 from . import *  # noqa: F403
+
+
+class MutualAuthDistinctUsers(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/Mutual Auth Distinct Users')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`
+| sort @timestamp asc
+| stats count(*) as connection_count, latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id by `common-name`
+"""
+
+
+class MutualAuthDistinctUsersConnectionDuration(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/Mutual Auth Users Duration')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-duration-seconds` | sort @timestamp asc | filter `ingress-bytes` > 0 OR `egress-bytes` > 0 | stats count(*) as connection_count,
+  sum(`connection-duration-seconds`/60) as total_connection_time_minutes,
+  sum(`ingress-bytes`) as total_ingress_bytes,
+  sum(`egress-bytes`) as total_egress_bytes,
+  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id
+by `common-name` | sort by total_ingress_bytes desc, total_egress_bytes desc
+"""
+
+
+class MixAuthDistinctUsersConnectionDuration(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/Mix Auth Distinct Users Connection Duration')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
+| sort @timestamp asc
+| filter `ingress-bytes` > 0 OR `egress-bytes` > 0
+| stats count(*) as connection_count,
+  sum(`connection-duration-seconds`/60) as total_connection_time_minutes,
+  sum(`ingress-bytes`) as total_ingress_bytes,
+  sum(`egress-bytes`) as total_egress_bytes,
+  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id
+by `common-name`, `username`
+| sort by total_ingress_bytes desc, total_egress_bytes desc
+"""
+
+
+class MutualAuthTotalUsageReport(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/Mutual Auth Total Usage Report')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
+| sort @timestamp asc 
+| filter `ingress-bytes` > 0 OR `egress-bytes` > 0 
+| fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds`, (`connection-duration-seconds`/60) as connection_time_minutes 
+| sort by `ingress-bytes` desc, `egress-bytes` desc
+"""
+
+
+class ADSAMLAuthDistinctUsers(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/AD or SAML Auth Distinct Users')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `username` 
+| sort @timestamp asc 
+| stats count(*) as connection_count, 
+  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id 
+by `username`
+"""
+
+
+class ADSAMLAuthTotalUsageReport(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/AD or SAML Auth Total Usage Report')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
+| sort @timestamp asc 
+| filter `ingress-bytes` > 0 OR `egress-bytes` > 0 
+| fields @timestamp, `client-vpn-endpoint-id`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds`, (`connection-duration-seconds`/60) as connection_time_minutes 
+| sort by `ingress-bytes` desc, `egress-bytes` desc
+"""
+
+
+class MutualAuthUsersConnectionDuration(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/Mutual Auth Distinct Users Connection Duration')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` sort @timestamp asc filter `ingress-bytes` > 0 OR `egress-bytes` > 0 stats count(*) as connection_count, sum(`connection-duration-seconds`/60) as total_connection_time_minutes by `common-name`
+"""
+
+
+class ADSAMLAuthDistinctUsersConnectionDuration(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/AD or SAML Auth Distinct Users Connection Duration')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
+| sort @timestamp asc 
+| filter `ingress-bytes` > 0 OR `egress-bytes` > 0 
+| stats count(*) as connection_count, 
+  sum(`connection-duration-seconds`/60) as total_connection_time_minutes, 
+  sum(`ingress-bytes`) as total_ingress_bytes, 
+  sum(`egress-bytes`) as total_egress_bytes, 
+  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id 
+by `username` 
+| sort by total_ingress_bytes desc, total_egress_bytes desc
+"""
+
+
+class MixAuthDistinctUsers(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/Mix Auth Distinct Users')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `username`
+| sort @timestamp asc
+| stats count(*) as connection_count,
+  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id
+by `username`, `common-name`
+"""
+
+
+class MixAuthUsersConnectionDuration(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/Mix Auth Users Connection Duration')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
+| sort @timestamp asc 
+| filter `ingress-bytes` > 0 OR `egress-bytes` > 0 
+| stats count(*) as connection_count, 
+  sum(`connection-duration-seconds`/60) as total_connection_time_minutes 
+by `username`, `common-name` 
+| sort by total_connection_time_minutes desc
+"""
+
+
+class MixAuthTotalUsageReport(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = Sub('${Folder}/Mix Auth Total Usage Report')
+    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `username`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
+| sort @timestamp asc
+| filter `ingress-bytes` > 0 OR `egress-bytes` > 0
+| fields @timestamp, `client-vpn-endpoint-id`, `username`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds`, (`connection-duration-seconds`/60) as connection_time_minutes 
+| sort by `ingress-bytes` desc, `egress-bytes` desc
+"""
 
 
 class Dashboard(cloudwatch.Dashboard):
@@ -169,43 +297,6 @@ class Dashboard(cloudwatch.Dashboard):
 """)
 
 
-class MixAuthDistinctUsersConnectionDuration(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/Mix Auth Distinct Users Connection Duration')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
-| sort @timestamp asc
-| filter `ingress-bytes` > 0 OR `egress-bytes` > 0
-| stats count(*) as connection_count,
-  sum(`connection-duration-seconds`/60) as total_connection_time_minutes,
-  sum(`ingress-bytes`) as total_ingress_bytes,
-  sum(`egress-bytes`) as total_egress_bytes,
-  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id
-by `common-name`, `username`
-| sort by total_ingress_bytes desc, total_egress_bytes desc
-"""
-
-
-class MutualAuthDistinctUsersConnectionDuration(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/Mutual Auth Users Duration')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-duration-seconds` | sort @timestamp asc | filter `ingress-bytes` > 0 OR `egress-bytes` > 0 | stats count(*) as connection_count,
-  sum(`connection-duration-seconds`/60) as total_connection_time_minutes,
-  sum(`ingress-bytes`) as total_ingress_bytes,
-  sum(`egress-bytes`) as total_egress_bytes,
-  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id
-by `common-name` | sort by total_ingress_bytes desc, total_egress_bytes desc
-"""
-
-
-class MutualAuthDistinctUsers(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/Mutual Auth Distinct Users')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`
-| sort @timestamp asc
-| stats count(*) as connection_count, latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id by `common-name`
-"""
-
-
 class TotalUsagePerClientVPNEndpoint(logs.QueryDefinition):
     resource: logs.QueryDefinition
     name = Sub('${Folder}/Total Usage per Client VPN Endpoint')
@@ -226,68 +317,6 @@ by `client-vpn-endpoint-id`
 """
 
 
-class MixAuthDistinctUsers(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/Mix Auth Distinct Users')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `username`
-| sort @timestamp asc
-| stats count(*) as connection_count,
-  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id
-by `username`, `common-name`
-"""
-
-
-class MixAuthUsersConnectionDuration(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/Mix Auth Users Connection Duration')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
-| sort @timestamp asc 
-| filter `ingress-bytes` > 0 OR `egress-bytes` > 0 
-| stats count(*) as connection_count, 
-  sum(`connection-duration-seconds`/60) as total_connection_time_minutes 
-by `username`, `common-name` 
-| sort by total_connection_time_minutes desc
-"""
-
-
-class ADSAMLAuthDistinctUsersConnectionDuration(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/AD or SAML Auth Distinct Users Connection Duration')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
-| sort @timestamp asc 
-| filter `ingress-bytes` > 0 OR `egress-bytes` > 0 
-| stats count(*) as connection_count, 
-  sum(`connection-duration-seconds`/60) as total_connection_time_minutes, 
-  sum(`ingress-bytes`) as total_ingress_bytes, 
-  sum(`egress-bytes`) as total_egress_bytes, 
-  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id 
-by `username` 
-| sort by total_ingress_bytes desc, total_egress_bytes desc
-"""
-
-
-class MutualAuthTotalUsageReport(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/Mutual Auth Total Usage Report')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
-| sort @timestamp asc 
-| filter `ingress-bytes` > 0 OR `egress-bytes` > 0 
-| fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds`, (`connection-duration-seconds`/60) as connection_time_minutes 
-| sort by `ingress-bytes` desc, `egress-bytes` desc
-"""
-
-
-class MixAuthTotalUsageReport(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/Mix Auth Total Usage Report')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `username`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
-| sort @timestamp asc
-| filter `ingress-bytes` > 0 OR `egress-bytes` > 0
-| fields @timestamp, `client-vpn-endpoint-id`, `username`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds`, (`connection-duration-seconds`/60) as connection_time_minutes 
-| sort by `ingress-bytes` desc, `egress-bytes` desc
-"""
-
-
 class ADSAMLAuthUsersConnectionDuration(logs.QueryDefinition):
     resource: logs.QueryDefinition
     name = Sub('${Folder}/AD or SAML Auth Users Connection Duration')
@@ -298,33 +327,4 @@ class ADSAMLAuthUsersConnectionDuration(logs.QueryDefinition):
   sum(`connection-duration-seconds`/60) as total_connection_time_minutes 
 by `username` 
 | sort by total_connection_time_minutes desc
-"""
-
-
-class MutualAuthUsersConnectionDuration(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/Mutual Auth Distinct Users Connection Duration')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `common-name`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` sort @timestamp asc filter `ingress-bytes` > 0 OR `egress-bytes` > 0 stats count(*) as connection_count, sum(`connection-duration-seconds`/60) as total_connection_time_minutes by `common-name`
-"""
-
-
-class ADSAMLAuthTotalUsageReport(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/AD or SAML Auth Total Usage Report')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds` 
-| sort @timestamp asc 
-| filter `ingress-bytes` > 0 OR `egress-bytes` > 0 
-| fields @timestamp, `client-vpn-endpoint-id`, `username`, `ingress-bytes`, `egress-bytes`, `connection-start-time`, `connection-end-time`, `connection-duration-seconds`, (`connection-duration-seconds`/60) as connection_time_minutes 
-| sort by `ingress-bytes` desc, `egress-bytes` desc
-"""
-
-
-class ADSAMLAuthDistinctUsers(logs.QueryDefinition):
-    resource: logs.QueryDefinition
-    name = Sub('${Folder}/AD or SAML Auth Distinct Users')
-    query_string = """fields @timestamp, `client-vpn-endpoint-id`, `username` 
-| sort @timestamp asc 
-| stats count(*) as connection_count, 
-  latest(`client-vpn-endpoint-id`) as client_vpn_endpoint_id 
-by `username`
 """

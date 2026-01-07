@@ -1,6 +1,11 @@
-"""Network resources: VPC, PublicSubnet2RouteTable, PrivateSubnet1Subnet, PrivateSubnet1RouteTable, PrivateSubnet1RouteTableAssociation, PublicSubnet1, InternetGateway, VPCGW, PublicSubnet1RouteTable, PublicSubnet1DefaultRoute, PublicSubnet1EIP, PublicSubnet1RouteTableAssociation, PublicSubnet1NATGateway, PrivateSubnet1DefaultRoute, PrivateSubnet2Subnet, PublicSubnet2DefaultRoute, PublicSubnet2, PublicSubnet2RouteTableAssociation, PrivateSubnet2RouteTable, PrivateSubnet2RouteTableAssociation, PublicSubnet2EIP, PublicSubnet2NATGateway, PrivateSubnet2DefaultRoute."""
+"""Network resources: PublicSubnet1EIP, VPC, PublicSubnet1, PublicSubnet1RouteTable, PublicSubnet1RouteTableAssociation, InternetGateway, VPCGW, PublicSubnet1DefaultRoute, PublicSubnet1NATGateway, PublicSubnet2RouteTable, PublicSubnet2DefaultRoute, PrivateSubnet2RouteTable, PublicSubnet2, PublicSubnet2RouteTableAssociation, PublicSubnet2EIP, PublicSubnet2NATGateway, PrivateSubnet2DefaultRoute, PrivateSubnet1RouteTable, PrivateSubnet1Subnet, PrivateSubnet1RouteTableAssociation, PrivateSubnet1DefaultRoute, PrivateSubnet2Subnet, PrivateSubnet2RouteTableAssociation."""
 
 from . import *  # noqa: F403
+
+
+class PublicSubnet1EIP(ec2.EIP):
+    resource: ec2.EIP
+    domain = 'vpc'
 
 
 class VPC(ec2.VPC):
@@ -11,36 +16,23 @@ class VPC(ec2.VPC):
     instance_tenancy = 'default'
 
 
-class PublicSubnet2RouteTable(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-
-
-class PrivateSubnet1Subnet(ec2.Subnet):
-    resource: ec2.Subnet
-    availability_zone = Select(0, GetAZs())
-    cidr_block = '10.0.128.0/18'
-    map_public_ip_on_launch = False
-    vpc_id = VPC
-
-
-class PrivateSubnet1RouteTable(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-
-
-class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PrivateSubnet1RouteTable
-    subnet_id = PrivateSubnet1Subnet
-
-
 class PublicSubnet1(ec2.Subnet):
     resource: ec2.Subnet
     availability_zone = Select(0, GetAZs())
     cidr_block = '10.0.0.0/18'
     map_public_ip_on_launch = True
     vpc_id = VPC
+
+
+class PublicSubnet1RouteTable(ec2.RouteTable):
+    resource: ec2.RouteTable
+    vpc_id = VPC
+
+
+class PublicSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PublicSubnet1RouteTable
+    subnet_id = PublicSubnet1
 
 
 class InternetGateway(ec2.InternetGateway):
@@ -53,28 +45,12 @@ class VPCGW(ec2.VPCGatewayAttachment):
     vpc_id = VPC
 
 
-class PublicSubnet1RouteTable(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-
-
 class PublicSubnet1DefaultRoute(ec2.Route):
     resource: ec2.Route
     destination_cidr_block = '0.0.0.0/0'
     gateway_id = InternetGateway
     route_table_id = PublicSubnet1RouteTable
     depends_on = [VPCGW]
-
-
-class PublicSubnet1EIP(ec2.EIP):
-    resource: ec2.EIP
-    domain = 'vpc'
-
-
-class PublicSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PublicSubnet1RouteTable
-    subnet_id = PublicSubnet1
 
 
 class PublicSubnet1NATGateway(ec2.NatGateway):
@@ -84,18 +60,8 @@ class PublicSubnet1NATGateway(ec2.NatGateway):
     depends_on = [PublicSubnet1DefaultRoute, PublicSubnet1RouteTableAssociation]
 
 
-class PrivateSubnet1DefaultRoute(ec2.Route):
-    resource: ec2.Route
-    destination_cidr_block = '0.0.0.0/0'
-    nat_gateway_id = PublicSubnet1NATGateway
-    route_table_id = PrivateSubnet1RouteTable
-
-
-class PrivateSubnet2Subnet(ec2.Subnet):
-    resource: ec2.Subnet
-    availability_zone = Select(1, GetAZs())
-    cidr_block = '10.0.192.0/18'
-    map_public_ip_on_launch = False
+class PublicSubnet2RouteTable(ec2.RouteTable):
+    resource: ec2.RouteTable
     vpc_id = VPC
 
 
@@ -105,6 +71,11 @@ class PublicSubnet2DefaultRoute(ec2.Route):
     gateway_id = InternetGateway
     route_table_id = PublicSubnet2RouteTable
     depends_on = [VPCGW]
+
+
+class PrivateSubnet2RouteTable(ec2.RouteTable):
+    resource: ec2.RouteTable
+    vpc_id = VPC
 
 
 class PublicSubnet2(ec2.Subnet):
@@ -119,17 +90,6 @@ class PublicSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
     resource: ec2.SubnetRouteTableAssociation
     route_table_id = PublicSubnet2RouteTable
     subnet_id = PublicSubnet2
-
-
-class PrivateSubnet2RouteTable(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-
-
-class PrivateSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PrivateSubnet2RouteTable
-    subnet_id = PrivateSubnet2Subnet
 
 
 class PublicSubnet2EIP(ec2.EIP):
@@ -149,3 +109,43 @@ class PrivateSubnet2DefaultRoute(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
     nat_gateway_id = PublicSubnet2NATGateway
     route_table_id = PrivateSubnet2RouteTable
+
+
+class PrivateSubnet1RouteTable(ec2.RouteTable):
+    resource: ec2.RouteTable
+    vpc_id = VPC
+
+
+class PrivateSubnet1Subnet(ec2.Subnet):
+    resource: ec2.Subnet
+    availability_zone = Select(0, GetAZs())
+    cidr_block = '10.0.128.0/18'
+    map_public_ip_on_launch = False
+    vpc_id = VPC
+
+
+class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PrivateSubnet1RouteTable
+    subnet_id = PrivateSubnet1Subnet
+
+
+class PrivateSubnet1DefaultRoute(ec2.Route):
+    resource: ec2.Route
+    destination_cidr_block = '0.0.0.0/0'
+    nat_gateway_id = PublicSubnet1NATGateway
+    route_table_id = PrivateSubnet1RouteTable
+
+
+class PrivateSubnet2Subnet(ec2.Subnet):
+    resource: ec2.Subnet
+    availability_zone = Select(1, GetAZs())
+    cidr_block = '10.0.192.0/18'
+    map_public_ip_on_launch = False
+    vpc_id = VPC
+
+
+class PrivateSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PrivateSubnet2RouteTable
+    subnet_id = PrivateSubnet2Subnet

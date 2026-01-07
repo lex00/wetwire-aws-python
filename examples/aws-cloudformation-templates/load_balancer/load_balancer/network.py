@@ -1,4 +1,4 @@
-"""Network resources: LoadBalancerSecurityGroup, TargetGroup, LoadBalancer, LoadBalancerEgress, LoadBalancerListener."""
+"""Network resources: LoadBalancerSecurityGroup, LoadBalancerEgress, TargetGroup, LoadBalancer, LoadBalancerListener."""
 
 from . import *  # noqa: F403
 
@@ -16,6 +16,16 @@ class LoadBalancerSecurityGroup(ec2.SecurityGroup):
     group_description = 'Automatically created Security Group for ELB'
     security_group_ingress = [LoadBalancerSecurityGroupEgress]
     vpc_id = VPCId
+
+
+class LoadBalancerEgress(ec2.SecurityGroupEgress):
+    resource: ec2.SecurityGroupEgress
+    description = 'Load balancer to target'
+    destination_security_group_id = DestinationSecurityGroupId
+    from_port = 80
+    group_id = LoadBalancerSecurityGroup.GroupId
+    ip_protocol = 'tcp'
+    to_port = 80
 
 
 class TargetGroupTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
@@ -54,16 +64,6 @@ class LoadBalancer(elasticloadbalancingv2.LoadBalancer):
     security_groups = [LoadBalancerSecurityGroup.GroupId]
     subnets = [PublicSubnet1, PublicSubnet2]
     type_ = 'application'
-
-
-class LoadBalancerEgress(ec2.SecurityGroupEgress):
-    resource: ec2.SecurityGroupEgress
-    description = 'Load balancer to target'
-    destination_security_group_id = DestinationSecurityGroupId
-    from_port = 80
-    group_id = LoadBalancerSecurityGroup.GroupId
-    ip_protocol = 'tcp'
-    to_port = 80
 
 
 class LoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):

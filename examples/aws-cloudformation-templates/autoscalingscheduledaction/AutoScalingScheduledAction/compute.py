@@ -1,4 +1,4 @@
-"""Compute resources: LaunchConfig, WebServerGroup, ScheduledActionUp, ScheduledActionDown."""
+"""Compute resources: LaunchConfig, WebServerGroup, ScheduledActionDown, ScheduledActionUp."""
 
 from . import *  # noqa: F403
 
@@ -38,17 +38,17 @@ class WebServerGroup(autoscaling.AutoScalingGroup):
     load_balancer_names = [ElasticLoadBalancer]
 
 
-class ScheduledActionUp(autoscaling.ScheduledAction):
-    resource: autoscaling.ScheduledAction
-    auto_scaling_group_name = WebServerGroup
-    max_size = '10'
-    min_size = '5'
-    recurrence = '0 7 * * *'
-
-
 class ScheduledActionDown(autoscaling.ScheduledAction):
     resource: autoscaling.ScheduledAction
     auto_scaling_group_name = WebServerGroup
     max_size = '1'
     min_size = '1'
     recurrence = '0 19 * * *'
+
+
+class ScheduledActionUp(autoscaling.ScheduledAction):
+    resource: autoscaling.ScheduledAction
+    auto_scaling_group_name = WebServerGroup
+    max_size = '10'
+    min_size = '5'
+    recurrence = '0 7 * * *'

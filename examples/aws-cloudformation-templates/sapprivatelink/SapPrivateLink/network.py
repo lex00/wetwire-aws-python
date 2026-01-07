@@ -1,6 +1,19 @@
-"""Network resources: ASCPrivateLinkTargetGroup, ASCPrivateLinkNLB, ASCPrivateLinkListener, ASCPrivateLinkVPCES, ASCPrivateLinkVPCESPermission."""
+"""Network resources: ASCPrivateLinkNLB, ASCPrivateLinkTargetGroup, ASCPrivateLinkListener, ASCPrivateLinkVPCES, ASCPrivateLinkVPCESPermission."""
 
 from . import *  # noqa: F403
+
+
+class ASCPrivateLinkNLBTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'load_balancing.cross_zone.enabled'
+    value = True
+
+
+class ASCPrivateLinkNLB(elasticloadbalancingv2.LoadBalancer):
+    resource: elasticloadbalancingv2.LoadBalancer
+    type_ = 'network'
+    scheme = 'internal'
+    subnets = Subnets
+    load_balancer_attributes = [ASCPrivateLinkNLBTargetGroupAttribute]
 
 
 class ASCPrivateLinkTargetGroupTargetDescription(elasticloadbalancingv2.TargetGroup.TargetDescription):
@@ -18,19 +31,6 @@ class ASCPrivateLinkTargetGroup(elasticloadbalancingv2.TargetGroup):
     targets = [ASCPrivateLinkTargetGroupTargetDescription]
     health_check_path = HealthCheckPath
     health_check_protocol = Protocol
-
-
-class ASCPrivateLinkNLBTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
-    key = 'load_balancing.cross_zone.enabled'
-    value = True
-
-
-class ASCPrivateLinkNLB(elasticloadbalancingv2.LoadBalancer):
-    resource: elasticloadbalancingv2.LoadBalancer
-    type_ = 'network'
-    scheme = 'internal'
-    subnets = Subnets
-    load_balancer_attributes = [ASCPrivateLinkNLBTargetGroupAttribute]
 
 
 class ASCPrivateLinkListenerCertificate(elasticloadbalancingv2.ListenerCertificate.Certificate):

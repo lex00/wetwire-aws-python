@@ -10,6 +10,14 @@ class InstanceAZ(CloudFormationResource):
     service_token = InstanceAZFunction.Arn
 
 
+class SubnetAPublic(ec2.Subnet):
+    resource: ec2.Subnet
+    availability_zone = InstanceAZ.AvailabilityZone
+    cidr_block = '172.31.0.0/24'
+    map_public_ip_on_launch = True
+    vpc_id = VPC
+
+
 class IoTThing(CloudFormationResource):
     # Unknown resource type: Custom::IoTThing
     resource: CloudFormationResource
@@ -175,26 +183,6 @@ class GreengrassGroup(greengrass.Group):
     role_arn = GreengrassResourceRole.Arn
 
 
-class GroupDeploymentReset(CloudFormationResource):
-    # Unknown resource type: Custom::GroupDeploymentReset
-    resource: CloudFormationResource
-    region = AWS_REGION
-    service_token = GroupDeploymentResetFunction.Arn
-    thing_name = Join('_', [
-    CoreName,
-    'Core',
-])
-    depends_on = [GreengrassGroup]
-
-
-class SubnetAPublic(ec2.Subnet):
-    resource: ec2.Subnet
-    availability_zone = InstanceAZ.AvailabilityZone
-    cidr_block = '172.31.0.0/24'
-    map_public_ip_on_launch = True
-    vpc_id = VPC
-
-
 class GreengrassInstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
     value = Join('-', [
@@ -287,3 +275,15 @@ class RouteTableAssociationAPublic(ec2.SubnetRouteTableAssociation):
     resource: ec2.SubnetRouteTableAssociation
     route_table_id = RouteTablePublic
     subnet_id = SubnetAPublic
+
+
+class GroupDeploymentReset(CloudFormationResource):
+    # Unknown resource type: Custom::GroupDeploymentReset
+    resource: CloudFormationResource
+    region = AWS_REGION
+    service_token = GroupDeploymentResetFunction.Arn
+    thing_name = Join('_', [
+    CoreName,
+    'Core',
+])
+    depends_on = [GreengrassGroup]

@@ -102,8 +102,6 @@ from wetwire_aws import (
     ARN_LIKE,
     ARN_NOT_LIKE,
     NULL,
-    # Loader
-    setup_resources,
 )
 from wetwire_aws.resources import (
     accessanalyzer,
@@ -381,14 +379,14 @@ from .infra import TargetAccountLoggingOperationPreferences as TargetAccountLogg
 from .infra import TargetAccountLoggingParameter as TargetAccountLoggingParameter
 from .infra import TargetAccountLoggingParameter1 as TargetAccountLoggingParameter1
 from .infra import TargetAccountLoggingStackInstances as TargetAccountLoggingStackInstances
-from .main import CentralEventRule as CentralEventRule
-from .main import CentralEventRuleDeadLetterConfig as CentralEventRuleDeadLetterConfig
-from .main import CentralEventRuleTarget as CentralEventRuleTarget
+from .main import CentralEventLog as CentralEventLog
 from .messaging import CentralEventBus as CentralEventBus
 from .messaging import CentralEventBusDeadLetterConfig as CentralEventBusDeadLetterConfig
 from .messaging import CentralEventBusPolicy as CentralEventBusPolicy
+from .messaging import CentralEventRule as CentralEventRule
+from .messaging import CentralEventRuleDeadLetterConfig as CentralEventRuleDeadLetterConfig
+from .messaging import CentralEventRuleTarget as CentralEventRuleTarget
 from .messaging import DeadLetterQueue as DeadLetterQueue
-from .monitoring import CentralEventLog as CentralEventLog
 from .monitoring import CentralEventLogPolicy as CentralEventLogPolicy
 from .monitoring import CentralEventLogQuery as CentralEventLogQuery
 from .monitoring import CentralEventLogQueryReason as CentralEventLogQueryReason

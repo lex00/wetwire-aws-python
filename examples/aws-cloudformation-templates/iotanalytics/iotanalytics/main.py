@@ -12,41 +12,6 @@ class Datastore(iotanalytics.Datastore):
     }]
 
 
-class SqlDatasetQueryAction(iotanalytics.Dataset.QueryAction):
-    sql_query = SqlQuery
-
-
-class SqlDatasetAction(iotanalytics.Dataset.Action):
-    action_name = 'SqlAction'
-    query_action = SqlDatasetQueryAction
-
-
-class SqlDatasetSchedule(iotanalytics.Dataset.Schedule):
-    schedule_expression = ScheduleExpression
-
-
-class SqlDatasetTrigger(iotanalytics.Dataset.Trigger):
-    schedule = SqlDatasetSchedule
-
-
-class SqlDatasetRetentionPeriod(iotanalytics.Channel.RetentionPeriod):
-    unlimited = False
-    number_of_days = 30
-
-
-class SqlDataset(iotanalytics.Dataset):
-    resource: iotanalytics.Dataset
-    dataset_name = Sub('${ProjectName}_dataset')
-    actions = [SqlDatasetAction]
-    triggers = [SqlDatasetTrigger]
-    retention_period = SqlDatasetRetentionPeriod
-    tags = [{
-        'Key': 'Project',
-        'Value': ProjectName,
-    }]
-    depends_on = [Datastore]
-
-
 class Channel(iotanalytics.Channel):
     resource: iotanalytics.Channel
     channel_name = Sub('${ProjectName}_channel')
@@ -81,3 +46,38 @@ class Pipeline(iotanalytics.Pipeline):
         'Value': ProjectName,
     }]
     depends_on = [Channel, Datastore]
+
+
+class SqlDatasetQueryAction(iotanalytics.Dataset.QueryAction):
+    sql_query = SqlQuery
+
+
+class SqlDatasetAction(iotanalytics.Dataset.Action):
+    action_name = 'SqlAction'
+    query_action = SqlDatasetQueryAction
+
+
+class SqlDatasetSchedule(iotanalytics.Dataset.Schedule):
+    schedule_expression = ScheduleExpression
+
+
+class SqlDatasetTrigger(iotanalytics.Dataset.Trigger):
+    schedule = SqlDatasetSchedule
+
+
+class SqlDatasetRetentionPeriod(iotanalytics.Channel.RetentionPeriod):
+    unlimited = False
+    number_of_days = 30
+
+
+class SqlDataset(iotanalytics.Dataset):
+    resource: iotanalytics.Dataset
+    dataset_name = Sub('${ProjectName}_dataset')
+    actions = [SqlDatasetAction]
+    triggers = [SqlDatasetTrigger]
+    retention_period = SqlDatasetRetentionPeriod
+    tags = [{
+        'Key': 'Project',
+        'Value': ProjectName,
+    }]
+    depends_on = [Datastore]

@@ -1,4 +1,4 @@
-"""Compute resources: DomainMember2WithSsmAssociationInstance, DomainMember1WithInlineSsmAssociation, DomainMember4LinuxWithSsmAssociationInstance, DomainMember3WithSsmAssociationTag."""
+"""Compute resources: DomainMember2WithSsmAssociationInstance, DomainMember4LinuxWithSsmAssociationInstance, DomainMember3WithSsmAssociationTag, DomainMember1WithInlineSsmAssociation."""
 
 from . import *  # noqa: F403
 
@@ -38,73 +38,6 @@ Start-Sleep -s 3
 $instanceId = Invoke-RestMethod -uri http://169.254.169.254/latest/meta-data/instance-id
 }
 Rename-Computer -NewName ${DomainMember2NetBIOSName} -Force
-# Set-TimeZone -Name "US Eastern Standard Time"
-
-Install-WindowsFeature -IncludeAllSubFeature RSAT
-Restart-Computer -Force
-</powershell>
-"""))
-
-
-class DomainMember1WithInlineSsmAssociationAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'directoryId'
-    value = [DirectoryID]
-
-
-class DomainMember1WithInlineSsmAssociationAssociationParameter1(ec2.Instance.AssociationParameter):
-    key = 'directoryName'
-    value = [DirectoryName]
-
-
-class DomainMember1WithInlineSsmAssociationSsmAssociation(ec2.Instance.SsmAssociation):
-    document_name = 'AWS-JoinDirectoryServiceDomain'
-    association_parameters = [DomainMember1WithInlineSsmAssociationAssociationParameter, DomainMember1WithInlineSsmAssociationAssociationParameter1, If("DomainDNSServersCondition", {
-    'Key': 'dnsIpAddresses',
-    'Value': [
-        If("DomainDNSServer1Condition", DomainDNSServer1, AWS_NO_VALUE),
-        If("DomainDNSServer2Condition", DomainDNSServer2, AWS_NO_VALUE),
-        If("DomainDNSServer3Condition", DomainDNSServer3, AWS_NO_VALUE),
-        If("DomainDNSServer4Condition", DomainDNSServer4, AWS_NO_VALUE),
-    ],
-}, AWS_NO_VALUE)]
-
-
-class DomainMember1WithInlineSsmAssociationAssociationParameter2(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = DomainMember1NetBIOSName
-
-
-class DomainMember1WithInlineSsmAssociationEbs(ec2.Instance.Ebs):
-    encrypted = True
-    volume_type = 'gp3'
-    delete_on_termination = True
-    volume_size = 100
-    kms_key_id = If("EBSKMSKeyCondition", EBSKMSKey, AWS_NO_VALUE)
-
-
-class DomainMember1WithInlineSsmAssociationBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
-    device_name = '/dev/sda1'
-    ebs = DomainMember1WithInlineSsmAssociationEbs
-
-
-class DomainMember1WithInlineSsmAssociation(ec2.Instance):
-    resource: ec2.Instance
-    image_id = WINFULLBASE
-    iam_instance_profile = DomainMembersWindowsInstanceProfile
-    ssm_associations = [DomainMember1WithInlineSsmAssociationSsmAssociation]
-    instance_type = DomainMembersInstanceType
-    subnet_id = PrivateSubnet1ID
-    tags = [DomainMember1WithInlineSsmAssociationAssociationParameter2]
-    block_device_mappings = [DomainMember1WithInlineSsmAssociationBlockDeviceMapping]
-    security_group_ids = [DomainMembersSGID]
-    key_name = KeyPairName
-    user_data = Base64(Sub("""<powershell>
-$instanceId = "null"
-while ($instanceId -NotLike "i-*") {
-Start-Sleep -s 3
-$instanceId = Invoke-RestMethod -uri http://169.254.169.254/latest/meta-data/instance-id
-}
-Rename-Computer -NewName ${DomainMember1NetBIOSName} -Force
 # Set-TimeZone -Name "US Eastern Standard Time"
 
 Install-WindowsFeature -IncludeAllSubFeature RSAT
@@ -194,6 +127,73 @@ Start-Sleep -s 3
 $instanceId = Invoke-RestMethod -uri http://169.254.169.254/latest/meta-data/instance-id
 }
 Rename-Computer -NewName ${DomainMember3NetBIOSName} -Force
+# Set-TimeZone -Name "US Eastern Standard Time"
+
+Install-WindowsFeature -IncludeAllSubFeature RSAT
+Restart-Computer -Force
+</powershell>
+"""))
+
+
+class DomainMember1WithInlineSsmAssociationAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'directoryId'
+    value = [DirectoryID]
+
+
+class DomainMember1WithInlineSsmAssociationAssociationParameter1(ec2.Instance.AssociationParameter):
+    key = 'directoryName'
+    value = [DirectoryName]
+
+
+class DomainMember1WithInlineSsmAssociationSsmAssociation(ec2.Instance.SsmAssociation):
+    document_name = 'AWS-JoinDirectoryServiceDomain'
+    association_parameters = [DomainMember1WithInlineSsmAssociationAssociationParameter, DomainMember1WithInlineSsmAssociationAssociationParameter1, If("DomainDNSServersCondition", {
+    'Key': 'dnsIpAddresses',
+    'Value': [
+        If("DomainDNSServer1Condition", DomainDNSServer1, AWS_NO_VALUE),
+        If("DomainDNSServer2Condition", DomainDNSServer2, AWS_NO_VALUE),
+        If("DomainDNSServer3Condition", DomainDNSServer3, AWS_NO_VALUE),
+        If("DomainDNSServer4Condition", DomainDNSServer4, AWS_NO_VALUE),
+    ],
+}, AWS_NO_VALUE)]
+
+
+class DomainMember1WithInlineSsmAssociationAssociationParameter2(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = DomainMember1NetBIOSName
+
+
+class DomainMember1WithInlineSsmAssociationEbs(ec2.Instance.Ebs):
+    encrypted = True
+    volume_type = 'gp3'
+    delete_on_termination = True
+    volume_size = 100
+    kms_key_id = If("EBSKMSKeyCondition", EBSKMSKey, AWS_NO_VALUE)
+
+
+class DomainMember1WithInlineSsmAssociationBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
+    device_name = '/dev/sda1'
+    ebs = DomainMember1WithInlineSsmAssociationEbs
+
+
+class DomainMember1WithInlineSsmAssociation(ec2.Instance):
+    resource: ec2.Instance
+    image_id = WINFULLBASE
+    iam_instance_profile = DomainMembersWindowsInstanceProfile
+    ssm_associations = [DomainMember1WithInlineSsmAssociationSsmAssociation]
+    instance_type = DomainMembersInstanceType
+    subnet_id = PrivateSubnet1ID
+    tags = [DomainMember1WithInlineSsmAssociationAssociationParameter2]
+    block_device_mappings = [DomainMember1WithInlineSsmAssociationBlockDeviceMapping]
+    security_group_ids = [DomainMembersSGID]
+    key_name = KeyPairName
+    user_data = Base64(Sub("""<powershell>
+$instanceId = "null"
+while ($instanceId -NotLike "i-*") {
+Start-Sleep -s 3
+$instanceId = Invoke-RestMethod -uri http://169.254.169.254/latest/meta-data/instance-id
+}
+Rename-Computer -NewName ${DomainMember1NetBIOSName} -Force
 # Set-TimeZone -Name "US Eastern Standard Time"
 
 Install-WindowsFeature -IncludeAllSubFeature RSAT

@@ -1,4 +1,4 @@
-"""Security resources: InstanceRole, InstanceRolePolicy, InstanceProfile."""
+"""Security resources: InstanceRole, InstanceProfile, InstanceRolePolicy."""
 
 from . import *  # noqa: F403
 
@@ -23,6 +23,11 @@ class InstanceRole(iam.Role):
     }]
 
 
+class InstanceProfile(iam.InstanceProfile):
+    resource: iam.InstanceProfile
+    roles = [InstanceRole]
+
+
 class InstanceRolePolicyAllowStatement0(PolicyStatement):
     action = [
         'ec2messages:*',
@@ -42,8 +47,3 @@ class InstanceRolePolicy(iam.RolePolicy):
     policy_document = InstanceRolePolicyPolicyDocument
     policy_name = 'InstanceRolePolicy'
     role_name = InstanceRole
-
-
-class InstanceProfile(iam.InstanceProfile):
-    resource: iam.InstanceProfile
-    roles = [InstanceRole]

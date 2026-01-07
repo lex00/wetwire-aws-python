@@ -1,4 +1,4 @@
-"""Network resources: VPC, PublicSubnet2, EIP2, NATGateway2, PrivateRouteTable2, PrivateRoute2, PublicRouteTable, PublicRouteTableAssociation2, PrivateSubnet2, ControlPlaneSecurityGroup, PrivateSubnet1, PublicSubnet1, PublicSubnet3, PrivateSubnet3, InternetGateway, AttachGateway, PrivateRouteTableAssociation2, RouteInternetGateway, PrivateRouteTable3, PrivateRouteTable1, PrivateRouteTableAssociation1, PublicRouteTableAssociation3, EIP1, NATGateway1, PrivateRoute1, PublicRouteTableAssociation1, PrivateRouteTableAssociation3, EIP3, NATGateway3, PrivateRoute3, ControlPlaneSecurityGroupIngress."""
+"""Network resources: VPC, PrivateSubnet1, ControlPlaneSecurityGroup, ControlPlaneSecurityGroupIngress, PublicRouteTable, PublicSubnet2, PublicRouteTableAssociation2, PrivateRouteTable3, InternetGateway, PrivateRouteTable1, PrivateRouteTable2, EIP2, PrivateSubnet3, PublicSubnet3, PublicSubnet1, PrivateSubnet2, PrivateRouteTableAssociation2, EIP1, NATGateway1, PrivateRoute1, PublicRouteTableAssociation3, EIP3, NATGateway3, PrivateRoute3, AttachGateway, PrivateRouteTableAssociation1, PublicRouteTableAssociation1, NATGateway2, RouteInternetGateway, PrivateRouteTableAssociation3, PrivateRoute2."""
 
 from . import *  # noqa: F403
 
@@ -15,6 +15,46 @@ class VPC(ec2.VPC):
     enable_dns_hostnames = True
     instance_tenancy = 'default'
     tags = [VPCAssociationParameter]
+
+
+class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${AWS::StackName}-private-subnet1')
+
+
+class PrivateSubnet1(ec2.Subnet):
+    resource: ec2.Subnet
+    vpc_id = VPC
+    availability_zone = Select(0, GetAZs(AWS_REGION))
+    cidr_block = PrivateCidrBlock1
+    map_public_ip_on_launch = False
+    tags = [PrivateSubnet1AssociationParameter]
+
+
+class ControlPlaneSecurityGroup(ec2.SecurityGroup):
+    resource: ec2.SecurityGroup
+    group_description = 'Communication between the control plane and worker nodegroups'
+    vpc_id = VPC
+    group_name = Sub('${AWS::StackName}-eks-control-plane-sg')
+
+
+class ControlPlaneSecurityGroupIngress(ec2.SecurityGroupIngress):
+    resource: ec2.SecurityGroupIngress
+    group_id = ControlPlaneSecurityGroup
+    ip_protocol = '-1'
+    source_security_group_id = ControlPlaneSecurityGroup.GroupId
+    source_security_group_owner_id = AWS_ACCOUNT_ID
+
+
+class PublicRouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${AWS::StackName}-public-route-table')
+
+
+class PublicRouteTable(ec2.RouteTable):
+    resource: ec2.RouteTable
+    vpc_id = VPC
+    tags = [PublicRouteTableAssociationParameter]
 
 
 class PublicSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
@@ -35,21 +75,42 @@ class PublicSubnet2(ec2.Subnet):
     tags = [PublicSubnet2AssociationParameter, PublicSubnet2AssociationParameter1]
 
 
-class EIP2(ec2.EIP):
-    resource: ec2.EIP
-    domain = 'vpc'
-
-
-class NATGateway2AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${AWS::StackName}-nat-gw2')
-
-
-class NATGateway2(ec2.NatGateway):
-    resource: ec2.NatGateway
-    allocation_id = EIP2.AllocationId
+class PublicRouteTableAssociation2(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PublicRouteTable
     subnet_id = PublicSubnet2
-    tags = [NATGateway2AssociationParameter]
+
+
+class PrivateRouteTable3AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${AWS::StackName}-private-route-table3')
+
+
+class PrivateRouteTable3(ec2.RouteTable):
+    resource: ec2.RouteTable
+    vpc_id = VPC
+    tags = [PrivateRouteTable3AssociationParameter]
+
+
+class InternetGatewayAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${AWS::StackName}-ig')
+
+
+class InternetGateway(ec2.InternetGateway):
+    resource: ec2.InternetGateway
+    tags = [InternetGatewayAssociationParameter]
+
+
+class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${AWS::StackName}-private-route-table1')
+
+
+class PrivateRouteTable1(ec2.RouteTable):
+    resource: ec2.RouteTable
+    vpc_id = VPC
+    tags = [PrivateRouteTable1AssociationParameter]
 
 
 class PrivateRouteTable2AssociationParameter(ec2.Instance.AssociationParameter):
@@ -63,81 +124,23 @@ class PrivateRouteTable2(ec2.RouteTable):
     tags = [PrivateRouteTable2AssociationParameter]
 
 
-class PrivateRoute2(ec2.Route):
-    resource: ec2.Route
-    route_table_id = PrivateRouteTable2
-    nat_gateway_id = NATGateway2
-    destination_cidr_block = '0.0.0.0/0'
+class EIP2(ec2.EIP):
+    resource: ec2.EIP
+    domain = 'vpc'
 
 
-class PublicRouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+class PrivateSubnet3AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = Sub('${AWS::StackName}-public-route-table')
+    value = Sub('${AWS::StackName}-private-subnet3')
 
 
-class PublicRouteTable(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-    tags = [PublicRouteTableAssociationParameter]
-
-
-class PublicRouteTableAssociation2(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PublicRouteTable
-    subnet_id = PublicSubnet2
-
-
-class PrivateSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${AWS::StackName}-private-subnet2')
-
-
-class PrivateSubnet2(ec2.Subnet):
+class PrivateSubnet3(ec2.Subnet):
     resource: ec2.Subnet
     vpc_id = VPC
-    availability_zone = Select(1, GetAZs(AWS_REGION))
-    cidr_block = PrivateCidrBlock2
+    availability_zone = Select(2, GetAZs(AWS_REGION))
+    cidr_block = PrivateCidrBlock3
     map_public_ip_on_launch = False
-    tags = [PrivateSubnet2AssociationParameter]
-
-
-class ControlPlaneSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
-    group_description = 'Communication between the control plane and worker nodegroups'
-    vpc_id = VPC
-    group_name = Sub('${AWS::StackName}-eks-control-plane-sg')
-
-
-class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${AWS::StackName}-private-subnet1')
-
-
-class PrivateSubnet1(ec2.Subnet):
-    resource: ec2.Subnet
-    vpc_id = VPC
-    availability_zone = Select(0, GetAZs(AWS_REGION))
-    cidr_block = PrivateCidrBlock1
-    map_public_ip_on_launch = False
-    tags = [PrivateSubnet1AssociationParameter]
-
-
-class PublicSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${AWS::StackName}-public-subnet1')
-
-
-class PublicSubnet1AssociationParameter1(ec2.Instance.AssociationParameter):
-    key = 'kubernetes.io/role/elb'
-    value = 1
-
-
-class PublicSubnet1(ec2.Subnet):
-    resource: ec2.Subnet
-    vpc_id = VPC
-    availability_zone = Select(0, GetAZs(AWS_REGION))
-    cidr_block = PublicCidrBlock1
-    tags = [PublicSubnet1AssociationParameter, PublicSubnet1AssociationParameter1]
+    tags = [PrivateSubnet3AssociationParameter]
 
 
 class PublicSubnet3AssociationParameter(ec2.Instance.AssociationParameter):
@@ -158,81 +161,42 @@ class PublicSubnet3(ec2.Subnet):
     tags = [PublicSubnet3AssociationParameter, PublicSubnet3AssociationParameter1]
 
 
-class PrivateSubnet3AssociationParameter(ec2.Instance.AssociationParameter):
+class PublicSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = Sub('${AWS::StackName}-private-subnet3')
+    value = Sub('${AWS::StackName}-public-subnet1')
 
 
-class PrivateSubnet3(ec2.Subnet):
+class PublicSubnet1AssociationParameter1(ec2.Instance.AssociationParameter):
+    key = 'kubernetes.io/role/elb'
+    value = 1
+
+
+class PublicSubnet1(ec2.Subnet):
     resource: ec2.Subnet
     vpc_id = VPC
-    availability_zone = Select(2, GetAZs(AWS_REGION))
-    cidr_block = PrivateCidrBlock3
-    map_public_ip_on_launch = False
-    tags = [PrivateSubnet3AssociationParameter]
+    availability_zone = Select(0, GetAZs(AWS_REGION))
+    cidr_block = PublicCidrBlock1
+    tags = [PublicSubnet1AssociationParameter, PublicSubnet1AssociationParameter1]
 
 
-class InternetGatewayAssociationParameter(ec2.Instance.AssociationParameter):
+class PrivateSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = Sub('${AWS::StackName}-ig')
+    value = Sub('${AWS::StackName}-private-subnet2')
 
 
-class InternetGateway(ec2.InternetGateway):
-    resource: ec2.InternetGateway
-    tags = [InternetGatewayAssociationParameter]
-
-
-class AttachGateway(ec2.VPCGatewayAttachment):
-    resource: ec2.VPCGatewayAttachment
+class PrivateSubnet2(ec2.Subnet):
+    resource: ec2.Subnet
     vpc_id = VPC
-    internet_gateway_id = InternetGateway
+    availability_zone = Select(1, GetAZs(AWS_REGION))
+    cidr_block = PrivateCidrBlock2
+    map_public_ip_on_launch = False
+    tags = [PrivateSubnet2AssociationParameter]
 
 
 class PrivateRouteTableAssociation2(ec2.SubnetRouteTableAssociation):
     resource: ec2.SubnetRouteTableAssociation
     route_table_id = PrivateRouteTable2
     subnet_id = PrivateSubnet2
-
-
-class RouteInternetGateway(ec2.Route):
-    resource: ec2.Route
-    route_table_id = PublicRouteTable
-    gateway_id = InternetGateway
-    destination_cidr_block = '0.0.0.0/0'
-
-
-class PrivateRouteTable3AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${AWS::StackName}-private-route-table3')
-
-
-class PrivateRouteTable3(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-    tags = [PrivateRouteTable3AssociationParameter]
-
-
-class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${AWS::StackName}-private-route-table1')
-
-
-class PrivateRouteTable1(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-    tags = [PrivateRouteTable1AssociationParameter]
-
-
-class PrivateRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PrivateRouteTable1
-    subnet_id = PrivateSubnet1
-
-
-class PublicRouteTableAssociation3(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PublicRouteTable
-    subnet_id = PublicSubnet3
 
 
 class EIP1(ec2.EIP):
@@ -259,16 +223,10 @@ class PrivateRoute1(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
 
 
-class PublicRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
+class PublicRouteTableAssociation3(ec2.SubnetRouteTableAssociation):
     resource: ec2.SubnetRouteTableAssociation
     route_table_id = PublicRouteTable
-    subnet_id = PublicSubnet1
-
-
-class PrivateRouteTableAssociation3(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PrivateRouteTable3
-    subnet_id = PrivateSubnet3
+    subnet_id = PublicSubnet3
 
 
 class EIP3(ec2.EIP):
@@ -295,9 +253,51 @@ class PrivateRoute3(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
 
 
-class ControlPlaneSecurityGroupIngress(ec2.SecurityGroupIngress):
-    resource: ec2.SecurityGroupIngress
-    group_id = ControlPlaneSecurityGroup
-    ip_protocol = '-1'
-    source_security_group_id = ControlPlaneSecurityGroup.GroupId
-    source_security_group_owner_id = AWS_ACCOUNT_ID
+class AttachGateway(ec2.VPCGatewayAttachment):
+    resource: ec2.VPCGatewayAttachment
+    vpc_id = VPC
+    internet_gateway_id = InternetGateway
+
+
+class PrivateRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PrivateRouteTable1
+    subnet_id = PrivateSubnet1
+
+
+class PublicRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PublicRouteTable
+    subnet_id = PublicSubnet1
+
+
+class NATGateway2AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${AWS::StackName}-nat-gw2')
+
+
+class NATGateway2(ec2.NatGateway):
+    resource: ec2.NatGateway
+    allocation_id = EIP2.AllocationId
+    subnet_id = PublicSubnet2
+    tags = [NATGateway2AssociationParameter]
+
+
+class RouteInternetGateway(ec2.Route):
+    resource: ec2.Route
+    route_table_id = PublicRouteTable
+    gateway_id = InternetGateway
+    destination_cidr_block = '0.0.0.0/0'
+
+
+class PrivateRouteTableAssociation3(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PrivateRouteTable3
+    subnet_id = PrivateSubnet3
+
+
+class PrivateRoute2(ec2.Route):
+    resource: ec2.Route
+    route_table_id = PrivateRouteTable2
+    nat_gateway_id = NATGateway2
+    destination_cidr_block = '0.0.0.0/0'

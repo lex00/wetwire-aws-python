@@ -1,6 +1,10 @@
-"""Storage resources: Bucket, NonExplodingBucket."""
+"""Storage resources: NonExplodingBucket, Bucket."""
 
 from . import *  # noqa: F403
+
+
+class NonExplodingBucket(s3.Bucket):
+    resource: s3.Bucket
 
 
 class BucketOwnershipControlsRule(s3.Bucket.OwnershipControlsRule):
@@ -15,7 +19,3 @@ class BucketOwnershipControls(s3.Bucket.OwnershipControls):
 class Bucket(s3.Bucket):
     resource: s3.Bucket
     lifecycle_configuration = BucketOwnershipControls
-
-
-class NonExplodingBucket(s3.Bucket):
-    resource: s3.Bucket

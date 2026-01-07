@@ -110,8 +110,6 @@ AWS_CORE_EXPORTS = [
     "ARN_LIKE",
     "ARN_NOT_LIKE",
     "NULL",
-    # Loader
-    "setup_resources",
 ]
 
 # Service modules dynamically discovered from wetwire_aws.resources
@@ -224,8 +222,6 @@ _CORE_IMPORT_LINES = [
     "    ARN_LIKE,",
     "    ARN_NOT_LIKE,",
     "    NULL,",
-    "    # Loader",
-    "    setup_resources,",
     ")",
     "from wetwire_aws.resources import (",
     "    " + ",\n    ".join(AWS_SERVICE_MODULES[:30]) + ",",

@@ -1,4 +1,4 @@
-"""Infra resources: ServiceCatalogPortfolio, ServiceCatalogPortfolioShare, ServiceCatalogProductTagOptionsUser, ServiceCatalogProductTagOptionsDept, ServiceCatalogProductTagOptionsOwner, ServiceCatalogProductTagOptionsEnv."""
+"""Infra resources: ServiceCatalogPortfolio, ServiceCatalogPortfolioShare, ServiceCatalogProductTagOptionsUser, ServiceCatalogProductTagOptionsEnv, ServiceCatalogProductTagOptionsDept, ServiceCatalogProductTagOptionsOwner."""
 
 from . import *  # noqa: F403
 
@@ -50,6 +50,13 @@ class ServiceCatalogProductTagOptionsUser(servicecatalog.TagOption):
     value = ProductUser
 
 
+class ServiceCatalogProductTagOptionsEnv(servicecatalog.TagOption):
+    resource: servicecatalog.TagOption
+    active = ActivateProductTagOptions
+    key = 'Env'
+    value = ProductEnv
+
+
 class ServiceCatalogProductTagOptionsDept(servicecatalog.TagOption):
     resource: servicecatalog.TagOption
     active = ActivateProductTagOptions
@@ -62,10 +69,3 @@ class ServiceCatalogProductTagOptionsOwner(servicecatalog.TagOption):
     active = ActivateProductTagOptions
     key = 'Owner'
     value = ProductOwner
-
-
-class ServiceCatalogProductTagOptionsEnv(servicecatalog.TagOption):
-    resource: servicecatalog.TagOption
-    active = ActivateProductTagOptions
-    key = 'Env'
-    value = ProductEnv

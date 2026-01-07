@@ -1,4 +1,4 @@
-"""Compute resources: MyLambda, MyLambdaVersion, MyLambdaPermission."""
+"""Compute resources: MyLambda, MyLambdaPermission, MyLambdaVersion."""
 
 from . import *  # noqa: F403
 
@@ -17,12 +17,6 @@ class MyLambda(lambda_.Function):
     role = MyLambdaRole.Arn
 
 
-class MyLambdaVersion(lambda_.Version):
-    resource: lambda_.Version
-    function_name = AWS_STACK_NAME
-    depends_on = [MyLambda]
-
-
 class MyLambdaPermission(lambda_.Permission):
     resource: lambda_.Permission
     action = 'lambda:InvokeFunction'
@@ -30,3 +24,9 @@ class MyLambdaPermission(lambda_.Permission):
     principal = 'iot.amazonaws.com'
     source_account = AWS_ACCOUNT_ID
     source_arn = IoTTopicRule.Arn
+
+
+class MyLambdaVersion(lambda_.Version):
+    resource: lambda_.Version
+    function_name = AWS_STACK_NAME
+    depends_on = [MyLambda]
