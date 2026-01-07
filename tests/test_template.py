@@ -300,7 +300,10 @@ class TestSAMTemplateIntegration:
 
         assert result["Transform"] == "AWS::Serverless-2016-10-31"
         assert "ProcessorFunction" in result["Resources"]
-        assert result["Resources"]["ProcessorFunction"]["Type"] == "AWS::Serverless::Function"
+        assert (
+            result["Resources"]["ProcessorFunction"]["Type"]
+            == "AWS::Serverless::Function"
+        )
 
     def test_sam_function_with_events(self):
         """SAM Function with events should serialize correctly."""
@@ -374,7 +377,12 @@ class TestSAMTemplateIntegration:
 
         assert props["StageName"] == "$default"
         assert props["CorsConfiguration"]["AllowOrigins"] == ["https://example.com"]
-        assert props["CorsConfiguration"]["AllowMethods"] == ["GET", "POST", "PUT", "DELETE"]
+        assert props["CorsConfiguration"]["AllowMethods"] == [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+        ]
 
     def test_sam_simpletable_resource(self):
         """SAM SimpleTable should serialize correctly."""
@@ -429,7 +437,10 @@ class TestSAMTemplateIntegration:
         result = template.to_dict()
         props = result["Resources"]["MyStateMachine"]["Properties"]
 
-        assert result["Resources"]["MyStateMachine"]["Type"] == "AWS::Serverless::StateMachine"
+        assert (
+            result["Resources"]["MyStateMachine"]["Type"]
+            == "AWS::Serverless::StateMachine"
+        )
         assert props["Name"] == "my-workflow"
         assert props["Definition"]["StartAt"] == "HelloWorld"
 
@@ -487,7 +498,9 @@ class TestSAMTemplateIntegration:
         # Add outputs
         template.add_output(
             "ApiUrl",
-            value=Sub("https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"),
+            value=Sub(
+                "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"
+            ),
             description="API Gateway URL",
         )
 
@@ -502,8 +515,13 @@ class TestSAMTemplateIntegration:
         # Verify resources
         assert len(result["Resources"]) == 3
         assert result["Resources"]["Api"]["Type"] == "AWS::Serverless::Api"
-        assert result["Resources"]["GetItemsFunction"]["Type"] == "AWS::Serverless::Function"
-        assert result["Resources"]["ItemsTable"]["Type"] == "AWS::Serverless::SimpleTable"
+        assert (
+            result["Resources"]["GetItemsFunction"]["Type"]
+            == "AWS::Serverless::Function"
+        )
+        assert (
+            result["Resources"]["ItemsTable"]["Type"] == "AWS::Serverless::SimpleTable"
+        )
 
         # Verify outputs
         assert "ApiUrl" in result["Outputs"]

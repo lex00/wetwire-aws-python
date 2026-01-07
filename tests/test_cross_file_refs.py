@@ -48,9 +48,7 @@ class TestCrossFileReferences:
         # Verify the no-parens cross-file reference is detected
         # With inheritance pattern, the value is a class attribute
         role_value = getattr(AppFunction, "role", None)
-        assert is_attr_ref(role_value), (
-            "role should be an AttrRef (no-parens pattern)"
-        )
+        assert is_attr_ref(role_value), "role should be an AttrRef (no-parens pattern)"
         assert role_value.target is AppRole, "AttrRef should reference AppRole"
         assert role_value.attr == "Arn", "AttrRef should reference 'Arn' attribute"
 

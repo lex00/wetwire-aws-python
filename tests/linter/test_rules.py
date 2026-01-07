@@ -980,7 +980,7 @@ vpc_id = Ref("VpcIdParam")
 
     def test_fix_replaces_with_direct_ref(self):
         """Should replace Ref('X') with X."""
-        code = '''bucket_ref = Ref("MyBucket")'''
+        code = """bucket_ref = Ref("MyBucket")"""
         fixed = fix_code(code, rules=[ExplicitRefIntrinsic()], add_imports=False)
         assert "MyBucket" in fixed
         assert 'Ref("MyBucket")' not in fixed
@@ -1030,7 +1030,7 @@ role_arn = GetAtt(role_resource, "Arn")
 
     def test_fix_replaces_with_attribute_access(self):
         """Should replace GetAtt('X', 'Y') with X.Y."""
-        code = '''role_arn = GetAtt("MyRole", "Arn")'''
+        code = """role_arn = GetAtt("MyRole", "Arn")"""
         fixed = fix_code(code, rules=[ExplicitGetAttIntrinsic()], add_imports=False)
         assert "MyRole.Arn" in fixed
         assert 'GetAtt("MyRole"' not in fixed

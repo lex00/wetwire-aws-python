@@ -425,9 +425,7 @@ class TestServerlessSerialization:
 
     def test_nested_property_types_serialize(self):
         """Nested PropertyTypes should serialize correctly."""
-        env = serverless.Function.Environment(
-            variables={"KEY": "value"}
-        )
+        env = serverless.Function.Environment(variables={"KEY": "value"})
         func = serverless.Function(
             handler="app.handler",
             environment=env,

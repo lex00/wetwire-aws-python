@@ -11,6 +11,27 @@ class TestResourceImports:
         assert hasattr(s3, "Bucket")
         assert s3.Bucket._resource_type == "AWS::S3::Bucket"
 
+    def test_import_serverless(self):
+        """SAM serverless resources can be imported."""
+        from wetwire_aws.resources import serverless
+
+        assert hasattr(serverless, "Function")
+        assert serverless.Function._resource_type == "AWS::Serverless::Function"
+
+    def test_serverless_in_resources_all(self):
+        """Serverless module is in resources.__all__."""
+        from wetwire_aws import resources
+
+        assert "serverless" in resources.__all__
+
+    def test_serverless_in_aws_namespace(self):
+        """Serverless module is injected by _get_aws_namespace()."""
+        from wetwire_aws.loader import _get_aws_namespace
+
+        namespace = _get_aws_namespace()
+        assert "serverless" in namespace
+        assert hasattr(namespace["serverless"], "Function")
+
     def test_import_ec2(self):
         """EC2 resources can be imported."""
         from wetwire_aws.resources import ec2

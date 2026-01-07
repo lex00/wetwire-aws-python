@@ -130,14 +130,18 @@ class TestGraphRefsIntrospection:
     The core functionality works - just the introspection features have limitations.
     """
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_ref_detected(self):
         """Test that Annotated[T, Ref()] annotations are detected by dataclass-dsl."""
         refs = get_refs(SampleFunctionWithRef)
         assert "bucket" in refs
         assert refs["bucket"].target == SampleBucket
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_attr_detected(self):
         """Test that Annotated[str, Attr(T, 'name')] annotations are detected by dataclass-dsl."""
         refs = get_refs(SampleFunctionWithAttr)
@@ -145,13 +149,17 @@ class TestGraphRefsIntrospection:
         assert refs["role"].target == SampleRole
         assert refs["role"].attr == "Arn"
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_dependencies_computed(self):
         """Test that get_dependencies() works with wrapper classes."""
         deps = get_dependencies(SampleFunctionWithBoth)
         assert SampleRole in deps
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_transitive_dependencies(self):
         """Test that transitive dependencies are computed."""
         # Direct dependencies
@@ -171,7 +179,9 @@ class TestGraphRefsSerialization:
     Note: Annotated-based serialization tests are skipped with inheritance pattern.
     """
 
-    @pytest.mark.skip(reason="Annotated serialization not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated serialization not compatible with dataclass inheritance"
+    )
     def test_attr_serializes_to_cf_getatt(self):
         """Test that Annotated[str, Attr(T, 'name')] serializes to {"Fn::GetAtt": ["T", "name"]}."""
         # Re-register the classes since autouse fixture cleared them
@@ -186,7 +196,9 @@ class TestGraphRefsSerialization:
         func_props = output["Resources"]["SampleFunctionWithAttr"]["Properties"]
         assert func_props["Role"] == {"Fn::GetAtt": ["SampleRole", "Arn"]}
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_resolve_refs_from_annotations(self):
         """Test the resolve_refs_from_annotations helper."""
         instance = SampleFunctionWithAttr()
@@ -211,7 +223,9 @@ class TestMixedPatterns:
         func_props = output["Resources"]["DirectPatternFunction"]["Properties"]
         assert func_props["Role"] == {"Fn::GetAtt": ["DirectPatternRole", "Arn"]}
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_annotation_pattern_enables_introspection(self):
         """Test that annotation pattern enables introspection unlike direct pattern."""
         # Direct pattern - no dependencies detected
@@ -257,7 +271,9 @@ class TestContextRef:
     Note: These tests are skipped with inheritance pattern due to annotation resolution issues.
     """
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_context_ref_detected(self):
         """Test that ContextRef annotations are detected by dataclass-dsl."""
         refs = get_refs(ResourceWithContext)
@@ -265,7 +281,9 @@ class TestContextRef:
         assert refs["region"].is_context is True
         assert refs["region"].attr == "AWS::Region"
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_context_ref_resolves_to_ref_intrinsic(self):
         """Test that ContextRef resolves to CloudFormation Ref."""
         instance = ResourceWithContext()
@@ -281,7 +299,9 @@ class TestRefList:
     Note: These tests are skipped with inheritance pattern due to annotation resolution issues.
     """
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_reflist_detected(self):
         """Test that RefList annotations are detected by dataclass-dsl."""
         refs = get_refs(InstanceWithSecurityGroups)
@@ -289,7 +309,9 @@ class TestRefList:
         assert refs["security_groups"].is_list is True
         assert refs["security_groups"].target == SecurityGroupBucket
 
-    @pytest.mark.skip(reason="Annotated introspection not compatible with dataclass inheritance")
+    @pytest.mark.skip(
+        reason="Annotated introspection not compatible with dataclass inheritance"
+    )
     def test_reflist_dependencies(self):
         """Test that RefList creates dependencies."""
         deps = get_dependencies(InstanceWithSecurityGroups)
@@ -304,7 +326,9 @@ class TestTopologicalSort:
     in CloudFormationTemplate.from_registry() instead.
     """
 
-    @pytest.mark.skip(reason="dataclass_dsl topological_sort not compatible with inheritance")
+    @pytest.mark.skip(
+        reason="dataclass_dsl topological_sort not compatible with inheritance"
+    )
     def test_topological_sort_orders_by_dependencies(self):
         """Test that topological_sort orders classes by dependencies."""
         # Test the core topological_sort function
@@ -320,7 +344,9 @@ class TestTopologicalSort:
         # SubnetBucket before InstanceBucket (dependency)
         assert class_order.index("SubnetBucket") < class_order.index("InstanceBucket")
 
-    @pytest.mark.skip(reason="dataclass_dsl topological_sort not compatible with inheritance")
+    @pytest.mark.skip(
+        reason="dataclass_dsl topological_sort not compatible with inheritance"
+    )
     def test_topological_sort_handles_no_dependencies(self):
         """Test topological sort with classes that have no dependencies."""
         classes = [SampleBucket, SampleRole]

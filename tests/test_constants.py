@@ -12,6 +12,7 @@ def _enums_available():
     """Check if enum constants are available."""
     try:
         from wetwire_aws.resources.lambda_ import Runtime  # noqa: F401
+
         return True
     except ImportError:
         return False
@@ -19,7 +20,7 @@ def _enums_available():
 
 skip_without_enums = pytest.mark.skipif(
     not _enums_available(),
-    reason="Enums not available (botocore not installed or extract_enums not run)"
+    reason="Enums not available (botocore not installed or extract_enums not run)",
 )
 
 

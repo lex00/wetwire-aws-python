@@ -93,9 +93,7 @@ class TestParseSAMResources:
     def test_api_event_has_path_method(self):
         """ApiEvent nested type should have Path and Method properties."""
         schema = parse_sam_resources()
-        api_event = next(
-            (n for n in schema.nested_types if n.name == "ApiEvent"), None
-        )
+        api_event = next((n for n in schema.nested_types if n.name == "ApiEvent"), None)
         if api_event:
             prop_names = {p.name for p in api_event.properties}
             assert "path" in prop_names

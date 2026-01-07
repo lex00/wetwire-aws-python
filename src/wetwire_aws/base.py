@@ -296,8 +296,7 @@ def _serialize_value(value: Any) -> Any:
     if is_class_ref(value) or (
         isinstance(value, type)
         and (
-            issubclass(value, CloudFormationResource)
-            or issubclass(value, PropertyType)
+            issubclass(value, CloudFormationResource) or issubclass(value, PropertyType)
         )
     ):
         # Check if this is a PropertyType wrapper - if so, instantiate and serialize

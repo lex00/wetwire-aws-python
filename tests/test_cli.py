@@ -92,14 +92,25 @@ class TestCLI:
         env.pop("ANTHROPIC_API_KEY", None)
 
         result = subprocess.run(
-            [sys.executable, "-m", "wetwire_aws.cli", "test", "--persona", "invalid", "test prompt"],
+            [
+                sys.executable,
+                "-m",
+                "wetwire_aws.cli",
+                "test",
+                "--persona",
+                "invalid",
+                "test prompt",
+            ],
             capture_output=True,
             text=True,
             env=env,
         )
         assert result.returncode != 0
         # Either "Unknown persona" (if wetwire-core installed) or "wetwire-core required"
-        assert "Unknown persona" in result.stderr or "wetwire-core required" in result.stderr
+        assert (
+            "Unknown persona" in result.stderr
+            or "wetwire-core required" in result.stderr
+        )
 
 
 class TestBuildWithPath:
@@ -169,12 +180,21 @@ class TestBucket(s3.Bucket):
     def test_build_with_nonexistent_path(self):
         """Build fails gracefully with non-existent path."""
         result = subprocess.run(
-            [sys.executable, "-m", "wetwire_aws.cli", "build", "/nonexistent/path/to/package"],
+            [
+                sys.executable,
+                "-m",
+                "wetwire_aws.cli",
+                "build",
+                "/nonexistent/path/to/package",
+            ],
             capture_output=True,
             text=True,
         )
         assert result.returncode != 0
-        assert "not found" in result.stderr.lower() or "does not exist" in result.stderr.lower()
+        assert (
+            "not found" in result.stderr.lower()
+            or "does not exist" in result.stderr.lower()
+        )
 
     def test_build_path_from_different_directory(self):
         """Build with path works from any directory."""
@@ -220,4 +240,7 @@ class TestBucket(s3.Bucket):
                 text=True,
             )
             assert result.returncode != 0
-            assert "not a Python package" in result.stderr or "__init__.py" in result.stderr
+            assert (
+                "not a Python package" in result.stderr
+                or "__init__.py" in result.stderr
+            )
