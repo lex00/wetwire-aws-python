@@ -20,7 +20,7 @@ class LoggingBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.Publ
 
 class LoggingBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
     kms_master_key_id = LoggingBucketKMSKey.Arn
-    sse_algorithm = 'aws:kms'
+    sse_algorithm = s3.ServerSideEncryption.AWSKMS
 
 
 class LoggingBucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):

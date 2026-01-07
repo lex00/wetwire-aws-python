@@ -1,23 +1,40 @@
-"""Security resources: TestResourceHandlerRole, SiteWebACL, SiteCloudFrontLogsReplicationRole, SiteContentReplicationRole, CognitoUserPool, JwtResourceHandlerRole, CognitoClient, SiteContentReplicationPolicy, SiteCloudFrontLogsReplicationPolicy, CognitoDomain, TestResourceHandlerPolicy."""
+"""Security resources: SiteCloudFrontLogsReplicationRole, SiteContentReplicationRole, SiteWebACL, CognitoUserPool, CognitoClient, JwtResourceHandlerRole, TestResourceHandlerRole, SiteCloudFrontLogsReplicationPolicy, SiteContentReplicationPolicy, CognitoDomain, TestResourceHandlerPolicy."""
 
 from . import *  # noqa: F403
 
 
-class TestResourceHandlerRoleAllowStatement0(PolicyStatement):
+class SiteCloudFrontLogsReplicationRoleAllowStatement0(PolicyStatement):
     principal = {
-        'Service': ['lambda.amazonaws.com'],
+        'Service': ['s3.amazonaws.com'],
     }
     action = ['sts:AssumeRole']
 
 
-class TestResourceHandlerRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [TestResourceHandlerRoleAllowStatement0]
+class SiteCloudFrontLogsReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [SiteCloudFrontLogsReplicationRoleAllowStatement0]
 
 
-class TestResourceHandlerRole(iam.Role):
+class SiteCloudFrontLogsReplicationRole(iam.Role):
     resource: iam.Role
-    assume_role_policy_document = TestResourceHandlerRoleAssumeRolePolicyDocument
-    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole']
+    assume_role_policy_document = SiteCloudFrontLogsReplicationRoleAssumeRolePolicyDocument
+    path = '/'
+
+
+class SiteContentReplicationRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['s3.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class SiteContentReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [SiteContentReplicationRoleAllowStatement0]
+
+
+class SiteContentReplicationRole(iam.Role):
+    resource: iam.Role
+    assume_role_policy_document = SiteContentReplicationRoleAssumeRolePolicyDocument
+    path = '/'
 
 
 class SiteWebACLAllowAction(wafv2.WebACL.AllowAction):
@@ -80,40 +97,6 @@ class SiteWebACL(wafv2.WebACL):
     rules = [SiteWebACLRule]
 
 
-class SiteCloudFrontLogsReplicationRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['s3.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class SiteCloudFrontLogsReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [SiteCloudFrontLogsReplicationRoleAllowStatement0]
-
-
-class SiteCloudFrontLogsReplicationRole(iam.Role):
-    resource: iam.Role
-    assume_role_policy_document = SiteCloudFrontLogsReplicationRoleAssumeRolePolicyDocument
-    path = '/'
-
-
-class SiteContentReplicationRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['s3.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class SiteContentReplicationRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [SiteContentReplicationRoleAllowStatement0]
-
-
-class SiteContentReplicationRole(iam.Role):
-    resource: iam.Role
-    assume_role_policy_document = SiteContentReplicationRoleAssumeRolePolicyDocument
-    path = '/'
-
-
 class CognitoUserPoolAdminCreateUserConfig(cognito.UserPool.AdminCreateUserConfig):
     allow_admin_create_user_only = True
 
@@ -142,6 +125,18 @@ class CognitoUserPool(cognito.UserPool):
     depends_on = [SiteDistribution]
 
 
+class CognitoClient(cognito.UserPoolClient):
+    resource: cognito.UserPoolClient
+    client_name = AppName
+    generate_secret = False
+    user_pool_id = CognitoUserPool
+    callback_ur_ls = [Sub('https://${SiteDistribution.DomainName}/index.html')]
+    allowed_o_auth_flows = ['code']
+    allowed_o_auth_flows_user_pool_client = True
+    allowed_o_auth_scopes = ['phone', 'email', 'openid']
+    supported_identity_providers = ['COGNITO']
+
+
 class JwtResourceHandlerRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['lambda.amazonaws.com'],
@@ -159,53 +154,21 @@ class JwtResourceHandlerRole(iam.Role):
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole']
 
 
-class CognitoClient(cognito.UserPoolClient):
-    resource: cognito.UserPoolClient
-    client_name = AppName
-    generate_secret = False
-    user_pool_id = CognitoUserPool
-    callback_ur_ls = [Sub('https://${SiteDistribution.DomainName}/index.html')]
-    allowed_o_auth_flows = ['code']
-    allowed_o_auth_flows_user_pool_client = True
-    allowed_o_auth_scopes = ['phone', 'email', 'openid']
-    supported_identity_providers = ['COGNITO']
+class TestResourceHandlerRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['lambda.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
 
 
-class SiteContentReplicationPolicyAllowStatement0(PolicyStatement):
-    action = [
-        's3:GetReplicationConfiguration',
-        's3:ListBucket',
-    ]
-    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-content-${AWS::Region}-${AWS::AccountId}')
+class TestResourceHandlerRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [TestResourceHandlerRoleAllowStatement0]
 
 
-class SiteContentReplicationPolicyAllowStatement1(PolicyStatement):
-    action = [
-        's3:GetObjectVersionForReplication',
-        's3:GetObjectVersionAcl',
-        's3:GetObjectVersionTagging',
-    ]
-    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-content-${AWS::Region}-${AWS::AccountId}/*')
-
-
-class SiteContentReplicationPolicyAllowStatement2(PolicyStatement):
-    action = [
-        's3:ReplicateObject',
-        's3:ReplicateDelete',
-        's3:ReplicationTags',
-    ]
-    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*')
-
-
-class SiteContentReplicationPolicyPolicyDocument(PolicyDocument):
-    statement = [SiteContentReplicationPolicyAllowStatement0, SiteContentReplicationPolicyAllowStatement1, SiteContentReplicationPolicyAllowStatement2]
-
-
-class SiteContentReplicationPolicy(iam.RolePolicy):
-    resource: iam.RolePolicy
-    policy_document = SiteContentReplicationPolicyPolicyDocument
-    policy_name = 'bucket-replication-policy'
-    role_name = SiteContentReplicationRole
+class TestResourceHandlerRole(iam.Role):
+    resource: iam.Role
+    assume_role_policy_document = TestResourceHandlerRoleAssumeRolePolicyDocument
+    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole']
 
 
 class SiteCloudFrontLogsReplicationPolicyAllowStatement0(PolicyStatement):
@@ -243,6 +206,43 @@ class SiteCloudFrontLogsReplicationPolicy(iam.RolePolicy):
     policy_document = SiteCloudFrontLogsReplicationPolicyPolicyDocument
     policy_name = 'bucket-replication-policy'
     role_name = SiteCloudFrontLogsReplicationRole
+
+
+class SiteContentReplicationPolicyAllowStatement0(PolicyStatement):
+    action = [
+        's3:GetReplicationConfiguration',
+        's3:ListBucket',
+    ]
+    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-content-${AWS::Region}-${AWS::AccountId}')
+
+
+class SiteContentReplicationPolicyAllowStatement1(PolicyStatement):
+    action = [
+        's3:GetObjectVersionForReplication',
+        's3:GetObjectVersionAcl',
+        's3:GetObjectVersionTagging',
+    ]
+    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-content-${AWS::Region}-${AWS::AccountId}/*')
+
+
+class SiteContentReplicationPolicyAllowStatement2(PolicyStatement):
+    action = [
+        's3:ReplicateObject',
+        's3:ReplicateDelete',
+        's3:ReplicationTags',
+    ]
+    resource_arn = Sub('arn:${AWS::Partition}:s3:::${AppName}-content-replicas-${AWS::Region}-${AWS::AccountId}/*')
+
+
+class SiteContentReplicationPolicyPolicyDocument(PolicyDocument):
+    statement = [SiteContentReplicationPolicyAllowStatement0, SiteContentReplicationPolicyAllowStatement1, SiteContentReplicationPolicyAllowStatement2]
+
+
+class SiteContentReplicationPolicy(iam.RolePolicy):
+    resource: iam.RolePolicy
+    policy_document = SiteContentReplicationPolicyPolicyDocument
+    policy_name = 'bucket-replication-policy'
+    role_name = SiteContentReplicationRole
 
 
 class CognitoDomain(cognito.UserPoolDomain):

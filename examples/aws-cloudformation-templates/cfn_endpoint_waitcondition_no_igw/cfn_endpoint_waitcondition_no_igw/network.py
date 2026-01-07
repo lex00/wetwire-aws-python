@@ -1,4 +1,4 @@
-"""Network resources: VPC, PrivateRouteTable1, PrivateRouteTable2, PrivateSG, PrivateSubnet1, PrivateSubnet2, EndpointSG, CfnEndpoint, PrivateSubnet2RouteTableAssociation, S3Endpoint, PrivateSubnet1RouteTableAssociation."""
+"""Network resources: VPC, PrivateRouteTable1, PrivateSubnet1, PrivateSubnet1RouteTableAssociation, PrivateSG, PrivateSubnet2, EndpointSG, CfnEndpoint, PrivateRouteTable2, S3Endpoint, PrivateSubnet2RouteTableAssociation."""
 
 from . import *  # noqa: F403
 
@@ -27,15 +27,24 @@ class PrivateRouteTable1(ec2.RouteTable):
     tags = [PrivateRouteTable1AssociationParameter]
 
 
-class PrivateRouteTable2AssociationParameter(ec2.Instance.AssociationParameter):
+class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = Sub('${EnvironmentName} Private Routes (AZ2)')
+    value = Sub('${EnvironmentName} Private Subnet (AZ1)')
 
 
-class PrivateRouteTable2(ec2.RouteTable):
-    resource: ec2.RouteTable
+class PrivateSubnet1(ec2.Subnet):
+    resource: ec2.Subnet
     vpc_id = VPC
-    tags = [PrivateRouteTable2AssociationParameter]
+    availability_zone = Select(0, GetAZs())
+    cidr_block = PrivateSubnet1CIDR
+    map_public_ip_on_launch = False
+    tags = [PrivateSubnet1AssociationParameter]
+
+
+class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    resource: ec2.SubnetRouteTableAssociation
+    route_table_id = PrivateRouteTable1
+    subnet_id = PrivateSubnet1
 
 
 class PrivateSGEgress(ec2.SecurityGroup.Egress):
@@ -56,20 +65,6 @@ class PrivateSG(ec2.SecurityGroup):
     security_group_ingress = [PrivateSGEgress]
     vpc_id = VPC
     tags = [PrivateSGAssociationParameter]
-
-
-class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${EnvironmentName} Private Subnet (AZ1)')
-
-
-class PrivateSubnet1(ec2.Subnet):
-    resource: ec2.Subnet
-    vpc_id = VPC
-    availability_zone = Select(0, GetAZs())
-    cidr_block = PrivateSubnet1CIDR
-    map_public_ip_on_launch = False
-    tags = [PrivateSubnet1AssociationParameter]
 
 
 class PrivateSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
@@ -116,10 +111,15 @@ class CfnEndpoint(ec2.VPCEndpoint):
     security_group_ids = [EndpointSG]
 
 
-class PrivateSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PrivateRouteTable2
-    subnet_id = PrivateSubnet2
+class PrivateRouteTable2AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${EnvironmentName} Private Routes (AZ2)')
+
+
+class PrivateRouteTable2(ec2.RouteTable):
+    resource: ec2.RouteTable
+    vpc_id = VPC
+    tags = [PrivateRouteTable2AssociationParameter]
 
 
 class S3EndpointAllowStatement0(PolicyStatement):
@@ -141,7 +141,7 @@ class S3Endpoint(ec2.VPCEndpoint):
     route_table_ids = [PrivateRouteTable1, PrivateRouteTable2]
 
 
-class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+class PrivateSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
     resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PrivateRouteTable1
-    subnet_id = PrivateSubnet1
+    route_table_id = PrivateRouteTable2
+    subnet_id = PrivateSubnet2

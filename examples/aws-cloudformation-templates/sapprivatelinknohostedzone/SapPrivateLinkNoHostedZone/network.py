@@ -1,4 +1,4 @@
-"""Network resources: ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkVPCESPermission, ASCPrivateLinkTargetGroup, ASCPrivateLinkListener."""
+"""Network resources: ASCPrivateLinkNLB, ASCPrivateLinkVPCES, ASCPrivateLinkTargetGroup, ASCPrivateLinkVPCESPermission, ASCPrivateLinkListener."""
 
 from . import *  # noqa: F403
 
@@ -23,12 +23,6 @@ class ASCPrivateLinkVPCES(ec2.VPCEndpointService):
     network_load_balancer_arns = [ASCPrivateLinkNLB]
 
 
-class ASCPrivateLinkVPCESPermission(ec2.VPCEndpointServicePermissions):
-    resource: ec2.VPCEndpointServicePermissions
-    allowed_principals = ['appflow.amazonaws.com']
-    service_id = ASCPrivateLinkVPCES
-
-
 class ASCPrivateLinkTargetGroupTargetDescription(elasticloadbalancingv2.TargetGroup.TargetDescription):
     availability_zone = If("IpInVpc", AWS_NO_VALUE, 'all')
     id = IP
@@ -45,6 +39,12 @@ class ASCPrivateLinkTargetGroup(elasticloadbalancingv2.TargetGroup):
     health_check_path = HealthCheckPath
     health_check_protocol = Protocol
     depends_on = [ASCPrivateLinkCertificate]
+
+
+class ASCPrivateLinkVPCESPermission(ec2.VPCEndpointServicePermissions):
+    resource: ec2.VPCEndpointServicePermissions
+    allowed_principals = ['appflow.amazonaws.com']
+    service_id = ASCPrivateLinkVPCES
 
 
 class ASCPrivateLinkListenerCertificate(elasticloadbalancingv2.ListenerCertificate.Certificate):

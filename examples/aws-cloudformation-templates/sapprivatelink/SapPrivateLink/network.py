@@ -1,19 +1,6 @@
-"""Network resources: ASCPrivateLinkNLB, ASCPrivateLinkTargetGroup, ASCPrivateLinkVPCES, ASCPrivateLinkVPCESPermission, ASCPrivateLinkListener."""
+"""Network resources: ASCPrivateLinkTargetGroup, ASCPrivateLinkNLB, ASCPrivateLinkListener, ASCPrivateLinkVPCES, ASCPrivateLinkVPCESPermission."""
 
 from . import *  # noqa: F403
-
-
-class ASCPrivateLinkNLBTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
-    key = 'load_balancing.cross_zone.enabled'
-    value = True
-
-
-class ASCPrivateLinkNLB(elasticloadbalancingv2.LoadBalancer):
-    resource: elasticloadbalancingv2.LoadBalancer
-    type_ = 'network'
-    scheme = 'internal'
-    subnets = Subnets
-    load_balancer_attributes = [ASCPrivateLinkNLBTargetGroupAttribute]
 
 
 class ASCPrivateLinkTargetGroupTargetDescription(elasticloadbalancingv2.TargetGroup.TargetDescription):
@@ -33,16 +20,17 @@ class ASCPrivateLinkTargetGroup(elasticloadbalancingv2.TargetGroup):
     health_check_protocol = Protocol
 
 
-class ASCPrivateLinkVPCES(ec2.VPCEndpointService):
-    resource: ec2.VPCEndpointService
-    acceptance_required = False
-    network_load_balancer_arns = [ASCPrivateLinkNLB]
+class ASCPrivateLinkNLBTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'load_balancing.cross_zone.enabled'
+    value = True
 
 
-class ASCPrivateLinkVPCESPermission(ec2.VPCEndpointServicePermissions):
-    resource: ec2.VPCEndpointServicePermissions
-    allowed_principals = ['appflow.amazonaws.com']
-    service_id = ASCPrivateLinkVPCES
+class ASCPrivateLinkNLB(elasticloadbalancingv2.LoadBalancer):
+    resource: elasticloadbalancingv2.LoadBalancer
+    type_ = 'network'
+    scheme = 'internal'
+    subnets = Subnets
+    load_balancer_attributes = [ASCPrivateLinkNLBTargetGroupAttribute]
 
 
 class ASCPrivateLinkListenerCertificate(elasticloadbalancingv2.ListenerCertificate.Certificate):
@@ -62,3 +50,15 @@ class ASCPrivateLinkListener(elasticloadbalancingv2.Listener):
     ssl_policy = 'ELBSecurityPolicy-TLS13-1-0-2021-06'
     certificates = [ASCPrivateLinkListenerCertificate]
     default_actions = [ASCPrivateLinkListenerAction]
+
+
+class ASCPrivateLinkVPCES(ec2.VPCEndpointService):
+    resource: ec2.VPCEndpointService
+    acceptance_required = False
+    network_load_balancer_arns = [ASCPrivateLinkNLB]
+
+
+class ASCPrivateLinkVPCESPermission(ec2.VPCEndpointServicePermissions):
+    resource: ec2.VPCEndpointServicePermissions
+    allowed_principals = ['appflow.amazonaws.com']
+    service_id = ASCPrivateLinkVPCES

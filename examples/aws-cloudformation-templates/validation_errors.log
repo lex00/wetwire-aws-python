@@ -1,22 +1,4 @@
-=== common_resources_pkg (common_resources_pkg) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-error: failed to remove directory `/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/wetwire_aws/resources/xray`: No such file or directory (os error 2)
-
-
-=== vpcflowlogscloudwatch_cfn (VPCFlowLogsCloudWatch_cfn) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.6.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 2 packages in 0.08ms
-error: Failed to install: wetwire_aws-1.6.0-py3-none-any.whl (wetwire-aws==1.6.0 (from file:///Users/alex/Documents/checkouts/wetwire-aws-python))
-  Caused by: Failed to reflink /Users/alex/.cache/uv/archive-v0/f8RbWx-t2vYWchuhpQNfR/wetwire_aws/resources/bedrock/__pycache__/DataAutomationProject.cpython-313.pyc to .venv/lib/python3.13/site-packages/wetwire_aws/resources/bedrock/__pycache__/DataAutomationProject.cpython-313.pyc
-  Caused by: No such file or directory (os error 2)
-
-
 === datetimenow (datetimenow) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.6.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 2 packages in 0.20ms
-Installed 1 package in 4.21s
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
     import datetimenow
@@ -48,78 +30,71 @@ Traceback (most recent call last):
 NameError: name 'serverless' is not defined
 
 
-=== log_setup_management (log_setup_management) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 1 package in 0.04ms
-error: Failed to install: wetwire_aws-1.6.0-py3-none-any.whl (wetwire-aws==1.6.0 (from file:///Users/alex/Documents/checkouts/wetwire-aws-python))
-  Caused by: failed to rename file from /Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/.tmpoYsAQu/__init__.cpython-313.pyc to /Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/wetwire_aws/resources/iottwinmaker/__pycache__/__init__.cpython-313.pyc: Invalid argument (os error 22)
+=== macro_1 (macro_1) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import macro_1
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/macro_1/macro_1/__init__.py", line 9, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 461, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/macro_1/macro_1/main.py", line 6, in <module>
+    class ResourceFunction(serverless.Function):
+                           ^^^^^^^^^^
+NameError: name 'serverless' is not defined
 
 
-=== windows_1 (windows_1) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-error: failed to remove directory `/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/wetwire_aws/resources/glue/__pycache__`: Directory not empty (os error 66)
-
-
-=== autoscalingrollingupdates (AutoScalingRollingUpdates) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-error: failed to remove directory `/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/wetwire_aws/resources/sagemaker/__pycache__`: Directory not empty (os error 66)
-
-
-=== centos_1 (centos_1) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 1 package in 0.05ms
-error: Failed to install: wetwire_aws-1.6.0-py3-none-any.whl (wetwire-aws==1.6.0 (from file:///Users/alex/Documents/checkouts/wetwire-aws-python))
-  Caused by: Failed to reflink /Users/alex/.cache/uv/archive-v0/f8RbWx-t2vYWchuhpQNfR/wetwire_aws/resources/rolesanywhere/Profile.py to .venv/lib/python3.13/site-packages/wetwire_aws/resources/rolesanywhere/Profile.py
-  Caused by: No such file or directory (os error 2)
-
-
-=== sqsfifoqueue (SQSFIFOQueue) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 1 package in 0.05ms
-error: Failed to install: wetwire_aws-1.6.0-py3-none-any.whl (wetwire-aws==1.6.0 (from file:///Users/alex/Documents/checkouts/wetwire-aws-python))
-  Caused by: Failed to reflink /Users/alex/.cache/uv/archive-v0/f8RbWx-t2vYWchuhpQNfR/wetwire_aws/resources/rds/__pycache__/DBProxyTargetGroup.cpython-313.pyc to .venv/lib/python3.13/site-packages/wetwire_aws/resources/rds/__pycache__/DBProxyTargetGroup.cpython-313.pyc
-  Caused by: No such file or directory (os error 2)
-
-
-=== cloudfront_nocache (cloudfront_nocache) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-error: failed to remove directory `/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/wetwire_aws/resources/ec2/__pycache__`: Directory not empty (os error 66)
-
-
-=== s3_bucket_and_policy_for_caa_v1 (s3_bucket_and_policy_for_caa_v1) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-error: failed to remove directory `/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/wetwire_aws/resources/ec2/__pycache__`: No such file or directory (os error 2)
-
-
-=== sapprivatelinknohostedzone (SapPrivateLinkNoHostedZone) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-error: failed to remove directory `/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/wetwire_aws/resources/emr/__pycache__`: Directory not empty (os error 66)
-
-
-=== ecs_schedule_example (ECS_Schedule_Example) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-error: failed to remove directory `/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/wetwire_aws/resources/autoscaling/__pycache__`: Directory not empty (os error 66)
-
-
-=== public_vpc_2 (public_vpc_2) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-error: failed to remove directory `/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/wetwire_aws/resources/route53/__pycache__`: Directory not empty (os error 66)
-
-
-=== ubuntu (ubuntu) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.6.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 2 packages in 0.06ms
-error: Failed to install: wetwire_aws-1.6.0-py3-none-any.whl (wetwire-aws==1.6.0 (from file:///Users/alex/Documents/checkouts/wetwire-aws-python))
-  Caused by: Failed to reflink /Users/alex/.cache/uv/archive-v0/f8RbWx-t2vYWchuhpQNfR/wetwire_aws/resources/appconfig/__pycache__/ConfigurationProfile.cpython-313.pyc to .venv/lib/python3.13/site-packages/wetwire_aws/resources/appconfig/__pycache__/ConfigurationProfile.cpython-313.pyc
-  Caused by: No such file or directory (os error 2)
+=== macro_2 (macro_2) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import macro_2
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/macro_2/macro_2/__init__.py", line 9, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 461, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/macro_2/macro_2/main.py", line 6, in <module>
+    class Function(serverless.Function):
+                   ^^^^^^^^^^
+NameError: name 'serverless' is not defined
 
 
 === macro_5 (macro_5) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.6.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 2 packages in 0.36ms
-Installed 1 package in 958ms
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
     import macro_5
@@ -146,31 +121,76 @@ Traceback (most recent call last):
     spec.loader.exec_module(module)
     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
   File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/macro_5/macro_5/main.py", line 6, in <module>
+    class MacroFunction(serverless.Function):
+                        ^^^^^^^^^^
+NameError: name 'serverless' is not defined
+
+
+=== template_1 (template_1) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import template_1
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/template_1/template_1/__init__.py", line 11, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 461, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/template_1/template_1/main.py", line 6, in <module>
+    class CountMacroFunction(serverless.Function):
+                             ^^^^^^^^^^
+NameError: name 'serverless' is not defined
+
+
+=== macro_4 (macro_4) ===
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import macro_4
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/macro_4/macro_4/__init__.py", line 9, in <module>
+    setup_resources(__file__, __name__, globals())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/src/wetwire_aws/loader.py", line 461, in setup_resources
+    _setup_resources(
+    ~~~~~~~~~~~~~~~~^
+        init_file,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        decorator=wetwire_aws,  # type: ignore[arg-type]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 843, in setup_resources
+    module = _load_module_with_namespace(
+        mod_name,
+    ...<4 lines>...
+        cross_file_refs=cross_file_refs,
+    )
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/.venv/lib/python3.13/site-packages/dataclass_dsl/_loader.py", line 606, in _load_module_with_namespace
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/alex/Documents/checkouts/wetwire-aws-python/examples/aws-cloudformation-templates/macro_4/macro_4/main.py", line 6, in <module>
     class ResourceFunction(serverless.Function):
                            ^^^^^^^^^^
 NameError: name 'serverless' is not defined
 
 
-=== vpcpeering_updates_cfn (VPCPeering_Updates_cfn) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 1 package in 0.05ms
-error: Failed to install: wetwire_aws-1.6.0-py3-none-any.whl (wetwire-aws==1.6.0 (from file:///Users/alex/Documents/checkouts/wetwire-aws-python))
-  Caused by: Failed to reflink /Users/alex/.cache/uv/archive-v0/f8RbWx-t2vYWchuhpQNfR/wetwire_aws/resources/redshiftserverless/__pycache__/__init__.cpython-313.pyc to .venv/lib/python3.13/site-packages/wetwire_aws/resources/redshiftserverless/__pycache__/__init__.cpython-313.pyc
-  Caused by: No such file or directory (os error 2)
-
-
-=== cloudwatch_dashboard_nat_flowlogs (CloudWatch_Dashboard_NAT_FlowLogs) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 1 package in 0.06ms
-error: Failed to install: wetwire_aws-1.6.0-py3-none-any.whl (wetwire-aws==1.6.0 (from file:///Users/alex/Documents/checkouts/wetwire-aws-python))
-  Caused by: Failed to reflink /Users/alex/.cache/uv/archive-v0/f8RbWx-t2vYWchuhpQNfR/wetwire_aws/resources/chatbot/__pycache__/CustomAction.cpython-313.pyc to .venv/lib/python3.13/site-packages/wetwire_aws/resources/chatbot/__pycache__/CustomAction.cpython-313.pyc
-  Caused by: No such file or directory (os error 2)
-
-
 === macro_3 (macro_3) ===
-warning: Failed to uninstall package at .venv/lib/python3.13/site-packages/wetwire_aws-1.4.0.dist-info due to missing `RECORD` file. Installation may result in an incomplete environment.
-Uninstalled 2 packages in 158ms
-Installed 1 package in 18ms
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
     import macro_3

@@ -1,0 +1,54 @@
+"""Messaging resources: DeadLetterQueue, DeadLetterQueuePolicy, CloudFormationEventRule."""
+
+from . import *  # noqa: F403
+
+
+class DeadLetterQueue(sqs.Queue):
+    resource: sqs.Queue
+    queue_name = 'CloudFormation-Logs-DLQ'
+
+
+class DeadLetterQueuePolicyAllowStatement0(PolicyStatement):
+    sid = 'AllowEventBridgeToWriteLogs'
+    principal = {
+        'Service': 'events.amazonaws.com',
+    }
+    action = 'sqs:SendMessage'
+    resource_arn = DeadLetterQueue.Arn
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/CloudFormationEventRule'),
+        },
+    }
+
+
+class DeadLetterQueuePolicyPolicyDocument(PolicyDocument):
+    statement = [DeadLetterQueuePolicyAllowStatement0]
+
+
+class DeadLetterQueuePolicy(sqs.QueuePolicy):
+    resource: sqs.QueuePolicy
+    policy_document = DeadLetterQueuePolicyPolicyDocument
+    queues = [DeadLetterQueue]
+
+
+class CloudFormationEventRuleDeadLetterConfig(events.Rule.DeadLetterConfig):
+    arn = DeadLetterQueue.Arn
+
+
+class CloudFormationEventRuleTarget(events.Rule.Target):
+    arn = CentralEventBusArn
+    role_arn = EventBridgeRole.Arn
+    id = 'CentralEventBus'
+    dead_letter_config = CloudFormationEventRuleDeadLetterConfig
+
+
+class CloudFormationEventRule(events.Rule):
+    resource: events.Rule
+    name = 'CloudFormationEventRule'
+    event_bus_name = Sub('arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default')
+    event_pattern = {
+        'source': ['aws.cloudformation'],
+    }
+    state = events.RuleState.ENABLED
+    targets = [CloudFormationEventRuleTarget]

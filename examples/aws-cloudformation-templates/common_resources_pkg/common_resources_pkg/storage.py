@@ -1,48 +1,6 @@
-"""Storage resources: StorageBucketPolicyPolicy, StorageLogBucket, StorageReplicaBucket, StorageBucket, StorageReplicaBucketPolicyPolicy, StorageLogBucketPolicyPolicy."""
+"""Storage resources: StorageLogBucket, StorageReplicaBucket, StorageBucket, StorageLogBucketPolicyPolicy, StorageReplicaBucketPolicyPolicy, StorageBucketPolicyPolicy."""
 
 from . import *  # noqa: F403
-
-
-class StorageBucketPolicyPolicyDenyStatement0(DenyStatement):
-    principal = {
-        'AWS': '*',
-    }
-    action = 's3:*'
-    resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*'),
-    ]
-    condition = {
-        BOOL: {
-            'aws:SecureTransport': False,
-        },
-    }
-
-
-class StorageBucketPolicyPolicyAllowStatement1(PolicyStatement):
-    principal = {
-        'Service': 'logging.s3.amazonaws.com',
-    }
-    action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')]
-    condition = {
-        ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
-        },
-        STRING_EQUALS: {
-            'aws:SourceAccount': AWS_ACCOUNT_ID,
-        },
-    }
-
-
-class StorageBucketPolicyPolicyPolicyDocument(PolicyDocument):
-    statement = [StorageBucketPolicyPolicyDenyStatement0, StorageBucketPolicyPolicyAllowStatement1]
-
-
-class StorageBucketPolicyPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
-    bucket = StorageBucket
-    policy_document = StorageBucketPolicyPolicyPolicyDocument
 
 
 class StorageLogBucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
@@ -176,6 +134,48 @@ class StorageBucket(s3.Bucket):
     versioning_configuration = StorageBucketDeleteMarkerReplication
 
 
+class StorageLogBucketPolicyPolicyDenyStatement0(DenyStatement):
+    principal = {
+        'AWS': '*',
+    }
+    action = 's3:*'
+    resource_arn = [
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*'),
+    ]
+    condition = {
+        BOOL: {
+            'aws:SecureTransport': False,
+        },
+    }
+
+
+class StorageLogBucketPolicyPolicyAllowStatement1(PolicyStatement):
+    principal = {
+        'Service': 'logging.s3.amazonaws.com',
+    }
+    action = 's3:PutObject'
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*')]
+    condition = {
+        ARN_LIKE: {
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
+        },
+        STRING_EQUALS: {
+            'aws:SourceAccount': AWS_ACCOUNT_ID,
+        },
+    }
+
+
+class StorageLogBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [StorageLogBucketPolicyPolicyDenyStatement0, StorageLogBucketPolicyPolicyAllowStatement1]
+
+
+class StorageLogBucketPolicyPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
+    bucket = StorageLogBucket
+    policy_document = StorageLogBucketPolicyPolicyPolicyDocument
+
+
 class StorageReplicaBucketPolicyPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
@@ -218,14 +218,14 @@ class StorageReplicaBucketPolicyPolicy(s3.BucketPolicy):
     policy_document = StorageReplicaBucketPolicyPolicyPolicyDocument
 
 
-class StorageLogBucketPolicyPolicyDenyStatement0(DenyStatement):
+class StorageBucketPolicyPolicyDenyStatement0(DenyStatement):
     principal = {
         'AWS': '*',
     }
     action = 's3:*'
     resource_arn = [
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
-        Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
+        Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*'),
     ]
     condition = {
         BOOL: {
@@ -234,15 +234,15 @@ class StorageLogBucketPolicyPolicyDenyStatement0(DenyStatement):
     }
 
 
-class StorageLogBucketPolicyPolicyAllowStatement1(PolicyStatement):
+class StorageBucketPolicyPolicyAllowStatement1(PolicyStatement):
     principal = {
         'Service': 'logging.s3.amazonaws.com',
     }
     action = 's3:PutObject'
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}/*')]
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}/*')]
     condition = {
         ARN_LIKE: {
-            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-logs-${AWS::Region}-${AWS::AccountId}'),
+            'aws:SourceArn': Sub('arn:${AWS::Partition}:s3:::${AppName}-${AWS::Region}-${AWS::AccountId}'),
         },
         STRING_EQUALS: {
             'aws:SourceAccount': AWS_ACCOUNT_ID,
@@ -250,11 +250,11 @@ class StorageLogBucketPolicyPolicyAllowStatement1(PolicyStatement):
     }
 
 
-class StorageLogBucketPolicyPolicyPolicyDocument(PolicyDocument):
-    statement = [StorageLogBucketPolicyPolicyDenyStatement0, StorageLogBucketPolicyPolicyAllowStatement1]
+class StorageBucketPolicyPolicyPolicyDocument(PolicyDocument):
+    statement = [StorageBucketPolicyPolicyDenyStatement0, StorageBucketPolicyPolicyAllowStatement1]
 
 
-class StorageLogBucketPolicyPolicy(s3.BucketPolicy):
+class StorageBucketPolicyPolicy(s3.BucketPolicy):
     resource: s3.BucketPolicy
-    bucket = StorageLogBucket
-    policy_document = StorageLogBucketPolicyPolicyPolicyDocument
+    bucket = StorageBucket
+    policy_document = StorageBucketPolicyPolicyPolicyDocument

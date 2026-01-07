@@ -1,4 +1,4 @@
-"""Network resources: EcsSecurityGroup, ECSALB, ECSTG, ALBListener, ECSALBListenerRule, EcsSecurityGroupALBports, EcsSecurityGroupSSHinbound, EcsSecurityGroupHTTPinbound."""
+"""Network resources: EcsSecurityGroup, ECSALB, ECSTG, EcsSecurityGroupSSHinbound, ALBListener, ECSALBListenerRule, EcsSecurityGroupALBports, EcsSecurityGroupHTTPinbound."""
 
 from . import *  # noqa: F403
 
@@ -36,6 +36,15 @@ class ECSTG(elasticloadbalancingv2.TargetGroup):
     unhealthy_threshold_count = 2
     vpc_id = VpcId
     depends_on = [ECSALB]
+
+
+class EcsSecurityGroupSSHinbound(ec2.SecurityGroupIngress):
+    resource: ec2.SecurityGroupIngress
+    group_id = EcsSecurityGroup
+    ip_protocol = 'tcp'
+    from_port = '22'
+    to_port = '22'
+    cidr_ip = '192.168.1.0/0'
 
 
 class ALBListenerAction(elasticloadbalancingv2.ListenerRule.Action):
@@ -78,15 +87,6 @@ class EcsSecurityGroupALBports(ec2.SecurityGroupIngress):
     from_port = '31000'
     to_port = '61000'
     source_security_group_id = EcsSecurityGroup
-
-
-class EcsSecurityGroupSSHinbound(ec2.SecurityGroupIngress):
-    resource: ec2.SecurityGroupIngress
-    group_id = EcsSecurityGroup
-    ip_protocol = 'tcp'
-    from_port = '22'
-    to_port = '22'
-    cidr_ip = '192.168.1.0/0'
 
 
 class EcsSecurityGroupHTTPinbound(ec2.SecurityGroupIngress):
