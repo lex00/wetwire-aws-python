@@ -243,6 +243,7 @@ __all__ = [
     "secretsmanager",
     "securityhub",
     "securitylake",
+    "serverless",
     "servicecatalog",
     "servicecatalogappregistry",
     "servicediscovery",

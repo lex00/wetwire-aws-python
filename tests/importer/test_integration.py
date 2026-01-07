@@ -13,7 +13,9 @@ from pathlib import Path
 import pytest
 
 # Path to examples directory (relative to this test file)
-EXAMPLES_DIR = Path(__file__).parent.parent.parent / "examples" / "aws-cloudformation-templates"
+EXAMPLES_DIR = (
+    Path(__file__).parent.parent.parent / "examples" / "aws-cloudformation-templates"
+)
 
 
 def find_examples_dir() -> Path | None:

@@ -1943,7 +1943,7 @@ class ExplicitRefIntrinsic(LintRule):
                                     LintIssue(
                                         rule_id=self.rule_id,
                                         message=(
-                                            f"Use {target} instead of Ref(\"{target}\") "
+                                            f'Use {target} instead of Ref("{target}") '
                                             f"for direct variable reference"
                                         ),
                                         line=node.lineno,
@@ -2015,7 +2015,7 @@ class ExplicitGetAttIntrinsic(LintRule):
                                                 rule_id=self.rule_id,
                                                 message=(
                                                     f"Use {suggestion} instead of "
-                                                    f"GetAtt(\"{resource}\", ...) "
+                                                    f'GetAtt("{resource}", ...) '
                                                     f"for attribute access"
                                                 ),
                                                 line=node.lineno,

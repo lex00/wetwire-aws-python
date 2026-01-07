@@ -96,33 +96,21 @@ def _is_parameter_subclass(cls: type[Any]) -> bool:
     # Import here to avoid circular imports
     from wetwire_aws.template import Parameter
 
-    return (
-        isinstance(cls, type)
-        and issubclass(cls, Parameter)
-        and cls is not Parameter
-    )
+    return isinstance(cls, type) and issubclass(cls, Parameter) and cls is not Parameter
 
 
 def _is_output_subclass(cls: type[Any]) -> bool:
     """Check if cls inherits from Output (but is not Output itself)."""
     from wetwire_aws.template import Output
 
-    return (
-        isinstance(cls, type)
-        and issubclass(cls, Output)
-        and cls is not Output
-    )
+    return isinstance(cls, type) and issubclass(cls, Output) and cls is not Output
 
 
 def _is_mapping_subclass(cls: type[Any]) -> bool:
     """Check if cls inherits from Mapping (but is not Mapping itself)."""
     from wetwire_aws.template import Mapping
 
-    return (
-        isinstance(cls, type)
-        and issubclass(cls, Mapping)
-        and cls is not Mapping
-    )
+    return isinstance(cls, type) and issubclass(cls, Mapping) and cls is not Mapping
 
 
 def _is_condition_subclass(cls: type[Any]) -> bool:

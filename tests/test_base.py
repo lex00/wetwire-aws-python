@@ -246,7 +246,9 @@ class TestPropertyTypeProxy:
         proxy = rds.DBInstance.Endpoint
 
         # Call it to create an instance
-        instance = proxy(address="mydb.cluster-xxx.us-east-1.rds.amazonaws.com", port=5432)
+        instance = proxy(
+            address="mydb.cluster-xxx.us-east-1.rds.amazonaws.com", port=5432
+        )
 
         # Should be an instance of the PropertyType
         assert hasattr(instance, "address")

@@ -322,7 +322,9 @@ class TestIntrinsicSimplifications:
         PropertyTypeDescriptor returns PropertyTypeProxy for chained attribute access,
         enabling MyDB.Endpoint.Address syntax for nested GetAtt patterns.
         """
-        intrinsic = IRIntrinsic(IntrinsicType.GET_ATT, ("MyResource", "Endpoint.Address"))
+        intrinsic = IRIntrinsic(
+            IntrinsicType.GET_ATT, ("MyResource", "Endpoint.Address")
+        )
         result = intrinsic_to_python(intrinsic, ctx)
         assert result == "MyResource.Endpoint.Address"
 

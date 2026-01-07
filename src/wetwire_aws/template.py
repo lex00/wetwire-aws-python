@@ -236,7 +236,6 @@ class CloudFormationTemplate:
                 name = name[:-9]
             auto_conditions[name] = cond_cls.get_expression()
 
-
         from dataclass_dsl import is_attr_ref, is_class_ref
 
         from wetwire_aws.base import CloudFormationResource
@@ -259,7 +258,9 @@ class CloudFormationTemplate:
                     deps.add(value.target)
                 elif is_class_ref(value):
                     deps.add(value)
-                elif isinstance(value, type) and issubclass(value, CloudFormationResource):
+                elif isinstance(value, type) and issubclass(
+                    value, CloudFormationResource
+                ):
                     deps.add(value)
             return deps
 
@@ -275,9 +276,9 @@ class CloudFormationTemplate:
                 ready = [
                     cls
                     for cls in remaining
-                    if get_wrapper_dependencies(cls).intersection(class_set).issubset(
-                        set(sorted_result)
-                    )
+                    if get_wrapper_dependencies(cls)
+                    .intersection(class_set)
+                    .issubset(set(sorted_result))
                 ]
 
                 if not ready:
@@ -503,7 +504,9 @@ class CloudFormationTemplate:
             attrs["constraint_description"] = constraint_description
 
         # Dynamically create a Parameter subclass
-        param_cls = cast("builtins.type[Parameter]", builtins_type(name, (Parameter,), attrs))
+        param_cls = cast(
+            "builtins.type[Parameter]", builtins_type(name, (Parameter,), attrs)
+        )
         self.parameters[name] = param_cls
 
     def add_output(
