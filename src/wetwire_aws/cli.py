@@ -329,10 +329,12 @@ def main() -> None:
         prog="wetwire-aws",
         description="Generate CloudFormation templates from wetwire-aws resources",
     )
+    from importlib.metadata import version as get_version
+
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s 1.5.0",
+        version=f"%(prog)s {get_version('wetwire-aws')}",
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Commands")
