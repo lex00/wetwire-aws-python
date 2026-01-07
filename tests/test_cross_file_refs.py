@@ -78,23 +78,34 @@ class TestCrossFileReferences:
         )
 
     def test_cross_file_dependency_order(self):
-        """Test that cross-file dependencies are ordered correctly."""
+        """Test that cross-file dependencies are ordered correctly.
+
+        NOTE: This test verifies that the topological sort works correctly.
+        Due to a known issue with dataclass-dsl's decorator pattern (see #10),
+        the AttrRef.target points to the pre-decorated class while imports
+        return the decorated class. The topological sort in template.py
+        works around this by comparing class names instead of identity.
+        """
         from tests.cross_file_test import AppFunction, AppRole
 
-        # Re-register (fixture already cleared registry)
+        # Re-register (fixture may have cleared registry, but import re-populates)
         registry = get_aws_registry()
-        print(f"\nRegistry before register: {[c.__name__ for c in registry.get_all()]}")
-        registry.register(AppRole, "AWS::IAM::Role")
-        registry.register(AppFunction, "AWS::Lambda::Function")
-        print(f"Registry after register: {[c.__name__ for c in registry.get_all()]}")
+
+        # Ensure both classes are registered
+        if "AppRole" not in registry:
+            registry.register(AppRole, "AWS::IAM::Role")
+        if "AppFunction" not in registry:
+            registry.register(AppFunction, "AWS::Lambda::Function")
 
         # Debug: Check if role attribute is detected as AttrRef
         role_attr = getattr(AppFunction, "role", None)
-        print(f"AppFunction.role = {role_attr}")
-        print(f"is_attr_ref(role_attr) = {is_attr_ref(role_attr)}")
-        if is_attr_ref(role_attr):
-            print(f"  role_attr.target = {role_attr.target}")
-            print(f"  role_attr.target is AppRole = {role_attr.target is AppRole}")
+        assert is_attr_ref(role_attr), (
+            f"AppFunction.role should be AttrRef, got: {type(role_attr).__name__}"
+        )
+        # Compare by name, not identity (due to decorator creating new class)
+        assert role_attr.target.__name__ == "AppRole", (
+            f"AttrRef target should be AppRole class, got: {role_attr.target.__name__}"
+        )
 
         # Generate template
         template = CloudFormationTemplate.from_registry()
@@ -102,11 +113,11 @@ class TestCrossFileReferences:
 
         # Get resource order
         resource_names = list(output["Resources"].keys())
-        print(f"Template resource order: {resource_names}")
 
         # AppRole should come before AppFunction (dependency order)
         role_idx = resource_names.index("AppRole")
         func_idx = resource_names.index("AppFunction")
         assert role_idx < func_idx, (
-            "AppRole should appear before AppFunction in template (dependency order)"
+            f"AppRole (idx={role_idx}) should appear before AppFunction (idx={func_idx}). "
+            f"Template resource order: {resource_names}"
         )
