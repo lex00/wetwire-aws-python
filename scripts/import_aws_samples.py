@@ -186,18 +186,23 @@ def import_template(
     if pkg_output.exists():
         shutil.rmtree(pkg_output)
 
+    # Use python -m with PYTHONPATH to avoid uv reinstall race conditions
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(project_root / "src")
+
     try:
         subprocess.run(
             [
-                "uv",
-                "run",
-                "wetwire-aws",
+                sys.executable,
+                "-m",
+                "wetwire_aws.cli",
                 "import",
                 str(template),
                 "-o",
                 str(pkg_output),
             ],
             cwd=project_root,
+            env=env,
             capture_output=True,
             text=True,
             check=True,
@@ -231,13 +236,13 @@ def validate_package(
         error_output = f"=== {outer_name} ===\nNo __init__.py found in package\n"
         return ("FAIL", outer_name, error_output)
 
-    # Validate by importing the package
+    # Validate by importing the package (use sys.executable to avoid uv race conditions)
     env = os.environ.copy()
     env["PYTHONPATH"] = f"{project_src}:{pkg_dir}"
 
     try:
         subprocess.run(
-            ["uv", "run", "python", "-c", f"import {inner_pkg}"],
+            [sys.executable, "-c", f"import {inner_pkg}"],
             cwd=project_root,
             env=env,
             capture_output=True,
@@ -285,9 +290,7 @@ def main() -> int:
         return 1
 
     # Number of parallel jobs
-    # NOTE: Using 1 job for import to avoid race conditions in shared venv
-    # See issue #51 for proper fix (each import should use isolated temp venv)
-    jobs = 1  # min(multiprocessing.cpu_count(), 8)
+    jobs = min(multiprocessing.cpu_count(), 8)
 
     # Step 1: Optionally clean output directory
     if args.clean and output_dir.exists():
@@ -337,9 +340,7 @@ def main() -> int:
         header("Applying Template Fixes")
         subprocess.run(
             [
-                "uv",
-                "run",
-                "python",
+                sys.executable,
                 str(script_dir / "fix_templates.py"),
                 str(clone_dir),
             ],
@@ -418,10 +419,13 @@ def main() -> int:
         header("Linting Packages")
 
         lint_errors_file = output_dir / "lint_errors.log"
+        lint_env = os.environ.copy()
+        lint_env["PYTHONPATH"] = str(project_root / "src")
         try:
             subprocess.run(
-                ["uv", "run", "wetwire-aws", "lint", "--fix", str(output_dir)],
+                [sys.executable, "-m", "wetwire_aws.cli", "lint", "--fix", str(output_dir)],
                 cwd=project_root,
+                env=lint_env,
                 capture_output=True,
                 text=True,
                 check=True,
@@ -542,9 +546,9 @@ def main() -> int:
             try:
                 result = subprocess.run(
                     [
-                        "uv",
-                        "run",
-                        "wetwire-aws",
+                        sys.executable,
+                        "-m",
+                        "wetwire_aws.cli",
                         "build",
                         "--module",
                         test_pkg_inner,
