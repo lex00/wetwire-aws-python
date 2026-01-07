@@ -25,7 +25,7 @@ class TestCLI:
             text=True,
         )
         assert result.returncode == 0
-        assert "0.1.0" in result.stdout
+        assert "wetwire-aws" in result.stdout
 
     def test_build_no_resources(self):
         """Build fails gracefully when no resources registered."""
