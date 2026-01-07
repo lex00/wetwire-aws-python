@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `wetwire-aws build` command now accepts optional positional path argument (#52)
+  - Example: `wetwire-aws build ./my-stack/` instead of `wetwire-aws build --module my_stack`
+  - Works with relative and absolute paths
+  - Validates that path is a Python package (has `__init__.py`)
+
 ## [1.7.0] - 2026-01-06
 
 ### Changed
