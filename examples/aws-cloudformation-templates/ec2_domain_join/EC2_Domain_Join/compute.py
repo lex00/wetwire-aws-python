@@ -29,7 +29,6 @@ class myEC2InstanceSSMAssociationParameter3(ec2.Instance.AssociationParameter):
 
 
 class myEC2InstanceSSM(ec2.Instance):
-    resource: ec2.Instance
     iam_instance_profile = myInstanceProfile
     ssm_associations = [myEC2InstanceSSMSsmAssociation]
     key_name = KeyPair

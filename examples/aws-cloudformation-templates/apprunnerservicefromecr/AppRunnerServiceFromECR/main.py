@@ -24,7 +24,6 @@ class AppRunnerSourceConfiguration(apprunner.Service.SourceConfiguration):
 
 
 class AppRunner(apprunner.Service):
-    resource: apprunner.Service
     service_name = Join('', [
     AWS_STACK_NAME,
     '-service',

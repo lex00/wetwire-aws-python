@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class CloudWatchDashboard(cloudwatch.Dashboard):
-    resource: cloudwatch.Dashboard
     dashboard_name = Sub('${NatGatewayID}-Traffic-Dashboard')
     dashboard_body = Sub("""{
   "widgets": [

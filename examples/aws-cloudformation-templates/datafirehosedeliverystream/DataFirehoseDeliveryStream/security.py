@@ -61,7 +61,6 @@ class DeliveryRolePolicy(iam.User.Policy):
 
 
 class DeliveryRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = DeliveryRoleAssumeRolePolicyDocument
     path = '/'
     policies = [DeliveryRolePolicy]

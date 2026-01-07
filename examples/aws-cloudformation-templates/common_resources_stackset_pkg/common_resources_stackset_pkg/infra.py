@@ -29,7 +29,6 @@ class StackSetAutoDeployment(cloudformation.StackSet.AutoDeployment):
 
 
 class StackSet(cloudformation.StackSet):
-    resource: cloudformation.StackSet
     template_body = """Description: |
   This template has resources that will be installed into all managed accounts
   in the OU. For the purposes of the sample it's not important what exactly we

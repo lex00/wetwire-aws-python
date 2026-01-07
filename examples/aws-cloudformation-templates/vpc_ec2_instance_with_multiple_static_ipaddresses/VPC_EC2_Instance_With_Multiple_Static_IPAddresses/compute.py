@@ -14,7 +14,6 @@ class EC2InstanceAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class EC2Instance(ec2.Instance):
-    resource: ec2.Instance
     image_id = LatestAMI
     instance_type = InstanceType
     key_name = KeyName

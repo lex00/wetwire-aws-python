@@ -1,4 +1,4 @@
-"""Compute resources: LaunchTemplate, WebServerGroup, WebServerScaleUpPolicy, WebServerScaleDownPolicy."""
+"""Compute resources: LaunchTemplate, WebServerGroup, WebServerScaleDownPolicy, WebServerScaleUpPolicy."""
 
 from . import *  # noqa: F403
 
@@ -12,7 +12,7 @@ class LaunchTemplateBlockDeviceMapping(ec2.LaunchTemplate.BlockDeviceMapping):
     ebs = LaunchTemplateEbs
 
 
-class LaunchTemplateTagSpecification(ec2.LaunchTemplate.TagSpecification):
+class LaunchTemplateLaunchTemplateTagSpecification(ec2.LaunchTemplate.LaunchTemplateTagSpecification):
     resource_type = 'instance'
     tags = [{
         'Key': 'Name',
@@ -30,11 +30,10 @@ class LaunchTemplateLaunchTemplateData(ec2.LaunchTemplate.LaunchTemplateData):
 /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchTemplate --region ${AWS::Region}
 /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
 """))
-    tag_specifications = [LaunchTemplateTagSpecification]
+    tag_specifications = [LaunchTemplateLaunchTemplateTagSpecification]
 
 
 class LaunchTemplate(ec2.LaunchTemplate):
-    resource: ec2.LaunchTemplate
     launch_template_name = Sub('${AWS::StackName}-LaunchTemplate')
     launch_template_data = LaunchTemplateLaunchTemplateData
 
@@ -50,7 +49,6 @@ class WebServerGroupNotificationConfiguration(autoscaling.AutoScalingGroup.Notif
 
 
 class WebServerGroup(autoscaling.AutoScalingGroup):
-    resource: autoscaling.AutoScalingGroup
     availability_zones = AZs
     launch_template = WebServerGroupLaunchTemplateSpecification
     min_size = '1'
@@ -61,17 +59,15 @@ class WebServerGroup(autoscaling.AutoScalingGroup):
     vpc_zone_identifier = Subnets
 
 
-class WebServerScaleUpPolicy(autoscaling.ScalingPolicy):
-    resource: autoscaling.ScalingPolicy
-    adjustment_type = 'ChangeInCapacity'
-    auto_scaling_group_name = WebServerGroup
-    cooldown = '60'
-    scaling_adjustment = 1
-
-
 class WebServerScaleDownPolicy(autoscaling.ScalingPolicy):
-    resource: autoscaling.ScalingPolicy
     adjustment_type = 'ChangeInCapacity'
     auto_scaling_group_name = WebServerGroup
     cooldown = '60'
     scaling_adjustment = -1
+
+
+class WebServerScaleUpPolicy(autoscaling.ScalingPolicy):
+    adjustment_type = 'ChangeInCapacity'
+    auto_scaling_group_name = WebServerGroup
+    cooldown = '60'
+    scaling_adjustment = 1

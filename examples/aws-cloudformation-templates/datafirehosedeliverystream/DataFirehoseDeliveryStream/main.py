@@ -40,7 +40,6 @@ class DeliveryStreamExtendedS3DestinationConfiguration(kinesisfirehose.DeliveryS
 
 
 class DeliveryStream(kinesisfirehose.DeliveryStream):
-    resource: kinesisfirehose.DeliveryStream
     delivery_stream_name = DeliveryStreamName
     delivery_stream_type = 'DirectPut'
     delivery_stream_encryption_configuration_input = DeliveryStreamDeliveryStreamEncryptionConfigurationInput

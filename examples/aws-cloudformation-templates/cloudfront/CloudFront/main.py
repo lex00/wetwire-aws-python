@@ -15,16 +15,15 @@ class EC2InstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
 
 class EC2InstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = [Sub('${AppName}-${Environment}-ec2-instance')]
+    value = Sub('${AppName}-${Environment}-ec2-instance')
 
 
 class EC2InstanceAssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'Environment'
-    value = [Environment]
+    value = Environment
 
 
 class EC2Instance(ec2.Instance):
-    resource: ec2.Instance
     image_id = EC2ImageId
     instance_type = EC2InstanceType
     subnet_id = PublicSubnetId1
@@ -55,7 +54,6 @@ class OriginALBTGTargetGroupAttribute2(elasticloadbalancingv2.TargetGroup.Target
 
 
 class OriginALBTG(elasticloadbalancingv2.TargetGroup):
-    resource: elasticloadbalancingv2.TargetGroup
     name = Sub('${AppName}-${Environment}-alb-tg')
     health_check_protocol = HealthCheckProtocol
     health_check_path = HealthCheckPath
@@ -84,7 +82,6 @@ class OriginALBHttpsListenerCertificate(elasticloadbalancingv2.ListenerCertifica
 
 
 class OriginALBHttpsListener(elasticloadbalancingv2.Listener):
-    resource: elasticloadbalancingv2.Listener
     default_actions = [OriginALBHttpsListenerAction]
     load_balancer_arn = OriginALB
     port = 443
@@ -105,7 +102,6 @@ class OriginALBHttpsListenerRuleRuleCondition(elasticloadbalancingv2.ListenerRul
 
 
 class OriginALBHttpsListenerRule(elasticloadbalancingv2.ListenerRule):
-    resource: elasticloadbalancingv2.ListenerRule
     actions = [OriginALBHttpsListenerRuleAction]
     conditions = [OriginALBHttpsListenerRuleRuleCondition]
     listener_arn = OriginALBHttpsListener

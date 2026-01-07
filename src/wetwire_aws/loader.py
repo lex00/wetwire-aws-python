@@ -18,7 +18,7 @@ Usage in a resources package __init__.py:
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 
 from dataclass_dsl import Attr, Ref, RefDict, RefList
 from dataclass_dsl import setup_resources as _setup_resources
@@ -411,6 +411,50 @@ def setup_params(package_globals: dict[str, Any]) -> None:
     )
 
 
+def _auto_decorate_resources(
+    package_globals: dict[str, Any],
+    decorator: Callable[[type[Any]], type[Any]],
+) -> None:
+    """Auto-decorate classes that inherit from CloudFormationResource.
+
+    This replaces dataclass_dsl's annotation-based auto_decorate with
+    inheritance-based detection. Classes are decorated if they:
+    1. Inherit from CloudFormationResource (but aren't CloudFormationResource itself)
+    2. Haven't already been decorated (no _refs_marker)
+
+    Args:
+        package_globals: The package's globals() dict
+        decorator: The decorator function to apply
+    """
+    from wetwire_aws.base import CloudFormationResource, PropertyType
+
+    for name, obj in list(package_globals.items()):
+        # Skip non-classes and already-decorated classes
+        if not isinstance(obj, type):
+            continue
+        if hasattr(obj, "_refs_marker"):
+            continue
+
+        # Check if it's a user-defined resource (inherits from generated types)
+        # We look for classes that inherit from CloudFormationResource but
+        # are not CloudFormationResource itself or PropertyType
+        if obj is CloudFormationResource or obj is PropertyType:
+            continue
+
+        # Check if any base is a CloudFormationResource subclass (but not the base itself)
+        is_resource = False
+        for base in obj.__bases__:
+            if base is not CloudFormationResource and isinstance(base, type):
+                if issubclass(base, CloudFormationResource):
+                    is_resource = True
+                    break
+
+        if is_resource:
+            # Decorate the class and update globals
+            decorated = decorator(obj)
+            package_globals[name] = decorated
+
+
 def setup_resources(
     init_file: str,
     package_name: str,
@@ -423,7 +467,7 @@ def setup_resources(
     Wrapper around dataclass_dsl.setup_resources with AWS-specific
     namespace injection and stub configuration pre-applied.
 
-    Classes with a `resource:` annotation are auto-decorated.
+    Classes that inherit from CloudFormation resource types are auto-decorated.
     No need for explicit @wetwire_aws decorator.
 
     This function:
@@ -432,7 +476,7 @@ def setup_resources(
     3. Builds a dependency graph from the references
     4. Imports modules in topological order
     5. Injects AWS decorators, types, and service modules into each module's namespace
-    6. Auto-decorates classes with `resource:` annotation
+    6. Auto-decorates classes that inherit from CloudFormationResource
     7. Auto-registers Parameter, Output, Mapping, Condition subclasses
     8. Generates .pyi stubs with AWS-specific imports for IDE support
 
@@ -447,12 +491,11 @@ def setup_resources(
         from wetwire_aws.loader import setup_resources
         setup_resources(__file__, __name__, globals())
 
-        # Resource files can use pure Python classes:
+        # Resource files use inheritance pattern:
         # myapp/resources/storage.py
         from . import *
 
-        class DataBucket:
-            resource: s3.Bucket
+        class DataBucket(s3.Bucket):
             bucket_name = "data-lake"
     """
     # Import decorator here to avoid circular imports
@@ -465,9 +508,11 @@ def setup_resources(
         stub_config=AWS_STUB_CONFIG,
         generate_stubs=generate_stubs,
         extra_namespace=_get_aws_namespace(),
-        auto_decorate=True,
-        decorator=wetwire_aws,  # type: ignore[arg-type]
+        auto_decorate=False,  # We do our own inheritance-based decoration below
     )
+
+    # Auto-decorate classes that inherit from CloudFormationResource
+    _auto_decorate_resources(package_globals, wetwire_aws)
 
     # Auto-register template elements (Parameter, Output, Mapping, Condition)
     _register_template_elements(package_globals)

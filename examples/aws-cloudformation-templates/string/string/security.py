@@ -29,7 +29,6 @@ class TransformExecutionRolePolicy(iam.User.Policy):
 
 
 class TransformExecutionRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = TransformExecutionRoleAssumeRolePolicyDocument
     path = '/'
     policies = [TransformExecutionRolePolicy]

@@ -10,5 +10,4 @@ class DBCredentialGenerateSecretString(secretsmanager.Secret.GenerateSecretStrin
 
 
 class DBCredential(secretsmanager.Secret):
-    resource: secretsmanager.Secret
     generate_secret_string = DBCredentialGenerateSecretString

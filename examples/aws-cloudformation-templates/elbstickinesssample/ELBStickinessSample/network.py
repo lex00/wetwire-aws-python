@@ -18,6 +18,5 @@ class InstanceSecurityGroupEgress1(ec2.SecurityGroup.Egress):
 
 
 class InstanceSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Enable SSH access and HTTP access on the inbound port'
     security_group_ingress = [InstanceSecurityGroupEgress, InstanceSecurityGroupEgress1]

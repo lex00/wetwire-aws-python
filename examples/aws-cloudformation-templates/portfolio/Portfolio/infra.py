@@ -1,13 +1,6 @@
-"""Infra resources: ServiceCatalogProductTagOptionsDept, ServiceCatalogPortfolio, ServiceCatalogProductTagOptionsUser, ServiceCatalogPortfolioShare, ServiceCatalogProductTagOptionsEnv, ServiceCatalogProductTagOptionsOwner."""
+"""Infra resources: ServiceCatalogPortfolio, ServiceCatalogPortfolioShare, ServiceCatalogProductTagOptionsOwner, ServiceCatalogProductTagOptionsEnv, ServiceCatalogProductTagOptionsDept, ServiceCatalogProductTagOptionsUser."""
 
 from . import *  # noqa: F403
-
-
-class ServiceCatalogProductTagOptionsDept(servicecatalog.TagOption):
-    resource: servicecatalog.TagOption
-    active = ActivateProductTagOptions
-    key = 'Dept'
-    value = ProductDept
 
 
 class ServiceCatalogPortfolioProvisioningParameter(servicecatalog.CloudFormationProvisionedProduct.ProvisioningParameter):
@@ -36,36 +29,37 @@ class ServiceCatalogPortfolioProvisioningParameter4(servicecatalog.CloudFormatio
 
 
 class ServiceCatalogPortfolio(servicecatalog.Portfolio):
-    resource: servicecatalog.Portfolio
     provider_name = PortfolioProviderName
     description = PortfolioDescription
     display_name = PortfolioDisplayName
     tags = [ServiceCatalogPortfolioProvisioningParameter, ServiceCatalogPortfolioProvisioningParameter1, ServiceCatalogPortfolioProvisioningParameter2, ServiceCatalogPortfolioProvisioningParameter3, ServiceCatalogPortfolioProvisioningParameter4]
 
 
-class ServiceCatalogProductTagOptionsUser(servicecatalog.TagOption):
-    resource: servicecatalog.TagOption
-    active = ActivateProductTagOptions
-    key = 'User'
-    value = ProductUser
-
-
 class ServiceCatalogPortfolioShare(servicecatalog.PortfolioShare):
-    resource: servicecatalog.PortfolioShare
     account_id = AccountIdOfChildAWSAccount
     portfolio_id = ServiceCatalogPortfolio
     condition = 'ConditionShareThisPortfolio'
 
 
+class ServiceCatalogProductTagOptionsOwner(servicecatalog.TagOption):
+    active = ActivateProductTagOptions
+    key = 'Owner'
+    value = ProductOwner
+
+
 class ServiceCatalogProductTagOptionsEnv(servicecatalog.TagOption):
-    resource: servicecatalog.TagOption
     active = ActivateProductTagOptions
     key = 'Env'
     value = ProductEnv
 
 
-class ServiceCatalogProductTagOptionsOwner(servicecatalog.TagOption):
-    resource: servicecatalog.TagOption
+class ServiceCatalogProductTagOptionsDept(servicecatalog.TagOption):
     active = ActivateProductTagOptions
-    key = 'Owner'
-    value = ProductOwner
+    key = 'Dept'
+    value = ProductDept
+
+
+class ServiceCatalogProductTagOptionsUser(servicecatalog.TagOption):
+    active = ActivateProductTagOptions
+    key = 'User'
+    value = ProductUser

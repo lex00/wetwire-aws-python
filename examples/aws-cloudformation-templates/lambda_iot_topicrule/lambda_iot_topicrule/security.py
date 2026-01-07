@@ -37,7 +37,6 @@ class MyLambdaRolePolicy(iam.User.Policy):
 
 
 class MyLambdaRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = MyLambdaRoleAssumeRolePolicyDocument
     path = '/'
     policies = [MyLambdaRolePolicy]

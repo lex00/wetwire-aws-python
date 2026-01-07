@@ -240,6 +240,7 @@ __all__ = [
     "sagemaker",
     "scheduler",
     "sdb",
+    "serverless",
     "secretsmanager",
     "securityhub",
     "securitylake",

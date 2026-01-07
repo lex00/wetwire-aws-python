@@ -11,7 +11,6 @@ class DBEC2SecurityGroupIngress(ec2.SecurityGroup.Ingress):
 
 
 class DBEC2SecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Open database for access'
     security_group_ingress = [DBEC2SecurityGroupIngress]
     condition = 'IsEC2VPC'

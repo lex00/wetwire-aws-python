@@ -16,7 +16,6 @@ class JoinDomainAssociationTagsTargets(ssm.MaintenanceWindowTarget.Targets):
 
 
 class JoinDomainAssociationTags(ssm.Association):
-    resource: ssm.Association
     association_name = Sub('JoinDomain-Association-viaTags-${AWS::StackName}')
     name = 'AWS-JoinDirectoryServiceDomain'
     output_location = JoinDomainAssociationTagsInstanceAssociationOutputLocation
@@ -46,7 +45,6 @@ class JoinDomainAssociationInstancesTargets(ssm.MaintenanceWindowTarget.Targets)
 
 
 class JoinDomainAssociationInstances(ssm.Association):
-    resource: ssm.Association
     association_name = Sub('JoinDomain-Association-viaInstances-${AWS::StackName}')
     name = 'AWS-JoinDirectoryServiceDomain'
     output_location = JoinDomainAssociationInstancesInstanceAssociationOutputLocation

@@ -1,57 +1,6 @@
-"""Compute resources: GGSampleFunction, GGSampleFunctionVersion, InstanceAZFunction, CreateThingFunction, GroupDeploymentResetFunction."""
+"""Compute resources: InstanceAZFunction, CreateThingFunction, GroupDeploymentResetFunction, GGSampleFunction, GGSampleFunctionVersion."""
 
 from . import *  # noqa: F403
-
-
-class GGSampleFunctionCode(lambda_.Function.Code):
-    zip_file = """import os
-from threading import Timer
-import greengrasssdk
-
-
-counter = 0
-client = greengrasssdk.client('iot-data')
-
-
-def telemetry():
-    '''Publish incrementing value to telemetry topic every 2 seconds'''
-    global counter
-    counter += 1
-    client.publish(
-        topic='{}/telem'.format(os.environ['CORE_NAME']),
-        payload='Example telemetry counter, value: {}'.format(counter)
-    )
-    Timer(5, telemetry).start()
-# Call telemetry() to start telemetry publish
-telemetry()
-
-
-def function_handler(event, context):
-    '''Echo message on /in topic to /out topic'''
-    client.publish(
-        topic='{}/out'.format(os.environ['CORE_NAME']),
-        payload=event
-    )
-"""
-
-
-class GGSampleFunction(lambda_.Function):
-    resource: lambda_.Function
-    code = GGSampleFunctionCode
-    description = 'Long running lambda that provides telemetry and pub/sub echo'
-    function_name = Join('_', [
-    CoreName,
-    'sample',
-])
-    handler = 'index.function_handler'
-    role = LambdaExecutionRole.Arn
-    runtime = lambda_.Runtime.PYTHON3_12
-    timeout = 60
-
-
-class GGSampleFunctionVersion(lambda_.Version):
-    resource: lambda_.Version
-    function_name = GGSampleFunction.Arn
 
 
 class InstanceAZFunctionCode(lambda_.Function.Code):
@@ -115,7 +64,6 @@ def handler(event, context):
 
 
 class InstanceAZFunction(lambda_.Function):
-    resource: lambda_.Function
     code = InstanceAZFunctionCode
     description = 'Queries account and region for supported AZ'
     handler = 'index.handler'
@@ -230,7 +178,6 @@ def handler(event, context):
 
 
 class CreateThingFunction(lambda_.Function):
-    resource: lambda_.Function
     code = CreateThingFunctionCode
     description = 'Create thing, certificate, and policy, return cert and private key'
     handler = 'index.handler'
@@ -368,7 +315,6 @@ class GroupDeploymentResetFunctionEnvironment(lambda_.Function.Environment):
 
 
 class GroupDeploymentResetFunction(lambda_.Function):
-    resource: lambda_.Function
     code = GroupDeploymentResetFunctionCode
     description = 'Resets any deployments during stack delete and manages Greengrass service role needs'
     environment = GroupDeploymentResetFunctionEnvironment
@@ -376,3 +322,52 @@ class GroupDeploymentResetFunction(lambda_.Function):
     role = LambdaExecutionRole.Arn
     runtime = lambda_.Runtime.PYTHON3_12
     timeout = 60
+
+
+class GGSampleFunctionCode(lambda_.Function.Code):
+    zip_file = """import os
+from threading import Timer
+import greengrasssdk
+
+
+counter = 0
+client = greengrasssdk.client('iot-data')
+
+
+def telemetry():
+    '''Publish incrementing value to telemetry topic every 2 seconds'''
+    global counter
+    counter += 1
+    client.publish(
+        topic='{}/telem'.format(os.environ['CORE_NAME']),
+        payload='Example telemetry counter, value: {}'.format(counter)
+    )
+    Timer(5, telemetry).start()
+# Call telemetry() to start telemetry publish
+telemetry()
+
+
+def function_handler(event, context):
+    '''Echo message on /in topic to /out topic'''
+    client.publish(
+        topic='{}/out'.format(os.environ['CORE_NAME']),
+        payload=event
+    )
+"""
+
+
+class GGSampleFunction(lambda_.Function):
+    code = GGSampleFunctionCode
+    description = 'Long running lambda that provides telemetry and pub/sub echo'
+    function_name = Join('_', [
+    CoreName,
+    'sample',
+])
+    handler = 'index.function_handler'
+    role = LambdaExecutionRole.Arn
+    runtime = lambda_.Runtime.PYTHON3_12
+    timeout = 60
+
+
+class GGSampleFunctionVersion(lambda_.Version):
+    function_name = GGSampleFunction.Arn

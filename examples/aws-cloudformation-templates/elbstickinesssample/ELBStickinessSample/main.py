@@ -24,7 +24,6 @@ class ElasticLoadBalancerHealthCheck(elasticloadbalancing.LoadBalancer.HealthChe
 
 
 class ElasticLoadBalancer(elasticloadbalancing.LoadBalancer):
-    resource: elasticloadbalancing.LoadBalancer
     availability_zones = GetAZs()
     cross_zone = 'true'
     instances = [EC2Instance1, EC2Instance2]

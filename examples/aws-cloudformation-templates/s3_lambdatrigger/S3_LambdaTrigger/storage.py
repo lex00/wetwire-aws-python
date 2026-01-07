@@ -3,12 +3,12 @@
 from . import *  # noqa: F403
 
 
-class S3BucketNotificationServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
+class S3BucketNotificationMetadataTableEncryptionConfiguration(s3.Bucket.MetadataTableEncryptionConfiguration):
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
 class S3BucketNotificationServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
-    server_side_encryption_by_default = S3BucketNotificationServerSideEncryptionByDefault
+    server_side_encryption_by_default = S3BucketNotificationMetadataTableEncryptionConfiguration
 
 
 class S3BucketNotificationBucketEncryption(s3.Bucket.BucketEncryption):
@@ -32,7 +32,6 @@ class S3BucketNotificationNotificationConfiguration(s3.Bucket.NotificationConfig
 
 
 class S3BucketNotification(s3.Bucket):
-    resource: s3.Bucket
     bucket_name = NotificationBucket
     bucket_encryption = S3BucketNotificationBucketEncryption
     public_access_block_configuration = S3BucketNotificationPublicAccessBlockConfiguration

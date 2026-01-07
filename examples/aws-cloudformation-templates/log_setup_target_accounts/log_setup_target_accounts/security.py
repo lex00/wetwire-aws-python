@@ -15,7 +15,6 @@ class EventBridgeRoleAssumeRolePolicyDocument(PolicyDocument):
 
 
 class EventBridgeRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = EventBridgeRoleAssumeRolePolicyDocument
 
 
@@ -29,7 +28,6 @@ class EventBridgeRolePolicyPolicyDocument(PolicyDocument):
 
 
 class EventBridgeRolePolicy(iam.RolePolicy):
-    resource: iam.RolePolicy
     policy_name = 'EventBridgeRolePolicy'
     policy_document = EventBridgeRolePolicyPolicyDocument
     role_name = EventBridgeRole

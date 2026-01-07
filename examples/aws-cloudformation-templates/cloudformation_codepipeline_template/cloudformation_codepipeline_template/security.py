@@ -87,6 +87,5 @@ class PipelineRolePolicy2(iam.User.Policy):
 
 
 class PipelineRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = PipelineRoleAssumeRolePolicyDocument
     policies = [PipelineRolePolicy, PipelineRolePolicy1, PipelineRolePolicy2]

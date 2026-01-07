@@ -29,7 +29,6 @@ class VPCFlowLogsBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication
 
 
 class VPCFlowLogsBucket(s3.Bucket):
-    resource: s3.Bucket
     bucket_name = Sub('aws-vpcflowlogs-${AWS::AccountId}-${AWS::Region}')
     public_access_block_configuration = VPCFlowLogsBucketPublicAccessBlockConfiguration
     bucket_encryption = VPCFlowLogsBucketBucketEncryption
@@ -83,7 +82,6 @@ class VPCFlowLogsBucketPolicyPolicyDocument(PolicyDocument):
 
 
 class VPCFlowLogsBucketPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
     bucket = VPCFlowLogsBucket
     policy_document = VPCFlowLogsBucketPolicyPolicyDocument
     condition = 'VPCFlowLogsNewBucketCondition'

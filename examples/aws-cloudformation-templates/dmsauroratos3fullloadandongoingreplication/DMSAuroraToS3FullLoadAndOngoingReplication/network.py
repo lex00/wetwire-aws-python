@@ -1,16 +1,6 @@
-"""Network resources: InternetGateway, VPC, AttachGateway, RouteTable, Route, DBSubnet2, DBSubnet1, DMSSecurityGroup, AuroraSecurityGroup, SubnetRouteTableAssociation, SubnetRouteTableAssociation1."""
+"""Network resources: VPC, AuroraSecurityGroup, DBSubnet1, DBSubnet2, DMSSecurityGroup, InternetGateway, AttachGateway, RouteTable, Route, SubnetRouteTableAssociation1, SubnetRouteTableAssociation."""
 
 from . import *  # noqa: F403
-
-
-class InternetGatewayAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Application'
-    value = AWS_STACK_ID
-
-
-class InternetGateway(ec2.InternetGateway):
-    resource: ec2.InternetGateway
-    tags = [InternetGatewayAssociationParameter]
 
 
 class VPCAssociationParameter(ec2.Instance.AssociationParameter):
@@ -24,69 +14,10 @@ class VPCAssociationParameter1(ec2.Instance.AssociationParameter):
 
 
 class VPC(ec2.VPC):
-    resource: ec2.VPC
     cidr_block = '10.0.0.0/24'
     enable_dns_support = 'true'
     enable_dns_hostnames = 'true'
     tags = [VPCAssociationParameter, VPCAssociationParameter1]
-
-
-class AttachGateway(ec2.VPCGatewayAttachment):
-    resource: ec2.VPCGatewayAttachment
-    vpc_id = VPC
-    internet_gateway_id = InternetGateway
-
-
-class RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Application'
-    value = AWS_STACK_ID
-
-
-class RouteTable(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-    tags = [RouteTableAssociationParameter]
-
-
-class Route(ec2.Route):
-    resource: ec2.Route
-    route_table_id = RouteTable
-    destination_cidr_block = '0.0.0.0/0'
-    gateway_id = InternetGateway
-    depends_on = [AttachGateway]
-
-
-class DBSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Application'
-    value = AWS_STACK_ID
-
-
-class DBSubnet2(ec2.Subnet):
-    resource: ec2.Subnet
-    vpc_id = VPC
-    cidr_block = '10.0.0.64/26'
-    availability_zone = Select(1, GetAZs())
-    tags = [DBSubnet2AssociationParameter]
-
-
-class DBSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Application'
-    value = AWS_STACK_ID
-
-
-class DBSubnet1(ec2.Subnet):
-    resource: ec2.Subnet
-    vpc_id = VPC
-    cidr_block = '10.0.0.0/26'
-    availability_zone = Select(0, GetAZs())
-    tags = [DBSubnet1AssociationParameter]
-
-
-class DMSSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
-    group_description = 'Security group for DMS Instance'
-    group_name = 'DMS Demo Security Group'
-    vpc_id = VPC
 
 
 class AuroraSecurityGroupEgress(ec2.SecurityGroup.Egress):
@@ -104,20 +35,78 @@ class AuroraSecurityGroupEgress1(ec2.SecurityGroup.Egress):
 
 
 class AuroraSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Security group for Aurora SampleDB DB Instance'
     group_name = 'Aurora SampleDB Security Group'
     vpc_id = VPC
     security_group_ingress = [AuroraSecurityGroupEgress, AuroraSecurityGroupEgress1]
 
 
-class SubnetRouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    subnet_id = DBSubnet1
+class DBSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_ID
+
+
+class DBSubnet1(ec2.Subnet):
+    vpc_id = VPC
+    cidr_block = '10.0.0.0/26'
+    availability_zone = Select(0, GetAZs())
+    tags = [DBSubnet1AssociationParameter]
+
+
+class DBSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_ID
+
+
+class DBSubnet2(ec2.Subnet):
+    vpc_id = VPC
+    cidr_block = '10.0.0.64/26'
+    availability_zone = Select(1, GetAZs())
+    tags = [DBSubnet2AssociationParameter]
+
+
+class DMSSecurityGroup(ec2.SecurityGroup):
+    group_description = 'Security group for DMS Instance'
+    group_name = 'DMS Demo Security Group'
+    vpc_id = VPC
+
+
+class InternetGatewayAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_ID
+
+
+class InternetGateway(ec2.InternetGateway):
+    tags = [InternetGatewayAssociationParameter]
+
+
+class AttachGateway(ec2.VPCGatewayAttachment):
+    vpc_id = VPC
+    internet_gateway_id = InternetGateway
+
+
+class RouteTableAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_ID
+
+
+class RouteTable(ec2.RouteTable):
+    vpc_id = VPC
+    tags = [RouteTableAssociationParameter]
+
+
+class Route(ec2.Route):
     route_table_id = RouteTable
+    destination_cidr_block = '0.0.0.0/0'
+    gateway_id = InternetGateway
+    depends_on = [AttachGateway]
 
 
 class SubnetRouteTableAssociation1(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
     subnet_id = DBSubnet2
+    route_table_id = RouteTable
+
+
+class SubnetRouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    subnet_id = DBSubnet1
     route_table_id = RouteTable

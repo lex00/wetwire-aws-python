@@ -62,7 +62,6 @@ class TaskDefinitionKeyValuePair(ecs.TaskDefinition.KeyValuePair):
 
 
 class TaskDefinition(ecs.TaskDefinition):
-    resource: ecs.TaskDefinition
     family = Join('', [
     AWS_STACK_NAME,
     '-ecs-demo-app',
@@ -78,7 +77,6 @@ class ServiceLoadBalancer(ecs.TaskSet.LoadBalancer):
 
 
 class Service(ecs.Service):
-    resource: ecs.Service
     cluster = ECSCluster
     desired_count = '1'
     load_balancers = [ServiceLoadBalancer]
@@ -88,7 +86,6 @@ class Service(ecs.Service):
 
 
 class ServiceScalingTarget(applicationautoscaling.ScalableTarget):
-    resource: applicationautoscaling.ScalableTarget
     max_capacity = 2
     min_capacity = 1
     resource_id = Join('', [
@@ -116,7 +113,6 @@ class ServiceScalingPolicyStepScalingPolicyConfiguration(applicationautoscaling.
 
 
 class ServiceScalingPolicy(applicationautoscaling.ScalingPolicy):
-    resource: applicationautoscaling.ScalingPolicy
     policy_name = 'AStepPolicy'
     policy_type = 'StepScaling'
     scaling_target_id = ServiceScalingTarget

@@ -20,7 +20,6 @@ class ADConnectorLambdaFunctionCapacityProviderVpcConfig(lambda_.CapacityProvide
 
 
 class ADConnectorLambdaFunction(lambda_.Function):
-    resource: lambda_.Function
     function_name = LambdaFunctionName
     handler = 'adconnector_custom_resource.lambda_handler'
     role = ADConnectorLambdaRole.Arn

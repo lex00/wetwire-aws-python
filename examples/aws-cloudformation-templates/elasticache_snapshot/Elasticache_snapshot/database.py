@@ -4,19 +4,16 @@ from . import *  # noqa: F403
 
 
 class RedisParameterGroup(elasticache.ParameterGroup):
-    resource: elasticache.ParameterGroup
     cache_parameter_group_family = 'redis2.8'
     description = 'RedisParameterGroup'
 
 
 class RedisSubnetGroup(elasticache.SubnetGroup):
-    resource: elasticache.SubnetGroup
     description = 'RedisSubnetGroup'
     subnet_ids = [PublicSubnetA, PublicSubnetB]
 
 
 class RedisReplicationGroup(elasticache.ReplicationGroup):
-    resource: elasticache.ReplicationGroup
     automatic_failover_enabled = 'true'
     cache_node_type = RedisNodeType
     cache_parameter_group_name = RedisParameterGroup

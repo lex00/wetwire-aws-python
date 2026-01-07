@@ -4,11 +4,10 @@ from . import *  # noqa: F403
 
 
 class ECSCluster(ecs.Cluster):
-    resource: ecs.Cluster
+    pass
 
 
 class ContainerInstances(autoscaling.LaunchConfiguration):
-    resource: autoscaling.LaunchConfiguration
     image_id = ECSAMI
     security_groups = [EcsHostSecurityGroup]
     instance_type = InstanceType
@@ -21,7 +20,6 @@ yum install -y aws-cfn-bootstrap
 
 
 class ECSAutoScalingGroup(autoscaling.AutoScalingGroup):
-    resource: autoscaling.AutoScalingGroup
     vpc_zone_identifier = [PublicSubnetOne, PublicSubnetTwo]
     launch_configuration_name = ContainerInstances
     min_size = '1'

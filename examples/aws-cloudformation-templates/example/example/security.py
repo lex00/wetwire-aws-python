@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class ExecutionRoleBuilderMacroTestRole(iam.Role):
-    resource: iam.Role
     type_ = 'Lambda'
     name = 'ExecutionRoleForAppA'
     path = '/boundedexecroles/'

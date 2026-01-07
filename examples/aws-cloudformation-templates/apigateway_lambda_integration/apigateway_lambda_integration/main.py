@@ -8,14 +8,12 @@ class RestApiEndpointConfiguration(apigateway.DomainName.EndpointConfiguration):
 
 
 class RestApi(apigateway.RestApi):
-    resource: apigateway.RestApi
     description = 'My Rest API'
     name = 'MyApi'
     endpoint_configuration = RestApiEndpointConfiguration
 
 
 class RequestModel(apigateway.Model):
-    resource: apigateway.Model
     content_type = 'application/json'
     name = 'MyModel'
     rest_api_id = RestApi
@@ -32,7 +30,6 @@ class RequestModel(apigateway.Model):
 
 
 class ApiResource(apigateway.Resource):
-    resource: apigateway.Resource
     parent_id = RestApi.RootResourceId
     rest_api_id = RestApi
     path_part = '{city}'
@@ -42,7 +39,7 @@ class ApiMethodMethodResponse(apigateway.Method.MethodResponse):
     status_code = '200'
 
 
-class ApiMethodIntegrationResponse(apigateway.Method.IntegrationResponse):
+class ApiMethodMethodResponse1(apigateway.Method.MethodResponse):
     status_code = '200'
 
 
@@ -69,11 +66,10 @@ class ApiMethodIntegration(apigateway.Method.Integration):
     }
 """,
     }
-    integration_responses = [ApiMethodIntegrationResponse]
+    integration_responses = [ApiMethodMethodResponse1]
 
 
 class ApiMethod(apigateway.Method):
-    resource: apigateway.Method
     http_method = 'ANY'
     authorization_type = 'NONE'
     request_parameters = {

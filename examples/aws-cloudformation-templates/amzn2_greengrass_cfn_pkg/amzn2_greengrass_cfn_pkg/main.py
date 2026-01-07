@@ -3,6 +3,99 @@
 from . import *  # noqa: F403
 
 
+class GreengrassCoreDefinition(greengrass.CoreDefinition):
+    name = Join('_', [
+    CoreName,
+    'Core',
+])
+
+
+class IoTThing(CloudFormationResource):
+    # Unknown resource type: Custom::IoTThing
+    service_token = CreateThingFunction.Arn
+    thing_name = Join('_', [
+    CoreName,
+    'Core',
+])
+
+
+class GreengrassCoreDefinitionVersionCore(greengrass.CoreDefinition.Core):
+    certificate_arn = Join(':', [
+    'arn:',
+    AWS_PARTITION,
+    ':iot',
+    AWS_REGION,
+    AWS_ACCOUNT_ID,
+    Join('/', [
+    'cert',
+    IoTThing.certificateId,
+]),
+])
+    id = Join('_', [
+    CoreName,
+    'Core',
+])
+    sync_shadow = 'false'
+    thing_arn = Join(':', [
+    'arn:',
+    AWS_PARTITION,
+    ':iot',
+    AWS_REGION,
+    AWS_ACCOUNT_ID,
+    Join('/', [
+    'thing',
+    Join('_', [
+    CoreName,
+    'Core',
+]),
+]),
+])
+
+
+class GreengrassCoreDefinitionVersion(greengrass.CoreDefinitionVersion):
+    core_definition_id = GreengrassCoreDefinition
+    cores = [GreengrassCoreDefinitionVersionCore]
+
+
+class SubscriptionDefinitionSubscription(greengrass.SubscriptionDefinitionVersion.Subscription):
+    id = 'Subscription1'
+    source = 'cloud'
+    subject = Join('/', [
+    CoreName,
+    'in',
+])
+    target = GGSampleFunctionVersion
+
+
+class SubscriptionDefinitionSubscription1(greengrass.SubscriptionDefinitionVersion.Subscription):
+    id = 'Subscription2'
+    source = GGSampleFunctionVersion
+    subject = Join('/', [
+    CoreName,
+    'out',
+])
+    target = 'cloud'
+
+
+class SubscriptionDefinitionSubscription2(greengrass.SubscriptionDefinitionVersion.Subscription):
+    id = 'Subscription3'
+    source = GGSampleFunctionVersion
+    subject = Join('/', [
+    CoreName,
+    'telem',
+])
+    target = 'cloud'
+
+
+class SubscriptionDefinitionSubscriptionDefinitionVersion(greengrass.SubscriptionDefinition.SubscriptionDefinitionVersion):
+    subscriptions = [SubscriptionDefinitionSubscription, SubscriptionDefinitionSubscription1, SubscriptionDefinitionSubscription2]
+
+
+class SubscriptionDefinition(greengrass.SubscriptionDefinition):
+    initial_version = SubscriptionDefinitionSubscriptionDefinitionVersion
+    name = 'SubscriptionDefinition'
+
+
 class FunctionDefinitionExecution(greengrass.FunctionDefinition.Execution):
     isolation_mode = 'GreengrassContainer'
 
@@ -53,127 +146,8 @@ class FunctionDefinitionFunctionDefinitionVersion(greengrass.FunctionDefinition.
 
 
 class FunctionDefinition(greengrass.FunctionDefinition):
-    resource: greengrass.FunctionDefinition
     initial_version = FunctionDefinitionFunctionDefinitionVersion
     name = 'FunctionDefinition'
-
-
-class GreengrassCoreDefinition(greengrass.CoreDefinition):
-    resource: greengrass.CoreDefinition
-    name = Join('_', [
-    CoreName,
-    'Core',
-])
-
-
-class InstanceAZ(CloudFormationResource):
-    # Unknown resource type: Custom::InstanceAZ
-    resource: CloudFormationResource
-    region = AWS_REGION
-    service_token = InstanceAZFunction.Arn
-
-
-class SubnetAPublic(ec2.Subnet):
-    resource: ec2.Subnet
-    availability_zone = InstanceAZ.AvailabilityZone
-    cidr_block = '172.31.0.0/24'
-    map_public_ip_on_launch = True
-    vpc_id = VPC
-
-
-class RouteTableAssociationAPublic(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = RouteTablePublic
-    subnet_id = SubnetAPublic
-
-
-class IoTThing(CloudFormationResource):
-    # Unknown resource type: Custom::IoTThing
-    resource: CloudFormationResource
-    service_token = CreateThingFunction.Arn
-    thing_name = Join('_', [
-    CoreName,
-    'Core',
-])
-
-
-class GreengrassCoreDefinitionVersionCore(greengrass.CoreDefinition.Core):
-    certificate_arn = Join(':', [
-    'arn:',
-    AWS_PARTITION,
-    ':iot',
-    AWS_REGION,
-    AWS_ACCOUNT_ID,
-    Join('/', [
-    'cert',
-    IoTThing.certificateId,
-]),
-])
-    id = Join('_', [
-    CoreName,
-    'Core',
-])
-    sync_shadow = 'false'
-    thing_arn = Join(':', [
-    'arn:',
-    AWS_PARTITION,
-    ':iot',
-    AWS_REGION,
-    AWS_ACCOUNT_ID,
-    Join('/', [
-    'thing',
-    Join('_', [
-    CoreName,
-    'Core',
-]),
-]),
-])
-
-
-class GreengrassCoreDefinitionVersion(greengrass.CoreDefinitionVersion):
-    resource: greengrass.CoreDefinitionVersion
-    core_definition_id = GreengrassCoreDefinition
-    cores = [GreengrassCoreDefinitionVersionCore]
-
-
-class SubscriptionDefinitionSubscription(greengrass.SubscriptionDefinitionVersion.Subscription):
-    id = 'Subscription1'
-    source = 'cloud'
-    subject = Join('/', [
-    CoreName,
-    'in',
-])
-    target = GGSampleFunctionVersion
-
-
-class SubscriptionDefinitionSubscription1(greengrass.SubscriptionDefinitionVersion.Subscription):
-    id = 'Subscription2'
-    source = GGSampleFunctionVersion
-    subject = Join('/', [
-    CoreName,
-    'out',
-])
-    target = 'cloud'
-
-
-class SubscriptionDefinitionSubscription2(greengrass.SubscriptionDefinitionVersion.Subscription):
-    id = 'Subscription3'
-    source = GGSampleFunctionVersion
-    subject = Join('/', [
-    CoreName,
-    'telem',
-])
-    target = 'cloud'
-
-
-class SubscriptionDefinitionSubscriptionDefinitionVersion(greengrass.SubscriptionDefinition.SubscriptionDefinitionVersion):
-    subscriptions = [SubscriptionDefinitionSubscription, SubscriptionDefinitionSubscription1, SubscriptionDefinitionSubscription2]
-
-
-class SubscriptionDefinition(greengrass.SubscriptionDefinition):
-    resource: greengrass.SubscriptionDefinition
-    initial_version = SubscriptionDefinitionSubscriptionDefinitionVersion
-    name = 'SubscriptionDefinition'
 
 
 class GreengrassGroupGroupVersion(greengrass.Group.GroupVersion):
@@ -183,7 +157,6 @@ class GreengrassGroupGroupVersion(greengrass.Group.GroupVersion):
 
 
 class GreengrassGroup(greengrass.Group):
-    resource: greengrass.Group
     initial_version = GreengrassGroupGroupVersion
     name = CoreName
     role_arn = GreengrassResourceRole.Arn
@@ -191,7 +164,6 @@ class GreengrassGroup(greengrass.Group):
 
 class GroupDeploymentReset(CloudFormationResource):
     # Unknown resource type: Custom::GroupDeploymentReset
-    resource: CloudFormationResource
     region = AWS_REGION
     service_token = GroupDeploymentResetFunction.Arn
     thing_name = Join('_', [
@@ -199,6 +171,24 @@ class GroupDeploymentReset(CloudFormationResource):
     'Core',
 ])
     depends_on = [GreengrassGroup]
+
+
+class InstanceAZ(CloudFormationResource):
+    # Unknown resource type: Custom::InstanceAZ
+    region = AWS_REGION
+    service_token = InstanceAZFunction.Arn
+
+
+class SubnetAPublic(ec2.Subnet):
+    availability_zone = InstanceAZ.AvailabilityZone
+    cidr_block = '172.31.0.0/24'
+    map_public_ip_on_launch = True
+    vpc_id = VPC
+
+
+class RouteTableAssociationAPublic(ec2.SubnetRouteTableAssociation):
+    route_table_id = RouteTablePublic
+    subnet_id = SubnetAPublic
 
 
 class GreengrassInstanceAssociationParameter(ec2.Instance.AssociationParameter):
@@ -210,7 +200,6 @@ class GreengrassInstanceAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class GreengrassInstance(ec2.Instance):
-    resource: ec2.Instance
     image_id = LatestAmiId
     instance_type = InstanceType
     key_name = myKeyPair

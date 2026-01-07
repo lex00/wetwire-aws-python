@@ -1,4 +1,4 @@
-"""Network resources: VPC, PrivateRouteTable2, PrivateRouteTable1, PrivateSubnet1, PrivateSubnet1RouteTableAssociation, EndpointSG, PrivateSubnet2, CfnEndpoint, PrivateSG, PrivateSubnet2RouteTableAssociation."""
+"""Network resources: VPC, EndpointSG, PrivateSubnet1, PrivateSubnet2, CfnEndpoint, PrivateSG, PrivateRouteTable1, PrivateSubnet1RouteTableAssociation, PrivateRouteTable2, PrivateSubnet2RouteTableAssociation."""
 
 from . import *  # noqa: F403
 
@@ -9,53 +9,10 @@ class VPCAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class VPC(ec2.VPC):
-    resource: ec2.VPC
     enable_dns_support = True
     enable_dns_hostnames = True
     cidr_block = VpcCIDR
     tags = [VPCAssociationParameter]
-
-
-class PrivateRouteTable2AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${EnvironmentName} Private Routes (AZ2)')
-
-
-class PrivateRouteTable2(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-    tags = [PrivateRouteTable2AssociationParameter]
-
-
-class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${EnvironmentName} Private Routes (AZ1)')
-
-
-class PrivateRouteTable1(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-    tags = [PrivateRouteTable1AssociationParameter]
-
-
-class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${EnvironmentName} Private Subnet (AZ1)')
-
-
-class PrivateSubnet1(ec2.Subnet):
-    resource: ec2.Subnet
-    vpc_id = VPC
-    availability_zone = Select(0, GetAZs())
-    cidr_block = PrivateSubnet1CIDR
-    map_public_ip_on_launch = False
-    tags = [PrivateSubnet1AssociationParameter]
-
-
-class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PrivateRouteTable1
-    subnet_id = PrivateSubnet1
 
 
 class EndpointSGEgress(ec2.SecurityGroup.Egress):
@@ -71,11 +28,23 @@ class EndpointSGAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class EndpointSG(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Traffic into CloudFormation Endpoint'
     security_group_ingress = [EndpointSGEgress]
     vpc_id = VPC
     tags = [EndpointSGAssociationParameter]
+
+
+class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${EnvironmentName} Private Subnet (AZ1)')
+
+
+class PrivateSubnet1(ec2.Subnet):
+    vpc_id = VPC
+    availability_zone = Select(0, GetAZs())
+    cidr_block = PrivateSubnet1CIDR
+    map_public_ip_on_launch = False
+    tags = [PrivateSubnet1AssociationParameter]
 
 
 class PrivateSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
@@ -84,7 +53,6 @@ class PrivateSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class PrivateSubnet2(ec2.Subnet):
-    resource: ec2.Subnet
     vpc_id = VPC
     availability_zone = Select(1, GetAZs())
     cidr_block = PrivateSubnet2CIDR
@@ -93,7 +61,6 @@ class PrivateSubnet2(ec2.Subnet):
 
 
 class CfnEndpoint(ec2.VPCEndpoint):
-    resource: ec2.VPCEndpoint
     vpc_id = VPC
     service_name = Sub('com.amazonaws.${AWS::Region}.cloudformation')
     vpc_endpoint_type = 'Interface'
@@ -115,14 +82,37 @@ class PrivateSGAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class PrivateSG(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Traffic from Bastion'
     security_group_ingress = [PrivateSGEgress]
     vpc_id = VPC
     tags = [PrivateSGAssociationParameter]
 
 
+class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${EnvironmentName} Private Routes (AZ1)')
+
+
+class PrivateRouteTable1(ec2.RouteTable):
+    vpc_id = VPC
+    tags = [PrivateRouteTable1AssociationParameter]
+
+
+class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = PrivateRouteTable1
+    subnet_id = PrivateSubnet1
+
+
+class PrivateRouteTable2AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${EnvironmentName} Private Routes (AZ2)')
+
+
+class PrivateRouteTable2(ec2.RouteTable):
+    vpc_id = VPC
+    tags = [PrivateRouteTable2AssociationParameter]
+
+
 class PrivateSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
     route_table_id = PrivateRouteTable2
     subnet_id = PrivateSubnet2

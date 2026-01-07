@@ -11,5 +11,4 @@ class S3BucketTagFilter(s3.Bucket.TagFilter):
 
 
 class S3Bucket(s3.Bucket):
-    resource: s3.Bucket
     tags = [S3BucketTagFilter]

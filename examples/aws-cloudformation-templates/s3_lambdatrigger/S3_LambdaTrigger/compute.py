@@ -12,7 +12,6 @@ def lambda_handler(event,context):
 
 
 class S3TriggerLambdaFunction(lambda_.Function):
-    resource: lambda_.Function
     code = S3TriggerLambdaFunctionCode
     handler = 'index.lambda_handler'
     role = LambdaIAMRole.Arn
@@ -21,7 +20,6 @@ class S3TriggerLambdaFunction(lambda_.Function):
 
 
 class LambdaInvokePermission(lambda_.Permission):
-    resource: lambda_.Permission
     function_name = S3TriggerLambdaFunction.Arn
     action = 'lambda:InvokeFunction'
     principal = 's3.amazonaws.com'

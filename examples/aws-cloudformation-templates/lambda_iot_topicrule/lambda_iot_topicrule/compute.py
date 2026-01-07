@@ -1,4 +1,4 @@
-"""Compute resources: MyLambda, MyLambdaPermission, MyLambdaVersion."""
+"""Compute resources: MyLambda, MyLambdaVersion, MyLambdaPermission."""
 
 from . import *  # noqa: F403
 
@@ -9,7 +9,6 @@ class MyLambdaCode(lambda_.Function.Code):
 
 
 class MyLambda(lambda_.Function):
-    resource: lambda_.Function
     runtime = lambda_.Runtime.NODEJS20_X
     handler = 'index.handler'
     code = MyLambdaCode
@@ -17,16 +16,14 @@ class MyLambda(lambda_.Function):
     role = MyLambdaRole.Arn
 
 
+class MyLambdaVersion(lambda_.Version):
+    function_name = AWS_STACK_NAME
+    depends_on = [MyLambda]
+
+
 class MyLambdaPermission(lambda_.Permission):
-    resource: lambda_.Permission
     action = 'lambda:InvokeFunction'
     function_name = AWS_STACK_NAME
     principal = 'iot.amazonaws.com'
     source_account = AWS_ACCOUNT_ID
     source_arn = IoTTopicRule.Arn
-
-
-class MyLambdaVersion(lambda_.Version):
-    resource: lambda_.Version
-    function_name = AWS_STACK_NAME
-    depends_on = [MyLambda]

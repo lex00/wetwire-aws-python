@@ -37,7 +37,6 @@ class LambdaIamRolePolicy(iam.User.Policy):
 
 
 class LambdaIamRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = LambdaIamRoleAssumeRolePolicyDocument
     role_name = 'LambdaRole'
     policies = [LambdaIamRolePolicy]

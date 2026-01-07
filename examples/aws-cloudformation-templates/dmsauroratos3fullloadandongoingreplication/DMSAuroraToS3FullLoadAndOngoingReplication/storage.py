@@ -3,12 +3,12 @@
 from . import *  # noqa: F403
 
 
-class S3BucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
+class S3BucketMetadataTableEncryptionConfiguration(s3.Bucket.MetadataTableEncryptionConfiguration):
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
 class S3BucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
-    server_side_encryption_by_default = S3BucketServerSideEncryptionByDefault
+    server_side_encryption_by_default = S3BucketMetadataTableEncryptionConfiguration
 
 
 class S3BucketBucketEncryption(s3.Bucket.BucketEncryption):
@@ -23,6 +23,5 @@ class S3BucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAcc
 
 
 class S3Bucket(s3.Bucket):
-    resource: s3.Bucket
     bucket_encryption = S3BucketBucketEncryption
     public_access_block_configuration = S3BucketPublicAccessBlockConfiguration

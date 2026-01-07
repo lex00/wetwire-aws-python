@@ -14,7 +14,6 @@ class OriginAccessControlOriginAccessControlConfig(cloudfront.OriginAccessContro
 
 
 class OriginAccessControl(cloudfront.OriginAccessControl):
-    resource: cloudfront.OriginAccessControl
     origin_access_control_config = OriginAccessControlOriginAccessControlConfig
 
 
@@ -29,7 +28,7 @@ class DistributionLogging(cloudfront.Distribution.Logging):
     bucket = CloudFrontLogsBucket.RegionalDomainName
 
 
-class DistributionS3OriginConfig(cloudfront.Distribution.S3OriginConfig):
+class DistributionLegacyS3Origin(cloudfront.Distribution.LegacyS3Origin):
     origin_access_identity = ''
 
 
@@ -37,7 +36,7 @@ class DistributionOrigin(cloudfront.Distribution.Origin):
     domain_name = ContentBucket.RegionalDomainName
     id = 'rain-build-origin-1'
     origin_access_control_id = OriginAccessControl.Id
-    s3_origin_config = DistributionS3OriginConfig
+    s3_origin_config = DistributionLegacyS3Origin
 
 
 class DistributionViewerCertificate(cloudfront.Distribution.ViewerCertificate):
@@ -57,5 +56,4 @@ class DistributionDistributionConfig(cloudfront.Distribution.DistributionConfig)
 
 
 class Distribution(cloudfront.Distribution):
-    resource: cloudfront.Distribution
     distribution_config = DistributionDistributionConfig

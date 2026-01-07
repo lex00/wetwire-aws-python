@@ -10,7 +10,6 @@ class EnableShapshotCode(lambda_.Function.Code):
 
 
 class EnableShapshot(lambda_.Function):
-    resource: lambda_.Function
     code = EnableShapshotCode
     handler = 'index.handler'
     memory_size = 128
@@ -23,7 +22,6 @@ class EnableShapshot(lambda_.Function):
 
 
 class LambdaExecutePermission(lambda_.Permission):
-    resource: lambda_.Permission
     action = 'lambda:InvokeFunction'
     function_name = EnableShapshot.Arn
     principal = 'elasticache.amazonaws.com'

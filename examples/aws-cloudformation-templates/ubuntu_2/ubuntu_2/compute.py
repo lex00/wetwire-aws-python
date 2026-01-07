@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class EC2Instance(ec2.Instance):
-    resource: ec2.Instance
     instance_type = InstanceType
     iam_instance_profile = IAMRole
     key_name = KeyName

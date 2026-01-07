@@ -29,7 +29,6 @@ class TargetAccountLoggingAutoDeployment(cloudformation.StackSet.AutoDeployment)
 
 
 class TargetAccountLogging(cloudformation.StackSet):
-    resource: cloudformation.StackSet
     template_body = """AWSTemplateFormatVersion: '2010-09-09'
 
 Description: EventBridge Rule to send CloudFormation events to a central EventBus

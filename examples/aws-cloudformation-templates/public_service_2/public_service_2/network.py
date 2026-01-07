@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class TargetGroup(elasticloadbalancingv2.TargetGroup):
-    resource: elasticloadbalancingv2.TargetGroup
     health_check_interval_seconds = 6
     health_check_path = '/'
     health_check_protocol = 'HTTP'
@@ -32,7 +31,6 @@ class LoadBalancerRuleRuleCondition(elasticloadbalancingv2.ListenerRule.RuleCond
 
 
 class LoadBalancerRule(elasticloadbalancingv2.ListenerRule):
-    resource: elasticloadbalancingv2.ListenerRule
     actions = [LoadBalancerRuleAction]
     conditions = [LoadBalancerRuleRuleCondition]
     listener_arn = ImportValue(Join(':', [

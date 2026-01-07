@@ -32,7 +32,6 @@ class CachePolicyCachePolicyConfig(cloudfront.CachePolicy.CachePolicyConfig):
 
 
 class CachePolicy(cloudfront.CachePolicy):
-    resource: cloudfront.CachePolicy
     cache_policy_config = CachePolicyCachePolicyConfig
 
 
@@ -54,7 +53,7 @@ class DistributionDefaultCacheBehavior(cloudfront.Distribution.DefaultCacheBehav
     viewer_protocol_policy = 'allow-all'
 
 
-class DistributionCustomOriginConfig(cloudfront.Distribution.CustomOriginConfig):
+class DistributionLegacyCustomOrigin(cloudfront.Distribution.LegacyCustomOrigin):
     http_port = Port
     origin_protocol_policy = 'http-only'
 
@@ -62,7 +61,7 @@ class DistributionCustomOriginConfig(cloudfront.Distribution.CustomOriginConfig)
 class DistributionOrigin(cloudfront.Distribution.Origin):
     domain_name = DomainName
     id = Sub('CloudFront-${AWS::StackName}')
-    custom_origin_config = DistributionCustomOriginConfig
+    custom_origin_config = DistributionLegacyCustomOrigin
 
 
 class DistributionDistributionConfig(cloudfront.Distribution.DistributionConfig):
@@ -74,7 +73,6 @@ class DistributionDistributionConfig(cloudfront.Distribution.DistributionConfig)
 
 
 class Distribution(cloudfront.Distribution):
-    resource: cloudfront.Distribution
     tags = [{
         'Key': 'Name',
         'Value': Name,

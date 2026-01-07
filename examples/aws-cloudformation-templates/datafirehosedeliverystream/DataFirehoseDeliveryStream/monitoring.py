@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class FirehoseLogGroup(logs.LogGroup):
-    resource: logs.LogGroup
     log_group_name = Join('', [
     '/aws/kinesisfirehose/',
     LogGroupName,
@@ -14,6 +13,5 @@ class FirehoseLogGroup(logs.LogGroup):
 
 
 class FirehoseLogStream(logs.LogStream):
-    resource: logs.LogStream
     log_group_name = FirehoseLogGroup
     log_stream_name = LogStreamName

@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class LogsBucket(s3.Bucket):
-    resource: s3.Bucket
     access_control = 'Private'
     deletion_policy = 'Retain'
 
@@ -39,6 +38,5 @@ class LogsBucketPolicyPolicyDocument(PolicyDocument):
 
 
 class LogsBucketPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
     bucket = LogsBucket
     policy_document = LogsBucketPolicyPolicyDocument

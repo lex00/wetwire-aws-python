@@ -1,7 +1,6 @@
 """Storage resources: LoggingBucket, LoggingBucketPolicy."""
 
 from . import *  # noqa: F403
-from wetwire_aws.constants import BOOL
 
 
 class LoggingBucketOwnershipControlsRule(s3.Bucket.OwnershipControlsRule):
@@ -37,7 +36,6 @@ class LoggingBucketDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplication):
 
 
 class LoggingBucket(s3.Bucket):
-    resource: s3.Bucket
     bucket_name = Sub('${AppName}-logging-${Environment}-${AWS::AccountId}-${AWS::Region}')
     ownership_controls = LoggingBucketOwnershipControls
     public_access_block_configuration = LoggingBucketPublicAccessBlockConfiguration
@@ -75,6 +73,5 @@ class LoggingBucketPolicyPolicyDocument(PolicyDocument):
 
 
 class LoggingBucketPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
     bucket = LoggingBucket
     policy_document = LoggingBucketPolicyPolicyDocument

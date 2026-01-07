@@ -9,7 +9,6 @@ class MainDBTagFormat(rds.DBProxyEndpoint.TagFormat):
 
 
 class MainDB(rds.DBInstance):
-    resource: rds.DBInstance
     db_name = DBName
     allocated_storage = DBAllocatedStorage
     backup_retention_period = 7
@@ -32,7 +31,6 @@ class ReplicaDBTagFormat(rds.DBProxyEndpoint.TagFormat):
 
 
 class ReplicaDB(rds.DBInstance):
-    resource: rds.DBInstance
     source_db_instance_identifier = MainDB
     publicly_accessible = False
     db_instance_class = DBInstanceClass

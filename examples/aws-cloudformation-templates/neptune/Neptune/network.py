@@ -9,7 +9,6 @@ class NeptuneDBSGAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class NeptuneDBSG(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'SG of Neptune DB'
     vpc_id = ImportValue(Sub('${VPCStack}-VPCID'))
     tags = [NeptuneDBSGAssociationParameter]

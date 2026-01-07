@@ -17,7 +17,6 @@ class NeptuneS3PolicyPolicyDocument(PolicyDocument):
 
 
 class NeptuneS3Policy(iam.ManagedPolicy):
-    resource: iam.ManagedPolicy
     description = 'Neptune default policy for S3 access for data load'
     managed_policy_name = Sub('${Env}-${AppName}-neptune-s3-policy-${AWS::Region}')
     policy_document = NeptuneS3PolicyPolicyDocument
@@ -48,7 +47,6 @@ class NeptuneCloudWatchPolicyPolicyDocument(PolicyDocument):
 
 
 class NeptuneCloudWatchPolicy(iam.ManagedPolicy):
-    resource: iam.ManagedPolicy
     description = 'Default policy for CloudWatch logs'
     managed_policy_name = Sub('${Env}-${AppName}-neptune-cw-policy-${AWS::Region}')
     policy_document = NeptuneCloudWatchPolicyPolicyDocument
@@ -69,7 +67,6 @@ class NeptuneRoleAssumeRolePolicyDocument(PolicyDocument):
 
 
 class NeptuneRole(iam.Role):
-    resource: iam.Role
     role_name = Sub('${Env}-${AppName}-neptune-iam-role-${AWS::Region}')
     assume_role_policy_document = NeptuneRoleAssumeRolePolicyDocument
     managed_policy_arns = [NeptuneCloudWatchPolicy, NeptuneS3Policy]

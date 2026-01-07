@@ -4,4 +4,4 @@ from . import *  # noqa: F403
 
 
 class ECSCluster(ecs.Cluster):
-    resource: ecs.Cluster
+    pass

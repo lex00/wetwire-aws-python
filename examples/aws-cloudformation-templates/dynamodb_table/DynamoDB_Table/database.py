@@ -23,7 +23,6 @@ class myDynamoDBTablePointInTimeRecoverySpecification(dynamodb.Table.PointInTime
 
 
 class myDynamoDBTable(dynamodb.Table):
-    resource: dynamodb.Table
     attribute_definitions = [myDynamoDBTableAttributeDefinition]
     key_schema = [myDynamoDBTableKeySchema]
     provisioned_throughput = myDynamoDBTableProvisionedThroughput

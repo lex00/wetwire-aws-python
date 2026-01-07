@@ -21,7 +21,6 @@ class WindowsInstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
 
 
 class WindowsInstance(ec2.Instance):
-    resource: ec2.Instance
     image_id = WindowsAMIID
     subnet_id = SubnetId
     instance_type = InstanceType
@@ -61,7 +60,6 @@ class LinuxInstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
 
 
 class LinuxInstance(ec2.Instance):
-    resource: ec2.Instance
     image_id = LinuxAMIID
     subnet_id = SubnetId
     instance_type = InstanceType

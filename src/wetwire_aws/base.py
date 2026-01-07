@@ -529,8 +529,6 @@ class CloudFormationResource(Resource, metaclass=ResourceMeta):
 
     _resource_type: ClassVar[str] = ""
     _property_mappings: ClassVar[dict[str, str]] = {}
-    # Alias for consistency with base Resource class
-    resource_type: ClassVar[str] = ""
 
     # Optional resource metadata (kw_only to allow subclasses to have required fields)
     depends_on: list[type] | None = field(default=None, repr=False, kw_only=True)
