@@ -5,12 +5,12 @@ from . import *  # noqa: F403
 
 class ALBExternalAccessSGAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = Sub('${AppName}-${Environment}-alb-external-access-ingrees-SG')
+    value = [Sub('${AppName}-${Environment}-alb-external-access-ingrees-SG')]
 
 
 class ALBExternalAccessSGAssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'Environment'
-    value = Environment
+    value = [Environment]
 
 
 class ALBExternalAccessSG(ec2.SecurityGroup):
@@ -100,7 +100,7 @@ class CloudFrontDistributionDefaultCacheBehavior(cloudfront.Distribution.Default
     default_ttl = DefaultTTL
     max_ttl = MaxTTL
     min_ttl = MinTTL
-    smooth_streaming = 'false'
+    smooth_streaming = False
     target_origin_id = OriginALB
     forwarded_values = CloudFrontDistributionForwardedValues
     viewer_protocol_policy = ViewerProtocolPolicy
@@ -138,12 +138,12 @@ class CloudFrontDistribution(cloudfront.Distribution):
 
 class EC2InstanceSGAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = Sub('${AppName}-${Environment}-ec2-instance-SG')
+    value = [Sub('${AppName}-${Environment}-ec2-instance-SG')]
 
 
 class EC2InstanceSGAssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'Environment'
-    value = Environment
+    value = [Environment]
 
 
 class EC2InstanceSG(ec2.SecurityGroup):
@@ -156,9 +156,9 @@ class EC2InstanceSG(ec2.SecurityGroup):
 class Tcp8080In(ec2.SecurityGroupIngress):
     resource: ec2.SecurityGroupIngress
     group_id = EC2InstanceSG
-    to_port = '8080'
+    to_port = 8080
     ip_protocol = 'tcp'
-    from_port = '8080'
+    from_port = 8080
     source_security_group_id = ALBExternalAccessSG
 
 

@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,4 +15,4 @@ class SharingConfig(PropertyType):
         "enabled": "enabled",
     }
 
-    enabled: bool | None = None
+    enabled: DslValue[bool] | None = None

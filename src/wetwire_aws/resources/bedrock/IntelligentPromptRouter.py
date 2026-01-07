@@ -6,13 +6,14 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class PromptRouterTargetModel(PropertyType):
-    model_arn: str | None = None
+    model_arn: DslValue[str] | None = None
 
 
 @dataclass
 class RoutingCriteria(PropertyType):
-    response_quality_difference: float | None = None
+    response_quality_difference: DslValue[float] | None = None

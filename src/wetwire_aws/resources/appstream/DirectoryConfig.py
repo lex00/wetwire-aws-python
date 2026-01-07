@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CertificateBasedAuthProperties(PropertyType):
-    certificate_authority_arn: str | None = None
-    status: str | None = None
+    certificate_authority_arn: DslValue[str] | None = None
+    status: DslValue[str] | None = None
 
 
 @dataclass
 class ServiceAccountCredentials(PropertyType):
-    account_name: str | None = None
-    account_password: str | None = None
+    account_name: DslValue[str] | None = None
+    account_password: DslValue[str] | None = None

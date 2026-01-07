@@ -6,224 +6,233 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AutoEvaluationConfiguration(PropertyType):
-    enabled: bool | None = None
+    enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class AutomaticFailConfiguration(PropertyType):
-    target_section: str | None = None
+    target_section: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormBaseItem(PropertyType):
-    section: EvaluationFormSection | None = None
+    section: DslValue[EvaluationFormSection] | None = None
 
 
 @dataclass
 class EvaluationFormItem(PropertyType):
-    question: EvaluationFormQuestion | None = None
-    section: EvaluationFormSection | None = None
+    question: DslValue[EvaluationFormQuestion] | None = None
+    section: DslValue[EvaluationFormSection] | None = None
 
 
 @dataclass
 class EvaluationFormItemEnablementCondition(PropertyType):
-    operands: list[EvaluationFormItemEnablementConditionOperand] = field(
+    operands: list[DslValue[EvaluationFormItemEnablementConditionOperand]] = field(
         default_factory=list
     )
-    operator: str | None = None
+    operator: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormItemEnablementConditionOperand(PropertyType):
-    expression: EvaluationFormItemEnablementExpression | None = None
+    expression: DslValue[EvaluationFormItemEnablementExpression] | None = None
 
 
 @dataclass
 class EvaluationFormItemEnablementConfiguration(PropertyType):
-    action: str | None = None
-    condition: EvaluationFormItemEnablementCondition | None = None
-    default_action: str | None = None
+    action: DslValue[str] | None = None
+    condition: DslValue[EvaluationFormItemEnablementCondition] | None = None
+    default_action: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormItemEnablementExpression(PropertyType):
-    comparator: str | None = None
-    source: EvaluationFormItemEnablementSource | None = None
-    values: list[EvaluationFormItemEnablementSourceValue] = field(default_factory=list)
+    comparator: DslValue[str] | None = None
+    source: DslValue[EvaluationFormItemEnablementSource] | None = None
+    values: list[DslValue[EvaluationFormItemEnablementSourceValue]] = field(
+        default_factory=list
+    )
 
 
 @dataclass
 class EvaluationFormItemEnablementSource(PropertyType):
-    type_: str | None = None
-    ref_id: str | None = None
+    type_: DslValue[str] | None = None
+    ref_id: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormItemEnablementSourceValue(PropertyType):
-    ref_id: str | None = None
-    type_: str | None = None
+    ref_id: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormLanguageConfiguration(PropertyType):
-    form_language: str | None = None
+    form_language: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormMultiSelectQuestionAutomation(PropertyType):
-    options: list[EvaluationFormMultiSelectQuestionAutomationOption] = field(
+    options: list[DslValue[EvaluationFormMultiSelectQuestionAutomationOption]] = field(
         default_factory=list
     )
-    answer_source: EvaluationFormQuestionAutomationAnswerSource | None = None
-    default_option_ref_ids: list[String] = field(default_factory=list)
+    answer_source: DslValue[EvaluationFormQuestionAutomationAnswerSource] | None = None
+    default_option_ref_ids: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class EvaluationFormMultiSelectQuestionAutomationOption(PropertyType):
-    rule_category: MultiSelectQuestionRuleCategoryAutomation | None = None
+    rule_category: DslValue[MultiSelectQuestionRuleCategoryAutomation] | None = None
 
 
 @dataclass
 class EvaluationFormMultiSelectQuestionOption(PropertyType):
-    ref_id: str | None = None
-    text: str | None = None
+    ref_id: DslValue[str] | None = None
+    text: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormMultiSelectQuestionProperties(PropertyType):
-    options: list[EvaluationFormMultiSelectQuestionOption] = field(default_factory=list)
-    automation: EvaluationFormMultiSelectQuestionAutomation | None = None
-    display_as: str | None = None
+    options: list[DslValue[EvaluationFormMultiSelectQuestionOption]] = field(
+        default_factory=list
+    )
+    automation: DslValue[EvaluationFormMultiSelectQuestionAutomation] | None = None
+    display_as: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormNumericQuestionAutomation(PropertyType):
-    answer_source: EvaluationFormQuestionAutomationAnswerSource | None = None
-    property_value: NumericQuestionPropertyValueAutomation | None = None
+    answer_source: DslValue[EvaluationFormQuestionAutomationAnswerSource] | None = None
+    property_value: DslValue[NumericQuestionPropertyValueAutomation] | None = None
 
 
 @dataclass
 class EvaluationFormNumericQuestionOption(PropertyType):
-    max_value: int | None = None
-    min_value: int | None = None
-    automatic_fail: bool | None = None
-    automatic_fail_configuration: AutomaticFailConfiguration | None = None
-    score: int | None = None
+    max_value: DslValue[int] | None = None
+    min_value: DslValue[int] | None = None
+    automatic_fail: DslValue[bool] | None = None
+    automatic_fail_configuration: DslValue[AutomaticFailConfiguration] | None = None
+    score: DslValue[int] | None = None
 
 
 @dataclass
 class EvaluationFormNumericQuestionProperties(PropertyType):
-    max_value: int | None = None
-    min_value: int | None = None
-    automation: EvaluationFormNumericQuestionAutomation | None = None
-    options: list[EvaluationFormNumericQuestionOption] = field(default_factory=list)
+    max_value: DslValue[int] | None = None
+    min_value: DslValue[int] | None = None
+    automation: DslValue[EvaluationFormNumericQuestionAutomation] | None = None
+    options: list[DslValue[EvaluationFormNumericQuestionOption]] = field(
+        default_factory=list
+    )
 
 
 @dataclass
 class EvaluationFormQuestion(PropertyType):
-    question_type: str | None = None
-    ref_id: str | None = None
-    title: str | None = None
-    enablement: EvaluationFormItemEnablementConfiguration | None = None
-    instructions: str | None = None
-    not_applicable_enabled: bool | None = None
-    question_type_properties: EvaluationFormQuestionTypeProperties | None = None
-    weight: float | None = None
+    question_type: DslValue[str] | None = None
+    ref_id: DslValue[str] | None = None
+    title: DslValue[str] | None = None
+    enablement: DslValue[EvaluationFormItemEnablementConfiguration] | None = None
+    instructions: DslValue[str] | None = None
+    not_applicable_enabled: DslValue[bool] | None = None
+    question_type_properties: DslValue[EvaluationFormQuestionTypeProperties] | None = (
+        None
+    )
+    weight: DslValue[float] | None = None
 
 
 @dataclass
 class EvaluationFormQuestionAutomationAnswerSource(PropertyType):
-    source_type: str | None = None
+    source_type: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormQuestionTypeProperties(PropertyType):
-    multi_select: EvaluationFormMultiSelectQuestionProperties | None = None
-    numeric: EvaluationFormNumericQuestionProperties | None = None
-    single_select: EvaluationFormSingleSelectQuestionProperties | None = None
-    text: EvaluationFormTextQuestionProperties | None = None
+    multi_select: DslValue[EvaluationFormMultiSelectQuestionProperties] | None = None
+    numeric: DslValue[EvaluationFormNumericQuestionProperties] | None = None
+    single_select: DslValue[EvaluationFormSingleSelectQuestionProperties] | None = None
+    text: DslValue[EvaluationFormTextQuestionProperties] | None = None
 
 
 @dataclass
 class EvaluationFormSection(PropertyType):
-    ref_id: str | None = None
-    title: str | None = None
-    instructions: str | None = None
-    items: list[EvaluationFormItem] = field(default_factory=list)
-    weight: float | None = None
+    ref_id: DslValue[str] | None = None
+    title: DslValue[str] | None = None
+    instructions: DslValue[str] | None = None
+    items: list[DslValue[EvaluationFormItem]] = field(default_factory=list)
+    weight: DslValue[float] | None = None
 
 
 @dataclass
 class EvaluationFormSingleSelectQuestionAutomation(PropertyType):
-    options: list[EvaluationFormSingleSelectQuestionAutomationOption] = field(
+    options: list[DslValue[EvaluationFormSingleSelectQuestionAutomationOption]] = field(
         default_factory=list
     )
-    answer_source: EvaluationFormQuestionAutomationAnswerSource | None = None
-    default_option_ref_id: str | None = None
+    answer_source: DslValue[EvaluationFormQuestionAutomationAnswerSource] | None = None
+    default_option_ref_id: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormSingleSelectQuestionAutomationOption(PropertyType):
-    rule_category: SingleSelectQuestionRuleCategoryAutomation | None = None
+    rule_category: DslValue[SingleSelectQuestionRuleCategoryAutomation] | None = None
 
 
 @dataclass
 class EvaluationFormSingleSelectQuestionOption(PropertyType):
-    ref_id: str | None = None
-    text: str | None = None
-    automatic_fail: bool | None = None
-    automatic_fail_configuration: AutomaticFailConfiguration | None = None
-    score: int | None = None
+    ref_id: DslValue[str] | None = None
+    text: DslValue[str] | None = None
+    automatic_fail: DslValue[bool] | None = None
+    automatic_fail_configuration: DslValue[AutomaticFailConfiguration] | None = None
+    score: DslValue[int] | None = None
 
 
 @dataclass
 class EvaluationFormSingleSelectQuestionProperties(PropertyType):
-    options: list[EvaluationFormSingleSelectQuestionOption] = field(
+    options: list[DslValue[EvaluationFormSingleSelectQuestionOption]] = field(
         default_factory=list
     )
-    automation: EvaluationFormSingleSelectQuestionAutomation | None = None
-    display_as: str | None = None
+    automation: DslValue[EvaluationFormSingleSelectQuestionAutomation] | None = None
+    display_as: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormTargetConfiguration(PropertyType):
-    contact_interaction_type: str | None = None
+    contact_interaction_type: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationFormTextQuestionAutomation(PropertyType):
-    answer_source: EvaluationFormQuestionAutomationAnswerSource | None = None
+    answer_source: DslValue[EvaluationFormQuestionAutomationAnswerSource] | None = None
 
 
 @dataclass
 class EvaluationFormTextQuestionProperties(PropertyType):
-    automation: EvaluationFormTextQuestionAutomation | None = None
+    automation: DslValue[EvaluationFormTextQuestionAutomation] | None = None
 
 
 @dataclass
 class MultiSelectQuestionRuleCategoryAutomation(PropertyType):
-    category: str | None = None
-    condition: str | None = None
-    option_ref_ids: list[String] = field(default_factory=list)
+    category: DslValue[str] | None = None
+    condition: DslValue[str] | None = None
+    option_ref_ids: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class NumericQuestionPropertyValueAutomation(PropertyType):
-    label: str | None = None
+    label: DslValue[str] | None = None
 
 
 @dataclass
 class ScoringStrategy(PropertyType):
-    mode: str | None = None
-    status: str | None = None
+    mode: DslValue[str] | None = None
+    status: DslValue[str] | None = None
 
 
 @dataclass
 class SingleSelectQuestionRuleCategoryAutomation(PropertyType):
-    category: str | None = None
-    condition: str | None = None
-    option_ref_id: str | None = None
+    category: DslValue[str] | None = None
+    condition: DslValue[str] | None = None
+    option_ref_id: DslValue[str] | None = None

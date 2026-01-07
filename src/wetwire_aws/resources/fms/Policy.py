@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -15,77 +16,77 @@ class IEMap(PropertyType):
         "orgunit": "ORGUNIT",
     }
 
-    account: list[String] = field(default_factory=list)
-    orgunit: list[String] = field(default_factory=list)
+    account: list[DslValue[str]] = field(default_factory=list)
+    orgunit: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class IcmpTypeCode(PropertyType):
-    code: int | None = None
-    type_: int | None = None
+    code: DslValue[int] | None = None
+    type_: DslValue[int] | None = None
 
 
 @dataclass
 class NetworkAclCommonPolicy(PropertyType):
-    network_acl_entry_set: NetworkAclEntrySet | None = None
+    network_acl_entry_set: DslValue[NetworkAclEntrySet] | None = None
 
 
 @dataclass
 class NetworkAclEntry(PropertyType):
-    egress: bool | None = None
-    protocol: str | None = None
-    rule_action: str | None = None
-    cidr_block: str | None = None
-    icmp_type_code: IcmpTypeCode | None = None
-    ipv6_cidr_block: str | None = None
-    port_range: PortRange | None = None
+    egress: DslValue[bool] | None = None
+    protocol: DslValue[str] | None = None
+    rule_action: DslValue[str] | None = None
+    cidr_block: DslValue[str] | None = None
+    icmp_type_code: DslValue[IcmpTypeCode] | None = None
+    ipv6_cidr_block: DslValue[str] | None = None
+    port_range: DslValue[PortRange] | None = None
 
 
 @dataclass
 class NetworkAclEntrySet(PropertyType):
-    force_remediate_for_first_entries: bool | None = None
-    force_remediate_for_last_entries: bool | None = None
-    first_entries: list[NetworkAclEntry] = field(default_factory=list)
-    last_entries: list[NetworkAclEntry] = field(default_factory=list)
+    force_remediate_for_first_entries: DslValue[bool] | None = None
+    force_remediate_for_last_entries: DslValue[bool] | None = None
+    first_entries: list[DslValue[NetworkAclEntry]] = field(default_factory=list)
+    last_entries: list[DslValue[NetworkAclEntry]] = field(default_factory=list)
 
 
 @dataclass
 class NetworkFirewallPolicy(PropertyType):
-    firewall_deployment_model: str | None = None
+    firewall_deployment_model: DslValue[str] | None = None
 
 
 @dataclass
 class PolicyOption(PropertyType):
-    network_acl_common_policy: NetworkAclCommonPolicy | None = None
-    network_firewall_policy: NetworkFirewallPolicy | None = None
-    third_party_firewall_policy: ThirdPartyFirewallPolicy | None = None
+    network_acl_common_policy: DslValue[NetworkAclCommonPolicy] | None = None
+    network_firewall_policy: DslValue[NetworkFirewallPolicy] | None = None
+    third_party_firewall_policy: DslValue[ThirdPartyFirewallPolicy] | None = None
 
 
 @dataclass
 class PolicyTag(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class PortRange(PropertyType):
-    from_: int | None = None
-    to: int | None = None
+    from_: DslValue[int] | None = None
+    to: DslValue[int] | None = None
 
 
 @dataclass
 class ResourceTag(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class SecurityServicePolicyData(PropertyType):
-    type_: str | None = None
-    managed_service_data: str | None = None
-    policy_option: PolicyOption | None = None
+    type_: DslValue[str] | None = None
+    managed_service_data: DslValue[str] | None = None
+    policy_option: DslValue[PolicyOption] | None = None
 
 
 @dataclass
 class ThirdPartyFirewallPolicy(PropertyType):
-    firewall_deployment_model: str | None = None
+    firewall_deployment_model: DslValue[str] | None = None

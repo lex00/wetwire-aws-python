@@ -6,8 +6,9 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class TransitGatewayConnectOptions(PropertyType):
-    protocol: str | None = None
+    protocol: DslValue[str] | None = None

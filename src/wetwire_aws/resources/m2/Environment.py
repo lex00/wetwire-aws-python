@@ -6,26 +6,27 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class EfsStorageConfiguration(PropertyType):
-    file_system_id: str | None = None
-    mount_point: str | None = None
+    file_system_id: DslValue[str] | None = None
+    mount_point: DslValue[str] | None = None
 
 
 @dataclass
 class FsxStorageConfiguration(PropertyType):
-    file_system_id: str | None = None
-    mount_point: str | None = None
+    file_system_id: DslValue[str] | None = None
+    mount_point: DslValue[str] | None = None
 
 
 @dataclass
 class HighAvailabilityConfig(PropertyType):
-    desired_capacity: int | None = None
+    desired_capacity: DslValue[int] | None = None
 
 
 @dataclass
 class StorageConfiguration(PropertyType):
-    efs: EfsStorageConfiguration | None = None
-    fsx: FsxStorageConfiguration | None = None
+    efs: DslValue[EfsStorageConfiguration] | None = None
+    fsx: DslValue[FsxStorageConfiguration] | None = None

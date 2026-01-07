@@ -6,47 +6,48 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class BooleanCondition(PropertyType):
-    equal_to: BooleanOperands | None = None
-    not_equal_to: BooleanOperands | None = None
+    equal_to: DslValue[BooleanOperands] | None = None
+    not_equal_to: DslValue[BooleanOperands] | None = None
 
 
 @dataclass
 class BooleanOperands(PropertyType):
-    operand_one: OperandOne | None = None
-    operand_two: OperandTwo | None = None
-    result: bool | None = None
+    operand_one: DslValue[OperandOne] | None = None
+    operand_two: DslValue[OperandTwo] | None = None
+    result: DslValue[bool] | None = None
 
 
 @dataclass
 class CaseRuleDetails(PropertyType):
-    hidden: HiddenCaseRule | None = None
-    required: RequiredCaseRule | None = None
+    hidden: DslValue[HiddenCaseRule] | None = None
+    required: DslValue[RequiredCaseRule] | None = None
 
 
 @dataclass
 class HiddenCaseRule(PropertyType):
-    conditions: list[BooleanCondition] = field(default_factory=list)
-    default_value: bool | None = None
+    conditions: list[DslValue[BooleanCondition]] = field(default_factory=list)
+    default_value: DslValue[bool] | None = None
 
 
 @dataclass
 class OperandOne(PropertyType):
-    field_id: str | None = None
+    field_id: DslValue[str] | None = None
 
 
 @dataclass
 class OperandTwo(PropertyType):
-    boolean_value: bool | None = None
-    double_value: float | None = None
-    empty_value: dict[str, Any] | None = None
-    string_value: str | None = None
+    boolean_value: DslValue[bool] | None = None
+    double_value: DslValue[float] | None = None
+    empty_value: DslValue[dict[str, Any]] | None = None
+    string_value: DslValue[str] | None = None
 
 
 @dataclass
 class RequiredCaseRule(PropertyType):
-    conditions: list[BooleanCondition] = field(default_factory=list)
-    default_value: bool | None = None
+    conditions: list[DslValue[BooleanCondition]] = field(default_factory=list)
+    default_value: DslValue[bool] | None = None

@@ -6,11 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class BlockPublicAccessStates(PropertyType):
-    internet_gateway_block_mode: str | None = None
+    internet_gateway_block_mode: DslValue[str] | None = None
 
 
 @dataclass
@@ -19,6 +20,6 @@ class PrivateDnsNameOptionsOnLaunch(PropertyType):
         "enable_resource_name_dns_aaaa_record": "EnableResourceNameDnsAAAARecord",
     }
 
-    enable_resource_name_dns_a_record: bool | None = None
-    enable_resource_name_dns_aaaa_record: bool | None = None
-    hostname_type: str | None = None
+    enable_resource_name_dns_a_record: DslValue[bool] | None = None
+    enable_resource_name_dns_aaaa_record: DslValue[bool] | None = None
+    hostname_type: DslValue[str] | None = None

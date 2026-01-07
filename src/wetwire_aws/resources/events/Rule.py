@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,44 +15,44 @@ class AppSyncParameters(PropertyType):
         "graph_ql_operation": "GraphQLOperation",
     }
 
-    graph_ql_operation: str | None = None
+    graph_ql_operation: DslValue[str] | None = None
 
 
 @dataclass
 class AwsVpcConfiguration(PropertyType):
-    subnets: list[String] = field(default_factory=list)
-    assign_public_ip: str | None = None
-    security_groups: list[String] = field(default_factory=list)
+    subnets: list[DslValue[str]] = field(default_factory=list)
+    assign_public_ip: DslValue[str] | None = None
+    security_groups: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class BatchArrayProperties(PropertyType):
-    size: int | None = None
+    size: DslValue[int] | None = None
 
 
 @dataclass
 class BatchParameters(PropertyType):
-    job_definition: str | None = None
-    job_name: str | None = None
-    array_properties: BatchArrayProperties | None = None
-    retry_strategy: BatchRetryStrategy | None = None
+    job_definition: DslValue[str] | None = None
+    job_name: DslValue[str] | None = None
+    array_properties: DslValue[BatchArrayProperties] | None = None
+    retry_strategy: DslValue[BatchRetryStrategy] | None = None
 
 
 @dataclass
 class BatchRetryStrategy(PropertyType):
-    attempts: int | None = None
+    attempts: DslValue[int] | None = None
 
 
 @dataclass
 class CapacityProviderStrategyItem(PropertyType):
-    capacity_provider: str | None = None
-    base: int | None = None
-    weight: int | None = None
+    capacity_provider: DslValue[str] | None = None
+    base: DslValue[int] | None = None
+    weight: DslValue[int] | None = None
 
 
 @dataclass
 class DeadLetterConfig(PropertyType):
-    arn: str | None = None
+    arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -60,121 +61,125 @@ class EcsParameters(PropertyType):
         "enable_ecs_managed_tags": "EnableECSManagedTags",
     }
 
-    task_definition_arn: str | None = None
-    capacity_provider_strategy: list[CapacityProviderStrategyItem] = field(
+    task_definition_arn: DslValue[str] | None = None
+    capacity_provider_strategy: list[DslValue[CapacityProviderStrategyItem]] = field(
         default_factory=list
     )
-    enable_ecs_managed_tags: bool | None = None
-    enable_execute_command: bool | None = None
-    group: str | None = None
-    launch_type: str | None = None
-    network_configuration: NetworkConfiguration | None = None
-    placement_constraints: list[PlacementConstraint] = field(default_factory=list)
-    placement_strategies: list[PlacementStrategy] = field(default_factory=list)
-    platform_version: str | None = None
-    propagate_tags: str | None = None
-    reference_id: str | None = None
-    tag_list: list[Tag] = field(default_factory=list)
-    task_count: int | None = None
+    enable_ecs_managed_tags: DslValue[bool] | None = None
+    enable_execute_command: DslValue[bool] | None = None
+    group: DslValue[str] | None = None
+    launch_type: DslValue[str] | None = None
+    network_configuration: DslValue[NetworkConfiguration] | None = None
+    placement_constraints: list[DslValue[PlacementConstraint]] = field(
+        default_factory=list
+    )
+    placement_strategies: list[DslValue[PlacementStrategy]] = field(
+        default_factory=list
+    )
+    platform_version: DslValue[str] | None = None
+    propagate_tags: DslValue[str] | None = None
+    reference_id: DslValue[str] | None = None
+    tag_list: list[DslValue[Tag]] = field(default_factory=list)
+    task_count: DslValue[int] | None = None
 
 
 @dataclass
 class HttpParameters(PropertyType):
-    header_parameters: dict[str, String] = field(default_factory=dict)
-    path_parameter_values: list[String] = field(default_factory=list)
-    query_string_parameters: dict[str, String] = field(default_factory=dict)
+    header_parameters: dict[str, DslValue[str]] = field(default_factory=dict)
+    path_parameter_values: list[DslValue[str]] = field(default_factory=list)
+    query_string_parameters: dict[str, DslValue[str]] = field(default_factory=dict)
 
 
 @dataclass
 class InputTransformer(PropertyType):
-    input_template: str | None = None
-    input_paths_map: dict[str, String] = field(default_factory=dict)
+    input_template: DslValue[str] | None = None
+    input_paths_map: dict[str, DslValue[str]] = field(default_factory=dict)
 
 
 @dataclass
 class KinesisParameters(PropertyType):
-    partition_key_path: str | None = None
+    partition_key_path: DslValue[str] | None = None
 
 
 @dataclass
 class NetworkConfiguration(PropertyType):
-    aws_vpc_configuration: AwsVpcConfiguration | None = None
+    aws_vpc_configuration: DslValue[AwsVpcConfiguration] | None = None
 
 
 @dataclass
 class PlacementConstraint(PropertyType):
-    expression: str | None = None
-    type_: str | None = None
+    expression: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class PlacementStrategy(PropertyType):
-    field_: str | None = None
-    type_: str | None = None
+    field_: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class RedshiftDataParameters(PropertyType):
-    database: str | None = None
-    db_user: str | None = None
-    secret_manager_arn: str | None = None
-    sql: str | None = None
-    sqls: list[String] = field(default_factory=list)
-    statement_name: str | None = None
-    with_event: bool | None = None
+    database: DslValue[str] | None = None
+    db_user: DslValue[str] | None = None
+    secret_manager_arn: DslValue[str] | None = None
+    sql: DslValue[str] | None = None
+    sqls: list[DslValue[str]] = field(default_factory=list)
+    statement_name: DslValue[str] | None = None
+    with_event: DslValue[bool] | None = None
 
 
 @dataclass
 class RetryPolicy(PropertyType):
-    maximum_event_age_in_seconds: int | None = None
-    maximum_retry_attempts: int | None = None
+    maximum_event_age_in_seconds: DslValue[int] | None = None
+    maximum_retry_attempts: DslValue[int] | None = None
 
 
 @dataclass
 class RunCommandParameters(PropertyType):
-    run_command_targets: list[RunCommandTarget] = field(default_factory=list)
+    run_command_targets: list[DslValue[RunCommandTarget]] = field(default_factory=list)
 
 
 @dataclass
 class RunCommandTarget(PropertyType):
-    key: str | None = None
-    values: list[String] = field(default_factory=list)
+    key: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class SageMakerPipelineParameter(PropertyType):
-    name: str | None = None
-    value: str | None = None
+    name: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class SageMakerPipelineParameters(PropertyType):
-    pipeline_parameter_list: list[SageMakerPipelineParameter] = field(
+    pipeline_parameter_list: list[DslValue[SageMakerPipelineParameter]] = field(
         default_factory=list
     )
 
 
 @dataclass
 class SqsParameters(PropertyType):
-    message_group_id: str | None = None
+    message_group_id: DslValue[str] | None = None
 
 
 @dataclass
 class Target(PropertyType):
-    arn: str | None = None
-    id: str | None = None
-    app_sync_parameters: AppSyncParameters | None = None
-    batch_parameters: BatchParameters | None = None
-    dead_letter_config: DeadLetterConfig | None = None
-    ecs_parameters: EcsParameters | None = None
-    http_parameters: HttpParameters | None = None
-    input: str | None = None
-    input_path: str | None = None
-    input_transformer: InputTransformer | None = None
-    kinesis_parameters: KinesisParameters | None = None
-    redshift_data_parameters: RedshiftDataParameters | None = None
-    retry_policy: RetryPolicy | None = None
-    role_arn: str | None = None
-    run_command_parameters: RunCommandParameters | None = None
-    sage_maker_pipeline_parameters: SageMakerPipelineParameters | None = None
-    sqs_parameters: SqsParameters | None = None
+    arn: DslValue[str] | None = None
+    id: DslValue[str] | None = None
+    app_sync_parameters: DslValue[AppSyncParameters] | None = None
+    batch_parameters: DslValue[BatchParameters] | None = None
+    dead_letter_config: DslValue[DeadLetterConfig] | None = None
+    ecs_parameters: DslValue[EcsParameters] | None = None
+    http_parameters: DslValue[HttpParameters] | None = None
+    input: DslValue[str] | None = None
+    input_path: DslValue[str] | None = None
+    input_transformer: DslValue[InputTransformer] | None = None
+    kinesis_parameters: DslValue[KinesisParameters] | None = None
+    redshift_data_parameters: DslValue[RedshiftDataParameters] | None = None
+    retry_policy: DslValue[RetryPolicy] | None = None
+    role_arn: DslValue[str] | None = None
+    run_command_parameters: DslValue[RunCommandParameters] | None = None
+    sage_maker_pipeline_parameters: DslValue[SageMakerPipelineParameters] | None = None
+    sqs_parameters: DslValue[SqsParameters] | None = None

@@ -6,20 +6,21 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ContainerInfo(PropertyType):
-    eks_info: EksInfo | None = None
+    eks_info: DslValue[EksInfo] | None = None
 
 
 @dataclass
 class ContainerProvider(PropertyType):
-    id: str | None = None
-    info: ContainerInfo | None = None
-    type_: str | None = None
+    id: DslValue[str] | None = None
+    info: DslValue[ContainerInfo] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class EksInfo(PropertyType):
-    namespace: str | None = None
+    namespace: DslValue[str] | None = None

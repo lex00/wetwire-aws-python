@@ -6,12 +6,13 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CountryRule(PropertyType):
-    country_code: str | None = None
-    protect_status: str | None = None
+    country_code: DslValue[str] | None = None
+    protect_status: DslValue[str] | None = None
 
 
 @dataclass
@@ -22,6 +23,6 @@ class CountryRuleSet(PropertyType):
         "voice": "VOICE",
     }
 
-    mms: list[CountryRule] = field(default_factory=list)
-    sms: list[CountryRule] = field(default_factory=list)
-    voice: list[CountryRule] = field(default_factory=list)
+    mms: list[DslValue[CountryRule]] = field(default_factory=list)
+    sms: list[DslValue[CountryRule]] = field(default_factory=list)
+    voice: list[DslValue[CountryRule]] = field(default_factory=list)

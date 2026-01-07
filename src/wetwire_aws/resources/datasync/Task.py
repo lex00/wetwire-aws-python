@@ -6,103 +6,104 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Deleted(PropertyType):
-    report_level: str | None = None
+    report_level: DslValue[str] | None = None
 
 
 @dataclass
 class Destination(PropertyType):
-    s3: TaskReportConfigDestinationS3 | None = None
+    s3: DslValue[TaskReportConfigDestinationS3] | None = None
 
 
 @dataclass
 class FilterRule(PropertyType):
-    filter_type: str | None = None
-    value: str | None = None
+    filter_type: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class ManifestConfig(PropertyType):
-    source: Source | None = None
-    action: str | None = None
-    format: str | None = None
+    source: DslValue[Source] | None = None
+    action: DslValue[str] | None = None
+    format: DslValue[str] | None = None
 
 
 @dataclass
 class ManifestConfigSourceS3(PropertyType):
-    bucket_access_role_arn: str | None = None
-    manifest_object_path: str | None = None
-    manifest_object_version_id: str | None = None
-    s3_bucket_arn: str | None = None
+    bucket_access_role_arn: DslValue[str] | None = None
+    manifest_object_path: DslValue[str] | None = None
+    manifest_object_version_id: DslValue[str] | None = None
+    s3_bucket_arn: DslValue[str] | None = None
 
 
 @dataclass
 class Options(PropertyType):
-    atime: str | None = None
-    bytes_per_second: int | None = None
-    gid: str | None = None
-    log_level: str | None = None
-    mtime: str | None = None
-    object_tags: str | None = None
-    overwrite_mode: str | None = None
-    posix_permissions: str | None = None
-    preserve_deleted_files: str | None = None
-    preserve_devices: str | None = None
-    security_descriptor_copy_flags: str | None = None
-    task_queueing: str | None = None
-    transfer_mode: str | None = None
-    uid: str | None = None
-    verify_mode: str | None = None
+    atime: DslValue[str] | None = None
+    bytes_per_second: DslValue[int] | None = None
+    gid: DslValue[str] | None = None
+    log_level: DslValue[str] | None = None
+    mtime: DslValue[str] | None = None
+    object_tags: DslValue[str] | None = None
+    overwrite_mode: DslValue[str] | None = None
+    posix_permissions: DslValue[str] | None = None
+    preserve_deleted_files: DslValue[str] | None = None
+    preserve_devices: DslValue[str] | None = None
+    security_descriptor_copy_flags: DslValue[str] | None = None
+    task_queueing: DslValue[str] | None = None
+    transfer_mode: DslValue[str] | None = None
+    uid: DslValue[str] | None = None
+    verify_mode: DslValue[str] | None = None
 
 
 @dataclass
 class Overrides(PropertyType):
-    deleted: Deleted | None = None
-    skipped: Skipped | None = None
-    transferred: Transferred | None = None
-    verified: Verified | None = None
+    deleted: DslValue[Deleted] | None = None
+    skipped: DslValue[Skipped] | None = None
+    transferred: DslValue[Transferred] | None = None
+    verified: DslValue[Verified] | None = None
 
 
 @dataclass
 class Skipped(PropertyType):
-    report_level: str | None = None
+    report_level: DslValue[str] | None = None
 
 
 @dataclass
 class Source(PropertyType):
-    s3: ManifestConfigSourceS3 | None = None
+    s3: DslValue[ManifestConfigSourceS3] | None = None
 
 
 @dataclass
 class TaskReportConfig(PropertyType):
-    destination: Destination | None = None
-    output_type: str | None = None
-    object_version_ids: str | None = None
-    overrides: Overrides | None = None
-    report_level: str | None = None
+    destination: DslValue[Destination] | None = None
+    output_type: DslValue[str] | None = None
+    object_version_ids: DslValue[str] | None = None
+    overrides: DslValue[Overrides] | None = None
+    report_level: DslValue[str] | None = None
 
 
 @dataclass
 class TaskReportConfigDestinationS3(PropertyType):
-    bucket_access_role_arn: str | None = None
-    s3_bucket_arn: str | None = None
-    subdirectory: str | None = None
+    bucket_access_role_arn: DslValue[str] | None = None
+    s3_bucket_arn: DslValue[str] | None = None
+    subdirectory: DslValue[str] | None = None
 
 
 @dataclass
 class TaskSchedule(PropertyType):
-    schedule_expression: str | None = None
-    status: str | None = None
+    schedule_expression: DslValue[str] | None = None
+    status: DslValue[str] | None = None
 
 
 @dataclass
 class Transferred(PropertyType):
-    report_level: str | None = None
+    report_level: DslValue[str] | None = None
 
 
 @dataclass
 class Verified(PropertyType):
-    report_level: str | None = None
+    report_level: DslValue[str] | None = None

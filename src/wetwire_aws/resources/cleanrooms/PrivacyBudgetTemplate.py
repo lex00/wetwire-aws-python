@@ -6,18 +6,19 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class BudgetParameter(PropertyType):
-    budget: int | None = None
-    type_: str | None = None
-    auto_refresh: str | None = None
+    budget: DslValue[int] | None = None
+    type_: DslValue[str] | None = None
+    auto_refresh: DslValue[str] | None = None
 
 
 @dataclass
 class Parameters(PropertyType):
-    budget_parameters: list[BudgetParameter] = field(default_factory=list)
-    epsilon: int | None = None
-    resource_arn: str | None = None
-    users_noise_per_query: int | None = None
+    budget_parameters: list[DslValue[BudgetParameter]] = field(default_factory=list)
+    epsilon: DslValue[int] | None = None
+    resource_arn: DslValue[str] | None = None
+    users_noise_per_query: DslValue[int] | None = None

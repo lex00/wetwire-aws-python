@@ -6,31 +6,32 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AuthMode(PropertyType):
-    auth_type: str | None = None
+    auth_type: DslValue[str] | None = None
 
 
 @dataclass
 class HandlerConfig(PropertyType):
-    behavior: str | None = None
-    integration: Integration | None = None
+    behavior: DslValue[str] | None = None
+    integration: DslValue[Integration] | None = None
 
 
 @dataclass
 class HandlerConfigs(PropertyType):
-    on_publish: HandlerConfig | None = None
-    on_subscribe: HandlerConfig | None = None
+    on_publish: DslValue[HandlerConfig] | None = None
+    on_subscribe: DslValue[HandlerConfig] | None = None
 
 
 @dataclass
 class Integration(PropertyType):
-    data_source_name: str | None = None
-    lambda_config: LambdaConfig | None = None
+    data_source_name: DslValue[str] | None = None
+    lambda_config: DslValue[LambdaConfig] | None = None
 
 
 @dataclass
 class LambdaConfig(PropertyType):
-    invoke_type: str | None = None
+    invoke_type: DslValue[str] | None = None

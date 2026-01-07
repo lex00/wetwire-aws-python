@@ -6,13 +6,14 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Details(PropertyType):
-    route_details: list[RouteDetailsItems] = field(default_factory=list)
+    route_details: list[DslValue[RouteDetailsItems]] = field(default_factory=list)
 
 
 @dataclass
 class RouteDetailsItems(PropertyType):
-    region: str | None = None
+    region: DslValue[str] | None = None

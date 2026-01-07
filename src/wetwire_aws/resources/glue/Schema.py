@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Registry(PropertyType):
-    arn: str | None = None
-    name: str | None = None
+    arn: DslValue[str] | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class SchemaVersion(PropertyType):
-    is_latest: bool | None = None
-    version_number: int | None = None
+    is_latest: DslValue[bool] | None = None
+    version_number: DslValue[int] | None = None

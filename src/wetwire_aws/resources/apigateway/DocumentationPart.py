@@ -6,12 +6,13 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Location(PropertyType):
-    method: str | None = None
-    name: str | None = None
-    path: str | None = None
-    status_code: str | None = None
-    type_: str | None = None
+    method: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    path: DslValue[str] | None = None
+    status_code: DslValue[str] | None = None
+    type_: DslValue[str] | None = None

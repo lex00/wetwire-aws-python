@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class RepositoryFilter(PropertyType):
-    filter: str | None = None
-    filter_type: str | None = None
+    filter: DslValue[str] | None = None
+    filter_type: DslValue[str] | None = None
 
 
 @dataclass
 class ScanningRule(PropertyType):
-    repository_filters: list[RepositoryFilter] = field(default_factory=list)
-    scan_frequency: str | None = None
+    repository_filters: list[DslValue[RepositoryFilter]] = field(default_factory=list)
+    scan_frequency: DslValue[str] | None = None

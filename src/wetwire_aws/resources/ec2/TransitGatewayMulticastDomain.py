@@ -6,10 +6,11 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Options(PropertyType):
-    auto_accept_shared_associations: str | None = None
-    igmpv2_support: str | None = None
-    static_sources_support: str | None = None
+    auto_accept_shared_associations: DslValue[str] | None = None
+    igmpv2_support: DslValue[str] | None = None
+    static_sources_support: DslValue[str] | None = None

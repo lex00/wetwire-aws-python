@@ -6,20 +6,21 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class GroupingConfiguration(PropertyType):
-    criteria: str | None = None
-    values: list[String] = field(default_factory=list)
+    criteria: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class QuickResponseContentProvider(PropertyType):
-    content: str | None = None
+    content: DslValue[str] | None = None
 
 
 @dataclass
 class QuickResponseContents(PropertyType):
-    markdown: QuickResponseContentProvider | None = None
-    plain_text: QuickResponseContentProvider | None = None
+    markdown: DslValue[QuickResponseContentProvider] | None = None
+    plain_text: DslValue[QuickResponseContentProvider] | None = None

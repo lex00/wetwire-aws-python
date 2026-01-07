@@ -6,74 +6,75 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class BridgeFlowSource(PropertyType):
-    flow_arn: str | None = None
-    name: str | None = None
-    flow_vpc_interface_attachment: VpcInterfaceAttachment | None = None
+    flow_arn: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    flow_vpc_interface_attachment: DslValue[VpcInterfaceAttachment] | None = None
 
 
 @dataclass
 class BridgeNetworkOutput(PropertyType):
-    ip_address: str | None = None
-    name: str | None = None
-    network_name: str | None = None
-    port: int | None = None
-    protocol: str | None = None
-    ttl: int | None = None
+    ip_address: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    network_name: DslValue[str] | None = None
+    port: DslValue[int] | None = None
+    protocol: DslValue[str] | None = None
+    ttl: DslValue[int] | None = None
 
 
 @dataclass
 class BridgeNetworkSource(PropertyType):
-    multicast_ip: str | None = None
-    name: str | None = None
-    network_name: str | None = None
-    port: int | None = None
-    protocol: str | None = None
-    multicast_source_settings: MulticastSourceSettings | None = None
+    multicast_ip: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    network_name: DslValue[str] | None = None
+    port: DslValue[int] | None = None
+    protocol: DslValue[str] | None = None
+    multicast_source_settings: DslValue[MulticastSourceSettings] | None = None
 
 
 @dataclass
 class BridgeOutput(PropertyType):
-    network_output: BridgeNetworkOutput | None = None
+    network_output: DslValue[BridgeNetworkOutput] | None = None
 
 
 @dataclass
 class BridgeSource(PropertyType):
-    flow_source: BridgeFlowSource | None = None
-    network_source: BridgeNetworkSource | None = None
+    flow_source: DslValue[BridgeFlowSource] | None = None
+    network_source: DslValue[BridgeNetworkSource] | None = None
 
 
 @dataclass
 class EgressGatewayBridge(PropertyType):
-    max_bitrate: int | None = None
+    max_bitrate: DslValue[int] | None = None
 
 
 @dataclass
 class FailoverConfig(PropertyType):
-    failover_mode: str | None = None
-    source_priority: SourcePriority | None = None
-    state: str | None = None
+    failover_mode: DslValue[str] | None = None
+    source_priority: DslValue[SourcePriority] | None = None
+    state: DslValue[str] | None = None
 
 
 @dataclass
 class IngressGatewayBridge(PropertyType):
-    max_bitrate: int | None = None
-    max_outputs: int | None = None
+    max_bitrate: DslValue[int] | None = None
+    max_outputs: DslValue[int] | None = None
 
 
 @dataclass
 class MulticastSourceSettings(PropertyType):
-    multicast_source_ip: str | None = None
+    multicast_source_ip: DslValue[str] | None = None
 
 
 @dataclass
 class SourcePriority(PropertyType):
-    primary_source: str | None = None
+    primary_source: DslValue[str] | None = None
 
 
 @dataclass
 class VpcInterfaceAttachment(PropertyType):
-    vpc_interface_name: str | None = None
+    vpc_interface_name: DslValue[str] | None = None

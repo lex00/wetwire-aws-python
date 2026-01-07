@@ -6,14 +6,15 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class BotVersionLocaleDetails(PropertyType):
-    source_bot_version: str | None = None
+    source_bot_version: DslValue[str] | None = None
 
 
 @dataclass
 class BotVersionLocaleSpecification(PropertyType):
-    bot_version_locale_details: BotVersionLocaleDetails | None = None
-    locale_id: str | None = None
+    bot_version_locale_details: DslValue[BotVersionLocaleDetails] | None = None
+    locale_id: DslValue[str] | None = None

@@ -6,9 +6,10 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Repository(PropertyType):
-    path_component: str | None = None
-    repository_url: str | None = None
+    path_component: DslValue[str] | None = None
+    repository_url: DslValue[str] | None = None

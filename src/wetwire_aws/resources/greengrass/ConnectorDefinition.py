@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Connector(PropertyType):
-    connector_arn: str | None = None
-    id: str | None = None
-    parameters: dict[str, Any] | None = None
+    connector_arn: DslValue[str] | None = None
+    id: DslValue[str] | None = None
+    parameters: DslValue[dict[str, Any]] | None = None
 
 
 @dataclass
 class ConnectorDefinitionVersion(PropertyType):
-    connectors: list[Connector] = field(default_factory=list)
+    connectors: list[DslValue[Connector]] = field(default_factory=list)

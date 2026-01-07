@@ -1,6 +1,7 @@
 """Storage resources: LoggingBucket, LoggingBucketPolicy."""
 
 from . import *  # noqa: F403
+from wetwire_aws.constants import BOOL
 
 
 class LoggingBucketOwnershipControlsRule(s3.Bucket.OwnershipControlsRule):

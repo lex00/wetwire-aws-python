@@ -6,9 +6,10 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class EventRuleStatusSummary(PropertyType):
-    reason: str | None = None
-    status: str | None = None
+    reason: DslValue[str] | None = None
+    status: DslValue[str] | None = None

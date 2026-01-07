@@ -6,92 +6,93 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CatalogTarget(PropertyType):
-    connection_name: str | None = None
-    database_name: str | None = None
-    dlq_event_queue_arn: str | None = None
-    event_queue_arn: str | None = None
-    tables: list[String] = field(default_factory=list)
+    connection_name: DslValue[str] | None = None
+    database_name: DslValue[str] | None = None
+    dlq_event_queue_arn: DslValue[str] | None = None
+    event_queue_arn: DslValue[str] | None = None
+    tables: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class DeltaTarget(PropertyType):
-    connection_name: str | None = None
-    create_native_delta_table: bool | None = None
-    delta_tables: list[String] = field(default_factory=list)
-    write_manifest: bool | None = None
+    connection_name: DslValue[str] | None = None
+    create_native_delta_table: DslValue[bool] | None = None
+    delta_tables: list[DslValue[str]] = field(default_factory=list)
+    write_manifest: DslValue[bool] | None = None
 
 
 @dataclass
 class DynamoDBTarget(PropertyType):
-    path: str | None = None
-    scan_all: bool | None = None
-    scan_rate: float | None = None
+    path: DslValue[str] | None = None
+    scan_all: DslValue[bool] | None = None
+    scan_rate: DslValue[float] | None = None
 
 
 @dataclass
 class HudiTarget(PropertyType):
-    connection_name: str | None = None
-    exclusions: list[String] = field(default_factory=list)
-    maximum_traversal_depth: int | None = None
-    paths: list[String] = field(default_factory=list)
+    connection_name: DslValue[str] | None = None
+    exclusions: list[DslValue[str]] = field(default_factory=list)
+    maximum_traversal_depth: DslValue[int] | None = None
+    paths: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class IcebergTarget(PropertyType):
-    connection_name: str | None = None
-    exclusions: list[String] = field(default_factory=list)
-    maximum_traversal_depth: int | None = None
-    paths: list[String] = field(default_factory=list)
+    connection_name: DslValue[str] | None = None
+    exclusions: list[DslValue[str]] = field(default_factory=list)
+    maximum_traversal_depth: DslValue[int] | None = None
+    paths: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class JdbcTarget(PropertyType):
-    connection_name: str | None = None
-    enable_additional_metadata: list[String] = field(default_factory=list)
-    exclusions: list[String] = field(default_factory=list)
-    path: str | None = None
+    connection_name: DslValue[str] | None = None
+    enable_additional_metadata: list[DslValue[str]] = field(default_factory=list)
+    exclusions: list[DslValue[str]] = field(default_factory=list)
+    path: DslValue[str] | None = None
 
 
 @dataclass
 class LakeFormationConfiguration(PropertyType):
-    account_id: str | None = None
-    use_lake_formation_credentials: bool | None = None
+    account_id: DslValue[str] | None = None
+    use_lake_formation_credentials: DslValue[bool] | None = None
 
 
 @dataclass
 class MongoDBTarget(PropertyType):
-    connection_name: str | None = None
-    path: str | None = None
+    connection_name: DslValue[str] | None = None
+    path: DslValue[str] | None = None
 
 
 @dataclass
 class RecrawlPolicy(PropertyType):
-    recrawl_behavior: str | None = None
+    recrawl_behavior: DslValue[str] | None = None
 
 
 @dataclass
 class S3Target(PropertyType):
-    connection_name: str | None = None
-    dlq_event_queue_arn: str | None = None
-    event_queue_arn: str | None = None
-    exclusions: list[String] = field(default_factory=list)
-    path: str | None = None
-    sample_size: int | None = None
+    connection_name: DslValue[str] | None = None
+    dlq_event_queue_arn: DslValue[str] | None = None
+    event_queue_arn: DslValue[str] | None = None
+    exclusions: list[DslValue[str]] = field(default_factory=list)
+    path: DslValue[str] | None = None
+    sample_size: DslValue[int] | None = None
 
 
 @dataclass
 class Schedule(PropertyType):
-    schedule_expression: str | None = None
+    schedule_expression: DslValue[str] | None = None
 
 
 @dataclass
 class SchemaChangePolicy(PropertyType):
-    delete_behavior: str | None = None
-    update_behavior: str | None = None
+    delete_behavior: DslValue[str] | None = None
+    update_behavior: DslValue[str] | None = None
 
 
 @dataclass
@@ -101,11 +102,11 @@ class Targets(PropertyType):
         "mongo_db_targets": "MongoDBTargets",
     }
 
-    catalog_targets: list[CatalogTarget] = field(default_factory=list)
-    delta_targets: list[DeltaTarget] = field(default_factory=list)
-    dynamo_db_targets: list[DynamoDBTarget] = field(default_factory=list)
-    hudi_targets: list[HudiTarget] = field(default_factory=list)
-    iceberg_targets: list[IcebergTarget] = field(default_factory=list)
-    jdbc_targets: list[JdbcTarget] = field(default_factory=list)
-    mongo_db_targets: list[MongoDBTarget] = field(default_factory=list)
-    s3_targets: list[S3Target] = field(default_factory=list)
+    catalog_targets: list[DslValue[CatalogTarget]] = field(default_factory=list)
+    delta_targets: list[DslValue[DeltaTarget]] = field(default_factory=list)
+    dynamo_db_targets: list[DslValue[DynamoDBTarget]] = field(default_factory=list)
+    hudi_targets: list[DslValue[HudiTarget]] = field(default_factory=list)
+    iceberg_targets: list[DslValue[IcebergTarget]] = field(default_factory=list)
+    jdbc_targets: list[DslValue[JdbcTarget]] = field(default_factory=list)
+    mongo_db_targets: list[DslValue[MongoDBTarget]] = field(default_factory=list)
+    s3_targets: list[DslValue[S3Target]] = field(default_factory=list)

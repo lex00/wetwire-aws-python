@@ -6,10 +6,11 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class GitConfig(PropertyType):
-    repository_url: str | None = None
-    branch: str | None = None
-    secret_arn: str | None = None
+    repository_url: DslValue[str] | None = None
+    branch: DslValue[str] | None = None
+    secret_arn: DslValue[str] | None = None

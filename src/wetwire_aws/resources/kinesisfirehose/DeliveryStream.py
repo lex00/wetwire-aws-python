@@ -6,12 +6,13 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AmazonOpenSearchServerlessBufferingHints(PropertyType):
-    interval_in_seconds: int | None = None
-    size_in_m_bs: int | None = None
+    interval_in_seconds: DslValue[int] | None = None
+    size_in_m_bs: DslValue[int] | None = None
 
 
 @dataclass
@@ -20,27 +21,27 @@ class AmazonOpenSearchServerlessDestinationConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    index_name: str | None = None
-    role_arn: str | None = None
-    s3_configuration: S3DestinationConfiguration | None = None
-    buffering_hints: AmazonOpenSearchServerlessBufferingHints | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    collection_endpoint: str | None = None
-    processing_configuration: ProcessingConfiguration | None = None
-    retry_options: AmazonOpenSearchServerlessRetryOptions | None = None
-    s3_backup_mode: str | None = None
-    vpc_configuration: VpcConfiguration | None = None
+    index_name: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    s3_configuration: DslValue[S3DestinationConfiguration] | None = None
+    buffering_hints: DslValue[AmazonOpenSearchServerlessBufferingHints] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    collection_endpoint: DslValue[str] | None = None
+    processing_configuration: DslValue[ProcessingConfiguration] | None = None
+    retry_options: DslValue[AmazonOpenSearchServerlessRetryOptions] | None = None
+    s3_backup_mode: DslValue[str] | None = None
+    vpc_configuration: DslValue[VpcConfiguration] | None = None
 
 
 @dataclass
 class AmazonOpenSearchServerlessRetryOptions(PropertyType):
-    duration_in_seconds: int | None = None
+    duration_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class AmazonopensearchserviceBufferingHints(PropertyType):
-    interval_in_seconds: int | None = None
-    size_in_m_bs: int | None = None
+    interval_in_seconds: DslValue[int] | None = None
+    size_in_m_bs: DslValue[int] | None = None
 
 
 @dataclass
@@ -50,25 +51,25 @@ class AmazonopensearchserviceDestinationConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    index_name: str | None = None
-    role_arn: str | None = None
-    s3_configuration: S3DestinationConfiguration | None = None
-    buffering_hints: AmazonopensearchserviceBufferingHints | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    cluster_endpoint: str | None = None
-    document_id_options: DocumentIdOptions | None = None
-    domain_arn: str | None = None
-    index_rotation_period: str | None = None
-    processing_configuration: ProcessingConfiguration | None = None
-    retry_options: AmazonopensearchserviceRetryOptions | None = None
-    s3_backup_mode: str | None = None
-    type_name: str | None = None
-    vpc_configuration: VpcConfiguration | None = None
+    index_name: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    s3_configuration: DslValue[S3DestinationConfiguration] | None = None
+    buffering_hints: DslValue[AmazonopensearchserviceBufferingHints] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    cluster_endpoint: DslValue[str] | None = None
+    document_id_options: DslValue[DocumentIdOptions] | None = None
+    domain_arn: DslValue[str] | None = None
+    index_rotation_period: DslValue[str] | None = None
+    processing_configuration: DslValue[ProcessingConfiguration] | None = None
+    retry_options: DslValue[AmazonopensearchserviceRetryOptions] | None = None
+    s3_backup_mode: DslValue[str] | None = None
+    type_name: DslValue[str] | None = None
+    vpc_configuration: DslValue[VpcConfiguration] | None = None
 
 
 @dataclass
 class AmazonopensearchserviceRetryOptions(PropertyType):
-    duration_in_seconds: int | None = None
+    duration_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
@@ -77,53 +78,53 @@ class AuthenticationConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    connectivity: str | None = None
-    role_arn: str | None = None
+    connectivity: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
 class BufferingHints(PropertyType):
-    interval_in_seconds: int | None = None
-    size_in_m_bs: int | None = None
+    interval_in_seconds: DslValue[int] | None = None
+    size_in_m_bs: DslValue[int] | None = None
 
 
 @dataclass
 class CatalogConfiguration(PropertyType):
-    catalog_arn: str | None = None
-    warehouse_location: str | None = None
+    catalog_arn: DslValue[str] | None = None
+    warehouse_location: DslValue[str] | None = None
 
 
 @dataclass
 class CloudWatchLoggingOptions(PropertyType):
-    enabled: bool | None = None
-    log_group_name: str | None = None
-    log_stream_name: str | None = None
+    enabled: DslValue[bool] | None = None
+    log_group_name: DslValue[str] | None = None
+    log_stream_name: DslValue[str] | None = None
 
 
 @dataclass
 class CopyCommand(PropertyType):
-    data_table_name: str | None = None
-    copy_options: str | None = None
-    data_table_columns: str | None = None
+    data_table_name: DslValue[str] | None = None
+    copy_options: DslValue[str] | None = None
+    data_table_columns: DslValue[str] | None = None
 
 
 @dataclass
 class DataFormatConversionConfiguration(PropertyType):
-    enabled: bool | None = None
-    input_format_configuration: InputFormatConfiguration | None = None
-    output_format_configuration: OutputFormatConfiguration | None = None
-    schema_configuration: SchemaConfiguration | None = None
+    enabled: DslValue[bool] | None = None
+    input_format_configuration: DslValue[InputFormatConfiguration] | None = None
+    output_format_configuration: DslValue[OutputFormatConfiguration] | None = None
+    schema_configuration: DslValue[SchemaConfiguration] | None = None
 
 
 @dataclass
 class DatabaseColumns(PropertyType):
-    exclude: list[String] = field(default_factory=list)
-    include: list[String] = field(default_factory=list)
+    exclude: list[DslValue[str]] = field(default_factory=list)
+    include: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class DatabaseSourceAuthenticationConfiguration(PropertyType):
-    secrets_manager_configuration: SecretsManagerConfiguration | None = None
+    secrets_manager_configuration: DslValue[SecretsManagerConfiguration] | None = None
 
 
 @dataclass
@@ -134,37 +135,39 @@ class DatabaseSourceConfiguration(PropertyType):
     }
 
     database_source_authentication_configuration: (
-        DatabaseSourceAuthenticationConfiguration | None
+        DslValue[DatabaseSourceAuthenticationConfiguration] | None
     ) = None
-    database_source_vpc_configuration: DatabaseSourceVPCConfiguration | None = None
-    databases: Databases | None = None
-    endpoint: str | None = None
-    port: int | None = None
-    snapshot_watermark_table: str | None = None
-    tables: DatabaseTables | None = None
-    type_: str | None = None
-    columns: DatabaseColumns | None = None
-    digest: str | None = None
-    public_certificate: str | None = None
-    ssl_mode: str | None = None
-    surrogate_keys: list[String] = field(default_factory=list)
+    database_source_vpc_configuration: (
+        DslValue[DatabaseSourceVPCConfiguration] | None
+    ) = None
+    databases: DslValue[Databases] | None = None
+    endpoint: DslValue[str] | None = None
+    port: DslValue[int] | None = None
+    snapshot_watermark_table: DslValue[str] | None = None
+    tables: DslValue[DatabaseTables] | None = None
+    type_: DslValue[str] | None = None
+    columns: DslValue[DatabaseColumns] | None = None
+    digest: DslValue[str] | None = None
+    public_certificate: DslValue[str] | None = None
+    ssl_mode: DslValue[str] | None = None
+    surrogate_keys: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class DatabaseSourceVPCConfiguration(PropertyType):
-    vpc_endpoint_service_name: str | None = None
+    vpc_endpoint_service_name: DslValue[str] | None = None
 
 
 @dataclass
 class DatabaseTables(PropertyType):
-    exclude: list[String] = field(default_factory=list)
-    include: list[String] = field(default_factory=list)
+    exclude: list[DslValue[str]] = field(default_factory=list)
+    include: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class Databases(PropertyType):
-    exclude: list[String] = field(default_factory=list)
-    include: list[String] = field(default_factory=list)
+    exclude: list[DslValue[str]] = field(default_factory=list)
+    include: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
@@ -173,45 +176,45 @@ class DeliveryStreamEncryptionConfigurationInput(PropertyType):
         "key_arn": "KeyARN",
     }
 
-    key_type: str | None = None
-    key_arn: str | None = None
+    key_type: DslValue[str] | None = None
+    key_arn: DslValue[str] | None = None
 
 
 @dataclass
 class Deserializer(PropertyType):
-    hive_json_ser_de: HiveJsonSerDe | None = None
-    open_x_json_ser_de: OpenXJsonSerDe | None = None
+    hive_json_ser_de: DslValue[HiveJsonSerDe] | None = None
+    open_x_json_ser_de: DslValue[OpenXJsonSerDe] | None = None
 
 
 @dataclass
 class DestinationTableConfiguration(PropertyType):
-    destination_database_name: str | None = None
-    destination_table_name: str | None = None
-    partition_spec: PartitionSpec | None = None
-    s3_error_output_prefix: str | None = None
-    unique_keys: list[String] = field(default_factory=list)
+    destination_database_name: DslValue[str] | None = None
+    destination_table_name: DslValue[str] | None = None
+    partition_spec: DslValue[PartitionSpec] | None = None
+    s3_error_output_prefix: DslValue[str] | None = None
+    unique_keys: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class DirectPutSourceConfiguration(PropertyType):
-    throughput_hint_in_m_bs: int | None = None
+    throughput_hint_in_m_bs: DslValue[int] | None = None
 
 
 @dataclass
 class DocumentIdOptions(PropertyType):
-    default_document_id_format: str | None = None
+    default_document_id_format: DslValue[str] | None = None
 
 
 @dataclass
 class DynamicPartitioningConfiguration(PropertyType):
-    enabled: bool | None = None
-    retry_options: RetryOptions | None = None
+    enabled: DslValue[bool] | None = None
+    retry_options: DslValue[RetryOptions] | None = None
 
 
 @dataclass
 class ElasticsearchBufferingHints(PropertyType):
-    interval_in_seconds: int | None = None
-    size_in_m_bs: int | None = None
+    interval_in_seconds: DslValue[int] | None = None
+    size_in_m_bs: DslValue[int] | None = None
 
 
 @dataclass
@@ -221,25 +224,25 @@ class ElasticsearchDestinationConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    index_name: str | None = None
-    role_arn: str | None = None
-    s3_configuration: S3DestinationConfiguration | None = None
-    buffering_hints: ElasticsearchBufferingHints | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    cluster_endpoint: str | None = None
-    document_id_options: DocumentIdOptions | None = None
-    domain_arn: str | None = None
-    index_rotation_period: str | None = None
-    processing_configuration: ProcessingConfiguration | None = None
-    retry_options: ElasticsearchRetryOptions | None = None
-    s3_backup_mode: str | None = None
-    type_name: str | None = None
-    vpc_configuration: VpcConfiguration | None = None
+    index_name: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    s3_configuration: DslValue[S3DestinationConfiguration] | None = None
+    buffering_hints: DslValue[ElasticsearchBufferingHints] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    cluster_endpoint: DslValue[str] | None = None
+    document_id_options: DslValue[DocumentIdOptions] | None = None
+    domain_arn: DslValue[str] | None = None
+    index_rotation_period: DslValue[str] | None = None
+    processing_configuration: DslValue[ProcessingConfiguration] | None = None
+    retry_options: DslValue[ElasticsearchRetryOptions] | None = None
+    s3_backup_mode: DslValue[str] | None = None
+    type_name: DslValue[str] | None = None
+    vpc_configuration: DslValue[VpcConfiguration] | None = None
 
 
 @dataclass
 class ElasticsearchRetryOptions(PropertyType):
-    duration_in_seconds: int | None = None
+    duration_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
@@ -248,8 +251,8 @@ class EncryptionConfiguration(PropertyType):
         "kms_encryption_config": "KMSEncryptionConfig",
     }
 
-    kms_encryption_config: KMSEncryptionConfig | None = None
-    no_encryption_config: str | None = None
+    kms_encryption_config: DslValue[KMSEncryptionConfig] | None = None
+    no_encryption_config: DslValue[str] | None = None
 
 
 @dataclass
@@ -259,41 +262,43 @@ class ExtendedS3DestinationConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    bucket_arn: str | None = None
-    role_arn: str | None = None
-    buffering_hints: BufferingHints | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    compression_format: str | None = None
-    custom_time_zone: str | None = None
-    data_format_conversion_configuration: DataFormatConversionConfiguration | None = (
-        None
-    )
-    dynamic_partitioning_configuration: DynamicPartitioningConfiguration | None = None
-    encryption_configuration: EncryptionConfiguration | None = None
-    error_output_prefix: str | None = None
-    file_extension: str | None = None
-    prefix: str | None = None
-    processing_configuration: ProcessingConfiguration | None = None
-    s3_backup_configuration: S3DestinationConfiguration | None = None
-    s3_backup_mode: str | None = None
+    bucket_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    buffering_hints: DslValue[BufferingHints] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    compression_format: DslValue[str] | None = None
+    custom_time_zone: DslValue[str] | None = None
+    data_format_conversion_configuration: (
+        DslValue[DataFormatConversionConfiguration] | None
+    ) = None
+    dynamic_partitioning_configuration: (
+        DslValue[DynamicPartitioningConfiguration] | None
+    ) = None
+    encryption_configuration: DslValue[EncryptionConfiguration] | None = None
+    error_output_prefix: DslValue[str] | None = None
+    file_extension: DslValue[str] | None = None
+    prefix: DslValue[str] | None = None
+    processing_configuration: DslValue[ProcessingConfiguration] | None = None
+    s3_backup_configuration: DslValue[S3DestinationConfiguration] | None = None
+    s3_backup_mode: DslValue[str] | None = None
 
 
 @dataclass
 class HiveJsonSerDe(PropertyType):
-    timestamp_formats: list[String] = field(default_factory=list)
+    timestamp_formats: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class HttpEndpointCommonAttribute(PropertyType):
-    attribute_name: str | None = None
-    attribute_value: str | None = None
+    attribute_name: DslValue[str] | None = None
+    attribute_value: DslValue[str] | None = None
 
 
 @dataclass
 class HttpEndpointConfiguration(PropertyType):
-    url: str | None = None
-    access_key: str | None = None
-    name: str | None = None
+    url: DslValue[str] | None = None
+    access_key: DslValue[str] | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
@@ -302,22 +307,24 @@ class HttpEndpointDestinationConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    endpoint_configuration: HttpEndpointConfiguration | None = None
-    s3_configuration: S3DestinationConfiguration | None = None
-    buffering_hints: BufferingHints | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    processing_configuration: ProcessingConfiguration | None = None
-    request_configuration: HttpEndpointRequestConfiguration | None = None
-    retry_options: RetryOptions | None = None
-    role_arn: str | None = None
-    s3_backup_mode: str | None = None
-    secrets_manager_configuration: SecretsManagerConfiguration | None = None
+    endpoint_configuration: DslValue[HttpEndpointConfiguration] | None = None
+    s3_configuration: DslValue[S3DestinationConfiguration] | None = None
+    buffering_hints: DslValue[BufferingHints] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    processing_configuration: DslValue[ProcessingConfiguration] | None = None
+    request_configuration: DslValue[HttpEndpointRequestConfiguration] | None = None
+    retry_options: DslValue[RetryOptions] | None = None
+    role_arn: DslValue[str] | None = None
+    s3_backup_mode: DslValue[str] | None = None
+    secrets_manager_configuration: DslValue[SecretsManagerConfiguration] | None = None
 
 
 @dataclass
 class HttpEndpointRequestConfiguration(PropertyType):
-    common_attributes: list[HttpEndpointCommonAttribute] = field(default_factory=list)
-    content_encoding: str | None = None
+    common_attributes: list[DslValue[HttpEndpointCommonAttribute]] = field(
+        default_factory=list
+    )
+    content_encoding: DslValue[str] | None = None
 
 
 @dataclass
@@ -327,25 +334,25 @@ class IcebergDestinationConfiguration(PropertyType):
         "s3_backup_mode": "s3BackupMode",
     }
 
-    catalog_configuration: CatalogConfiguration | None = None
-    role_arn: str | None = None
-    s3_configuration: S3DestinationConfiguration | None = None
-    append_only: bool | None = None
-    buffering_hints: BufferingHints | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    destination_table_configuration_list: list[DestinationTableConfiguration] = field(
-        default_factory=list
-    )
-    processing_configuration: ProcessingConfiguration | None = None
-    retry_options: RetryOptions | None = None
-    s3_backup_mode: str | None = None
-    schema_evolution_configuration: SchemaEvolutionConfiguration | None = None
-    table_creation_configuration: TableCreationConfiguration | None = None
+    catalog_configuration: DslValue[CatalogConfiguration] | None = None
+    role_arn: DslValue[str] | None = None
+    s3_configuration: DslValue[S3DestinationConfiguration] | None = None
+    append_only: DslValue[bool] | None = None
+    buffering_hints: DslValue[BufferingHints] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    destination_table_configuration_list: list[
+        DslValue[DestinationTableConfiguration]
+    ] = field(default_factory=list)
+    processing_configuration: DslValue[ProcessingConfiguration] | None = None
+    retry_options: DslValue[RetryOptions] | None = None
+    s3_backup_mode: DslValue[str] | None = None
+    schema_evolution_configuration: DslValue[SchemaEvolutionConfiguration] | None = None
+    table_creation_configuration: DslValue[TableCreationConfiguration] | None = None
 
 
 @dataclass
 class InputFormatConfiguration(PropertyType):
-    deserializer: Deserializer | None = None
+    deserializer: DslValue[Deserializer] | None = None
 
 
 @dataclass
@@ -354,7 +361,7 @@ class KMSEncryptionConfig(PropertyType):
         "awskms_key_arn": "AWSKMSKeyARN",
     }
 
-    awskms_key_arn: str | None = None
+    awskms_key_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -364,8 +371,8 @@ class KinesisStreamSourceConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    kinesis_stream_arn: str | None = None
-    role_arn: str | None = None
+    kinesis_stream_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -374,74 +381,74 @@ class MSKSourceConfiguration(PropertyType):
         "msk_cluster_arn": "MSKClusterARN",
     }
 
-    authentication_configuration: AuthenticationConfiguration | None = None
-    msk_cluster_arn: str | None = None
-    topic_name: str | None = None
-    read_from_timestamp: str | None = None
+    authentication_configuration: DslValue[AuthenticationConfiguration] | None = None
+    msk_cluster_arn: DslValue[str] | None = None
+    topic_name: DslValue[str] | None = None
+    read_from_timestamp: DslValue[str] | None = None
 
 
 @dataclass
 class OpenXJsonSerDe(PropertyType):
-    case_insensitive: bool | None = None
-    column_to_json_key_mappings: dict[str, String] = field(default_factory=dict)
-    convert_dots_in_json_keys_to_underscores: bool | None = None
+    case_insensitive: DslValue[bool] | None = None
+    column_to_json_key_mappings: dict[str, DslValue[str]] = field(default_factory=dict)
+    convert_dots_in_json_keys_to_underscores: DslValue[bool] | None = None
 
 
 @dataclass
 class OrcSerDe(PropertyType):
-    block_size_bytes: int | None = None
-    bloom_filter_columns: list[String] = field(default_factory=list)
-    bloom_filter_false_positive_probability: float | None = None
-    compression: str | None = None
-    dictionary_key_threshold: float | None = None
-    enable_padding: bool | None = None
-    format_version: str | None = None
-    padding_tolerance: float | None = None
-    row_index_stride: int | None = None
-    stripe_size_bytes: int | None = None
+    block_size_bytes: DslValue[int] | None = None
+    bloom_filter_columns: list[DslValue[str]] = field(default_factory=list)
+    bloom_filter_false_positive_probability: DslValue[float] | None = None
+    compression: DslValue[str] | None = None
+    dictionary_key_threshold: DslValue[float] | None = None
+    enable_padding: DslValue[bool] | None = None
+    format_version: DslValue[str] | None = None
+    padding_tolerance: DslValue[float] | None = None
+    row_index_stride: DslValue[int] | None = None
+    stripe_size_bytes: DslValue[int] | None = None
 
 
 @dataclass
 class OutputFormatConfiguration(PropertyType):
-    serializer: Serializer | None = None
+    serializer: DslValue[Serializer] | None = None
 
 
 @dataclass
 class ParquetSerDe(PropertyType):
-    block_size_bytes: int | None = None
-    compression: str | None = None
-    enable_dictionary_compression: bool | None = None
-    max_padding_bytes: int | None = None
-    page_size_bytes: int | None = None
-    writer_version: str | None = None
+    block_size_bytes: DslValue[int] | None = None
+    compression: DslValue[str] | None = None
+    enable_dictionary_compression: DslValue[bool] | None = None
+    max_padding_bytes: DslValue[int] | None = None
+    page_size_bytes: DslValue[int] | None = None
+    writer_version: DslValue[str] | None = None
 
 
 @dataclass
 class PartitionField(PropertyType):
-    source_name: str | None = None
+    source_name: DslValue[str] | None = None
 
 
 @dataclass
 class PartitionSpec(PropertyType):
-    identity: list[PartitionField] = field(default_factory=list)
+    identity: list[DslValue[PartitionField]] = field(default_factory=list)
 
 
 @dataclass
 class ProcessingConfiguration(PropertyType):
-    enabled: bool | None = None
-    processors: list[Processor] = field(default_factory=list)
+    enabled: DslValue[bool] | None = None
+    processors: list[DslValue[Processor]] = field(default_factory=list)
 
 
 @dataclass
 class Processor(PropertyType):
-    type_: str | None = None
-    parameters: list[ProcessorParameter] = field(default_factory=list)
+    type_: DslValue[str] | None = None
+    parameters: list[DslValue[ProcessorParameter]] = field(default_factory=list)
 
 
 @dataclass
 class ProcessorParameter(PropertyType):
-    parameter_name: str | None = None
-    parameter_value: str | None = None
+    parameter_name: DslValue[str] | None = None
+    parameter_value: DslValue[str] | None = None
 
 
 @dataclass
@@ -451,28 +458,28 @@ class RedshiftDestinationConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    cluster_jdbcurl: str | None = None
-    copy_command: CopyCommand | None = None
-    role_arn: str | None = None
-    s3_configuration: S3DestinationConfiguration | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    password: str | None = None
-    processing_configuration: ProcessingConfiguration | None = None
-    retry_options: RedshiftRetryOptions | None = None
-    s3_backup_configuration: S3DestinationConfiguration | None = None
-    s3_backup_mode: str | None = None
-    secrets_manager_configuration: SecretsManagerConfiguration | None = None
-    username: str | None = None
+    cluster_jdbcurl: DslValue[str] | None = None
+    copy_command: DslValue[CopyCommand] | None = None
+    role_arn: DslValue[str] | None = None
+    s3_configuration: DslValue[S3DestinationConfiguration] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    password: DslValue[str] | None = None
+    processing_configuration: DslValue[ProcessingConfiguration] | None = None
+    retry_options: DslValue[RedshiftRetryOptions] | None = None
+    s3_backup_configuration: DslValue[S3DestinationConfiguration] | None = None
+    s3_backup_mode: DslValue[str] | None = None
+    secrets_manager_configuration: DslValue[SecretsManagerConfiguration] | None = None
+    username: DslValue[str] | None = None
 
 
 @dataclass
 class RedshiftRetryOptions(PropertyType):
-    duration_in_seconds: int | None = None
+    duration_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class RetryOptions(PropertyType):
-    duration_in_seconds: int | None = None
+    duration_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
@@ -482,14 +489,14 @@ class S3DestinationConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    bucket_arn: str | None = None
-    role_arn: str | None = None
-    buffering_hints: BufferingHints | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    compression_format: str | None = None
-    encryption_configuration: EncryptionConfiguration | None = None
-    error_output_prefix: str | None = None
-    prefix: str | None = None
+    bucket_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    buffering_hints: DslValue[BufferingHints] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    compression_format: DslValue[str] | None = None
+    encryption_configuration: DslValue[EncryptionConfiguration] | None = None
+    error_output_prefix: DslValue[str] | None = None
+    prefix: DslValue[str] | None = None
 
 
 @dataclass
@@ -498,17 +505,17 @@ class SchemaConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    catalog_id: str | None = None
-    database_name: str | None = None
-    region: str | None = None
-    role_arn: str | None = None
-    table_name: str | None = None
-    version_id: str | None = None
+    catalog_id: DslValue[str] | None = None
+    database_name: DslValue[str] | None = None
+    region: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    table_name: DslValue[str] | None = None
+    version_id: DslValue[str] | None = None
 
 
 @dataclass
 class SchemaEvolutionConfiguration(PropertyType):
-    enabled: bool | None = None
+    enabled: DslValue[bool] | None = None
 
 
 @dataclass
@@ -518,21 +525,21 @@ class SecretsManagerConfiguration(PropertyType):
         "secret_arn": "SecretARN",
     }
 
-    enabled: bool | None = None
-    role_arn: str | None = None
-    secret_arn: str | None = None
+    enabled: DslValue[bool] | None = None
+    role_arn: DslValue[str] | None = None
+    secret_arn: DslValue[str] | None = None
 
 
 @dataclass
 class Serializer(PropertyType):
-    orc_ser_de: OrcSerDe | None = None
-    parquet_ser_de: ParquetSerDe | None = None
+    orc_ser_de: DslValue[OrcSerDe] | None = None
+    parquet_ser_de: DslValue[ParquetSerDe] | None = None
 
 
 @dataclass
 class SnowflakeBufferingHints(PropertyType):
-    interval_in_seconds: int | None = None
-    size_in_m_bs: int | None = None
+    interval_in_seconds: DslValue[int] | None = None
+    size_in_m_bs: DslValue[int] | None = None
 
 
 @dataclass
@@ -541,48 +548,48 @@ class SnowflakeDestinationConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    account_url: str | None = None
-    database: str | None = None
-    role_arn: str | None = None
-    s3_configuration: S3DestinationConfiguration | None = None
-    schema: str | None = None
-    table: str | None = None
-    buffering_hints: SnowflakeBufferingHints | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    content_column_name: str | None = None
-    data_loading_option: str | None = None
-    key_passphrase: str | None = None
-    meta_data_column_name: str | None = None
-    private_key: str | None = None
-    processing_configuration: ProcessingConfiguration | None = None
-    retry_options: SnowflakeRetryOptions | None = None
-    s3_backup_mode: str | None = None
-    secrets_manager_configuration: SecretsManagerConfiguration | None = None
-    snowflake_role_configuration: SnowflakeRoleConfiguration | None = None
-    snowflake_vpc_configuration: SnowflakeVpcConfiguration | None = None
-    user: str | None = None
+    account_url: DslValue[str] | None = None
+    database: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    s3_configuration: DslValue[S3DestinationConfiguration] | None = None
+    schema: DslValue[str] | None = None
+    table: DslValue[str] | None = None
+    buffering_hints: DslValue[SnowflakeBufferingHints] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    content_column_name: DslValue[str] | None = None
+    data_loading_option: DslValue[str] | None = None
+    key_passphrase: DslValue[str] | None = None
+    meta_data_column_name: DslValue[str] | None = None
+    private_key: DslValue[str] | None = None
+    processing_configuration: DslValue[ProcessingConfiguration] | None = None
+    retry_options: DslValue[SnowflakeRetryOptions] | None = None
+    s3_backup_mode: DslValue[str] | None = None
+    secrets_manager_configuration: DslValue[SecretsManagerConfiguration] | None = None
+    snowflake_role_configuration: DslValue[SnowflakeRoleConfiguration] | None = None
+    snowflake_vpc_configuration: DslValue[SnowflakeVpcConfiguration] | None = None
+    user: DslValue[str] | None = None
 
 
 @dataclass
 class SnowflakeRetryOptions(PropertyType):
-    duration_in_seconds: int | None = None
+    duration_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class SnowflakeRoleConfiguration(PropertyType):
-    enabled: bool | None = None
-    snowflake_role: str | None = None
+    enabled: DslValue[bool] | None = None
+    snowflake_role: DslValue[str] | None = None
 
 
 @dataclass
 class SnowflakeVpcConfiguration(PropertyType):
-    private_link_vpce_id: str | None = None
+    private_link_vpce_id: DslValue[str] | None = None
 
 
 @dataclass
 class SplunkBufferingHints(PropertyType):
-    interval_in_seconds: int | None = None
-    size_in_m_bs: int | None = None
+    interval_in_seconds: DslValue[int] | None = None
+    size_in_m_bs: DslValue[int] | None = None
 
 
 @dataclass
@@ -594,27 +601,27 @@ class SplunkDestinationConfiguration(PropertyType):
         "hec_token": "HECToken",
     }
 
-    hec_endpoint: str | None = None
-    hec_endpoint_type: str | None = None
-    s3_configuration: S3DestinationConfiguration | None = None
-    buffering_hints: SplunkBufferingHints | None = None
-    cloud_watch_logging_options: CloudWatchLoggingOptions | None = None
-    hec_acknowledgment_timeout_in_seconds: int | None = None
-    hec_token: str | None = None
-    processing_configuration: ProcessingConfiguration | None = None
-    retry_options: SplunkRetryOptions | None = None
-    s3_backup_mode: str | None = None
-    secrets_manager_configuration: SecretsManagerConfiguration | None = None
+    hec_endpoint: DslValue[str] | None = None
+    hec_endpoint_type: DslValue[str] | None = None
+    s3_configuration: DslValue[S3DestinationConfiguration] | None = None
+    buffering_hints: DslValue[SplunkBufferingHints] | None = None
+    cloud_watch_logging_options: DslValue[CloudWatchLoggingOptions] | None = None
+    hec_acknowledgment_timeout_in_seconds: DslValue[int] | None = None
+    hec_token: DslValue[str] | None = None
+    processing_configuration: DslValue[ProcessingConfiguration] | None = None
+    retry_options: DslValue[SplunkRetryOptions] | None = None
+    s3_backup_mode: DslValue[str] | None = None
+    secrets_manager_configuration: DslValue[SecretsManagerConfiguration] | None = None
 
 
 @dataclass
 class SplunkRetryOptions(PropertyType):
-    duration_in_seconds: int | None = None
+    duration_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class TableCreationConfiguration(PropertyType):
-    enabled: bool | None = None
+    enabled: DslValue[bool] | None = None
 
 
 @dataclass
@@ -623,6 +630,6 @@ class VpcConfiguration(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    role_arn: str | None = None
-    security_group_ids: list[String] = field(default_factory=list)
-    subnet_ids: list[String] = field(default_factory=list)
+    role_arn: DslValue[str] | None = None
+    security_group_ids: list[DslValue[str]] = field(default_factory=list)
+    subnet_ids: list[DslValue[str]] = field(default_factory=list)

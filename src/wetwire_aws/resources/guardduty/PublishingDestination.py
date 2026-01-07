@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CFNDestinationProperties(PropertyType):
-    destination_arn: str | None = None
-    kms_key_arn: str | None = None
+    destination_arn: DslValue[str] | None = None
+    kms_key_arn: DslValue[str] | None = None
 
 
 @dataclass
 class TagItem(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None

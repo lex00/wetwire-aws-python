@@ -6,11 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class MandatoryKeyword(PropertyType):
-    message: str | None = None
+    message: DslValue[str] | None = None
 
 
 @dataclass
@@ -20,19 +21,19 @@ class MandatoryKeywords(PropertyType):
         "stop": "STOP",
     }
 
-    help: MandatoryKeyword | None = None
-    stop: MandatoryKeyword | None = None
+    help: DslValue[MandatoryKeyword] | None = None
+    stop: DslValue[MandatoryKeyword] | None = None
 
 
 @dataclass
 class OptionalKeyword(PropertyType):
-    action: str | None = None
-    keyword: str | None = None
-    message: str | None = None
+    action: DslValue[str] | None = None
+    keyword: DslValue[str] | None = None
+    message: DslValue[str] | None = None
 
 
 @dataclass
 class TwoWay(PropertyType):
-    enabled: bool | None = None
-    channel_arn: str | None = None
-    channel_role: str | None = None
+    enabled: DslValue[bool] | None = None
+    channel_arn: DslValue[str] | None = None
+    channel_role: DslValue[str] | None = None

@@ -6,19 +6,20 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class DomainNameConfiguration(PropertyType):
-    certificate_arn: str | None = None
-    certificate_name: str | None = None
-    endpoint_type: str | None = None
-    ip_address_type: str | None = None
-    ownership_verification_certificate_arn: str | None = None
-    security_policy: str | None = None
+    certificate_arn: DslValue[str] | None = None
+    certificate_name: DslValue[str] | None = None
+    endpoint_type: DslValue[str] | None = None
+    ip_address_type: DslValue[str] | None = None
+    ownership_verification_certificate_arn: DslValue[str] | None = None
+    security_policy: DslValue[str] | None = None
 
 
 @dataclass
 class MutualTlsAuthentication(PropertyType):
-    truststore_uri: str | None = None
-    truststore_version: str | None = None
+    truststore_uri: DslValue[str] | None = None
+    truststore_version: DslValue[str] | None = None

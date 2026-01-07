@@ -6,176 +6,177 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Duration(PropertyType):
-    unit: str | None = None
-    value: int | None = None
+    unit: DslValue[str] | None = None
+    value: DslValue[int] | None = None
 
 
 @dataclass
 class GrpcRetryPolicy(PropertyType):
-    max_retries: int | None = None
-    per_retry_timeout: Duration | None = None
-    grpc_retry_events: list[String] = field(default_factory=list)
-    http_retry_events: list[String] = field(default_factory=list)
-    tcp_retry_events: list[String] = field(default_factory=list)
+    max_retries: DslValue[int] | None = None
+    per_retry_timeout: DslValue[Duration] | None = None
+    grpc_retry_events: list[DslValue[str]] = field(default_factory=list)
+    http_retry_events: list[DslValue[str]] = field(default_factory=list)
+    tcp_retry_events: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class GrpcRoute(PropertyType):
-    action: GrpcRouteAction | None = None
-    match: GrpcRouteMatch | None = None
-    retry_policy: GrpcRetryPolicy | None = None
-    timeout: GrpcTimeout | None = None
+    action: DslValue[GrpcRouteAction] | None = None
+    match: DslValue[GrpcRouteMatch] | None = None
+    retry_policy: DslValue[GrpcRetryPolicy] | None = None
+    timeout: DslValue[GrpcTimeout] | None = None
 
 
 @dataclass
 class GrpcRouteAction(PropertyType):
-    weighted_targets: list[WeightedTarget] = field(default_factory=list)
+    weighted_targets: list[DslValue[WeightedTarget]] = field(default_factory=list)
 
 
 @dataclass
 class GrpcRouteMatch(PropertyType):
-    metadata: list[GrpcRouteMetadata] = field(default_factory=list)
-    method_name: str | None = None
-    port: int | None = None
-    service_name: str | None = None
+    metadata: list[DslValue[GrpcRouteMetadata]] = field(default_factory=list)
+    method_name: DslValue[str] | None = None
+    port: DslValue[int] | None = None
+    service_name: DslValue[str] | None = None
 
 
 @dataclass
 class GrpcRouteMetadata(PropertyType):
-    name: str | None = None
-    invert: bool | None = None
-    match: GrpcRouteMetadataMatchMethod | None = None
+    name: DslValue[str] | None = None
+    invert: DslValue[bool] | None = None
+    match: DslValue[GrpcRouteMetadataMatchMethod] | None = None
 
 
 @dataclass
 class GrpcRouteMetadataMatchMethod(PropertyType):
-    exact: str | None = None
-    prefix: str | None = None
-    range: MatchRange | None = None
-    regex: str | None = None
-    suffix: str | None = None
+    exact: DslValue[str] | None = None
+    prefix: DslValue[str] | None = None
+    range: DslValue[MatchRange] | None = None
+    regex: DslValue[str] | None = None
+    suffix: DslValue[str] | None = None
 
 
 @dataclass
 class GrpcTimeout(PropertyType):
-    idle: Duration | None = None
-    per_request: Duration | None = None
+    idle: DslValue[Duration] | None = None
+    per_request: DslValue[Duration] | None = None
 
 
 @dataclass
 class HeaderMatchMethod(PropertyType):
-    exact: str | None = None
-    prefix: str | None = None
-    range: MatchRange | None = None
-    regex: str | None = None
-    suffix: str | None = None
+    exact: DslValue[str] | None = None
+    prefix: DslValue[str] | None = None
+    range: DslValue[MatchRange] | None = None
+    regex: DslValue[str] | None = None
+    suffix: DslValue[str] | None = None
 
 
 @dataclass
 class HttpPathMatch(PropertyType):
-    exact: str | None = None
-    regex: str | None = None
+    exact: DslValue[str] | None = None
+    regex: DslValue[str] | None = None
 
 
 @dataclass
 class HttpQueryParameterMatch(PropertyType):
-    exact: str | None = None
+    exact: DslValue[str] | None = None
 
 
 @dataclass
 class HttpRetryPolicy(PropertyType):
-    max_retries: int | None = None
-    per_retry_timeout: Duration | None = None
-    http_retry_events: list[String] = field(default_factory=list)
-    tcp_retry_events: list[String] = field(default_factory=list)
+    max_retries: DslValue[int] | None = None
+    per_retry_timeout: DslValue[Duration] | None = None
+    http_retry_events: list[DslValue[str]] = field(default_factory=list)
+    tcp_retry_events: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class HttpRoute(PropertyType):
-    action: HttpRouteAction | None = None
-    match: HttpRouteMatch | None = None
-    retry_policy: HttpRetryPolicy | None = None
-    timeout: HttpTimeout | None = None
+    action: DslValue[HttpRouteAction] | None = None
+    match: DslValue[HttpRouteMatch] | None = None
+    retry_policy: DslValue[HttpRetryPolicy] | None = None
+    timeout: DslValue[HttpTimeout] | None = None
 
 
 @dataclass
 class HttpRouteAction(PropertyType):
-    weighted_targets: list[WeightedTarget] = field(default_factory=list)
+    weighted_targets: list[DslValue[WeightedTarget]] = field(default_factory=list)
 
 
 @dataclass
 class HttpRouteHeader(PropertyType):
-    name: str | None = None
-    invert: bool | None = None
-    match: HeaderMatchMethod | None = None
+    name: DslValue[str] | None = None
+    invert: DslValue[bool] | None = None
+    match: DslValue[HeaderMatchMethod] | None = None
 
 
 @dataclass
 class HttpRouteMatch(PropertyType):
-    headers: list[HttpRouteHeader] = field(default_factory=list)
-    method: str | None = None
-    path: HttpPathMatch | None = None
-    port: int | None = None
-    prefix: str | None = None
-    query_parameters: list[QueryParameter] = field(default_factory=list)
-    scheme: str | None = None
+    headers: list[DslValue[HttpRouteHeader]] = field(default_factory=list)
+    method: DslValue[str] | None = None
+    path: DslValue[HttpPathMatch] | None = None
+    port: DslValue[int] | None = None
+    prefix: DslValue[str] | None = None
+    query_parameters: list[DslValue[QueryParameter]] = field(default_factory=list)
+    scheme: DslValue[str] | None = None
 
 
 @dataclass
 class HttpTimeout(PropertyType):
-    idle: Duration | None = None
-    per_request: Duration | None = None
+    idle: DslValue[Duration] | None = None
+    per_request: DslValue[Duration] | None = None
 
 
 @dataclass
 class MatchRange(PropertyType):
-    end: int | None = None
-    start: int | None = None
+    end: DslValue[int] | None = None
+    start: DslValue[int] | None = None
 
 
 @dataclass
 class QueryParameter(PropertyType):
-    name: str | None = None
-    match: HttpQueryParameterMatch | None = None
+    name: DslValue[str] | None = None
+    match: DslValue[HttpQueryParameterMatch] | None = None
 
 
 @dataclass
 class RouteSpec(PropertyType):
-    grpc_route: GrpcRoute | None = None
-    http2_route: HttpRoute | None = None
-    http_route: HttpRoute | None = None
-    priority: int | None = None
-    tcp_route: TcpRoute | None = None
+    grpc_route: DslValue[GrpcRoute] | None = None
+    http2_route: DslValue[HttpRoute] | None = None
+    http_route: DslValue[HttpRoute] | None = None
+    priority: DslValue[int] | None = None
+    tcp_route: DslValue[TcpRoute] | None = None
 
 
 @dataclass
 class TcpRoute(PropertyType):
-    action: TcpRouteAction | None = None
-    match: TcpRouteMatch | None = None
-    timeout: TcpTimeout | None = None
+    action: DslValue[TcpRouteAction] | None = None
+    match: DslValue[TcpRouteMatch] | None = None
+    timeout: DslValue[TcpTimeout] | None = None
 
 
 @dataclass
 class TcpRouteAction(PropertyType):
-    weighted_targets: list[WeightedTarget] = field(default_factory=list)
+    weighted_targets: list[DslValue[WeightedTarget]] = field(default_factory=list)
 
 
 @dataclass
 class TcpRouteMatch(PropertyType):
-    port: int | None = None
+    port: DslValue[int] | None = None
 
 
 @dataclass
 class TcpTimeout(PropertyType):
-    idle: Duration | None = None
+    idle: DslValue[Duration] | None = None
 
 
 @dataclass
 class WeightedTarget(PropertyType):
-    virtual_node: str | None = None
-    weight: int | None = None
-    port: int | None = None
+    virtual_node: DslValue[str] | None = None
+    weight: DslValue[int] | None = None
+    port: DslValue[int] | None = None

@@ -6,24 +6,25 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CampaignHook(PropertyType):
-    lambda_function_name: str | None = None
-    mode: str | None = None
-    web_url: str | None = None
+    lambda_function_name: DslValue[str] | None = None
+    mode: DslValue[str] | None = None
+    web_url: DslValue[str] | None = None
 
 
 @dataclass
 class Limits(PropertyType):
-    daily: int | None = None
-    maximum_duration: int | None = None
-    messages_per_second: int | None = None
-    total: int | None = None
+    daily: DslValue[int] | None = None
+    maximum_duration: DslValue[int] | None = None
+    messages_per_second: DslValue[int] | None = None
+    total: DslValue[int] | None = None
 
 
 @dataclass
 class QuietTime(PropertyType):
-    end: str | None = None
-    start: str | None = None
+    end: DslValue[str] | None = None
+    start: DslValue[str] | None = None

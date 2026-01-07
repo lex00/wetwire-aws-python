@@ -6,13 +6,14 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class BodyConfig(PropertyType):
-    alignment: str | None = None
-    body: str | None = None
-    text_color: str | None = None
+    alignment: DslValue[str] | None = None
+    body: DslValue[str] | None = None
+    text_color: DslValue[str] | None = None
 
 
 @dataclass
@@ -21,40 +22,40 @@ class ButtonConfig(PropertyType):
         "ios": "IOS",
     }
 
-    android: OverrideButtonConfiguration | None = None
-    default_config: DefaultButtonConfiguration | None = None
-    ios: OverrideButtonConfiguration | None = None
-    web: OverrideButtonConfiguration | None = None
+    android: DslValue[OverrideButtonConfiguration] | None = None
+    default_config: DslValue[DefaultButtonConfiguration] | None = None
+    ios: DslValue[OverrideButtonConfiguration] | None = None
+    web: DslValue[OverrideButtonConfiguration] | None = None
 
 
 @dataclass
 class DefaultButtonConfiguration(PropertyType):
-    background_color: str | None = None
-    border_radius: int | None = None
-    button_action: str | None = None
-    link: str | None = None
-    text: str | None = None
-    text_color: str | None = None
+    background_color: DslValue[str] | None = None
+    border_radius: DslValue[int] | None = None
+    button_action: DslValue[str] | None = None
+    link: DslValue[str] | None = None
+    text: DslValue[str] | None = None
+    text_color: DslValue[str] | None = None
 
 
 @dataclass
 class HeaderConfig(PropertyType):
-    alignment: str | None = None
-    header: str | None = None
-    text_color: str | None = None
+    alignment: DslValue[str] | None = None
+    header: DslValue[str] | None = None
+    text_color: DslValue[str] | None = None
 
 
 @dataclass
 class InAppMessageContent(PropertyType):
-    background_color: str | None = None
-    body_config: BodyConfig | None = None
-    header_config: HeaderConfig | None = None
-    image_url: str | None = None
-    primary_btn: ButtonConfig | None = None
-    secondary_btn: ButtonConfig | None = None
+    background_color: DslValue[str] | None = None
+    body_config: DslValue[BodyConfig] | None = None
+    header_config: DslValue[HeaderConfig] | None = None
+    image_url: DslValue[str] | None = None
+    primary_btn: DslValue[ButtonConfig] | None = None
+    secondary_btn: DslValue[ButtonConfig] | None = None
 
 
 @dataclass
 class OverrideButtonConfiguration(PropertyType):
-    button_action: str | None = None
-    link: str | None = None
+    button_action: DslValue[str] | None = None
+    link: DslValue[str] | None = None

@@ -6,45 +6,46 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ActionCondition(PropertyType):
-    action: str | None = None
+    action: DslValue[str] | None = None
 
 
 @dataclass
 class Condition(PropertyType):
-    action_condition: ActionCondition | None = None
-    label_name_condition: LabelNameCondition | None = None
+    action_condition: DslValue[ActionCondition] | None = None
+    label_name_condition: DslValue[LabelNameCondition] | None = None
 
 
 @dataclass
 class FieldToMatch(PropertyType):
-    method: dict[str, Any] | None = None
-    query_string: dict[str, Any] | None = None
-    single_header: SingleHeader | None = None
-    uri_path: dict[str, Any] | None = None
+    method: DslValue[dict[str, Any]] | None = None
+    query_string: DslValue[dict[str, Any]] | None = None
+    single_header: DslValue[SingleHeader] | None = None
+    uri_path: DslValue[dict[str, Any]] | None = None
 
 
 @dataclass
 class Filter(PropertyType):
-    behavior: str | None = None
-    conditions: list[Condition] = field(default_factory=list)
-    requirement: str | None = None
+    behavior: DslValue[str] | None = None
+    conditions: list[DslValue[Condition]] = field(default_factory=list)
+    requirement: DslValue[str] | None = None
 
 
 @dataclass
 class LabelNameCondition(PropertyType):
-    label_name: str | None = None
+    label_name: DslValue[str] | None = None
 
 
 @dataclass
 class LoggingFilter(PropertyType):
-    default_behavior: str | None = None
-    filters: list[Filter] = field(default_factory=list)
+    default_behavior: DslValue[str] | None = None
+    filters: list[DslValue[Filter]] = field(default_factory=list)
 
 
 @dataclass
 class SingleHeader(PropertyType):
-    name: str | None = None
+    name: DslValue[str] | None = None

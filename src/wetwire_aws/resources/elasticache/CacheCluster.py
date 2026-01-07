@@ -6,27 +6,28 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CloudWatchLogsDestinationDetails(PropertyType):
-    log_group: str | None = None
+    log_group: DslValue[str] | None = None
 
 
 @dataclass
 class DestinationDetails(PropertyType):
-    cloud_watch_logs_details: CloudWatchLogsDestinationDetails | None = None
-    kinesis_firehose_details: KinesisFirehoseDestinationDetails | None = None
+    cloud_watch_logs_details: DslValue[CloudWatchLogsDestinationDetails] | None = None
+    kinesis_firehose_details: DslValue[KinesisFirehoseDestinationDetails] | None = None
 
 
 @dataclass
 class KinesisFirehoseDestinationDetails(PropertyType):
-    delivery_stream: str | None = None
+    delivery_stream: DslValue[str] | None = None
 
 
 @dataclass
 class LogDeliveryConfigurationRequest(PropertyType):
-    destination_details: DestinationDetails | None = None
-    destination_type: str | None = None
-    log_format: str | None = None
-    log_type: str | None = None
+    destination_details: DslValue[DestinationDetails] | None = None
+    destination_type: DslValue[str] | None = None
+    log_format: DslValue[str] | None = None
+    log_type: DslValue[str] | None = None

@@ -6,33 +6,34 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CreatedAt(PropertyType):
-    nanos: int | None = None
-    seconds: str | None = None
+    nanos: DslValue[int] | None = None
+    seconds: DslValue[str] | None = None
 
 
 @dataclass
 class IdentityProviderConfiguration(PropertyType):
-    authorization_strategy: str | None = None
-    fine_grained_authorization_enabled: bool | None = None
-    idp_lambda_arn: str | None = None
-    metadata: str | None = None
+    authorization_strategy: DslValue[str] | None = None
+    fine_grained_authorization_enabled: DslValue[bool] | None = None
+    idp_lambda_arn: DslValue[str] | None = None
+    metadata: DslValue[str] | None = None
 
 
 @dataclass
 class KmsEncryptionConfig(PropertyType):
-    cmk_type: str | None = None
-    kms_key_id: str | None = None
+    cmk_type: DslValue[str] | None = None
+    kms_key_id: DslValue[str] | None = None
 
 
 @dataclass
 class PreloadDataConfig(PropertyType):
-    preload_data_type: str | None = None
+    preload_data_type: DslValue[str] | None = None
 
 
 @dataclass
 class SseConfiguration(PropertyType):
-    kms_encryption_config: KmsEncryptionConfig | None = None
+    kms_encryption_config: DslValue[KmsEncryptionConfig] | None = None

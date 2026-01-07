@@ -6,114 +6,117 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CollectionScheme(PropertyType):
-    condition_based_collection_scheme: ConditionBasedCollectionScheme | None = None
-    time_based_collection_scheme: TimeBasedCollectionScheme | None = None
+    condition_based_collection_scheme: (
+        DslValue[ConditionBasedCollectionScheme] | None
+    ) = None
+    time_based_collection_scheme: DslValue[TimeBasedCollectionScheme] | None = None
 
 
 @dataclass
 class ConditionBasedCollectionScheme(PropertyType):
-    expression: str | None = None
-    condition_language_version: int | None = None
-    minimum_trigger_interval_ms: float | None = None
-    trigger_mode: str | None = None
+    expression: DslValue[str] | None = None
+    condition_language_version: DslValue[int] | None = None
+    minimum_trigger_interval_ms: DslValue[float] | None = None
+    trigger_mode: DslValue[str] | None = None
 
 
 @dataclass
 class ConditionBasedSignalFetchConfig(PropertyType):
-    condition_expression: str | None = None
-    trigger_mode: str | None = None
+    condition_expression: DslValue[str] | None = None
+    trigger_mode: DslValue[str] | None = None
 
 
 @dataclass
 class DataDestinationConfig(PropertyType):
-    mqtt_topic_config: MqttTopicConfig | None = None
-    s3_config: S3Config | None = None
-    timestream_config: TimestreamConfig | None = None
+    mqtt_topic_config: DslValue[MqttTopicConfig] | None = None
+    s3_config: DslValue[S3Config] | None = None
+    timestream_config: DslValue[TimestreamConfig] | None = None
 
 
 @dataclass
 class DataPartition(PropertyType):
-    id: str | None = None
-    storage_options: DataPartitionStorageOptions | None = None
-    upload_options: DataPartitionUploadOptions | None = None
+    id: DslValue[str] | None = None
+    storage_options: DslValue[DataPartitionStorageOptions] | None = None
+    upload_options: DslValue[DataPartitionUploadOptions] | None = None
 
 
 @dataclass
 class DataPartitionStorageOptions(PropertyType):
-    maximum_size: StorageMaximumSize | None = None
-    minimum_time_to_live: StorageMinimumTimeToLive | None = None
-    storage_location: str | None = None
+    maximum_size: DslValue[StorageMaximumSize] | None = None
+    minimum_time_to_live: DslValue[StorageMinimumTimeToLive] | None = None
+    storage_location: DslValue[str] | None = None
 
 
 @dataclass
 class DataPartitionUploadOptions(PropertyType):
-    expression: str | None = None
-    condition_language_version: int | None = None
+    expression: DslValue[str] | None = None
+    condition_language_version: DslValue[int] | None = None
 
 
 @dataclass
 class MqttTopicConfig(PropertyType):
-    execution_role_arn: str | None = None
-    mqtt_topic_arn: str | None = None
+    execution_role_arn: DslValue[str] | None = None
+    mqtt_topic_arn: DslValue[str] | None = None
 
 
 @dataclass
 class S3Config(PropertyType):
-    bucket_arn: str | None = None
-    data_format: str | None = None
-    prefix: str | None = None
-    storage_compression_format: str | None = None
+    bucket_arn: DslValue[str] | None = None
+    data_format: DslValue[str] | None = None
+    prefix: DslValue[str] | None = None
+    storage_compression_format: DslValue[str] | None = None
 
 
 @dataclass
 class SignalFetchConfig(PropertyType):
-    condition_based: ConditionBasedSignalFetchConfig | None = None
-    time_based: TimeBasedSignalFetchConfig | None = None
+    condition_based: DslValue[ConditionBasedSignalFetchConfig] | None = None
+    time_based: DslValue[TimeBasedSignalFetchConfig] | None = None
 
 
 @dataclass
 class SignalFetchInformation(PropertyType):
-    actions: list[String] = field(default_factory=list)
-    fully_qualified_name: str | None = None
-    signal_fetch_config: SignalFetchConfig | None = None
-    condition_language_version: float | None = None
+    actions: list[DslValue[str]] = field(default_factory=list)
+    fully_qualified_name: DslValue[str] | None = None
+    signal_fetch_config: DslValue[SignalFetchConfig] | None = None
+    condition_language_version: DslValue[float] | None = None
 
 
 @dataclass
 class SignalInformation(PropertyType):
-    name: str | None = None
-    data_partition_id: str | None = None
-    max_sample_count: float | None = None
-    minimum_sampling_interval_ms: float | None = None
+    name: DslValue[str] | None = None
+    data_partition_id: DslValue[str] | None = None
+    max_sample_count: DslValue[float] | None = None
+    minimum_sampling_interval_ms: DslValue[float] | None = None
 
 
 @dataclass
 class StorageMaximumSize(PropertyType):
-    unit: str | None = None
-    value: int | None = None
+    unit: DslValue[str] | None = None
+    value: DslValue[int] | None = None
 
 
 @dataclass
 class StorageMinimumTimeToLive(PropertyType):
-    unit: str | None = None
-    value: int | None = None
+    unit: DslValue[str] | None = None
+    value: DslValue[int] | None = None
 
 
 @dataclass
 class TimeBasedCollectionScheme(PropertyType):
-    period_ms: float | None = None
+    period_ms: DslValue[float] | None = None
 
 
 @dataclass
 class TimeBasedSignalFetchConfig(PropertyType):
-    execution_frequency_ms: float | None = None
+    execution_frequency_ms: DslValue[float] | None = None
 
 
 @dataclass
 class TimestreamConfig(PropertyType):
-    execution_role_arn: str | None = None
-    timestream_table_arn: str | None = None
+    execution_role_arn: DslValue[str] | None = None
+    timestream_table_arn: DslValue[str] | None = None

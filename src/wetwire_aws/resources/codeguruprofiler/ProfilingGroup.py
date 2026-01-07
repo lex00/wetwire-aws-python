@@ -6,11 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AgentPermissions(PropertyType):
-    principals: list[String] = field(default_factory=list)
+    principals: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
@@ -20,5 +21,5 @@ class Channel(PropertyType):
         "channel_uri": "channelUri",
     }
 
-    channel_uri: str | None = None
-    channel_id: str | None = None
+    channel_uri: DslValue[str] | None = None
+    channel_id: DslValue[str] | None = None

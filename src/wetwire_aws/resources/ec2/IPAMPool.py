@@ -6,16 +6,17 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ProvisionedCidr(PropertyType):
-    cidr: str | None = None
+    cidr: DslValue[str] | None = None
 
 
 @dataclass
 class SourceResource(PropertyType):
-    resource_id: str | None = None
-    resource_owner: str | None = None
-    resource_region: str | None = None
-    resource_type: str | None = None
+    resource_id: DslValue[str] | None = None
+    resource_owner: DslValue[str] | None = None
+    resource_region: DslValue[str] | None = None
+    resource_type: DslValue[str] | None = None

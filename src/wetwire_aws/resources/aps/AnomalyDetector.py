@@ -6,35 +6,36 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AnomalyDetectorConfiguration(PropertyType):
-    random_cut_forest: RandomCutForestConfiguration | None = None
+    random_cut_forest: DslValue[RandomCutForestConfiguration] | None = None
 
 
 @dataclass
 class IgnoreNearExpected(PropertyType):
-    amount: float | None = None
-    ratio: float | None = None
+    amount: DslValue[float] | None = None
+    ratio: DslValue[float] | None = None
 
 
 @dataclass
 class Label(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class MissingDataAction(PropertyType):
-    mark_as_anomaly: bool | None = None
-    skip: bool | None = None
+    mark_as_anomaly: DslValue[bool] | None = None
+    skip: DslValue[bool] | None = None
 
 
 @dataclass
 class RandomCutForestConfiguration(PropertyType):
-    query: str | None = None
-    ignore_near_expected_from_above: IgnoreNearExpected | None = None
-    ignore_near_expected_from_below: IgnoreNearExpected | None = None
-    sample_size: int | None = None
-    shingle_size: int | None = None
+    query: DslValue[str] | None = None
+    ignore_near_expected_from_above: DslValue[IgnoreNearExpected] | None = None
+    ignore_near_expected_from_below: DslValue[IgnoreNearExpected] | None = None
+    sample_size: DslValue[int] | None = None
+    shingle_size: DslValue[int] | None = None

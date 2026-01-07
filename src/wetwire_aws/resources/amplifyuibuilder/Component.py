@@ -6,131 +6,136 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ActionParameters(PropertyType):
-    anchor: ComponentProperty | None = None
-    fields: dict[str, ComponentProperty] = field(default_factory=dict)
-    global_: ComponentProperty | None = None
-    id: ComponentProperty | None = None
-    model: str | None = None
-    state: MutationActionSetStateParameter | None = None
-    target: ComponentProperty | None = None
-    type_: ComponentProperty | None = None
-    url: ComponentProperty | None = None
+    anchor: DslValue[ComponentProperty] | None = None
+    fields: dict[str, DslValue[ComponentProperty]] = field(default_factory=dict)
+    global_: DslValue[ComponentProperty] | None = None
+    id: DslValue[ComponentProperty] | None = None
+    model: DslValue[str] | None = None
+    state: DslValue[MutationActionSetStateParameter] | None = None
+    target: DslValue[ComponentProperty] | None = None
+    type_: DslValue[ComponentProperty] | None = None
+    url: DslValue[ComponentProperty] | None = None
 
 
 @dataclass
 class ComponentBindingPropertiesValue(PropertyType):
-    binding_properties: ComponentBindingPropertiesValueProperties | None = None
-    default_value: str | None = None
-    type_: str | None = None
+    binding_properties: DslValue[ComponentBindingPropertiesValueProperties] | None = (
+        None
+    )
+    default_value: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class ComponentBindingPropertiesValueProperties(PropertyType):
-    bucket: str | None = None
-    default_value: str | None = None
-    field_: str | None = None
-    key: str | None = None
-    model: str | None = None
-    predicates: list[Predicate] = field(default_factory=list)
-    slot_name: str | None = None
-    user_attribute: str | None = None
+    bucket: DslValue[str] | None = None
+    default_value: DslValue[str] | None = None
+    field_: DslValue[str] | None = None
+    key: DslValue[str] | None = None
+    model: DslValue[str] | None = None
+    predicates: list[DslValue[Predicate]] = field(default_factory=list)
+    slot_name: DslValue[str] | None = None
+    user_attribute: DslValue[str] | None = None
 
 
 @dataclass
 class ComponentChild(PropertyType):
-    component_type: str | None = None
-    name: str | None = None
-    properties: dict[str, ComponentProperty] = field(default_factory=dict)
-    children: list[ComponentChild] = field(default_factory=list)
-    events: dict[str, ComponentEvent] = field(default_factory=dict)
-    source_id: str | None = None
+    component_type: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    properties: dict[str, DslValue[ComponentProperty]] = field(default_factory=dict)
+    children: list[DslValue[ComponentChild]] = field(default_factory=list)
+    events: dict[str, DslValue[ComponentEvent]] = field(default_factory=dict)
+    source_id: DslValue[str] | None = None
 
 
 @dataclass
 class ComponentConditionProperty(PropertyType):
-    else_: ComponentProperty | None = None
-    field_: str | None = None
-    operand: str | None = None
-    operand_type: str | None = None
-    operator: str | None = None
-    property: str | None = None
-    then: ComponentProperty | None = None
+    else_: DslValue[ComponentProperty] | None = None
+    field_: DslValue[str] | None = None
+    operand: DslValue[str] | None = None
+    operand_type: DslValue[str] | None = None
+    operator: DslValue[str] | None = None
+    property: DslValue[str] | None = None
+    then: DslValue[ComponentProperty] | None = None
 
 
 @dataclass
 class ComponentDataConfiguration(PropertyType):
-    model: str | None = None
-    identifiers: list[String] = field(default_factory=list)
-    predicate: Predicate | None = None
-    sort: list[SortProperty] = field(default_factory=list)
+    model: DslValue[str] | None = None
+    identifiers: list[DslValue[str]] = field(default_factory=list)
+    predicate: DslValue[Predicate] | None = None
+    sort: list[DslValue[SortProperty]] = field(default_factory=list)
 
 
 @dataclass
 class ComponentEvent(PropertyType):
-    action: str | None = None
-    binding_event: str | None = None
-    parameters: ActionParameters | None = None
+    action: DslValue[str] | None = None
+    binding_event: DslValue[str] | None = None
+    parameters: DslValue[ActionParameters] | None = None
 
 
 @dataclass
 class ComponentProperty(PropertyType):
-    binding_properties: ComponentPropertyBindingProperties | None = None
-    bindings: dict[str, FormBindingElement] = field(default_factory=dict)
-    collection_binding_properties: ComponentPropertyBindingProperties | None = None
-    component_name: str | None = None
-    concat: list[ComponentProperty] = field(default_factory=list)
-    condition: ComponentConditionProperty | None = None
-    configured: bool | None = None
-    default_value: str | None = None
-    event: str | None = None
-    imported_value: str | None = None
-    model: str | None = None
-    property: str | None = None
-    type_: str | None = None
-    user_attribute: str | None = None
-    value: str | None = None
+    binding_properties: DslValue[ComponentPropertyBindingProperties] | None = None
+    bindings: dict[str, DslValue[FormBindingElement]] = field(default_factory=dict)
+    collection_binding_properties: (
+        DslValue[ComponentPropertyBindingProperties] | None
+    ) = None
+    component_name: DslValue[str] | None = None
+    concat: list[DslValue[ComponentProperty]] = field(default_factory=list)
+    condition: DslValue[ComponentConditionProperty] | None = None
+    configured: DslValue[bool] | None = None
+    default_value: DslValue[str] | None = None
+    event: DslValue[str] | None = None
+    imported_value: DslValue[str] | None = None
+    model: DslValue[str] | None = None
+    property: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    user_attribute: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class ComponentPropertyBindingProperties(PropertyType):
-    property: str | None = None
-    field_: str | None = None
+    property: DslValue[str] | None = None
+    field_: DslValue[str] | None = None
 
 
 @dataclass
 class ComponentVariant(PropertyType):
-    overrides: dict[str, Any] | None = None
-    variant_values: dict[str, String] = field(default_factory=dict)
+    overrides: DslValue[dict[str, Any]] | None = None
+    variant_values: dict[str, DslValue[str]] = field(default_factory=dict)
 
 
 @dataclass
 class FormBindingElement(PropertyType):
-    element: str | None = None
-    property: str | None = None
+    element: DslValue[str] | None = None
+    property: DslValue[str] | None = None
 
 
 @dataclass
 class MutationActionSetStateParameter(PropertyType):
-    component_name: str | None = None
-    property: str | None = None
-    set: ComponentProperty | None = None
+    component_name: DslValue[str] | None = None
+    property: DslValue[str] | None = None
+    set: DslValue[ComponentProperty] | None = None
 
 
 @dataclass
 class Predicate(PropertyType):
-    and_: list[Predicate] = field(default_factory=list)
-    field_: str | None = None
-    operand: str | None = None
-    operand_type: str | None = None
-    operator: str | None = None
-    or_: list[Predicate] = field(default_factory=list)
+    and_: list[DslValue[Predicate]] = field(default_factory=list)
+    field_: DslValue[str] | None = None
+    operand: DslValue[str] | None = None
+    operand_type: DslValue[str] | None = None
+    operator: DslValue[str] | None = None
+    or_: list[DslValue[Predicate]] = field(default_factory=list)
 
 
 @dataclass
 class SortProperty(PropertyType):
-    direction: str | None = None
-    field_: str | None = None
+    direction: DslValue[str] | None = None
+    field_: DslValue[str] | None = None

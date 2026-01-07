@@ -6,11 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AcknowledgeFlow(PropertyType):
-    enabled: bool | None = None
+    enabled: DslValue[bool] | None = None
 
 
 @dataclass
@@ -19,134 +20,134 @@ class AlarmAction(PropertyType):
         "dynamo_db": "DynamoDB",
     }
 
-    dynamo_d_bv2: DynamoDBv2 | None = None
-    dynamo_db: DynamoDB | None = None
-    firehose: Firehose | None = None
-    iot_events: IotEvents | None = None
-    iot_site_wise: IotSiteWise | None = None
-    iot_topic_publish: IotTopicPublish | None = None
-    lambda_: Lambda | None = None
-    sns: Sns | None = None
-    sqs: Sqs | None = None
+    dynamo_d_bv2: DslValue[DynamoDBv2] | None = None
+    dynamo_db: DslValue[DynamoDB] | None = None
+    firehose: DslValue[Firehose] | None = None
+    iot_events: DslValue[IotEvents] | None = None
+    iot_site_wise: DslValue[IotSiteWise] | None = None
+    iot_topic_publish: DslValue[IotTopicPublish] | None = None
+    lambda_: DslValue[Lambda] | None = None
+    sns: DslValue[Sns] | None = None
+    sqs: DslValue[Sqs] | None = None
 
 
 @dataclass
 class AlarmCapabilities(PropertyType):
-    acknowledge_flow: AcknowledgeFlow | None = None
-    initialization_configuration: InitializationConfiguration | None = None
+    acknowledge_flow: DslValue[AcknowledgeFlow] | None = None
+    initialization_configuration: DslValue[InitializationConfiguration] | None = None
 
 
 @dataclass
 class AlarmEventActions(PropertyType):
-    alarm_actions: list[AlarmAction] = field(default_factory=list)
+    alarm_actions: list[DslValue[AlarmAction]] = field(default_factory=list)
 
 
 @dataclass
 class AlarmRule(PropertyType):
-    simple_rule: SimpleRule | None = None
+    simple_rule: DslValue[SimpleRule] | None = None
 
 
 @dataclass
 class AssetPropertyTimestamp(PropertyType):
-    time_in_seconds: str | None = None
-    offset_in_nanos: str | None = None
+    time_in_seconds: DslValue[str] | None = None
+    offset_in_nanos: DslValue[str] | None = None
 
 
 @dataclass
 class AssetPropertyValue(PropertyType):
-    value: AssetPropertyVariant | None = None
-    quality: str | None = None
-    timestamp: AssetPropertyTimestamp | None = None
+    value: DslValue[AssetPropertyVariant] | None = None
+    quality: DslValue[str] | None = None
+    timestamp: DslValue[AssetPropertyTimestamp] | None = None
 
 
 @dataclass
 class AssetPropertyVariant(PropertyType):
-    boolean_value: str | None = None
-    double_value: str | None = None
-    integer_value: str | None = None
-    string_value: str | None = None
+    boolean_value: DslValue[str] | None = None
+    double_value: DslValue[str] | None = None
+    integer_value: DslValue[str] | None = None
+    string_value: DslValue[str] | None = None
 
 
 @dataclass
 class DynamoDB(PropertyType):
-    hash_key_field: str | None = None
-    hash_key_value: str | None = None
-    table_name: str | None = None
-    hash_key_type: str | None = None
-    operation: str | None = None
-    payload: Payload | None = None
-    payload_field: str | None = None
-    range_key_field: str | None = None
-    range_key_type: str | None = None
-    range_key_value: str | None = None
+    hash_key_field: DslValue[str] | None = None
+    hash_key_value: DslValue[str] | None = None
+    table_name: DslValue[str] | None = None
+    hash_key_type: DslValue[str] | None = None
+    operation: DslValue[str] | None = None
+    payload: DslValue[Payload] | None = None
+    payload_field: DslValue[str] | None = None
+    range_key_field: DslValue[str] | None = None
+    range_key_type: DslValue[str] | None = None
+    range_key_value: DslValue[str] | None = None
 
 
 @dataclass
 class DynamoDBv2(PropertyType):
-    table_name: str | None = None
-    payload: Payload | None = None
+    table_name: DslValue[str] | None = None
+    payload: DslValue[Payload] | None = None
 
 
 @dataclass
 class Firehose(PropertyType):
-    delivery_stream_name: str | None = None
-    payload: Payload | None = None
-    separator: str | None = None
+    delivery_stream_name: DslValue[str] | None = None
+    payload: DslValue[Payload] | None = None
+    separator: DslValue[str] | None = None
 
 
 @dataclass
 class InitializationConfiguration(PropertyType):
-    disabled_on_initialization: bool | None = None
+    disabled_on_initialization: DslValue[bool] | None = None
 
 
 @dataclass
 class IotEvents(PropertyType):
-    input_name: str | None = None
-    payload: Payload | None = None
+    input_name: DslValue[str] | None = None
+    payload: DslValue[Payload] | None = None
 
 
 @dataclass
 class IotSiteWise(PropertyType):
-    asset_id: str | None = None
-    entry_id: str | None = None
-    property_alias: str | None = None
-    property_id: str | None = None
-    property_value: AssetPropertyValue | None = None
+    asset_id: DslValue[str] | None = None
+    entry_id: DslValue[str] | None = None
+    property_alias: DslValue[str] | None = None
+    property_id: DslValue[str] | None = None
+    property_value: DslValue[AssetPropertyValue] | None = None
 
 
 @dataclass
 class IotTopicPublish(PropertyType):
-    mqtt_topic: str | None = None
-    payload: Payload | None = None
+    mqtt_topic: DslValue[str] | None = None
+    payload: DslValue[Payload] | None = None
 
 
 @dataclass
 class Lambda(PropertyType):
-    function_arn: str | None = None
-    payload: Payload | None = None
+    function_arn: DslValue[str] | None = None
+    payload: DslValue[Payload] | None = None
 
 
 @dataclass
 class Payload(PropertyType):
-    content_expression: str | None = None
-    type_: str | None = None
+    content_expression: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class SimpleRule(PropertyType):
-    comparison_operator: str | None = None
-    input_property: str | None = None
-    threshold: str | None = None
+    comparison_operator: DslValue[str] | None = None
+    input_property: DslValue[str] | None = None
+    threshold: DslValue[str] | None = None
 
 
 @dataclass
 class Sns(PropertyType):
-    target_arn: str | None = None
-    payload: Payload | None = None
+    target_arn: DslValue[str] | None = None
+    payload: DslValue[Payload] | None = None
 
 
 @dataclass
 class Sqs(PropertyType):
-    queue_url: str | None = None
-    payload: Payload | None = None
-    use_base64: bool | None = None
+    queue_url: DslValue[str] | None = None
+    payload: DslValue[Payload] | None = None
+    use_base64: DslValue[bool] | None = None

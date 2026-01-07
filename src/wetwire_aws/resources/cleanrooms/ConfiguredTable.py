@@ -6,117 +6,120 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AggregateColumn(PropertyType):
-    column_names: list[String] = field(default_factory=list)
-    function: str | None = None
+    column_names: list[DslValue[str]] = field(default_factory=list)
+    function: DslValue[str] | None = None
 
 
 @dataclass
 class AggregationConstraint(PropertyType):
-    column_name: str | None = None
-    minimum: float | None = None
-    type_: str | None = None
+    column_name: DslValue[str] | None = None
+    minimum: DslValue[float] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class AnalysisRule(PropertyType):
-    policy: ConfiguredTableAnalysisRulePolicy | None = None
-    type_: str | None = None
+    policy: DslValue[ConfiguredTableAnalysisRulePolicy] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class AnalysisRuleAggregation(PropertyType):
-    aggregate_columns: list[AggregateColumn] = field(default_factory=list)
-    dimension_columns: list[String] = field(default_factory=list)
-    join_columns: list[String] = field(default_factory=list)
-    output_constraints: list[AggregationConstraint] = field(default_factory=list)
-    scalar_functions: list[String] = field(default_factory=list)
-    additional_analyses: str | None = None
-    allowed_join_operators: list[String] = field(default_factory=list)
-    join_required: str | None = None
+    aggregate_columns: list[DslValue[AggregateColumn]] = field(default_factory=list)
+    dimension_columns: list[DslValue[str]] = field(default_factory=list)
+    join_columns: list[DslValue[str]] = field(default_factory=list)
+    output_constraints: list[DslValue[AggregationConstraint]] = field(
+        default_factory=list
+    )
+    scalar_functions: list[DslValue[str]] = field(default_factory=list)
+    additional_analyses: DslValue[str] | None = None
+    allowed_join_operators: list[DslValue[str]] = field(default_factory=list)
+    join_required: DslValue[str] | None = None
 
 
 @dataclass
 class AnalysisRuleCustom(PropertyType):
-    allowed_analyses: list[String] = field(default_factory=list)
-    additional_analyses: str | None = None
-    allowed_analysis_providers: list[String] = field(default_factory=list)
-    differential_privacy: DifferentialPrivacy | None = None
-    disallowed_output_columns: list[String] = field(default_factory=list)
+    allowed_analyses: list[DslValue[str]] = field(default_factory=list)
+    additional_analyses: DslValue[str] | None = None
+    allowed_analysis_providers: list[DslValue[str]] = field(default_factory=list)
+    differential_privacy: DslValue[DifferentialPrivacy] | None = None
+    disallowed_output_columns: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class AnalysisRuleList(PropertyType):
-    join_columns: list[String] = field(default_factory=list)
-    list_columns: list[String] = field(default_factory=list)
-    additional_analyses: str | None = None
-    allowed_join_operators: list[String] = field(default_factory=list)
+    join_columns: list[DslValue[str]] = field(default_factory=list)
+    list_columns: list[DslValue[str]] = field(default_factory=list)
+    additional_analyses: DslValue[str] | None = None
+    allowed_join_operators: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class AthenaTableReference(PropertyType):
-    database_name: str | None = None
-    table_name: str | None = None
-    work_group: str | None = None
-    output_location: str | None = None
-    region: str | None = None
+    database_name: DslValue[str] | None = None
+    table_name: DslValue[str] | None = None
+    work_group: DslValue[str] | None = None
+    output_location: DslValue[str] | None = None
+    region: DslValue[str] | None = None
 
 
 @dataclass
 class ConfiguredTableAnalysisRulePolicy(PropertyType):
-    v1: ConfiguredTableAnalysisRulePolicyV1 | None = None
+    v1: DslValue[ConfiguredTableAnalysisRulePolicyV1] | None = None
 
 
 @dataclass
 class ConfiguredTableAnalysisRulePolicyV1(PropertyType):
-    aggregation: AnalysisRuleAggregation | None = None
-    custom: AnalysisRuleCustom | None = None
-    list: AnalysisRuleList | None = None
+    aggregation: DslValue[AnalysisRuleAggregation] | None = None
+    custom: DslValue[AnalysisRuleCustom] | None = None
+    list: DslValue[AnalysisRuleList] | None = None
 
 
 @dataclass
 class DifferentialPrivacy(PropertyType):
-    columns: list[DifferentialPrivacyColumn] = field(default_factory=list)
+    columns: list[DslValue[DifferentialPrivacyColumn]] = field(default_factory=list)
 
 
 @dataclass
 class DifferentialPrivacyColumn(PropertyType):
-    name: str | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class GlueTableReference(PropertyType):
-    database_name: str | None = None
-    table_name: str | None = None
-    region: str | None = None
+    database_name: DslValue[str] | None = None
+    table_name: DslValue[str] | None = None
+    region: DslValue[str] | None = None
 
 
 @dataclass
 class SnowflakeTableReference(PropertyType):
-    account_identifier: str | None = None
-    database_name: str | None = None
-    schema_name: str | None = None
-    secret_arn: str | None = None
-    table_name: str | None = None
-    table_schema: SnowflakeTableSchema | None = None
+    account_identifier: DslValue[str] | None = None
+    database_name: DslValue[str] | None = None
+    schema_name: DslValue[str] | None = None
+    secret_arn: DslValue[str] | None = None
+    table_name: DslValue[str] | None = None
+    table_schema: DslValue[SnowflakeTableSchema] | None = None
 
 
 @dataclass
 class SnowflakeTableSchema(PropertyType):
-    v1: list[SnowflakeTableSchemaV1] = field(default_factory=list)
+    v1: list[DslValue[SnowflakeTableSchemaV1]] = field(default_factory=list)
 
 
 @dataclass
 class SnowflakeTableSchemaV1(PropertyType):
-    column_name: str | None = None
-    column_type: str | None = None
+    column_name: DslValue[str] | None = None
+    column_type: DslValue[str] | None = None
 
 
 @dataclass
 class TableReference(PropertyType):
-    athena: AthenaTableReference | None = None
-    glue: GlueTableReference | None = None
-    snowflake: SnowflakeTableReference | None = None
+    athena: DslValue[AthenaTableReference] | None = None
+    glue: DslValue[GlueTableReference] | None = None
+    snowflake: DslValue[SnowflakeTableReference] | None = None

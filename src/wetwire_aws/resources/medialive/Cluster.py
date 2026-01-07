@@ -6,21 +6,22 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ClusterNetworkSettings(PropertyType):
-    default_route: str | None = None
-    interface_mappings: list[InterfaceMapping] = field(default_factory=list)
+    default_route: DslValue[str] | None = None
+    interface_mappings: list[DslValue[InterfaceMapping]] = field(default_factory=list)
 
 
 @dataclass
 class InterfaceMapping(PropertyType):
-    logical_interface_name: str | None = None
-    network_id: str | None = None
+    logical_interface_name: DslValue[str] | None = None
+    network_id: DslValue[str] | None = None
 
 
 @dataclass
 class Tags(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None

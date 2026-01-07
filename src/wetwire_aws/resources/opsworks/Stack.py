@@ -6,38 +6,39 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ChefConfiguration(PropertyType):
-    berkshelf_version: str | None = None
-    manage_berkshelf: bool | None = None
+    berkshelf_version: DslValue[str] | None = None
+    manage_berkshelf: DslValue[bool] | None = None
 
 
 @dataclass
 class ElasticIp(PropertyType):
-    ip: str | None = None
-    name: str | None = None
+    ip: DslValue[str] | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class RdsDbInstance(PropertyType):
-    db_password: str | None = None
-    db_user: str | None = None
-    rds_db_instance_arn: str | None = None
+    db_password: DslValue[str] | None = None
+    db_user: DslValue[str] | None = None
+    rds_db_instance_arn: DslValue[str] | None = None
 
 
 @dataclass
 class Source(PropertyType):
-    password: str | None = None
-    revision: str | None = None
-    ssh_key: str | None = None
-    type_: str | None = None
-    url: str | None = None
-    username: str | None = None
+    password: DslValue[str] | None = None
+    revision: DslValue[str] | None = None
+    ssh_key: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    url: DslValue[str] | None = None
+    username: DslValue[str] | None = None
 
 
 @dataclass
 class StackConfigurationManager(PropertyType):
-    name: str | None = None
-    version: str | None = None
+    name: DslValue[str] | None = None
+    version: DslValue[str] | None = None

@@ -6,58 +6,61 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class DefaultConfig(PropertyType):
-    execution: Execution | None = None
+    execution: DslValue[Execution] | None = None
 
 
 @dataclass
 class Environment(PropertyType):
-    access_sysfs: bool | None = None
-    execution: Execution | None = None
-    resource_access_policies: list[ResourceAccessPolicy] = field(default_factory=list)
-    variables: dict[str, Any] | None = None
+    access_sysfs: DslValue[bool] | None = None
+    execution: DslValue[Execution] | None = None
+    resource_access_policies: list[DslValue[ResourceAccessPolicy]] = field(
+        default_factory=list
+    )
+    variables: DslValue[dict[str, Any]] | None = None
 
 
 @dataclass
 class Execution(PropertyType):
-    isolation_mode: str | None = None
-    run_as: RunAs | None = None
+    isolation_mode: DslValue[str] | None = None
+    run_as: DslValue[RunAs] | None = None
 
 
 @dataclass
 class Function(PropertyType):
-    function_arn: str | None = None
-    function_configuration: FunctionConfiguration | None = None
-    id: str | None = None
+    function_arn: DslValue[str] | None = None
+    function_configuration: DslValue[FunctionConfiguration] | None = None
+    id: DslValue[str] | None = None
 
 
 @dataclass
 class FunctionConfiguration(PropertyType):
-    encoding_type: str | None = None
-    environment: Environment | None = None
-    exec_args: str | None = None
-    executable: str | None = None
-    memory_size: int | None = None
-    pinned: bool | None = None
-    timeout: int | None = None
+    encoding_type: DslValue[str] | None = None
+    environment: DslValue[Environment] | None = None
+    exec_args: DslValue[str] | None = None
+    executable: DslValue[str] | None = None
+    memory_size: DslValue[int] | None = None
+    pinned: DslValue[bool] | None = None
+    timeout: DslValue[int] | None = None
 
 
 @dataclass
 class FunctionDefinitionVersion(PropertyType):
-    functions: list[Function] = field(default_factory=list)
-    default_config: DefaultConfig | None = None
+    functions: list[DslValue[Function]] = field(default_factory=list)
+    default_config: DslValue[DefaultConfig] | None = None
 
 
 @dataclass
 class ResourceAccessPolicy(PropertyType):
-    resource_id: str | None = None
-    permission: str | None = None
+    resource_id: DslValue[str] | None = None
+    permission: DslValue[str] | None = None
 
 
 @dataclass
 class RunAs(PropertyType):
-    gid: int | None = None
-    uid: int | None = None
+    gid: DslValue[int] | None = None
+    uid: DslValue[int] | None = None

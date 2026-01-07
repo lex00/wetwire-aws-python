@@ -6,40 +6,43 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class IcebergConfiguration(PropertyType):
-    location: str | None = None
-    orphan_file_retention_period_in_days: int | None = None
+    location: DslValue[str] | None = None
+    orphan_file_retention_period_in_days: DslValue[int] | None = None
 
 
 @dataclass
 class IcebergRetentionConfiguration(PropertyType):
-    clean_expired_files: bool | None = None
-    number_of_snapshots_to_retain: int | None = None
-    snapshot_retention_period_in_days: int | None = None
+    clean_expired_files: DslValue[bool] | None = None
+    number_of_snapshots_to_retain: DslValue[int] | None = None
+    snapshot_retention_period_in_days: DslValue[int] | None = None
 
 
 @dataclass
 class OrphanFileDeletionConfiguration(PropertyType):
-    iceberg_configuration: IcebergConfiguration | None = None
+    iceberg_configuration: DslValue[IcebergConfiguration] | None = None
 
 
 @dataclass
 class RetentionConfiguration(PropertyType):
-    iceberg_configuration: IcebergRetentionConfiguration | None = None
+    iceberg_configuration: DslValue[IcebergRetentionConfiguration] | None = None
 
 
 @dataclass
 class TableOptimizerConfiguration(PropertyType):
-    enabled: bool | None = None
-    role_arn: str | None = None
-    orphan_file_deletion_configuration: OrphanFileDeletionConfiguration | None = None
-    retention_configuration: RetentionConfiguration | None = None
-    vpc_configuration: VpcConfiguration | None = None
+    enabled: DslValue[bool] | None = None
+    role_arn: DslValue[str] | None = None
+    orphan_file_deletion_configuration: (
+        DslValue[OrphanFileDeletionConfiguration] | None
+    ) = None
+    retention_configuration: DslValue[RetentionConfiguration] | None = None
+    vpc_configuration: DslValue[VpcConfiguration] | None = None
 
 
 @dataclass
 class VpcConfiguration(PropertyType):
-    glue_connection_name: str | None = None
+    glue_connection_name: DslValue[str] | None = None

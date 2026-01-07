@@ -6,231 +6,238 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AudioConfiguration(PropertyType):
-    segmentation_configuration: AudioSegmentationConfiguration | None = None
+    segmentation_configuration: DslValue[AudioSegmentationConfiguration] | None = None
 
 
 @dataclass
 class AudioSegmentationConfiguration(PropertyType):
-    fixed_length_duration: int | None = None
+    fixed_length_duration: DslValue[int] | None = None
 
 
 @dataclass
 class BedrockEmbeddingModelConfiguration(PropertyType):
-    audio: list[AudioConfiguration] = field(default_factory=list)
-    dimensions: int | None = None
-    embedding_data_type: str | None = None
-    video: list[VideoConfiguration] = field(default_factory=list)
+    audio: list[DslValue[AudioConfiguration]] = field(default_factory=list)
+    dimensions: DslValue[int] | None = None
+    embedding_data_type: DslValue[str] | None = None
+    video: list[DslValue[VideoConfiguration]] = field(default_factory=list)
 
 
 @dataclass
 class CuratedQuery(PropertyType):
-    natural_language: str | None = None
-    sql: str | None = None
+    natural_language: DslValue[str] | None = None
+    sql: DslValue[str] | None = None
 
 
 @dataclass
 class EmbeddingModelConfiguration(PropertyType):
-    bedrock_embedding_model_configuration: BedrockEmbeddingModelConfiguration | None = (
-        None
-    )
+    bedrock_embedding_model_configuration: (
+        DslValue[BedrockEmbeddingModelConfiguration] | None
+    ) = None
 
 
 @dataclass
 class KendraKnowledgeBaseConfiguration(PropertyType):
-    kendra_index_arn: str | None = None
+    kendra_index_arn: DslValue[str] | None = None
 
 
 @dataclass
 class KnowledgeBaseConfiguration(PropertyType):
-    type_: str | None = None
-    kendra_knowledge_base_configuration: KendraKnowledgeBaseConfiguration | None = None
-    sql_knowledge_base_configuration: SqlKnowledgeBaseConfiguration | None = None
-    vector_knowledge_base_configuration: VectorKnowledgeBaseConfiguration | None = None
+    type_: DslValue[str] | None = None
+    kendra_knowledge_base_configuration: (
+        DslValue[KendraKnowledgeBaseConfiguration] | None
+    ) = None
+    sql_knowledge_base_configuration: DslValue[SqlKnowledgeBaseConfiguration] | None = (
+        None
+    )
+    vector_knowledge_base_configuration: (
+        DslValue[VectorKnowledgeBaseConfiguration] | None
+    ) = None
 
 
 @dataclass
 class MongoDbAtlasConfiguration(PropertyType):
-    collection_name: str | None = None
-    credentials_secret_arn: str | None = None
-    database_name: str | None = None
-    endpoint: str | None = None
-    field_mapping: MongoDbAtlasFieldMapping | None = None
-    vector_index_name: str | None = None
-    endpoint_service_name: str | None = None
-    text_index_name: str | None = None
+    collection_name: DslValue[str] | None = None
+    credentials_secret_arn: DslValue[str] | None = None
+    database_name: DslValue[str] | None = None
+    endpoint: DslValue[str] | None = None
+    field_mapping: DslValue[MongoDbAtlasFieldMapping] | None = None
+    vector_index_name: DslValue[str] | None = None
+    endpoint_service_name: DslValue[str] | None = None
+    text_index_name: DslValue[str] | None = None
 
 
 @dataclass
 class MongoDbAtlasFieldMapping(PropertyType):
-    metadata_field: str | None = None
-    text_field: str | None = None
-    vector_field: str | None = None
+    metadata_field: DslValue[str] | None = None
+    text_field: DslValue[str] | None = None
+    vector_field: DslValue[str] | None = None
 
 
 @dataclass
 class NeptuneAnalyticsConfiguration(PropertyType):
-    field_mapping: NeptuneAnalyticsFieldMapping | None = None
-    graph_arn: str | None = None
+    field_mapping: DslValue[NeptuneAnalyticsFieldMapping] | None = None
+    graph_arn: DslValue[str] | None = None
 
 
 @dataclass
 class NeptuneAnalyticsFieldMapping(PropertyType):
-    metadata_field: str | None = None
-    text_field: str | None = None
+    metadata_field: DslValue[str] | None = None
+    text_field: DslValue[str] | None = None
 
 
 @dataclass
 class OpenSearchManagedClusterConfiguration(PropertyType):
-    domain_arn: str | None = None
-    domain_endpoint: str | None = None
-    field_mapping: OpenSearchManagedClusterFieldMapping | None = None
-    vector_index_name: str | None = None
+    domain_arn: DslValue[str] | None = None
+    domain_endpoint: DslValue[str] | None = None
+    field_mapping: DslValue[OpenSearchManagedClusterFieldMapping] | None = None
+    vector_index_name: DslValue[str] | None = None
 
 
 @dataclass
 class OpenSearchManagedClusterFieldMapping(PropertyType):
-    metadata_field: str | None = None
-    text_field: str | None = None
-    vector_field: str | None = None
+    metadata_field: DslValue[str] | None = None
+    text_field: DslValue[str] | None = None
+    vector_field: DslValue[str] | None = None
 
 
 @dataclass
 class OpenSearchServerlessConfiguration(PropertyType):
-    collection_arn: str | None = None
-    field_mapping: OpenSearchServerlessFieldMapping | None = None
-    vector_index_name: str | None = None
+    collection_arn: DslValue[str] | None = None
+    field_mapping: DslValue[OpenSearchServerlessFieldMapping] | None = None
+    vector_index_name: DslValue[str] | None = None
 
 
 @dataclass
 class OpenSearchServerlessFieldMapping(PropertyType):
-    metadata_field: str | None = None
-    text_field: str | None = None
-    vector_field: str | None = None
+    metadata_field: DslValue[str] | None = None
+    text_field: DslValue[str] | None = None
+    vector_field: DslValue[str] | None = None
 
 
 @dataclass
 class PineconeConfiguration(PropertyType):
-    connection_string: str | None = None
-    credentials_secret_arn: str | None = None
-    field_mapping: PineconeFieldMapping | None = None
-    namespace: str | None = None
+    connection_string: DslValue[str] | None = None
+    credentials_secret_arn: DslValue[str] | None = None
+    field_mapping: DslValue[PineconeFieldMapping] | None = None
+    namespace: DslValue[str] | None = None
 
 
 @dataclass
 class PineconeFieldMapping(PropertyType):
-    metadata_field: str | None = None
-    text_field: str | None = None
+    metadata_field: DslValue[str] | None = None
+    text_field: DslValue[str] | None = None
 
 
 @dataclass
 class QueryGenerationColumn(PropertyType):
-    description: str | None = None
-    inclusion: str | None = None
-    name: str | None = None
+    description: DslValue[str] | None = None
+    inclusion: DslValue[str] | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class QueryGenerationConfiguration(PropertyType):
-    execution_timeout_seconds: int | None = None
-    generation_context: QueryGenerationContext | None = None
+    execution_timeout_seconds: DslValue[int] | None = None
+    generation_context: DslValue[QueryGenerationContext] | None = None
 
 
 @dataclass
 class QueryGenerationContext(PropertyType):
-    curated_queries: list[CuratedQuery] = field(default_factory=list)
-    tables: list[QueryGenerationTable] = field(default_factory=list)
+    curated_queries: list[DslValue[CuratedQuery]] = field(default_factory=list)
+    tables: list[DslValue[QueryGenerationTable]] = field(default_factory=list)
 
 
 @dataclass
 class QueryGenerationTable(PropertyType):
-    name: str | None = None
-    columns: list[QueryGenerationColumn] = field(default_factory=list)
-    description: str | None = None
-    inclusion: str | None = None
+    name: DslValue[str] | None = None
+    columns: list[DslValue[QueryGenerationColumn]] = field(default_factory=list)
+    description: DslValue[str] | None = None
+    inclusion: DslValue[str] | None = None
 
 
 @dataclass
 class RdsConfiguration(PropertyType):
-    credentials_secret_arn: str | None = None
-    database_name: str | None = None
-    field_mapping: RdsFieldMapping | None = None
-    resource_arn: str | None = None
-    table_name: str | None = None
+    credentials_secret_arn: DslValue[str] | None = None
+    database_name: DslValue[str] | None = None
+    field_mapping: DslValue[RdsFieldMapping] | None = None
+    resource_arn: DslValue[str] | None = None
+    table_name: DslValue[str] | None = None
 
 
 @dataclass
 class RdsFieldMapping(PropertyType):
-    metadata_field: str | None = None
-    primary_key_field: str | None = None
-    text_field: str | None = None
-    vector_field: str | None = None
-    custom_metadata_field: str | None = None
+    metadata_field: DslValue[str] | None = None
+    primary_key_field: DslValue[str] | None = None
+    text_field: DslValue[str] | None = None
+    vector_field: DslValue[str] | None = None
+    custom_metadata_field: DslValue[str] | None = None
 
 
 @dataclass
 class RedshiftConfiguration(PropertyType):
-    query_engine_configuration: RedshiftQueryEngineConfiguration | None = None
-    storage_configurations: list[RedshiftQueryEngineStorageConfiguration] = field(
-        default_factory=list
+    query_engine_configuration: DslValue[RedshiftQueryEngineConfiguration] | None = None
+    storage_configurations: list[DslValue[RedshiftQueryEngineStorageConfiguration]] = (
+        field(default_factory=list)
     )
-    query_generation_configuration: QueryGenerationConfiguration | None = None
+    query_generation_configuration: DslValue[QueryGenerationConfiguration] | None = None
 
 
 @dataclass
 class RedshiftProvisionedAuthConfiguration(PropertyType):
-    type_: str | None = None
-    database_user: str | None = None
-    username_password_secret_arn: str | None = None
+    type_: DslValue[str] | None = None
+    database_user: DslValue[str] | None = None
+    username_password_secret_arn: DslValue[str] | None = None
 
 
 @dataclass
 class RedshiftProvisionedConfiguration(PropertyType):
-    auth_configuration: RedshiftProvisionedAuthConfiguration | None = None
-    cluster_identifier: str | None = None
+    auth_configuration: DslValue[RedshiftProvisionedAuthConfiguration] | None = None
+    cluster_identifier: DslValue[str] | None = None
 
 
 @dataclass
 class RedshiftQueryEngineAwsDataCatalogStorageConfiguration(PropertyType):
-    table_names: list[String] = field(default_factory=list)
+    table_names: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class RedshiftQueryEngineConfiguration(PropertyType):
-    type_: str | None = None
-    provisioned_configuration: RedshiftProvisionedConfiguration | None = None
-    serverless_configuration: RedshiftServerlessConfiguration | None = None
+    type_: DslValue[str] | None = None
+    provisioned_configuration: DslValue[RedshiftProvisionedConfiguration] | None = None
+    serverless_configuration: DslValue[RedshiftServerlessConfiguration] | None = None
 
 
 @dataclass
 class RedshiftQueryEngineRedshiftStorageConfiguration(PropertyType):
-    database_name: str | None = None
+    database_name: DslValue[str] | None = None
 
 
 @dataclass
 class RedshiftQueryEngineStorageConfiguration(PropertyType):
-    type_: str | None = None
+    type_: DslValue[str] | None = None
     aws_data_catalog_configuration: (
-        RedshiftQueryEngineAwsDataCatalogStorageConfiguration | None
+        DslValue[RedshiftQueryEngineAwsDataCatalogStorageConfiguration] | None
     ) = None
-    redshift_configuration: RedshiftQueryEngineRedshiftStorageConfiguration | None = (
-        None
-    )
+    redshift_configuration: (
+        DslValue[RedshiftQueryEngineRedshiftStorageConfiguration] | None
+    ) = None
 
 
 @dataclass
 class RedshiftServerlessAuthConfiguration(PropertyType):
-    type_: str | None = None
-    username_password_secret_arn: str | None = None
+    type_: DslValue[str] | None = None
+    username_password_secret_arn: DslValue[str] | None = None
 
 
 @dataclass
 class RedshiftServerlessConfiguration(PropertyType):
-    auth_configuration: RedshiftServerlessAuthConfiguration | None = None
-    workgroup_arn: str | None = None
+    auth_configuration: DslValue[RedshiftServerlessAuthConfiguration] | None = None
+    workgroup_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -239,63 +246,67 @@ class S3Location(PropertyType):
         "uri": "URI",
     }
 
-    uri: str | None = None
+    uri: DslValue[str] | None = None
 
 
 @dataclass
 class S3VectorsConfiguration(PropertyType):
-    index_arn: str | None = None
-    index_name: str | None = None
-    vector_bucket_arn: str | None = None
+    index_arn: DslValue[str] | None = None
+    index_name: DslValue[str] | None = None
+    vector_bucket_arn: DslValue[str] | None = None
 
 
 @dataclass
 class SqlKnowledgeBaseConfiguration(PropertyType):
-    type_: str | None = None
-    redshift_configuration: RedshiftConfiguration | None = None
+    type_: DslValue[str] | None = None
+    redshift_configuration: DslValue[RedshiftConfiguration] | None = None
 
 
 @dataclass
 class StorageConfiguration(PropertyType):
-    type_: str | None = None
-    mongo_db_atlas_configuration: MongoDbAtlasConfiguration | None = None
-    neptune_analytics_configuration: NeptuneAnalyticsConfiguration | None = None
+    type_: DslValue[str] | None = None
+    mongo_db_atlas_configuration: DslValue[MongoDbAtlasConfiguration] | None = None
+    neptune_analytics_configuration: DslValue[NeptuneAnalyticsConfiguration] | None = (
+        None
+    )
     opensearch_managed_cluster_configuration: (
-        OpenSearchManagedClusterConfiguration | None
+        DslValue[OpenSearchManagedClusterConfiguration] | None
     ) = None
-    opensearch_serverless_configuration: OpenSearchServerlessConfiguration | None = None
-    pinecone_configuration: PineconeConfiguration | None = None
-    rds_configuration: RdsConfiguration | None = None
-    s3_vectors_configuration: S3VectorsConfiguration | None = None
+    opensearch_serverless_configuration: (
+        DslValue[OpenSearchServerlessConfiguration] | None
+    ) = None
+    pinecone_configuration: DslValue[PineconeConfiguration] | None = None
+    rds_configuration: DslValue[RdsConfiguration] | None = None
+    s3_vectors_configuration: DslValue[S3VectorsConfiguration] | None = None
 
 
 @dataclass
 class SupplementalDataStorageConfiguration(PropertyType):
-    supplemental_data_storage_locations: list[SupplementalDataStorageLocation] = field(
-        default_factory=list
-    )
+    supplemental_data_storage_locations: list[
+        DslValue[SupplementalDataStorageLocation]
+    ] = field(default_factory=list)
 
 
 @dataclass
 class SupplementalDataStorageLocation(PropertyType):
-    supplemental_data_storage_location_type: str | None = None
-    s3_location: S3Location | None = None
+    supplemental_data_storage_location_type: DslValue[str] | None = None
+    s3_location: DslValue[S3Location] | None = None
 
 
 @dataclass
 class VectorKnowledgeBaseConfiguration(PropertyType):
-    embedding_model_arn: str | None = None
-    embedding_model_configuration: EmbeddingModelConfiguration | None = None
+    embedding_model_arn: DslValue[str] | None = None
+    embedding_model_configuration: DslValue[EmbeddingModelConfiguration] | None = None
     supplemental_data_storage_configuration: (
-        SupplementalDataStorageConfiguration | None
+        DslValue[SupplementalDataStorageConfiguration] | None
     ) = None
 
 
 @dataclass
 class VideoConfiguration(PropertyType):
-    segmentation_configuration: VideoSegmentationConfiguration | None = None
+    segmentation_configuration: DslValue[VideoSegmentationConfiguration] | None = None
 
 
 @dataclass
 class VideoSegmentationConfiguration(PropertyType):
-    fixed_length_duration: int | None = None
+    fixed_length_duration: DslValue[int] | None = None

@@ -6,22 +6,23 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CSVMappingParameters(PropertyType):
-    record_column_delimiter: str | None = None
-    record_row_delimiter: str | None = None
+    record_column_delimiter: DslValue[str] | None = None
+    record_row_delimiter: DslValue[str] | None = None
 
 
 @dataclass
 class Input(PropertyType):
-    input_schema: InputSchema | None = None
-    name_prefix: str | None = None
-    input_parallelism: InputParallelism | None = None
-    input_processing_configuration: InputProcessingConfiguration | None = None
-    kinesis_firehose_input: KinesisFirehoseInput | None = None
-    kinesis_streams_input: KinesisStreamsInput | None = None
+    input_schema: DslValue[InputSchema] | None = None
+    name_prefix: DslValue[str] | None = None
+    input_parallelism: DslValue[InputParallelism] | None = None
+    input_processing_configuration: DslValue[InputProcessingConfiguration] | None = None
+    kinesis_firehose_input: DslValue[KinesisFirehoseInput] | None = None
+    kinesis_streams_input: DslValue[KinesisStreamsInput] | None = None
 
 
 @dataclass
@@ -31,30 +32,30 @@ class InputLambdaProcessor(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    resource_arn: str | None = None
-    role_arn: str | None = None
+    resource_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
 class InputParallelism(PropertyType):
-    count: int | None = None
+    count: DslValue[int] | None = None
 
 
 @dataclass
 class InputProcessingConfiguration(PropertyType):
-    input_lambda_processor: InputLambdaProcessor | None = None
+    input_lambda_processor: DslValue[InputLambdaProcessor] | None = None
 
 
 @dataclass
 class InputSchema(PropertyType):
-    record_columns: list[RecordColumn] = field(default_factory=list)
-    record_format: RecordFormat | None = None
-    record_encoding: str | None = None
+    record_columns: list[DslValue[RecordColumn]] = field(default_factory=list)
+    record_format: DslValue[RecordFormat] | None = None
+    record_encoding: DslValue[str] | None = None
 
 
 @dataclass
 class JSONMappingParameters(PropertyType):
-    record_row_path: str | None = None
+    record_row_path: DslValue[str] | None = None
 
 
 @dataclass
@@ -64,8 +65,8 @@ class KinesisFirehoseInput(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    resource_arn: str | None = None
-    role_arn: str | None = None
+    resource_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -75,8 +76,8 @@ class KinesisStreamsInput(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    resource_arn: str | None = None
-    role_arn: str | None = None
+    resource_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -86,18 +87,18 @@ class MappingParameters(PropertyType):
         "json_mapping_parameters": "JSONMappingParameters",
     }
 
-    csv_mapping_parameters: CSVMappingParameters | None = None
-    json_mapping_parameters: JSONMappingParameters | None = None
+    csv_mapping_parameters: DslValue[CSVMappingParameters] | None = None
+    json_mapping_parameters: DslValue[JSONMappingParameters] | None = None
 
 
 @dataclass
 class RecordColumn(PropertyType):
-    name: str | None = None
-    sql_type: str | None = None
-    mapping: str | None = None
+    name: DslValue[str] | None = None
+    sql_type: DslValue[str] | None = None
+    mapping: DslValue[str] | None = None
 
 
 @dataclass
 class RecordFormat(PropertyType):
-    record_format_type: str | None = None
-    mapping_parameters: MappingParameters | None = None
+    record_format_type: DslValue[str] | None = None
+    mapping_parameters: DslValue[MappingParameters] | None = None

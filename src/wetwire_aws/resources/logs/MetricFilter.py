@@ -6,19 +6,20 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Dimension(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class MetricTransformation(PropertyType):
-    metric_name: str | None = None
-    metric_namespace: str | None = None
-    metric_value: str | None = None
-    default_value: float | None = None
-    dimensions: list[Dimension] = field(default_factory=list)
-    unit: str | None = None
+    metric_name: DslValue[str] | None = None
+    metric_namespace: DslValue[str] | None = None
+    metric_value: DslValue[str] | None = None
+    default_value: DslValue[float] | None = None
+    dimensions: list[DslValue[Dimension]] = field(default_factory=list)
+    unit: DslValue[str] | None = None

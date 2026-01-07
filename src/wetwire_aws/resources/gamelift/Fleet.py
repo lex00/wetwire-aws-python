@@ -6,24 +6,25 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AnywhereConfiguration(PropertyType):
-    cost: str | None = None
+    cost: DslValue[str] | None = None
 
 
 @dataclass
 class CertificateConfiguration(PropertyType):
-    certificate_type: str | None = None
+    certificate_type: DslValue[str] | None = None
 
 
 @dataclass
 class IpPermission(PropertyType):
-    from_port: int | None = None
-    ip_range: str | None = None
-    protocol: str | None = None
-    to_port: int | None = None
+    from_port: DslValue[int] | None = None
+    ip_range: DslValue[str] | None = None
+    protocol: DslValue[str] | None = None
+    to_port: DslValue[int] | None = None
 
 
 @dataclass
@@ -32,53 +33,53 @@ class LocationCapacity(PropertyType):
         "desired_ec2_instances": "DesiredEC2Instances",
     }
 
-    max_size: int | None = None
-    min_size: int | None = None
-    desired_ec2_instances: int | None = None
+    max_size: DslValue[int] | None = None
+    min_size: DslValue[int] | None = None
+    desired_ec2_instances: DslValue[int] | None = None
 
 
 @dataclass
 class LocationConfiguration(PropertyType):
-    location: str | None = None
-    location_capacity: LocationCapacity | None = None
+    location: DslValue[str] | None = None
+    location_capacity: DslValue[LocationCapacity] | None = None
 
 
 @dataclass
 class ResourceCreationLimitPolicy(PropertyType):
-    new_game_sessions_per_creator: int | None = None
-    policy_period_in_minutes: int | None = None
+    new_game_sessions_per_creator: DslValue[int] | None = None
+    policy_period_in_minutes: DslValue[int] | None = None
 
 
 @dataclass
 class RuntimeConfiguration(PropertyType):
-    game_session_activation_timeout_seconds: int | None = None
-    max_concurrent_game_session_activations: int | None = None
-    server_processes: list[ServerProcess] = field(default_factory=list)
+    game_session_activation_timeout_seconds: DslValue[int] | None = None
+    max_concurrent_game_session_activations: DslValue[int] | None = None
+    server_processes: list[DslValue[ServerProcess]] = field(default_factory=list)
 
 
 @dataclass
 class ScalingPolicy(PropertyType):
-    metric_name: str | None = None
-    name: str | None = None
-    comparison_operator: str | None = None
-    evaluation_periods: int | None = None
-    location: str | None = None
-    policy_type: str | None = None
-    scaling_adjustment: int | None = None
-    scaling_adjustment_type: str | None = None
-    status: str | None = None
-    target_configuration: TargetConfiguration | None = None
-    threshold: float | None = None
-    update_status: str | None = None
+    metric_name: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    comparison_operator: DslValue[str] | None = None
+    evaluation_periods: DslValue[int] | None = None
+    location: DslValue[str] | None = None
+    policy_type: DslValue[str] | None = None
+    scaling_adjustment: DslValue[int] | None = None
+    scaling_adjustment_type: DslValue[str] | None = None
+    status: DslValue[str] | None = None
+    target_configuration: DslValue[TargetConfiguration] | None = None
+    threshold: DslValue[float] | None = None
+    update_status: DslValue[str] | None = None
 
 
 @dataclass
 class ServerProcess(PropertyType):
-    concurrent_executions: int | None = None
-    launch_path: str | None = None
-    parameters: str | None = None
+    concurrent_executions: DslValue[int] | None = None
+    launch_path: DslValue[str] | None = None
+    parameters: DslValue[str] | None = None
 
 
 @dataclass
 class TargetConfiguration(PropertyType):
-    target_value: float | None = None
+    target_value: DslValue[float] | None = None

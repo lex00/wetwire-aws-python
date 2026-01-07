@@ -6,25 +6,28 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class PublicRouterNetworkInterfaceConfiguration(PropertyType):
-    allow_rules: list[PublicRouterNetworkInterfaceRule] = field(default_factory=list)
+    allow_rules: list[DslValue[PublicRouterNetworkInterfaceRule]] = field(
+        default_factory=list
+    )
 
 
 @dataclass
 class PublicRouterNetworkInterfaceRule(PropertyType):
-    cidr: str | None = None
+    cidr: DslValue[str] | None = None
 
 
 @dataclass
 class RouterNetworkInterfaceConfiguration(PropertyType):
-    public: PublicRouterNetworkInterfaceConfiguration | None = None
-    vpc: VpcRouterNetworkInterfaceConfiguration | None = None
+    public: DslValue[PublicRouterNetworkInterfaceConfiguration] | None = None
+    vpc: DslValue[VpcRouterNetworkInterfaceConfiguration] | None = None
 
 
 @dataclass
 class VpcRouterNetworkInterfaceConfiguration(PropertyType):
-    security_group_ids: list[String] = field(default_factory=list)
-    subnet_id: str | None = None
+    security_group_ids: list[DslValue[str]] = field(default_factory=list)
+    subnet_id: DslValue[str] | None = None

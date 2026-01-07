@@ -6,70 +6,77 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ContainerDependency(PropertyType):
-    condition: str | None = None
-    container_name: str | None = None
+    condition: DslValue[str] | None = None
+    container_name: DslValue[str] | None = None
 
 
 @dataclass
 class ContainerEnvironment(PropertyType):
-    name: str | None = None
-    value: str | None = None
+    name: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class ContainerHealthCheck(PropertyType):
-    command: list[String] = field(default_factory=list)
-    interval: int | None = None
-    retries: int | None = None
-    start_period: int | None = None
-    timeout: int | None = None
+    command: list[DslValue[str]] = field(default_factory=list)
+    interval: DslValue[int] | None = None
+    retries: DslValue[int] | None = None
+    start_period: DslValue[int] | None = None
+    timeout: DslValue[int] | None = None
 
 
 @dataclass
 class ContainerMountPoint(PropertyType):
-    instance_path: str | None = None
-    access_level: str | None = None
-    container_path: str | None = None
+    instance_path: DslValue[str] | None = None
+    access_level: DslValue[str] | None = None
+    container_path: DslValue[str] | None = None
 
 
 @dataclass
 class ContainerPortRange(PropertyType):
-    from_port: int | None = None
-    protocol: str | None = None
-    to_port: int | None = None
+    from_port: DslValue[int] | None = None
+    protocol: DslValue[str] | None = None
+    to_port: DslValue[int] | None = None
 
 
 @dataclass
 class GameServerContainerDefinition(PropertyType):
-    container_name: str | None = None
-    image_uri: str | None = None
-    server_sdk_version: str | None = None
-    depends_on: list[ContainerDependency] = field(default_factory=list)
-    environment_override: list[ContainerEnvironment] = field(default_factory=list)
-    mount_points: list[ContainerMountPoint] = field(default_factory=list)
-    port_configuration: PortConfiguration | None = None
-    resolved_image_digest: str | None = None
+    container_name: DslValue[str] | None = None
+    image_uri: DslValue[str] | None = None
+    server_sdk_version: DslValue[str] | None = None
+    depends_on: list[DslValue[ContainerDependency]] = field(default_factory=list)
+    environment_override: list[DslValue[ContainerEnvironment]] = field(
+        default_factory=list
+    )
+    mount_points: list[DslValue[ContainerMountPoint]] = field(default_factory=list)
+    port_configuration: DslValue[PortConfiguration] | None = None
+    resolved_image_digest: DslValue[str] | None = None
 
 
 @dataclass
 class PortConfiguration(PropertyType):
-    container_port_ranges: list[ContainerPortRange] = field(default_factory=list)
+    container_port_ranges: list[DslValue[ContainerPortRange]] = field(
+        default_factory=list
+    )
 
 
 @dataclass
 class SupportContainerDefinition(PropertyType):
-    container_name: str | None = None
-    image_uri: str | None = None
-    depends_on: list[ContainerDependency] = field(default_factory=list)
-    environment_override: list[ContainerEnvironment] = field(default_factory=list)
-    essential: bool | None = None
-    health_check: ContainerHealthCheck | None = None
-    memory_hard_limit_mebibytes: int | None = None
-    mount_points: list[ContainerMountPoint] = field(default_factory=list)
-    port_configuration: PortConfiguration | None = None
-    resolved_image_digest: str | None = None
-    vcpu: float | None = None
+    container_name: DslValue[str] | None = None
+    image_uri: DslValue[str] | None = None
+    depends_on: list[DslValue[ContainerDependency]] = field(default_factory=list)
+    environment_override: list[DslValue[ContainerEnvironment]] = field(
+        default_factory=list
+    )
+    essential: DslValue[bool] | None = None
+    health_check: DslValue[ContainerHealthCheck] | None = None
+    memory_hard_limit_mebibytes: DslValue[int] | None = None
+    mount_points: list[DslValue[ContainerMountPoint]] = field(default_factory=list)
+    port_configuration: DslValue[PortConfiguration] | None = None
+    resolved_image_digest: DslValue[str] | None = None
+    vcpu: DslValue[float] | None = None

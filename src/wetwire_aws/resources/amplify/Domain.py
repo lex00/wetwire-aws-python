@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,18 +15,18 @@ class Certificate(PropertyType):
         "certificate_verification_dns_record": "CertificateVerificationDNSRecord",
     }
 
-    certificate_arn: str | None = None
-    certificate_type: str | None = None
-    certificate_verification_dns_record: str | None = None
+    certificate_arn: DslValue[str] | None = None
+    certificate_type: DslValue[str] | None = None
+    certificate_verification_dns_record: DslValue[str] | None = None
 
 
 @dataclass
 class CertificateSettings(PropertyType):
-    certificate_type: str | None = None
-    custom_certificate_arn: str | None = None
+    certificate_type: DslValue[str] | None = None
+    custom_certificate_arn: DslValue[str] | None = None
 
 
 @dataclass
 class SubDomainSetting(PropertyType):
-    branch_name: str | None = None
-    prefix: str | None = None
+    branch_name: DslValue[str] | None = None
+    prefix: DslValue[str] | None = None

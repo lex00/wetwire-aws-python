@@ -6,16 +6,17 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AttachmentsSource(PropertyType):
-    key: str | None = None
-    name: str | None = None
-    values: list[String] = field(default_factory=list)
+    key: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class DocumentRequires(PropertyType):
-    name: str | None = None
-    version: str | None = None
+    name: DslValue[str] | None = None
+    version: DslValue[str] | None = None

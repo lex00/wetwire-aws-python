@@ -6,18 +6,19 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class EndpointConfiguration(PropertyType):
-    ip_address_type: str | None = None
-    types: list[String] = field(default_factory=list)
-    vpc_endpoint_ids: list[String] = field(default_factory=list)
+    ip_address_type: DslValue[str] | None = None
+    types: list[DslValue[str]] = field(default_factory=list)
+    vpc_endpoint_ids: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class S3Location(PropertyType):
-    bucket: str | None = None
-    e_tag: str | None = None
-    key: str | None = None
-    version: str | None = None
+    bucket: DslValue[str] | None = None
+    e_tag: DslValue[str] | None = None
+    key: DslValue[str] | None = None
+    version: DslValue[str] | None = None

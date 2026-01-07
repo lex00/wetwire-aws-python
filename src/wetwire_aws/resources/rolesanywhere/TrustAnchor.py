@@ -6,23 +6,24 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class NotificationSetting(PropertyType):
-    enabled: bool | None = None
-    event: str | None = None
-    channel: str | None = None
-    threshold: float | None = None
+    enabled: DslValue[bool] | None = None
+    event: DslValue[str] | None = None
+    channel: DslValue[str] | None = None
+    threshold: DslValue[float] | None = None
 
 
 @dataclass
 class Source(PropertyType):
-    source_data: SourceData | None = None
-    source_type: str | None = None
+    source_data: DslValue[SourceData] | None = None
+    source_type: DslValue[str] | None = None
 
 
 @dataclass
 class SourceData(PropertyType):
-    acm_pca_arn: str | None = None
-    x509_certificate_data: str | None = None
+    acm_pca_arn: DslValue[str] | None = None
+    x509_certificate_data: DslValue[str] | None = None

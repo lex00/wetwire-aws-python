@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AccelerationSettings(PropertyType):
-    mode: str | None = None
+    mode: DslValue[str] | None = None
 
 
 @dataclass
 class HopDestination(PropertyType):
-    priority: int | None = None
-    queue: str | None = None
-    wait_minutes: int | None = None
+    priority: DslValue[int] | None = None
+    queue: DslValue[str] | None = None
+    wait_minutes: DslValue[int] | None = None

@@ -6,47 +6,48 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ExecutionStatusObject(PropertyType):
-    status: str | None = None
-    desired_state: str | None = None
-    reason: str | None = None
+    status: DslValue[str] | None = None
+    desired_state: DslValue[str] | None = None
+    reason: DslValue[str] | None = None
 
 
 @dataclass
 class GroupToWeight(PropertyType):
-    group_name: str | None = None
-    split_weight: int | None = None
+    group_name: DslValue[str] | None = None
+    split_weight: DslValue[int] | None = None
 
 
 @dataclass
 class LaunchGroupObject(PropertyType):
-    feature: str | None = None
-    group_name: str | None = None
-    variation: str | None = None
-    description: str | None = None
+    feature: DslValue[str] | None = None
+    group_name: DslValue[str] | None = None
+    variation: DslValue[str] | None = None
+    description: DslValue[str] | None = None
 
 
 @dataclass
 class MetricDefinitionObject(PropertyType):
-    entity_id_key: str | None = None
-    metric_name: str | None = None
-    value_key: str | None = None
-    event_pattern: str | None = None
-    unit_label: str | None = None
+    entity_id_key: DslValue[str] | None = None
+    metric_name: DslValue[str] | None = None
+    value_key: DslValue[str] | None = None
+    event_pattern: DslValue[str] | None = None
+    unit_label: DslValue[str] | None = None
 
 
 @dataclass
 class SegmentOverride(PropertyType):
-    evaluation_order: int | None = None
-    segment: str | None = None
-    weights: list[GroupToWeight] = field(default_factory=list)
+    evaluation_order: DslValue[int] | None = None
+    segment: DslValue[str] | None = None
+    weights: list[DslValue[GroupToWeight]] = field(default_factory=list)
 
 
 @dataclass
 class StepConfig(PropertyType):
-    group_weights: list[GroupToWeight] = field(default_factory=list)
-    start_time: str | None = None
-    segment_overrides: list[SegmentOverride] = field(default_factory=list)
+    group_weights: list[DslValue[GroupToWeight]] = field(default_factory=list)
+    start_time: DslValue[str] | None = None
+    segment_overrides: list[DslValue[SegmentOverride]] = field(default_factory=list)

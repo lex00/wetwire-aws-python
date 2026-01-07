@@ -6,14 +6,15 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ResourceTag(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class Rule(PropertyType):
-    linked_accounts: list[String] = field(default_factory=list)
+    linked_accounts: list[DslValue[str]] = field(default_factory=list)

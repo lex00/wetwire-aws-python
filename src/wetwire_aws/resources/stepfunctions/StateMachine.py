@@ -6,45 +6,46 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CloudWatchLogsLogGroup(PropertyType):
-    log_group_arn: str | None = None
+    log_group_arn: DslValue[str] | None = None
 
 
 @dataclass
 class EncryptionConfiguration(PropertyType):
-    type_: str | None = None
-    kms_data_key_reuse_period_seconds: int | None = None
-    kms_key_id: str | None = None
+    type_: DslValue[str] | None = None
+    kms_data_key_reuse_period_seconds: DslValue[int] | None = None
+    kms_key_id: DslValue[str] | None = None
 
 
 @dataclass
 class LogDestination(PropertyType):
-    cloud_watch_logs_log_group: CloudWatchLogsLogGroup | None = None
+    cloud_watch_logs_log_group: DslValue[CloudWatchLogsLogGroup] | None = None
 
 
 @dataclass
 class LoggingConfiguration(PropertyType):
-    destinations: list[LogDestination] = field(default_factory=list)
-    include_execution_data: bool | None = None
-    level: str | None = None
+    destinations: list[DslValue[LogDestination]] = field(default_factory=list)
+    include_execution_data: DslValue[bool] | None = None
+    level: DslValue[str] | None = None
 
 
 @dataclass
 class S3Location(PropertyType):
-    bucket: str | None = None
-    key: str | None = None
-    version: str | None = None
+    bucket: DslValue[str] | None = None
+    key: DslValue[str] | None = None
+    version: DslValue[str] | None = None
 
 
 @dataclass
 class TagsEntry(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class TracingConfiguration(PropertyType):
-    enabled: bool | None = None
+    enabled: DslValue[bool] | None = None

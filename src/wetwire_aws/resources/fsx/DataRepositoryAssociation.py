@@ -6,19 +6,20 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AutoExportPolicy(PropertyType):
-    events: list[String] = field(default_factory=list)
+    events: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class AutoImportPolicy(PropertyType):
-    events: list[String] = field(default_factory=list)
+    events: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class S3(PropertyType):
-    auto_export_policy: AutoExportPolicy | None = None
-    auto_import_policy: AutoImportPolicy | None = None
+    auto_export_policy: DslValue[AutoExportPolicy] | None = None
+    auto_import_policy: DslValue[AutoImportPolicy] | None = None

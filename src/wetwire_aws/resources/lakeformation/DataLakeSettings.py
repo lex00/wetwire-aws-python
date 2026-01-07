@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -25,7 +26,7 @@ class CreateTableDefaultPermissions(PropertyType):
 
 @dataclass
 class DataLakePrincipal(PropertyType):
-    data_lake_principal_identifier: str | None = None
+    data_lake_principal_identifier: DslValue[str] | None = None
 
 
 @dataclass
@@ -35,8 +36,8 @@ class ExternalDataFilteringAllowList(PropertyType):
 
 @dataclass
 class PrincipalPermissions(PropertyType):
-    permissions: list[String] = field(default_factory=list)
-    principal: DataLakePrincipal | None = None
+    permissions: list[DslValue[str]] = field(default_factory=list)
+    principal: DslValue[DataLakePrincipal] | None = None
 
 
 @dataclass

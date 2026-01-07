@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,20 +15,20 @@ class MappingRule(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    claim: str | None = None
-    match_type: str | None = None
-    role_arn: str | None = None
-    value: str | None = None
+    claim: DslValue[str] | None = None
+    match_type: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class RoleMapping(PropertyType):
-    type_: str | None = None
-    ambiguous_role_resolution: str | None = None
-    identity_provider: str | None = None
-    rules_configuration: RulesConfigurationType | None = None
+    type_: DslValue[str] | None = None
+    ambiguous_role_resolution: DslValue[str] | None = None
+    identity_provider: DslValue[str] | None = None
+    rules_configuration: DslValue[RulesConfigurationType] | None = None
 
 
 @dataclass
 class RulesConfigurationType(PropertyType):
-    rules: list[MappingRule] = field(default_factory=list)
+    rules: list[DslValue[MappingRule]] = field(default_factory=list)

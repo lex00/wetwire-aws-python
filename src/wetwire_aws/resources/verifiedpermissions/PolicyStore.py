@@ -6,19 +6,20 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class DeletionProtection(PropertyType):
-    mode: str | None = None
+    mode: DslValue[str] | None = None
 
 
 @dataclass
 class SchemaDefinition(PropertyType):
-    cedar_format: str | None = None
-    cedar_json: str | None = None
+    cedar_format: DslValue[str] | None = None
+    cedar_json: DslValue[str] | None = None
 
 
 @dataclass
 class ValidationSettings(PropertyType):
-    mode: str | None = None
+    mode: DslValue[str] | None = None

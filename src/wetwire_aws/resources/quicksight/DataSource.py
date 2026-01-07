@@ -6,159 +6,164 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AmazonElasticsearchParameters(PropertyType):
-    domain: str | None = None
+    domain: DslValue[str] | None = None
 
 
 @dataclass
 class AmazonOpenSearchParameters(PropertyType):
-    domain: str | None = None
+    domain: DslValue[str] | None = None
 
 
 @dataclass
 class AthenaParameters(PropertyType):
-    identity_center_configuration: IdentityCenterConfiguration | None = None
-    role_arn: str | None = None
-    work_group: str | None = None
+    identity_center_configuration: DslValue[IdentityCenterConfiguration] | None = None
+    role_arn: DslValue[str] | None = None
+    work_group: DslValue[str] | None = None
 
 
 @dataclass
 class AuroraParameters(PropertyType):
-    database: str | None = None
-    host: str | None = None
-    port: float | None = None
+    database: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class AuroraPostgreSqlParameters(PropertyType):
-    database: str | None = None
-    host: str | None = None
-    port: float | None = None
+    database: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class CredentialPair(PropertyType):
-    password: str | None = None
-    username: str | None = None
-    alternate_data_source_parameters: list[DataSourceParameters] = field(
+    password: DslValue[str] | None = None
+    username: DslValue[str] | None = None
+    alternate_data_source_parameters: list[DslValue[DataSourceParameters]] = field(
         default_factory=list
     )
 
 
 @dataclass
 class DataSourceCredentials(PropertyType):
-    copy_source_arn: str | None = None
-    credential_pair: CredentialPair | None = None
-    secret_arn: str | None = None
+    copy_source_arn: DslValue[str] | None = None
+    credential_pair: DslValue[CredentialPair] | None = None
+    secret_arn: DslValue[str] | None = None
 
 
 @dataclass
 class DataSourceErrorInfo(PropertyType):
-    message: str | None = None
-    type_: str | None = None
+    message: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class DataSourceParameters(PropertyType):
-    amazon_elasticsearch_parameters: AmazonElasticsearchParameters | None = None
-    amazon_open_search_parameters: AmazonOpenSearchParameters | None = None
-    athena_parameters: AthenaParameters | None = None
-    aurora_parameters: AuroraParameters | None = None
-    aurora_postgre_sql_parameters: AuroraPostgreSqlParameters | None = None
-    databricks_parameters: DatabricksParameters | None = None
-    maria_db_parameters: MariaDbParameters | None = None
-    my_sql_parameters: MySqlParameters | None = None
-    oracle_parameters: OracleParameters | None = None
-    postgre_sql_parameters: PostgreSqlParameters | None = None
-    presto_parameters: PrestoParameters | None = None
-    rds_parameters: RdsParameters | None = None
-    redshift_parameters: RedshiftParameters | None = None
-    s3_parameters: S3Parameters | None = None
-    snowflake_parameters: SnowflakeParameters | None = None
-    spark_parameters: SparkParameters | None = None
-    sql_server_parameters: SqlServerParameters | None = None
-    starburst_parameters: StarburstParameters | None = None
-    teradata_parameters: TeradataParameters | None = None
-    trino_parameters: TrinoParameters | None = None
+    amazon_elasticsearch_parameters: DslValue[AmazonElasticsearchParameters] | None = (
+        None
+    )
+    amazon_open_search_parameters: DslValue[AmazonOpenSearchParameters] | None = None
+    athena_parameters: DslValue[AthenaParameters] | None = None
+    aurora_parameters: DslValue[AuroraParameters] | None = None
+    aurora_postgre_sql_parameters: DslValue[AuroraPostgreSqlParameters] | None = None
+    databricks_parameters: DslValue[DatabricksParameters] | None = None
+    maria_db_parameters: DslValue[MariaDbParameters] | None = None
+    my_sql_parameters: DslValue[MySqlParameters] | None = None
+    oracle_parameters: DslValue[OracleParameters] | None = None
+    postgre_sql_parameters: DslValue[PostgreSqlParameters] | None = None
+    presto_parameters: DslValue[PrestoParameters] | None = None
+    rds_parameters: DslValue[RdsParameters] | None = None
+    redshift_parameters: DslValue[RedshiftParameters] | None = None
+    s3_parameters: DslValue[S3Parameters] | None = None
+    snowflake_parameters: DslValue[SnowflakeParameters] | None = None
+    spark_parameters: DslValue[SparkParameters] | None = None
+    sql_server_parameters: DslValue[SqlServerParameters] | None = None
+    starburst_parameters: DslValue[StarburstParameters] | None = None
+    teradata_parameters: DslValue[TeradataParameters] | None = None
+    trino_parameters: DslValue[TrinoParameters] | None = None
 
 
 @dataclass
 class DatabricksParameters(PropertyType):
-    host: str | None = None
-    port: float | None = None
-    sql_endpoint_path: str | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
+    sql_endpoint_path: DslValue[str] | None = None
 
 
 @dataclass
 class IdentityCenterConfiguration(PropertyType):
-    enable_identity_propagation: bool | None = None
+    enable_identity_propagation: DslValue[bool] | None = None
 
 
 @dataclass
 class ManifestFileLocation(PropertyType):
-    bucket: str | None = None
-    key: str | None = None
+    bucket: DslValue[str] | None = None
+    key: DslValue[str] | None = None
 
 
 @dataclass
 class MariaDbParameters(PropertyType):
-    database: str | None = None
-    host: str | None = None
-    port: float | None = None
+    database: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class MySqlParameters(PropertyType):
-    database: str | None = None
-    host: str | None = None
-    port: float | None = None
+    database: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class OAuthParameters(PropertyType):
-    token_provider_url: str | None = None
-    identity_provider_resource_uri: str | None = None
-    identity_provider_vpc_connection_properties: VpcConnectionProperties | None = None
-    o_auth_scope: str | None = None
+    token_provider_url: DslValue[str] | None = None
+    identity_provider_resource_uri: DslValue[str] | None = None
+    identity_provider_vpc_connection_properties: (
+        DslValue[VpcConnectionProperties] | None
+    ) = None
+    o_auth_scope: DslValue[str] | None = None
 
 
 @dataclass
 class OracleParameters(PropertyType):
-    database: str | None = None
-    host: str | None = None
-    port: float | None = None
-    use_service_name: bool | None = None
+    database: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
+    use_service_name: DslValue[bool] | None = None
 
 
 @dataclass
 class PostgreSqlParameters(PropertyType):
-    database: str | None = None
-    host: str | None = None
-    port: float | None = None
+    database: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class PrestoParameters(PropertyType):
-    catalog: str | None = None
-    host: str | None = None
-    port: float | None = None
+    catalog: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class RdsParameters(PropertyType):
-    database: str | None = None
-    instance_id: str | None = None
+    database: DslValue[str] | None = None
+    instance_id: DslValue[str] | None = None
 
 
 @dataclass
 class RedshiftIAMParameters(PropertyType):
-    role_arn: str | None = None
-    auto_create_database_user: bool | None = None
-    database_groups: list[String] = field(default_factory=list)
-    database_user: str | None = None
+    role_arn: DslValue[str] | None = None
+    auto_create_database_user: DslValue[bool] | None = None
+    database_groups: list[DslValue[str]] = field(default_factory=list)
+    database_user: DslValue[str] | None = None
 
 
 @dataclass
@@ -167,80 +172,80 @@ class RedshiftParameters(PropertyType):
         "iam_parameters": "IAMParameters",
     }
 
-    database: str | None = None
-    cluster_id: str | None = None
-    host: str | None = None
-    iam_parameters: RedshiftIAMParameters | None = None
-    identity_center_configuration: IdentityCenterConfiguration | None = None
-    port: float | None = None
+    database: DslValue[str] | None = None
+    cluster_id: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    iam_parameters: DslValue[RedshiftIAMParameters] | None = None
+    identity_center_configuration: DslValue[IdentityCenterConfiguration] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class ResourcePermission(PropertyType):
-    actions: list[String] = field(default_factory=list)
-    principal: str | None = None
-    resource: str | None = None
+    actions: list[DslValue[str]] = field(default_factory=list)
+    principal: DslValue[str] | None = None
+    resource: DslValue[str] | None = None
 
 
 @dataclass
 class S3Parameters(PropertyType):
-    manifest_file_location: ManifestFileLocation | None = None
-    role_arn: str | None = None
+    manifest_file_location: DslValue[ManifestFileLocation] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
 class SnowflakeParameters(PropertyType):
-    database: str | None = None
-    host: str | None = None
-    warehouse: str | None = None
-    authentication_type: str | None = None
-    database_access_control_role: str | None = None
-    o_auth_parameters: OAuthParameters | None = None
+    database: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    warehouse: DslValue[str] | None = None
+    authentication_type: DslValue[str] | None = None
+    database_access_control_role: DslValue[str] | None = None
+    o_auth_parameters: DslValue[OAuthParameters] | None = None
 
 
 @dataclass
 class SparkParameters(PropertyType):
-    host: str | None = None
-    port: float | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class SqlServerParameters(PropertyType):
-    database: str | None = None
-    host: str | None = None
-    port: float | None = None
+    database: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class SslProperties(PropertyType):
-    disable_ssl: bool | None = None
+    disable_ssl: DslValue[bool] | None = None
 
 
 @dataclass
 class StarburstParameters(PropertyType):
-    catalog: str | None = None
-    host: str | None = None
-    port: float | None = None
-    authentication_type: str | None = None
-    database_access_control_role: str | None = None
-    o_auth_parameters: OAuthParameters | None = None
-    product_type: str | None = None
+    catalog: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
+    authentication_type: DslValue[str] | None = None
+    database_access_control_role: DslValue[str] | None = None
+    o_auth_parameters: DslValue[OAuthParameters] | None = None
+    product_type: DslValue[str] | None = None
 
 
 @dataclass
 class TeradataParameters(PropertyType):
-    database: str | None = None
-    host: str | None = None
-    port: float | None = None
+    database: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class TrinoParameters(PropertyType):
-    catalog: str | None = None
-    host: str | None = None
-    port: float | None = None
+    catalog: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    port: DslValue[float] | None = None
 
 
 @dataclass
 class VpcConnectionProperties(PropertyType):
-    vpc_connection_arn: str | None = None
+    vpc_connection_arn: DslValue[str] | None = None

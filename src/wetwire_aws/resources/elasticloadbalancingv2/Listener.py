@@ -6,114 +6,119 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Action(PropertyType):
-    type_: str | None = None
-    authenticate_cognito_config: AuthenticateCognitoConfig | None = None
-    authenticate_oidc_config: AuthenticateOidcConfig | None = None
-    fixed_response_config: FixedResponseConfig | None = None
-    forward_config: ForwardConfig | None = None
-    jwt_validation_config: JwtValidationConfig | None = None
-    order: int | None = None
-    redirect_config: RedirectConfig | None = None
-    target_group_arn: str | None = None
+    type_: DslValue[str] | None = None
+    authenticate_cognito_config: DslValue[AuthenticateCognitoConfig] | None = None
+    authenticate_oidc_config: DslValue[AuthenticateOidcConfig] | None = None
+    fixed_response_config: DslValue[FixedResponseConfig] | None = None
+    forward_config: DslValue[ForwardConfig] | None = None
+    jwt_validation_config: DslValue[JwtValidationConfig] | None = None
+    order: DslValue[int] | None = None
+    redirect_config: DslValue[RedirectConfig] | None = None
+    target_group_arn: DslValue[str] | None = None
 
 
 @dataclass
 class AuthenticateCognitoConfig(PropertyType):
-    user_pool_arn: str | None = None
-    user_pool_client_id: str | None = None
-    user_pool_domain: str | None = None
-    authentication_request_extra_params: dict[str, String] = field(default_factory=dict)
-    on_unauthenticated_request: str | None = None
-    scope: str | None = None
-    session_cookie_name: str | None = None
-    session_timeout: str | None = None
+    user_pool_arn: DslValue[str] | None = None
+    user_pool_client_id: DslValue[str] | None = None
+    user_pool_domain: DslValue[str] | None = None
+    authentication_request_extra_params: dict[str, DslValue[str]] = field(
+        default_factory=dict
+    )
+    on_unauthenticated_request: DslValue[str] | None = None
+    scope: DslValue[str] | None = None
+    session_cookie_name: DslValue[str] | None = None
+    session_timeout: DslValue[str] | None = None
 
 
 @dataclass
 class AuthenticateOidcConfig(PropertyType):
-    authorization_endpoint: str | None = None
-    client_id: str | None = None
-    issuer: str | None = None
-    token_endpoint: str | None = None
-    user_info_endpoint: str | None = None
-    authentication_request_extra_params: dict[str, String] = field(default_factory=dict)
-    client_secret: str | None = None
-    on_unauthenticated_request: str | None = None
-    scope: str | None = None
-    session_cookie_name: str | None = None
-    session_timeout: str | None = None
-    use_existing_client_secret: bool | None = None
+    authorization_endpoint: DslValue[str] | None = None
+    client_id: DslValue[str] | None = None
+    issuer: DslValue[str] | None = None
+    token_endpoint: DslValue[str] | None = None
+    user_info_endpoint: DslValue[str] | None = None
+    authentication_request_extra_params: dict[str, DslValue[str]] = field(
+        default_factory=dict
+    )
+    client_secret: DslValue[str] | None = None
+    on_unauthenticated_request: DslValue[str] | None = None
+    scope: DslValue[str] | None = None
+    session_cookie_name: DslValue[str] | None = None
+    session_timeout: DslValue[str] | None = None
+    use_existing_client_secret: DslValue[bool] | None = None
 
 
 @dataclass
 class Certificate(PropertyType):
-    certificate_arn: str | None = None
+    certificate_arn: DslValue[str] | None = None
 
 
 @dataclass
 class FixedResponseConfig(PropertyType):
-    status_code: str | None = None
-    content_type: str | None = None
-    message_body: str | None = None
+    status_code: DslValue[str] | None = None
+    content_type: DslValue[str] | None = None
+    message_body: DslValue[str] | None = None
 
 
 @dataclass
 class ForwardConfig(PropertyType):
-    target_group_stickiness_config: TargetGroupStickinessConfig | None = None
-    target_groups: list[TargetGroupTuple] = field(default_factory=list)
+    target_group_stickiness_config: DslValue[TargetGroupStickinessConfig] | None = None
+    target_groups: list[DslValue[TargetGroupTuple]] = field(default_factory=list)
 
 
 @dataclass
 class JwtValidationActionAdditionalClaim(PropertyType):
-    format: str | None = None
-    name: str | None = None
-    values: list[String] = field(default_factory=list)
+    format: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class JwtValidationConfig(PropertyType):
-    issuer: str | None = None
-    jwks_endpoint: str | None = None
-    additional_claims: list[JwtValidationActionAdditionalClaim] = field(
+    issuer: DslValue[str] | None = None
+    jwks_endpoint: DslValue[str] | None = None
+    additional_claims: list[DslValue[JwtValidationActionAdditionalClaim]] = field(
         default_factory=list
     )
 
 
 @dataclass
 class ListenerAttribute(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class MutualAuthentication(PropertyType):
-    advertise_trust_store_ca_names: str | None = None
-    ignore_client_certificate_expiry: bool | None = None
-    mode: str | None = None
-    trust_store_arn: str | None = None
+    advertise_trust_store_ca_names: DslValue[str] | None = None
+    ignore_client_certificate_expiry: DslValue[bool] | None = None
+    mode: DslValue[str] | None = None
+    trust_store_arn: DslValue[str] | None = None
 
 
 @dataclass
 class RedirectConfig(PropertyType):
-    status_code: str | None = None
-    host: str | None = None
-    path: str | None = None
-    port: str | None = None
-    protocol: str | None = None
-    query: str | None = None
+    status_code: DslValue[str] | None = None
+    host: DslValue[str] | None = None
+    path: DslValue[str] | None = None
+    port: DslValue[str] | None = None
+    protocol: DslValue[str] | None = None
+    query: DslValue[str] | None = None
 
 
 @dataclass
 class TargetGroupStickinessConfig(PropertyType):
-    duration_seconds: int | None = None
-    enabled: bool | None = None
+    duration_seconds: DslValue[int] | None = None
+    enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class TargetGroupTuple(PropertyType):
-    target_group_arn: str | None = None
-    weight: int | None = None
+    target_group_arn: DslValue[str] | None = None
+    weight: DslValue[int] | None = None

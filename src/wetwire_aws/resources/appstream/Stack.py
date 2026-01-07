@@ -6,34 +6,35 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AccessEndpoint(PropertyType):
-    endpoint_type: str | None = None
-    vpce_id: str | None = None
+    endpoint_type: DslValue[str] | None = None
+    vpce_id: DslValue[str] | None = None
 
 
 @dataclass
 class ApplicationSettings(PropertyType):
-    enabled: bool | None = None
-    settings_group: str | None = None
+    enabled: DslValue[bool] | None = None
+    settings_group: DslValue[str] | None = None
 
 
 @dataclass
 class StorageConnector(PropertyType):
-    connector_type: str | None = None
-    domains: list[String] = field(default_factory=list)
-    resource_identifier: str | None = None
+    connector_type: DslValue[str] | None = None
+    domains: list[DslValue[str]] = field(default_factory=list)
+    resource_identifier: DslValue[str] | None = None
 
 
 @dataclass
 class StreamingExperienceSettings(PropertyType):
-    preferred_protocol: str | None = None
+    preferred_protocol: DslValue[str] | None = None
 
 
 @dataclass
 class UserSetting(PropertyType):
-    action: str | None = None
-    permission: str | None = None
-    maximum_length: int | None = None
+    action: DslValue[str] | None = None
+    permission: DslValue[str] | None = None
+    maximum_length: DslValue[int] | None = None

@@ -6,180 +6,181 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AddHeaderAction(PropertyType):
-    header_name: str | None = None
-    header_value: str | None = None
+    header_name: DslValue[str] | None = None
+    header_value: DslValue[str] | None = None
 
 
 @dataclass
 class Analysis(PropertyType):
-    analyzer: str | None = None
-    result_field: str | None = None
+    analyzer: DslValue[str] | None = None
+    result_field: DslValue[str] | None = None
 
 
 @dataclass
 class ArchiveAction(PropertyType):
-    target_archive: str | None = None
-    action_failure_policy: str | None = None
+    target_archive: DslValue[str] | None = None
+    action_failure_policy: DslValue[str] | None = None
 
 
 @dataclass
 class DeliverToMailboxAction(PropertyType):
-    mailbox_arn: str | None = None
-    role_arn: str | None = None
-    action_failure_policy: str | None = None
+    mailbox_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    action_failure_policy: DslValue[str] | None = None
 
 
 @dataclass
 class DeliverToQBusinessAction(PropertyType):
-    application_id: str | None = None
-    index_id: str | None = None
-    role_arn: str | None = None
-    action_failure_policy: str | None = None
+    application_id: DslValue[str] | None = None
+    index_id: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    action_failure_policy: DslValue[str] | None = None
 
 
 @dataclass
 class RelayAction(PropertyType):
-    relay: str | None = None
-    action_failure_policy: str | None = None
-    mail_from: str | None = None
+    relay: DslValue[str] | None = None
+    action_failure_policy: DslValue[str] | None = None
+    mail_from: DslValue[str] | None = None
 
 
 @dataclass
 class ReplaceRecipientAction(PropertyType):
-    replace_with: list[String] = field(default_factory=list)
+    replace_with: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class Rule(PropertyType):
-    actions: list[RuleAction] = field(default_factory=list)
-    conditions: list[RuleCondition] = field(default_factory=list)
-    name: str | None = None
-    unless: list[RuleCondition] = field(default_factory=list)
+    actions: list[DslValue[RuleAction]] = field(default_factory=list)
+    conditions: list[DslValue[RuleCondition]] = field(default_factory=list)
+    name: DslValue[str] | None = None
+    unless: list[DslValue[RuleCondition]] = field(default_factory=list)
 
 
 @dataclass
 class RuleAction(PropertyType):
-    add_header: AddHeaderAction | None = None
-    archive: ArchiveAction | None = None
-    deliver_to_mailbox: DeliverToMailboxAction | None = None
-    deliver_to_q_business: DeliverToQBusinessAction | None = None
-    drop: dict[str, Any] | None = None
-    publish_to_sns: SnsAction | None = None
-    relay: RelayAction | None = None
-    replace_recipient: ReplaceRecipientAction | None = None
-    send: SendAction | None = None
-    write_to_s3: S3Action | None = None
+    add_header: DslValue[AddHeaderAction] | None = None
+    archive: DslValue[ArchiveAction] | None = None
+    deliver_to_mailbox: DslValue[DeliverToMailboxAction] | None = None
+    deliver_to_q_business: DslValue[DeliverToQBusinessAction] | None = None
+    drop: DslValue[dict[str, Any]] | None = None
+    publish_to_sns: DslValue[SnsAction] | None = None
+    relay: DslValue[RelayAction] | None = None
+    replace_recipient: DslValue[ReplaceRecipientAction] | None = None
+    send: DslValue[SendAction] | None = None
+    write_to_s3: DslValue[S3Action] | None = None
 
 
 @dataclass
 class RuleBooleanExpression(PropertyType):
-    evaluate: RuleBooleanToEvaluate | None = None
-    operator: str | None = None
+    evaluate: DslValue[RuleBooleanToEvaluate] | None = None
+    operator: DslValue[str] | None = None
 
 
 @dataclass
 class RuleBooleanToEvaluate(PropertyType):
-    analysis: Analysis | None = None
-    attribute: str | None = None
-    is_in_address_list: RuleIsInAddressList | None = None
+    analysis: DslValue[Analysis] | None = None
+    attribute: DslValue[str] | None = None
+    is_in_address_list: DslValue[RuleIsInAddressList] | None = None
 
 
 @dataclass
 class RuleCondition(PropertyType):
-    boolean_expression: RuleBooleanExpression | None = None
-    dmarc_expression: RuleDmarcExpression | None = None
-    ip_expression: RuleIpExpression | None = None
-    number_expression: RuleNumberExpression | None = None
-    string_expression: RuleStringExpression | None = None
-    verdict_expression: RuleVerdictExpression | None = None
+    boolean_expression: DslValue[RuleBooleanExpression] | None = None
+    dmarc_expression: DslValue[RuleDmarcExpression] | None = None
+    ip_expression: DslValue[RuleIpExpression] | None = None
+    number_expression: DslValue[RuleNumberExpression] | None = None
+    string_expression: DslValue[RuleStringExpression] | None = None
+    verdict_expression: DslValue[RuleVerdictExpression] | None = None
 
 
 @dataclass
 class RuleDmarcExpression(PropertyType):
-    operator: str | None = None
-    values: list[String] = field(default_factory=list)
+    operator: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class RuleIpExpression(PropertyType):
-    evaluate: RuleIpToEvaluate | None = None
-    operator: str | None = None
-    values: list[String] = field(default_factory=list)
+    evaluate: DslValue[RuleIpToEvaluate] | None = None
+    operator: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class RuleIpToEvaluate(PropertyType):
-    attribute: str | None = None
+    attribute: DslValue[str] | None = None
 
 
 @dataclass
 class RuleIsInAddressList(PropertyType):
-    address_lists: list[String] = field(default_factory=list)
-    attribute: str | None = None
+    address_lists: list[DslValue[str]] = field(default_factory=list)
+    attribute: DslValue[str] | None = None
 
 
 @dataclass
 class RuleNumberExpression(PropertyType):
-    evaluate: RuleNumberToEvaluate | None = None
-    operator: str | None = None
-    value: float | None = None
+    evaluate: DslValue[RuleNumberToEvaluate] | None = None
+    operator: DslValue[str] | None = None
+    value: DslValue[float] | None = None
 
 
 @dataclass
 class RuleNumberToEvaluate(PropertyType):
-    attribute: str | None = None
+    attribute: DslValue[str] | None = None
 
 
 @dataclass
 class RuleStringExpression(PropertyType):
-    evaluate: RuleStringToEvaluate | None = None
-    operator: str | None = None
-    values: list[String] = field(default_factory=list)
+    evaluate: DslValue[RuleStringToEvaluate] | None = None
+    operator: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class RuleStringToEvaluate(PropertyType):
-    analysis: Analysis | None = None
-    attribute: str | None = None
-    mime_header_attribute: str | None = None
+    analysis: DslValue[Analysis] | None = None
+    attribute: DslValue[str] | None = None
+    mime_header_attribute: DslValue[str] | None = None
 
 
 @dataclass
 class RuleVerdictExpression(PropertyType):
-    evaluate: RuleVerdictToEvaluate | None = None
-    operator: str | None = None
-    values: list[String] = field(default_factory=list)
+    evaluate: DslValue[RuleVerdictToEvaluate] | None = None
+    operator: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class RuleVerdictToEvaluate(PropertyType):
-    analysis: Analysis | None = None
-    attribute: str | None = None
+    analysis: DslValue[Analysis] | None = None
+    attribute: DslValue[str] | None = None
 
 
 @dataclass
 class S3Action(PropertyType):
-    role_arn: str | None = None
-    s3_bucket: str | None = None
-    action_failure_policy: str | None = None
-    s3_prefix: str | None = None
-    s3_sse_kms_key_id: str | None = None
+    role_arn: DslValue[str] | None = None
+    s3_bucket: DslValue[str] | None = None
+    action_failure_policy: DslValue[str] | None = None
+    s3_prefix: DslValue[str] | None = None
+    s3_sse_kms_key_id: DslValue[str] | None = None
 
 
 @dataclass
 class SendAction(PropertyType):
-    role_arn: str | None = None
-    action_failure_policy: str | None = None
+    role_arn: DslValue[str] | None = None
+    action_failure_policy: DslValue[str] | None = None
 
 
 @dataclass
 class SnsAction(PropertyType):
-    role_arn: str | None = None
-    topic_arn: str | None = None
-    action_failure_policy: str | None = None
-    encoding: str | None = None
-    payload_type: str | None = None
+    role_arn: DslValue[str] | None = None
+    topic_arn: DslValue[str] | None = None
+    action_failure_policy: DslValue[str] | None = None
+    encoding: DslValue[str] | None = None
+    payload_type: DslValue[str] | None = None

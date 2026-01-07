@@ -6,12 +6,13 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class IngestEndpoint(PropertyType):
-    id: str | None = None
-    url: str | None = None
+    id: DslValue[str] | None = None
+    url: DslValue[str] | None = None
 
 
 @dataclass
@@ -20,8 +21,8 @@ class InputSwitchConfiguration(PropertyType):
         "mqcs_input_switching": "MQCSInputSwitching",
     }
 
-    mqcs_input_switching: bool | None = None
-    preferred_input: int | None = None
+    mqcs_input_switching: DslValue[bool] | None = None
+    preferred_input: DslValue[int] | None = None
 
 
 @dataclass
@@ -30,4 +31,4 @@ class OutputHeaderConfiguration(PropertyType):
         "publish_mqcs": "PublishMQCS",
     }
 
-    publish_mqcs: bool | None = None
+    publish_mqcs: DslValue[bool] | None = None

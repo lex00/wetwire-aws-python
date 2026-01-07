@@ -6,25 +6,26 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AwsVpcConfiguration(PropertyType):
-    subnets: list[String] = field(default_factory=list)
-    assign_public_ip: str | None = None
-    security_groups: list[String] = field(default_factory=list)
+    subnets: list[DslValue[str]] = field(default_factory=list)
+    assign_public_ip: DslValue[str] | None = None
+    security_groups: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class CapacityProviderStrategyItem(PropertyType):
-    capacity_provider: str | None = None
-    base: float | None = None
-    weight: float | None = None
+    capacity_provider: DslValue[str] | None = None
+    base: DslValue[float] | None = None
+    weight: DslValue[float] | None = None
 
 
 @dataclass
 class DeadLetterConfig(PropertyType):
-    arn: str | None = None
+    arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -33,91 +34,93 @@ class EcsParameters(PropertyType):
         "enable_ecs_managed_tags": "EnableECSManagedTags",
     }
 
-    task_definition_arn: str | None = None
-    capacity_provider_strategy: list[CapacityProviderStrategyItem] = field(
+    task_definition_arn: DslValue[str] | None = None
+    capacity_provider_strategy: list[DslValue[CapacityProviderStrategyItem]] = field(
         default_factory=list
     )
-    enable_ecs_managed_tags: bool | None = None
-    enable_execute_command: bool | None = None
-    group: str | None = None
-    launch_type: str | None = None
-    network_configuration: NetworkConfiguration | None = None
-    placement_constraints: list[PlacementConstraint] = field(default_factory=list)
-    placement_strategy: list[PlacementStrategy] = field(default_factory=list)
-    platform_version: str | None = None
-    propagate_tags: str | None = None
-    reference_id: str | None = None
-    tags: dict[str, Any] | None = None
-    task_count: float | None = None
+    enable_ecs_managed_tags: DslValue[bool] | None = None
+    enable_execute_command: DslValue[bool] | None = None
+    group: DslValue[str] | None = None
+    launch_type: DslValue[str] | None = None
+    network_configuration: DslValue[NetworkConfiguration] | None = None
+    placement_constraints: list[DslValue[PlacementConstraint]] = field(
+        default_factory=list
+    )
+    placement_strategy: list[DslValue[PlacementStrategy]] = field(default_factory=list)
+    platform_version: DslValue[str] | None = None
+    propagate_tags: DslValue[str] | None = None
+    reference_id: DslValue[str] | None = None
+    tags: DslValue[dict[str, Any]] | None = None
+    task_count: DslValue[float] | None = None
 
 
 @dataclass
 class EventBridgeParameters(PropertyType):
-    detail_type: str | None = None
-    source: str | None = None
+    detail_type: DslValue[str] | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class FlexibleTimeWindow(PropertyType):
-    mode: str | None = None
-    maximum_window_in_minutes: float | None = None
+    mode: DslValue[str] | None = None
+    maximum_window_in_minutes: DslValue[float] | None = None
 
 
 @dataclass
 class KinesisParameters(PropertyType):
-    partition_key: str | None = None
+    partition_key: DslValue[str] | None = None
 
 
 @dataclass
 class NetworkConfiguration(PropertyType):
-    awsvpc_configuration: AwsVpcConfiguration | None = None
+    awsvpc_configuration: DslValue[AwsVpcConfiguration] | None = None
 
 
 @dataclass
 class PlacementConstraint(PropertyType):
-    expression: str | None = None
-    type_: str | None = None
+    expression: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class PlacementStrategy(PropertyType):
-    field_: str | None = None
-    type_: str | None = None
+    field_: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class RetryPolicy(PropertyType):
-    maximum_event_age_in_seconds: float | None = None
-    maximum_retry_attempts: float | None = None
+    maximum_event_age_in_seconds: DslValue[float] | None = None
+    maximum_retry_attempts: DslValue[float] | None = None
 
 
 @dataclass
 class SageMakerPipelineParameter(PropertyType):
-    name: str | None = None
-    value: str | None = None
+    name: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class SageMakerPipelineParameters(PropertyType):
-    pipeline_parameter_list: list[SageMakerPipelineParameter] = field(
+    pipeline_parameter_list: list[DslValue[SageMakerPipelineParameter]] = field(
         default_factory=list
     )
 
 
 @dataclass
 class SqsParameters(PropertyType):
-    message_group_id: str | None = None
+    message_group_id: DslValue[str] | None = None
 
 
 @dataclass
 class Target(PropertyType):
-    arn: str | None = None
-    role_arn: str | None = None
-    dead_letter_config: DeadLetterConfig | None = None
-    ecs_parameters: EcsParameters | None = None
-    event_bridge_parameters: EventBridgeParameters | None = None
-    input: str | None = None
-    kinesis_parameters: KinesisParameters | None = None
-    retry_policy: RetryPolicy | None = None
-    sage_maker_pipeline_parameters: SageMakerPipelineParameters | None = None
-    sqs_parameters: SqsParameters | None = None
+    arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    dead_letter_config: DslValue[DeadLetterConfig] | None = None
+    ecs_parameters: DslValue[EcsParameters] | None = None
+    event_bridge_parameters: DslValue[EventBridgeParameters] | None = None
+    input: DslValue[str] | None = None
+    kinesis_parameters: DslValue[KinesisParameters] | None = None
+    retry_policy: DslValue[RetryPolicy] | None = None
+    sage_maker_pipeline_parameters: DslValue[SageMakerPipelineParameters] | None = None
+    sqs_parameters: DslValue[SqsParameters] | None = None

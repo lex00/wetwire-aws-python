@@ -213,6 +213,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 '''
 
@@ -242,6 +243,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import CloudFormationResource, PropertyType, PropertyTypeDescriptor, Tag
+from wetwire_aws.typing import DslValue
 
 '''
 
@@ -311,18 +313,23 @@ def generate_property_type_class(
         python_type = python_type_for_property(prop)
 
         # All fields are optional to avoid dataclass inheritance issues
+        # Wrap in DslValue to allow class references and intrinsics
         if python_type.startswith("list"):
+            # For lists, wrap the item type in DslValue
+            inner_type = python_type[5:-1]  # Extract T from list[T]
             lines.append(
-                f"    {prop.name}: {python_type} = field(default_factory=list)"
+                f"    {prop.name}: list[DslValue[{inner_type}]] = field(default_factory=list)"
             )
         elif python_type.startswith("dict") and not python_type.startswith(
             "dict[str, Any]"
         ):
+            # For dicts, wrap the value type in DslValue
+            inner_type = python_type[10:-1]  # Extract T from dict[str, T]
             lines.append(
-                f"    {prop.name}: {python_type} = field(default_factory=dict)"
+                f"    {prop.name}: dict[str, DslValue[{inner_type}]] = field(default_factory=dict)"
             )
         else:
-            lines.append(f"    {prop.name}: {python_type} | None = None")
+            lines.append(f"    {prop.name}: DslValue[{python_type}] | None = None")
 
     return "\n".join(lines)
 
@@ -330,10 +337,12 @@ def generate_property_type_class(
 def generate_resource_class(
     resource: ResourceDef,
     submodule_name: str | None = None,
+    nested_types: list[NestedTypeDef] | None = None,
 ) -> str:
     """Generate a CloudFormationResource class.
 
     If submodule_name is provided, property types are referenced via that submodule.
+    If nested_types is provided, PropertyTypeDescriptor assignments are added inside the class body.
     """
     # Reserved names that conflict with imports
     reserved_names = {"PropertyType", "Tag", "CloudFormationResource"}
@@ -402,18 +411,23 @@ def generate_resource_class(
                 python_type = type_name
 
         # All fields are optional to avoid dataclass inheritance issues
+        # Wrap in DslValue to allow class references and intrinsics
         if python_type.startswith("list"):
+            # For lists, wrap the item type in DslValue
+            inner_type = python_type[5:-1]  # Extract T from list[T]
             lines.append(
-                f"    {field_name}: {python_type} = field(default_factory=list)"
+                f"    {field_name}: list[DslValue[{inner_type}]] = field(default_factory=list)"
             )
         elif python_type.startswith("dict") and not python_type.startswith(
             "dict[str, Any]"
         ):
+            # For dicts, wrap the value type in DslValue
+            inner_type = python_type[10:-1]  # Extract T from dict[str, T]
             lines.append(
-                f"    {field_name}: {python_type} = field(default_factory=dict)"
+                f"    {field_name}: dict[str, DslValue[{inner_type}]] = field(default_factory=dict)"
             )
         else:
-            lines.append(f"    {field_name}: {python_type} | None = None")
+            lines.append(f"    {field_name}: DslValue[{python_type}] | None = None")
 
     # Generate attribute accessors if there are attributes
     if resource.attributes:
@@ -422,6 +436,16 @@ def generate_resource_class(
         for attr in resource.attributes:
             attr_const = attr.name.upper().replace("-", "_").replace(".", "_")
             lines.append(f'    {attr_const}: ClassVar[str] = "{attr.name}"')
+
+    # Generate PropertyTypeDescriptor assignments inside class body
+    # This is required for pyright to properly resolve the descriptor protocol
+    if nested_types and submodule_name:
+        lines.append("")
+        lines.append("    # PropertyType descriptors for nested GetAtt support")
+        for nested in sorted(nested_types, key=lambda n: n.name):
+            lines.append(
+                f'    {nested.name} = PropertyTypeDescriptor({submodule_name}.{nested.name}, "{nested.name}")'
+            )
 
     return "\n".join(lines)
 
@@ -526,25 +550,11 @@ def generate_service_package(
 
     for resource in sorted(resources, key=lambda r: r.name):
         submodule = resource_submodule_map.get(resource.name)
+        # Pass nested types so PropertyTypeDescriptor assignments are inside class body
+        # This is required for pyright to properly resolve the descriptor protocol
+        resource_nested = nested_by_resource.get(resource.name, [])
         init_lines.append("")
-        init_lines.append(generate_resource_class(resource, submodule))
-
-    # Attach PropertyTypes to resource classes so s3.Bucket.BucketEncryption works
-    # This allows users to write: resource: s3.Bucket.BucketEncryption
-    if submodules:
-        init_lines.append("")
-        init_lines.append("")
-        init_lines.append("# Attach PropertyTypes to resource classes via descriptors for nested GetAtt support")
-        init_lines.append("# e.g., s3.Bucket.BucketEncryption instead of s3._Bucket.BucketEncryption")
-        init_lines.append("# Using PropertyTypeDescriptor enables MyDB.Endpoint.Address syntax")
-        for resource in sorted(resources, key=lambda r: r.name):
-            if resource.name in nested_by_resource:
-                resource_nested = nested_by_resource[resource.name]
-                for nested in sorted(resource_nested, key=lambda n: n.name):
-                    # Wrap each PropertyType in a descriptor for nested attribute access
-                    init_lines.append(
-                        f'{resource.name}.{nested.name} = PropertyTypeDescriptor(_{resource.name}.{nested.name}, "{nested.name}")'
-                    )
+        init_lines.append(generate_resource_class(resource, submodule, resource_nested))
 
     init_lines.append("")
 

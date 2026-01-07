@@ -6,23 +6,24 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class LoadBalancerAttribute(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class MinimumLoadBalancerCapacity(PropertyType):
-    capacity_units: int | None = None
+    capacity_units: DslValue[int] | None = None
 
 
 @dataclass
 class SubnetMapping(PropertyType):
-    subnet_id: str | None = None
-    allocation_id: str | None = None
-    i_pv6_address: str | None = None
-    private_i_pv4_address: str | None = None
-    source_nat_ipv6_prefix: str | None = None
+    subnet_id: DslValue[str] | None = None
+    allocation_id: DslValue[str] | None = None
+    i_pv6_address: DslValue[str] | None = None
+    private_i_pv4_address: DslValue[str] | None = None
+    source_nat_ipv6_prefix: DslValue[str] | None = None

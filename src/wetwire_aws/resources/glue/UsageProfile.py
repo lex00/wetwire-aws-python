@@ -6,17 +6,22 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ConfigurationObject(PropertyType):
-    allowed_values: list[String] = field(default_factory=list)
-    default_value: str | None = None
-    max_value: str | None = None
-    min_value: str | None = None
+    allowed_values: list[DslValue[str]] = field(default_factory=list)
+    default_value: DslValue[str] | None = None
+    max_value: DslValue[str] | None = None
+    min_value: DslValue[str] | None = None
 
 
 @dataclass
 class ProfileConfiguration(PropertyType):
-    job_configuration: dict[str, ConfigurationObject] = field(default_factory=dict)
-    session_configuration: dict[str, ConfigurationObject] = field(default_factory=dict)
+    job_configuration: dict[str, DslValue[ConfigurationObject]] = field(
+        default_factory=dict
+    )
+    session_configuration: dict[str, DslValue[ConfigurationObject]] = field(
+        default_factory=dict
+    )

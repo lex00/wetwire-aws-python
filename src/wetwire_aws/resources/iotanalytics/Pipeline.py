@@ -6,92 +6,93 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Activity(PropertyType):
-    add_attributes: AddAttributes | None = None
-    channel: Channel | None = None
-    datastore: Datastore | None = None
-    device_registry_enrich: DeviceRegistryEnrich | None = None
-    device_shadow_enrich: DeviceShadowEnrich | None = None
-    filter: Filter | None = None
-    lambda_: Lambda | None = None
-    math: Math | None = None
-    remove_attributes: RemoveAttributes | None = None
-    select_attributes: SelectAttributes | None = None
+    add_attributes: DslValue[AddAttributes] | None = None
+    channel: DslValue[Channel] | None = None
+    datastore: DslValue[Datastore] | None = None
+    device_registry_enrich: DslValue[DeviceRegistryEnrich] | None = None
+    device_shadow_enrich: DslValue[DeviceShadowEnrich] | None = None
+    filter: DslValue[Filter] | None = None
+    lambda_: DslValue[Lambda] | None = None
+    math: DslValue[Math] | None = None
+    remove_attributes: DslValue[RemoveAttributes] | None = None
+    select_attributes: DslValue[SelectAttributes] | None = None
 
 
 @dataclass
 class AddAttributes(PropertyType):
-    attributes: dict[str, String] = field(default_factory=dict)
-    name: str | None = None
-    next: str | None = None
+    attributes: dict[str, DslValue[str]] = field(default_factory=dict)
+    name: DslValue[str] | None = None
+    next: DslValue[str] | None = None
 
 
 @dataclass
 class Channel(PropertyType):
-    channel_name: str | None = None
-    name: str | None = None
-    next: str | None = None
+    channel_name: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    next: DslValue[str] | None = None
 
 
 @dataclass
 class Datastore(PropertyType):
-    datastore_name: str | None = None
-    name: str | None = None
+    datastore_name: DslValue[str] | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class DeviceRegistryEnrich(PropertyType):
-    attribute: str | None = None
-    name: str | None = None
-    role_arn: str | None = None
-    thing_name: str | None = None
-    next: str | None = None
+    attribute: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    thing_name: DslValue[str] | None = None
+    next: DslValue[str] | None = None
 
 
 @dataclass
 class DeviceShadowEnrich(PropertyType):
-    attribute: str | None = None
-    name: str | None = None
-    role_arn: str | None = None
-    thing_name: str | None = None
-    next: str | None = None
+    attribute: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    thing_name: DslValue[str] | None = None
+    next: DslValue[str] | None = None
 
 
 @dataclass
 class Filter(PropertyType):
-    filter: str | None = None
-    name: str | None = None
-    next: str | None = None
+    filter: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    next: DslValue[str] | None = None
 
 
 @dataclass
 class Lambda(PropertyType):
-    batch_size: int | None = None
-    lambda_name: str | None = None
-    name: str | None = None
-    next: str | None = None
+    batch_size: DslValue[int] | None = None
+    lambda_name: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    next: DslValue[str] | None = None
 
 
 @dataclass
 class Math(PropertyType):
-    attribute: str | None = None
-    math: str | None = None
-    name: str | None = None
-    next: str | None = None
+    attribute: DslValue[str] | None = None
+    math: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    next: DslValue[str] | None = None
 
 
 @dataclass
 class RemoveAttributes(PropertyType):
-    attributes: list[String] = field(default_factory=list)
-    name: str | None = None
-    next: str | None = None
+    attributes: list[DslValue[str]] = field(default_factory=list)
+    name: DslValue[str] | None = None
+    next: DslValue[str] | None = None
 
 
 @dataclass
 class SelectAttributes(PropertyType):
-    attributes: list[String] = field(default_factory=list)
-    name: str | None = None
-    next: str | None = None
+    attributes: list[DslValue[str]] = field(default_factory=list)
+    name: DslValue[str] | None = None
+    next: DslValue[str] | None = None

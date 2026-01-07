@@ -6,43 +6,44 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AwsVpcConfiguration(PropertyType):
-    subnets: list[String] = field(default_factory=list)
-    assign_public_ip: str | None = None
-    security_groups: list[String] = field(default_factory=list)
+    subnets: list[DslValue[str]] = field(default_factory=list)
+    assign_public_ip: DslValue[str] | None = None
+    security_groups: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class CapacityProviderStrategyItem(PropertyType):
-    base: int | None = None
-    capacity_provider: str | None = None
-    weight: int | None = None
+    base: DslValue[int] | None = None
+    capacity_provider: DslValue[str] | None = None
+    weight: DslValue[int] | None = None
 
 
 @dataclass
 class LoadBalancer(PropertyType):
-    container_name: str | None = None
-    container_port: int | None = None
-    target_group_arn: str | None = None
+    container_name: DslValue[str] | None = None
+    container_port: DslValue[int] | None = None
+    target_group_arn: DslValue[str] | None = None
 
 
 @dataclass
 class NetworkConfiguration(PropertyType):
-    aws_vpc_configuration: AwsVpcConfiguration | None = None
+    aws_vpc_configuration: DslValue[AwsVpcConfiguration] | None = None
 
 
 @dataclass
 class Scale(PropertyType):
-    unit: str | None = None
-    value: float | None = None
+    unit: DslValue[str] | None = None
+    value: DslValue[float] | None = None
 
 
 @dataclass
 class ServiceRegistry(PropertyType):
-    container_name: str | None = None
-    container_port: int | None = None
-    port: int | None = None
-    registry_arn: str | None = None
+    container_name: DslValue[str] | None = None
+    container_port: DslValue[int] | None = None
+    port: DslValue[int] | None = None
+    registry_arn: DslValue[str] | None = None

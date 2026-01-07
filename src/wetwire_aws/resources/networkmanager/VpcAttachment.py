@@ -6,25 +6,26 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ProposedNetworkFunctionGroupChange(PropertyType):
-    attachment_policy_rule_number: int | None = None
-    network_function_group_name: str | None = None
-    tags: list[Tag] = field(default_factory=list)
+    attachment_policy_rule_number: DslValue[int] | None = None
+    network_function_group_name: DslValue[str] | None = None
+    tags: list[DslValue[Tag]] = field(default_factory=list)
 
 
 @dataclass
 class ProposedSegmentChange(PropertyType):
-    attachment_policy_rule_number: int | None = None
-    segment_name: str | None = None
-    tags: list[Tag] = field(default_factory=list)
+    attachment_policy_rule_number: DslValue[int] | None = None
+    segment_name: DslValue[str] | None = None
+    tags: list[DslValue[Tag]] = field(default_factory=list)
 
 
 @dataclass
 class VpcOptions(PropertyType):
-    appliance_mode_support: bool | None = None
-    dns_support: bool | None = None
-    ipv6_support: bool | None = None
-    security_group_referencing_support: bool | None = None
+    appliance_mode_support: DslValue[bool] | None = None
+    dns_support: DslValue[bool] | None = None
+    ipv6_support: DslValue[bool] | None = None
+    security_group_referencing_support: DslValue[bool] | None = None

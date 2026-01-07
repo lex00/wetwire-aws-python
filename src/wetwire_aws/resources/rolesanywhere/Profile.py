@@ -6,14 +6,15 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AttributeMapping(PropertyType):
-    certificate_field: str | None = None
-    mapping_rules: list[MappingRule] = field(default_factory=list)
+    certificate_field: DslValue[str] | None = None
+    mapping_rules: list[DslValue[MappingRule]] = field(default_factory=list)
 
 
 @dataclass
 class MappingRule(PropertyType):
-    specifier: str | None = None
+    specifier: DslValue[str] | None = None

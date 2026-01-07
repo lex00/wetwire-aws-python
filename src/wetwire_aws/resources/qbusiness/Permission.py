@@ -6,10 +6,11 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Condition(PropertyType):
-    condition_key: str | None = None
-    condition_operator: str | None = None
-    condition_values: list[String] = field(default_factory=list)
+    condition_key: DslValue[str] | None = None
+    condition_operator: DslValue[str] | None = None
+    condition_values: list[DslValue[str]] = field(default_factory=list)

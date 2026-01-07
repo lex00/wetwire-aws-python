@@ -6,31 +6,32 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class EncryptionConfiguration(PropertyType):
-    kms_key_id: str | None = None
+    kms_key_id: DslValue[str] | None = None
 
 
 @dataclass
 class Expiration(PropertyType):
-    days: int | None = None
+    days: DslValue[int] | None = None
 
 
 @dataclass
 class LifecycleConfiguration(PropertyType):
-    expiration: Expiration | None = None
-    transitions: list[Transitions] = field(default_factory=list)
+    expiration: DslValue[Expiration] | None = None
+    transitions: list[DslValue[Transitions]] = field(default_factory=list)
 
 
 @dataclass
 class ReplicationConfiguration(PropertyType):
-    regions: list[String] = field(default_factory=list)
-    role_arn: str | None = None
+    regions: list[DslValue[str]] = field(default_factory=list)
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
 class Transitions(PropertyType):
-    days: int | None = None
-    storage_class: str | None = None
+    days: DslValue[int] | None = None
+    storage_class: DslValue[str] | None = None

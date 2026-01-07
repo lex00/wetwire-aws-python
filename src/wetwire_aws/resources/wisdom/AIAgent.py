@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -20,19 +21,23 @@ class AIAgentConfiguration(PropertyType):
     }
 
     answer_recommendation_ai_agent_configuration: (
-        AnswerRecommendationAIAgentConfiguration | None
+        DslValue[AnswerRecommendationAIAgentConfiguration] | None
     ) = None
     email_generative_answer_ai_agent_configuration: (
-        EmailGenerativeAnswerAIAgentConfiguration | None
+        DslValue[EmailGenerativeAnswerAIAgentConfiguration] | None
     ) = None
-    email_overview_ai_agent_configuration: EmailOverviewAIAgentConfiguration | None = (
-        None
-    )
-    email_response_ai_agent_configuration: EmailResponseAIAgentConfiguration | None = (
-        None
-    )
-    manual_search_ai_agent_configuration: ManualSearchAIAgentConfiguration | None = None
-    self_service_ai_agent_configuration: SelfServiceAIAgentConfiguration | None = None
+    email_overview_ai_agent_configuration: (
+        DslValue[EmailOverviewAIAgentConfiguration] | None
+    ) = None
+    email_response_ai_agent_configuration: (
+        DslValue[EmailResponseAIAgentConfiguration] | None
+    ) = None
+    manual_search_ai_agent_configuration: (
+        DslValue[ManualSearchAIAgentConfiguration] | None
+    ) = None
+    self_service_ai_agent_configuration: (
+        DslValue[SelfServiceAIAgentConfiguration] | None
+    ) = None
 
 
 @dataclass
@@ -44,27 +49,27 @@ class AnswerRecommendationAIAgentConfiguration(PropertyType):
         "query_reformulation_ai_prompt_id": "QueryReformulationAIPromptId",
     }
 
-    answer_generation_ai_guardrail_id: str | None = None
-    answer_generation_ai_prompt_id: str | None = None
-    association_configurations: list[AssociationConfiguration] = field(
+    answer_generation_ai_guardrail_id: DslValue[str] | None = None
+    answer_generation_ai_prompt_id: DslValue[str] | None = None
+    association_configurations: list[DslValue[AssociationConfiguration]] = field(
         default_factory=list
     )
-    intent_labeling_generation_ai_prompt_id: str | None = None
-    locale: str | None = None
-    query_reformulation_ai_prompt_id: str | None = None
+    intent_labeling_generation_ai_prompt_id: DslValue[str] | None = None
+    locale: DslValue[str] | None = None
+    query_reformulation_ai_prompt_id: DslValue[str] | None = None
 
 
 @dataclass
 class AssociationConfiguration(PropertyType):
-    association_configuration_data: AssociationConfigurationData | None = None
-    association_id: str | None = None
-    association_type: str | None = None
+    association_configuration_data: DslValue[AssociationConfigurationData] | None = None
+    association_id: DslValue[str] | None = None
+    association_type: DslValue[str] | None = None
 
 
 @dataclass
 class AssociationConfigurationData(PropertyType):
     knowledge_base_association_configuration_data: (
-        KnowledgeBaseAssociationConfigurationData | None
+        DslValue[KnowledgeBaseAssociationConfigurationData] | None
     ) = None
 
 
@@ -75,12 +80,12 @@ class EmailGenerativeAnswerAIAgentConfiguration(PropertyType):
         "email_query_reformulation_ai_prompt_id": "EmailQueryReformulationAIPromptId",
     }
 
-    association_configurations: list[AssociationConfiguration] = field(
+    association_configurations: list[DslValue[AssociationConfiguration]] = field(
         default_factory=list
     )
-    email_generative_answer_ai_prompt_id: str | None = None
-    email_query_reformulation_ai_prompt_id: str | None = None
-    locale: str | None = None
+    email_generative_answer_ai_prompt_id: DslValue[str] | None = None
+    email_query_reformulation_ai_prompt_id: DslValue[str] | None = None
+    locale: DslValue[str] | None = None
 
 
 @dataclass
@@ -89,8 +94,8 @@ class EmailOverviewAIAgentConfiguration(PropertyType):
         "email_overview_ai_prompt_id": "EmailOverviewAIPromptId",
     }
 
-    email_overview_ai_prompt_id: str | None = None
-    locale: str | None = None
+    email_overview_ai_prompt_id: DslValue[str] | None = None
+    locale: DslValue[str] | None = None
 
 
 @dataclass
@@ -100,19 +105,19 @@ class EmailResponseAIAgentConfiguration(PropertyType):
         "email_response_ai_prompt_id": "EmailResponseAIPromptId",
     }
 
-    association_configurations: list[AssociationConfiguration] = field(
+    association_configurations: list[DslValue[AssociationConfiguration]] = field(
         default_factory=list
     )
-    email_query_reformulation_ai_prompt_id: str | None = None
-    email_response_ai_prompt_id: str | None = None
-    locale: str | None = None
+    email_query_reformulation_ai_prompt_id: DslValue[str] | None = None
+    email_response_ai_prompt_id: DslValue[str] | None = None
+    locale: DslValue[str] | None = None
 
 
 @dataclass
 class KnowledgeBaseAssociationConfigurationData(PropertyType):
-    content_tag_filter: TagFilter | None = None
-    max_results: float | None = None
-    override_knowledge_base_search_type: str | None = None
+    content_tag_filter: DslValue[TagFilter] | None = None
+    max_results: DslValue[float] | None = None
+    override_knowledge_base_search_type: DslValue[str] | None = None
 
 
 @dataclass
@@ -122,18 +127,18 @@ class ManualSearchAIAgentConfiguration(PropertyType):
         "answer_generation_ai_prompt_id": "AnswerGenerationAIPromptId",
     }
 
-    answer_generation_ai_guardrail_id: str | None = None
-    answer_generation_ai_prompt_id: str | None = None
-    association_configurations: list[AssociationConfiguration] = field(
+    answer_generation_ai_guardrail_id: DslValue[str] | None = None
+    answer_generation_ai_prompt_id: DslValue[str] | None = None
+    association_configurations: list[DslValue[AssociationConfiguration]] = field(
         default_factory=list
     )
-    locale: str | None = None
+    locale: DslValue[str] | None = None
 
 
 @dataclass
 class OrCondition(PropertyType):
-    and_conditions: list[TagCondition] = field(default_factory=list)
-    tag_condition: TagCondition | None = None
+    and_conditions: list[DslValue[TagCondition]] = field(default_factory=list)
+    tag_condition: DslValue[TagCondition] | None = None
 
 
 @dataclass
@@ -144,22 +149,22 @@ class SelfServiceAIAgentConfiguration(PropertyType):
         "self_service_pre_processing_ai_prompt_id": "SelfServicePreProcessingAIPromptId",
     }
 
-    association_configurations: list[AssociationConfiguration] = field(
+    association_configurations: list[DslValue[AssociationConfiguration]] = field(
         default_factory=list
     )
-    self_service_ai_guardrail_id: str | None = None
-    self_service_answer_generation_ai_prompt_id: str | None = None
-    self_service_pre_processing_ai_prompt_id: str | None = None
+    self_service_ai_guardrail_id: DslValue[str] | None = None
+    self_service_answer_generation_ai_prompt_id: DslValue[str] | None = None
+    self_service_pre_processing_ai_prompt_id: DslValue[str] | None = None
 
 
 @dataclass
 class TagCondition(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class TagFilter(PropertyType):
-    and_conditions: list[TagCondition] = field(default_factory=list)
-    or_conditions: list[OrCondition] = field(default_factory=list)
-    tag_condition: TagCondition | None = None
+    and_conditions: list[DslValue[TagCondition]] = field(default_factory=list)
+    or_conditions: list[DslValue[OrCondition]] = field(default_factory=list)
+    tag_condition: DslValue[TagCondition] | None = None

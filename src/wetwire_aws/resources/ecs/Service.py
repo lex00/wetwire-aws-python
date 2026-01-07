@@ -6,214 +6,225 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AdvancedConfiguration(PropertyType):
-    alternate_target_group_arn: str | None = None
-    production_listener_rule: str | None = None
-    role_arn: str | None = None
-    test_listener_rule: str | None = None
+    alternate_target_group_arn: DslValue[str] | None = None
+    production_listener_rule: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    test_listener_rule: DslValue[str] | None = None
 
 
 @dataclass
 class AwsVpcConfiguration(PropertyType):
-    assign_public_ip: str | None = None
-    security_groups: list[String] = field(default_factory=list)
-    subnets: list[String] = field(default_factory=list)
+    assign_public_ip: DslValue[str] | None = None
+    security_groups: list[DslValue[str]] = field(default_factory=list)
+    subnets: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class CanaryConfiguration(PropertyType):
-    canary_bake_time_in_minutes: int | None = None
-    canary_percent: float | None = None
+    canary_bake_time_in_minutes: DslValue[int] | None = None
+    canary_percent: DslValue[float] | None = None
 
 
 @dataclass
 class CapacityProviderStrategyItem(PropertyType):
-    base: int | None = None
-    capacity_provider: str | None = None
-    weight: int | None = None
+    base: DslValue[int] | None = None
+    capacity_provider: DslValue[str] | None = None
+    weight: DslValue[int] | None = None
 
 
 @dataclass
 class DeploymentAlarms(PropertyType):
-    alarm_names: list[String] = field(default_factory=list)
-    enable: bool | None = None
-    rollback: bool | None = None
+    alarm_names: list[DslValue[str]] = field(default_factory=list)
+    enable: DslValue[bool] | None = None
+    rollback: DslValue[bool] | None = None
 
 
 @dataclass
 class DeploymentCircuitBreaker(PropertyType):
-    enable: bool | None = None
-    rollback: bool | None = None
+    enable: DslValue[bool] | None = None
+    rollback: DslValue[bool] | None = None
 
 
 @dataclass
 class DeploymentConfiguration(PropertyType):
-    alarms: DeploymentAlarms | None = None
-    bake_time_in_minutes: int | None = None
-    canary_configuration: CanaryConfiguration | None = None
-    deployment_circuit_breaker: DeploymentCircuitBreaker | None = None
-    lifecycle_hooks: list[DeploymentLifecycleHook] = field(default_factory=list)
-    linear_configuration: LinearConfiguration | None = None
-    maximum_percent: int | None = None
-    minimum_healthy_percent: int | None = None
-    strategy: str | None = None
+    alarms: DslValue[DeploymentAlarms] | None = None
+    bake_time_in_minutes: DslValue[int] | None = None
+    canary_configuration: DslValue[CanaryConfiguration] | None = None
+    deployment_circuit_breaker: DslValue[DeploymentCircuitBreaker] | None = None
+    lifecycle_hooks: list[DslValue[DeploymentLifecycleHook]] = field(
+        default_factory=list
+    )
+    linear_configuration: DslValue[LinearConfiguration] | None = None
+    maximum_percent: DslValue[int] | None = None
+    minimum_healthy_percent: DslValue[int] | None = None
+    strategy: DslValue[str] | None = None
 
 
 @dataclass
 class DeploymentController(PropertyType):
-    type_: str | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class DeploymentLifecycleHook(PropertyType):
-    hook_target_arn: str | None = None
-    lifecycle_stages: list[String] = field(default_factory=list)
-    role_arn: str | None = None
-    hook_details: dict[str, Any] | None = None
+    hook_target_arn: DslValue[str] | None = None
+    lifecycle_stages: list[DslValue[str]] = field(default_factory=list)
+    role_arn: DslValue[str] | None = None
+    hook_details: DslValue[dict[str, Any]] | None = None
 
 
 @dataclass
 class EBSTagSpecification(PropertyType):
-    resource_type: str | None = None
-    propagate_tags: str | None = None
-    tags: list[Tag] = field(default_factory=list)
+    resource_type: DslValue[str] | None = None
+    propagate_tags: DslValue[str] | None = None
+    tags: list[DslValue[Tag]] = field(default_factory=list)
 
 
 @dataclass
 class ForceNewDeployment(PropertyType):
-    enable_force_new_deployment: bool | None = None
-    force_new_deployment_nonce: str | None = None
+    enable_force_new_deployment: DslValue[bool] | None = None
+    force_new_deployment_nonce: DslValue[str] | None = None
 
 
 @dataclass
 class LinearConfiguration(PropertyType):
-    step_bake_time_in_minutes: int | None = None
-    step_percent: float | None = None
+    step_bake_time_in_minutes: DslValue[int] | None = None
+    step_percent: DslValue[float] | None = None
 
 
 @dataclass
 class LoadBalancer(PropertyType):
-    advanced_configuration: AdvancedConfiguration | None = None
-    container_name: str | None = None
-    container_port: int | None = None
-    load_balancer_name: str | None = None
-    target_group_arn: str | None = None
+    advanced_configuration: DslValue[AdvancedConfiguration] | None = None
+    container_name: DslValue[str] | None = None
+    container_port: DslValue[int] | None = None
+    load_balancer_name: DslValue[str] | None = None
+    target_group_arn: DslValue[str] | None = None
 
 
 @dataclass
 class LogConfiguration(PropertyType):
-    log_driver: str | None = None
-    options: dict[str, String] = field(default_factory=dict)
-    secret_options: list[Secret] = field(default_factory=list)
+    log_driver: DslValue[str] | None = None
+    options: dict[str, DslValue[str]] = field(default_factory=dict)
+    secret_options: list[DslValue[Secret]] = field(default_factory=list)
 
 
 @dataclass
 class NetworkConfiguration(PropertyType):
-    awsvpc_configuration: AwsVpcConfiguration | None = None
+    awsvpc_configuration: DslValue[AwsVpcConfiguration] | None = None
 
 
 @dataclass
 class PlacementConstraint(PropertyType):
-    type_: str | None = None
-    expression: str | None = None
+    type_: DslValue[str] | None = None
+    expression: DslValue[str] | None = None
 
 
 @dataclass
 class PlacementStrategy(PropertyType):
-    type_: str | None = None
-    field_: str | None = None
+    type_: DslValue[str] | None = None
+    field_: DslValue[str] | None = None
 
 
 @dataclass
 class Secret(PropertyType):
-    name: str | None = None
-    value_from: str | None = None
+    name: DslValue[str] | None = None
+    value_from: DslValue[str] | None = None
 
 
 @dataclass
 class ServiceConnectAccessLogConfiguration(PropertyType):
-    format: str | None = None
-    include_query_parameters: str | None = None
+    format: DslValue[str] | None = None
+    include_query_parameters: DslValue[str] | None = None
 
 
 @dataclass
 class ServiceConnectClientAlias(PropertyType):
-    port: int | None = None
-    dns_name: str | None = None
-    test_traffic_rules: ServiceConnectTestTrafficRules | None = None
+    port: DslValue[int] | None = None
+    dns_name: DslValue[str] | None = None
+    test_traffic_rules: DslValue[ServiceConnectTestTrafficRules] | None = None
 
 
 @dataclass
 class ServiceConnectConfiguration(PropertyType):
-    enabled: bool | None = None
-    access_log_configuration: ServiceConnectAccessLogConfiguration | None = None
-    log_configuration: LogConfiguration | None = None
-    namespace: str | None = None
-    services: list[ServiceConnectService] = field(default_factory=list)
+    enabled: DslValue[bool] | None = None
+    access_log_configuration: DslValue[ServiceConnectAccessLogConfiguration] | None = (
+        None
+    )
+    log_configuration: DslValue[LogConfiguration] | None = None
+    namespace: DslValue[str] | None = None
+    services: list[DslValue[ServiceConnectService]] = field(default_factory=list)
 
 
 @dataclass
 class ServiceConnectService(PropertyType):
-    port_name: str | None = None
-    client_aliases: list[ServiceConnectClientAlias] = field(default_factory=list)
-    discovery_name: str | None = None
-    ingress_port_override: int | None = None
-    timeout: TimeoutConfiguration | None = None
-    tls: ServiceConnectTlsConfiguration | None = None
+    port_name: DslValue[str] | None = None
+    client_aliases: list[DslValue[ServiceConnectClientAlias]] = field(
+        default_factory=list
+    )
+    discovery_name: DslValue[str] | None = None
+    ingress_port_override: DslValue[int] | None = None
+    timeout: DslValue[TimeoutConfiguration] | None = None
+    tls: DslValue[ServiceConnectTlsConfiguration] | None = None
 
 
 @dataclass
 class ServiceConnectTestTrafficRules(PropertyType):
-    header: ServiceConnectTestTrafficRulesHeader | None = None
+    header: DslValue[ServiceConnectTestTrafficRulesHeader] | None = None
 
 
 @dataclass
 class ServiceConnectTestTrafficRulesHeader(PropertyType):
-    name: str | None = None
-    value: ServiceConnectTestTrafficRulesHeaderValue | None = None
+    name: DslValue[str] | None = None
+    value: DslValue[ServiceConnectTestTrafficRulesHeaderValue] | None = None
 
 
 @dataclass
 class ServiceConnectTestTrafficRulesHeaderValue(PropertyType):
-    exact: str | None = None
+    exact: DslValue[str] | None = None
 
 
 @dataclass
 class ServiceConnectTlsCertificateAuthority(PropertyType):
-    aws_pca_authority_arn: str | None = None
+    aws_pca_authority_arn: DslValue[str] | None = None
 
 
 @dataclass
 class ServiceConnectTlsConfiguration(PropertyType):
-    issuer_certificate_authority: ServiceConnectTlsCertificateAuthority | None = None
-    kms_key: str | None = None
-    role_arn: str | None = None
+    issuer_certificate_authority: (
+        DslValue[ServiceConnectTlsCertificateAuthority] | None
+    ) = None
+    kms_key: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
 class ServiceManagedEBSVolumeConfiguration(PropertyType):
-    role_arn: str | None = None
-    encrypted: bool | None = None
-    filesystem_type: str | None = None
-    iops: int | None = None
-    kms_key_id: str | None = None
-    size_in_gi_b: int | None = None
-    snapshot_id: str | None = None
-    tag_specifications: list[EBSTagSpecification] = field(default_factory=list)
-    throughput: int | None = None
-    volume_initialization_rate: int | None = None
-    volume_type: str | None = None
+    role_arn: DslValue[str] | None = None
+    encrypted: DslValue[bool] | None = None
+    filesystem_type: DslValue[str] | None = None
+    iops: DslValue[int] | None = None
+    kms_key_id: DslValue[str] | None = None
+    size_in_gi_b: DslValue[int] | None = None
+    snapshot_id: DslValue[str] | None = None
+    tag_specifications: list[DslValue[EBSTagSpecification]] = field(
+        default_factory=list
+    )
+    throughput: DslValue[int] | None = None
+    volume_initialization_rate: DslValue[int] | None = None
+    volume_type: DslValue[str] | None = None
 
 
 @dataclass
 class ServiceRegistry(PropertyType):
-    container_name: str | None = None
-    container_port: int | None = None
-    port: int | None = None
-    registry_arn: str | None = None
+    container_name: DslValue[str] | None = None
+    container_port: DslValue[int] | None = None
+    port: DslValue[int] | None = None
+    registry_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -222,18 +233,18 @@ class ServiceVolumeConfiguration(PropertyType):
         "managed_ebs_volume": "ManagedEBSVolume",
     }
 
-    name: str | None = None
-    managed_ebs_volume: ServiceManagedEBSVolumeConfiguration | None = None
+    name: DslValue[str] | None = None
+    managed_ebs_volume: DslValue[ServiceManagedEBSVolumeConfiguration] | None = None
 
 
 @dataclass
 class TimeoutConfiguration(PropertyType):
-    idle_timeout_seconds: int | None = None
-    per_request_timeout_seconds: int | None = None
+    idle_timeout_seconds: DslValue[int] | None = None
+    per_request_timeout_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class VpcLatticeConfiguration(PropertyType):
-    port_name: str | None = None
-    role_arn: str | None = None
-    target_group_arn: str | None = None
+    port_name: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
+    target_group_arn: DslValue[str] | None = None

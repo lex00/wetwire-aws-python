@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Action(PropertyType):
-    block: dict[str, Any] | None = None
-    count: dict[str, Any] | None = None
+    block: DslValue[dict[str, Any]] | None = None
+    count: DslValue[dict[str, Any]] | None = None
 
 
 @dataclass
 class ApplicationLayerAutomaticResponseConfiguration(PropertyType):
-    action: Action | None = None
-    status: str | None = None
+    action: DslValue[Action] | None = None
+    status: DslValue[str] | None = None

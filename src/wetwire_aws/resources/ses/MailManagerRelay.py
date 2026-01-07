@@ -6,9 +6,10 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class RelayAuthentication(PropertyType):
-    no_authentication: dict[str, Any] | None = None
-    secret_arn: str | None = None
+    no_authentication: DslValue[dict[str, Any]] | None = None
+    secret_arn: DslValue[str] | None = None

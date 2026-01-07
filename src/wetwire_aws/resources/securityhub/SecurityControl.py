@@ -6,21 +6,22 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ParameterConfiguration(PropertyType):
-    value_type: str | None = None
-    value: ParameterValue | None = None
+    value_type: DslValue[str] | None = None
+    value: DslValue[ParameterValue] | None = None
 
 
 @dataclass
 class ParameterValue(PropertyType):
-    boolean: bool | None = None
-    double: float | None = None
-    enum: str | None = None
-    enum_list: list[String] = field(default_factory=list)
-    integer: int | None = None
-    integer_list: list[Integer] = field(default_factory=list)
-    string: str | None = None
-    string_list: list[String] = field(default_factory=list)
+    boolean: DslValue[bool] | None = None
+    double: DslValue[float] | None = None
+    enum: DslValue[str] | None = None
+    enum_list: list[DslValue[str]] = field(default_factory=list)
+    integer: DslValue[int] | None = None
+    integer_list: list[DslValue[int]] = field(default_factory=list)
+    string: DslValue[str] | None = None
+    string_list: list[DslValue[str]] = field(default_factory=list)

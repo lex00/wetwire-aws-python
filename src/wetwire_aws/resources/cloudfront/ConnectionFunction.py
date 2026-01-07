@@ -6,13 +6,14 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ConnectionFunctionConfig(PropertyType):
-    comment: str | None = None
-    runtime: str | None = None
-    key_value_store_associations: list[KeyValueStoreAssociation] = field(
+    comment: DslValue[str] | None = None
+    runtime: DslValue[str] | None = None
+    key_value_store_associations: list[DslValue[KeyValueStoreAssociation]] = field(
         default_factory=list
     )
 
@@ -23,4 +24,4 @@ class KeyValueStoreAssociation(PropertyType):
         "key_value_store_arn": "KeyValueStoreARN",
     }
 
-    key_value_store_arn: str | None = None
+    key_value_store_arn: DslValue[str] | None = None

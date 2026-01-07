@@ -6,16 +6,17 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ResourceTag(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class Subscriber(PropertyType):
-    address: str | None = None
-    type_: str | None = None
-    status: str | None = None
+    address: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    status: DslValue[str] | None = None

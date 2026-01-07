@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class NameNode(PropertyType):
-    hostname: str | None = None
-    port: int | None = None
+    hostname: DslValue[str] | None = None
+    port: DslValue[int] | None = None
 
 
 @dataclass
 class QopConfiguration(PropertyType):
-    data_transfer_protection: str | None = None
-    rpc_protection: str | None = None
+    data_transfer_protection: DslValue[str] | None = None
+    rpc_protection: DslValue[str] | None = None

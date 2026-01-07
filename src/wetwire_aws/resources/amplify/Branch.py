@@ -6,21 +6,22 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Backend(PropertyType):
-    stack_arn: str | None = None
+    stack_arn: DslValue[str] | None = None
 
 
 @dataclass
 class BasicAuthConfig(PropertyType):
-    password: str | None = None
-    username: str | None = None
-    enable_basic_auth: bool | None = None
+    password: DslValue[str] | None = None
+    username: DslValue[str] | None = None
+    enable_basic_auth: DslValue[bool] | None = None
 
 
 @dataclass
 class EnvironmentVariable(PropertyType):
-    name: str | None = None
-    value: str | None = None
+    name: DslValue[str] | None = None
+    value: DslValue[str] | None = None

@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,11 +15,11 @@ class WebhookAuthConfiguration(PropertyType):
         "allowed_ip_range": "AllowedIPRange",
     }
 
-    allowed_ip_range: str | None = None
-    secret_token: str | None = None
+    allowed_ip_range: DslValue[str] | None = None
+    secret_token: DslValue[str] | None = None
 
 
 @dataclass
 class WebhookFilterRule(PropertyType):
-    json_path: str | None = None
-    match_equals: str | None = None
+    json_path: DslValue[str] | None = None
+    match_equals: DslValue[str] | None = None

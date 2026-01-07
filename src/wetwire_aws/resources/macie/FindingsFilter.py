@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -19,14 +20,16 @@ class CriterionAdditionalProperties(PropertyType):
         "neq": "neq",
     }
 
-    eq: list[String] = field(default_factory=list)
-    gt: int | None = None
-    gte: int | None = None
-    lt: int | None = None
-    lte: int | None = None
-    neq: list[String] = field(default_factory=list)
+    eq: list[DslValue[str]] = field(default_factory=list)
+    gt: DslValue[int] | None = None
+    gte: DslValue[int] | None = None
+    lt: DslValue[int] | None = None
+    lte: DslValue[int] | None = None
+    neq: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class FindingCriteria(PropertyType):
-    criterion: dict[str, CriterionAdditionalProperties] = field(default_factory=dict)
+    criterion: dict[str, DslValue[CriterionAdditionalProperties]] = field(
+        default_factory=dict
+    )

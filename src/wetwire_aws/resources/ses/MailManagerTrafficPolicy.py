@@ -6,91 +6,92 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class IngressAnalysis(PropertyType):
-    analyzer: str | None = None
-    result_field: str | None = None
+    analyzer: DslValue[str] | None = None
+    result_field: DslValue[str] | None = None
 
 
 @dataclass
 class IngressBooleanExpression(PropertyType):
-    evaluate: IngressBooleanToEvaluate | None = None
-    operator: str | None = None
+    evaluate: DslValue[IngressBooleanToEvaluate] | None = None
+    operator: DslValue[str] | None = None
 
 
 @dataclass
 class IngressBooleanToEvaluate(PropertyType):
-    analysis: IngressAnalysis | None = None
-    is_in_address_list: IngressIsInAddressList | None = None
+    analysis: DslValue[IngressAnalysis] | None = None
+    is_in_address_list: DslValue[IngressIsInAddressList] | None = None
 
 
 @dataclass
 class IngressIpToEvaluate(PropertyType):
-    attribute: str | None = None
+    attribute: DslValue[str] | None = None
 
 
 @dataclass
 class IngressIpv4Expression(PropertyType):
-    evaluate: IngressIpToEvaluate | None = None
-    operator: str | None = None
-    values: list[String] = field(default_factory=list)
+    evaluate: DslValue[IngressIpToEvaluate] | None = None
+    operator: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class IngressIpv6Expression(PropertyType):
-    evaluate: IngressIpv6ToEvaluate | None = None
-    operator: str | None = None
-    values: list[String] = field(default_factory=list)
+    evaluate: DslValue[IngressIpv6ToEvaluate] | None = None
+    operator: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class IngressIpv6ToEvaluate(PropertyType):
-    attribute: str | None = None
+    attribute: DslValue[str] | None = None
 
 
 @dataclass
 class IngressIsInAddressList(PropertyType):
-    address_lists: list[String] = field(default_factory=list)
-    attribute: str | None = None
+    address_lists: list[DslValue[str]] = field(default_factory=list)
+    attribute: DslValue[str] | None = None
 
 
 @dataclass
 class IngressStringExpression(PropertyType):
-    evaluate: IngressStringToEvaluate | None = None
-    operator: str | None = None
-    values: list[String] = field(default_factory=list)
+    evaluate: DslValue[IngressStringToEvaluate] | None = None
+    operator: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class IngressStringToEvaluate(PropertyType):
-    analysis: IngressAnalysis | None = None
-    attribute: str | None = None
+    analysis: DslValue[IngressAnalysis] | None = None
+    attribute: DslValue[str] | None = None
 
 
 @dataclass
 class IngressTlsProtocolExpression(PropertyType):
-    evaluate: IngressTlsProtocolToEvaluate | None = None
-    operator: str | None = None
-    value: str | None = None
+    evaluate: DslValue[IngressTlsProtocolToEvaluate] | None = None
+    operator: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class IngressTlsProtocolToEvaluate(PropertyType):
-    attribute: str | None = None
+    attribute: DslValue[str] | None = None
 
 
 @dataclass
 class PolicyCondition(PropertyType):
-    boolean_expression: IngressBooleanExpression | None = None
-    ip_expression: IngressIpv4Expression | None = None
-    ipv6_expression: IngressIpv6Expression | None = None
-    string_expression: IngressStringExpression | None = None
-    tls_expression: IngressTlsProtocolExpression | None = None
+    boolean_expression: DslValue[IngressBooleanExpression] | None = None
+    ip_expression: DslValue[IngressIpv4Expression] | None = None
+    ipv6_expression: DslValue[IngressIpv6Expression] | None = None
+    string_expression: DslValue[IngressStringExpression] | None = None
+    tls_expression: DslValue[IngressTlsProtocolExpression] | None = None
 
 
 @dataclass
 class PolicyStatement(PropertyType):
-    action: str | None = None
-    conditions: list[PolicyCondition] = field(default_factory=list)
+    action: DslValue[str] | None = None
+    conditions: list[DslValue[PolicyCondition]] = field(default_factory=list)
