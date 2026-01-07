@@ -109,6 +109,20 @@ class PropertyTypeProxy(Generic[_PT]):
         """Return the wrapped PropertyType class."""
         return object.__getattribute__(self, "_class")
 
+    def __mro_entries__(self, bases: tuple[type, ...]) -> tuple[type[_PT]]:
+        """Allow PropertyTypeProxy to be used as a base class.
+
+        When Python sees `class X(PropertyTypeProxy):`, it calls __mro_entries__
+        and substitutes the result into the base classes. This enables:
+
+            class MyEncryption(s3.Bucket.BucketEncryption):
+                ...
+
+        To work correctly by inheriting from the actual BucketEncryption class.
+        See PEP 560 for details.
+        """
+        return (object.__getattribute__(self, "_class"),)
+
 
 class PropertyTypeDescriptor(Generic[_PT]):
     """Descriptor that returns PropertyTypeProxy for class-level access.
@@ -266,6 +280,17 @@ def _serialize_value(value: Any) -> Any:
         from wetwire_aws.intrinsics import GetAtt
 
         return GetAtt(value.target.__name__, value.attr).to_dict()
+    # Handle PropertyTypeProxy (e.g., MyDB.Endpoint without further attribute access)
+    # This shouldn't typically happen but can occur if PropertyType is used directly
+    if isinstance(value, PropertyTypeProxy):
+        from wetwire_aws.intrinsics import GetAtt
+
+        resource_name = (
+            value._resource.__name__
+            if isinstance(value._resource, type)
+            else value._resource
+        )
+        return GetAtt(resource_name, value._name).to_dict()
     # Handle no-parens pattern: class references (e.g., MyBucket)
     # Also handle plain class types that inherit from CloudFormationResource or PropertyType
     if is_class_ref(value) or (
@@ -284,11 +309,21 @@ def _serialize_value(value: Any) -> Any:
         from wetwire_aws.intrinsics import Ref
 
         return Ref(value.__name__).to_dict()
+    # Handle PolicyDocument/PolicyStatement subclasses (used in IAM policies)
+    # These are classes that define policy documents with class attributes
+    if isinstance(value, type) and issubclass(
+        value, (PolicyDocument, PolicyStatement, DenyStatement)
+    ):
+        # Instantiate and serialize the policy class
+        instance = value()
+        return instance.to_dict()
     # Check for to_dict method - use callable() to avoid AttrRef false positives
     # (AttrRef's __getattr__ returns AttrRef for any attribute access)
-    to_dict_method = getattr(value, "to_dict", None)
-    if to_dict_method is not None and callable(to_dict_method):
-        return to_dict_method()
+    # Only call on instances, not classes (to avoid missing 'self' errors)
+    if not isinstance(value, type):
+        to_dict_method = getattr(value, "to_dict", None)
+        if to_dict_method is not None and callable(to_dict_method):
+            return to_dict_method()
     if isinstance(value, list):
         return [_serialize_value(item) for item in value]
     if isinstance(value, dict):

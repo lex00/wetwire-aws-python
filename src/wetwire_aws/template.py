@@ -96,14 +96,15 @@ class Output:
     @classmethod
     def to_dict(cls) -> dict[str, Any]:
         """Convert output to CloudFormation dict format."""
-        value = cls.value
-        if isinstance(value, IntrinsicFunction):
-            value = value.to_dict()
+        from wetwire_aws.base import _serialize_value
+
+        value = _serialize_value(cls.value)
         result: dict[str, Any] = {"Value": value}
         if cls.description:
             result["Description"] = cls.description
         if cls.export_name:
-            result["Export"] = {"Name": cls.export_name}
+            export_name = _serialize_value(cls.export_name)
+            result["Export"] = {"Name": export_name}
         if cls.condition:
             result["Condition"] = cls.condition
         return result

@@ -285,7 +285,9 @@ def main() -> int:
         return 1
 
     # Number of parallel jobs
-    jobs = min(multiprocessing.cpu_count(), 8)
+    # NOTE: Using 1 job for import to avoid race conditions in shared venv
+    # See issue #51 for proper fix (each import should use isolated temp venv)
+    jobs = 1  # min(multiprocessing.cpu_count(), 8)
 
     # Step 1: Optionally clean output directory
     if args.clean and output_dir.exists():
