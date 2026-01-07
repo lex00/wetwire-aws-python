@@ -106,7 +106,7 @@ def fetch_http(
         last_modified = response.headers.get("Last-Modified")
 
     # Handle gzip-compressed content
-    if content[:2] == b'\x1f\x8b':  # gzip magic number
+    if content[:2] == b"\x1f\x8b":  # gzip magic number
         content = gzip.decompress(content)
 
     # Calculate hash

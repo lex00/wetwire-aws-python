@@ -251,11 +251,11 @@ toml = [
 
 [[package]]
 name = "dataclass-dsl"
-version = "1.0.1"
+version = "1.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/85/ff/41bc1db334a4ff536ebbaa1adcc1f0ed5030b66b8673961619b19b19a39f/dataclass_dsl-1.0.1.tar.gz", hash = "sha256:ab52ad7d310780be9c35ef19a2975d34cb613c580c0e5aa1a12c7247d245ff7c", size = 58246 }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/6d/05efb2e9fbe878f712a1787844be7ad474dcf0bff8f785f83ab5db0dd274/dataclass_dsl-1.1.0.tar.gz", hash = "sha256:8a9a75e55c4083e81663da220500b443823dd5780e35294265979b2f94a79499", size = 61305 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/32/5e/e353cb6b015d8d1cd00f1866d78821c9470f0cec0582e546a6b2575bf636/dataclass_dsl-1.0.1-py3-none-any.whl", hash = "sha256:ba4b1d00a8d206e28f9adba002ed59101c657621010be47f01694e8d77529781", size = 53559 },
+    { url = "https://files.pythonhosted.org/packages/fd/7a/f398d2a812c8a81a244e2321446485cf3b531ac1ea367b47430b69df0b7d/dataclass_dsl-1.1.0-py3-none-any.whl", hash = "sha256:5a459ae52069822bcbe9ac05f4ee2f90fd987a8e14e823602b4812c37b0ad29b", size = 54322 },
 ]
 
 [[package]]
@@ -1053,7 +1053,7 @@ dev = [
 requires-dist = [
     { name = "anthropic", marker = "extra == 'agent'", specifier = ">=0.40.0" },
     { name = "botocore", marker = "extra == 'codegen'", specifier = ">=1.34" },
-    { name = "dataclass-dsl", specifier = ">=1.0.1" },
+    { name = "dataclass-dsl", specifier = ">=1.1.0" },
     { name = "jinja2", marker = "extra == 'codegen'", specifier = ">=3.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.1" },

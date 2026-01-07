@@ -423,7 +423,14 @@ def main() -> int:
         lint_env["PYTHONPATH"] = str(project_root / "src")
         try:
             subprocess.run(
-                [sys.executable, "-m", "wetwire_aws.cli", "lint", "--fix", str(output_dir)],
+                [
+                    sys.executable,
+                    "-m",
+                    "wetwire_aws.cli",
+                    "lint",
+                    "--fix",
+                    str(output_dir),
+                ],
                 cwd=project_root,
                 env=lint_env,
                 capture_output=True,

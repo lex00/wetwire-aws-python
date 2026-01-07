@@ -229,7 +229,9 @@ class IntermediateSchema:
             source_version=data.get("source_version", ""),
             sdk_version=data.get("sdk_version", ""),
             resources=[ResourceDef.from_dict(r) for r in data.get("resources", [])],
-            nested_types=[NestedTypeDef.from_dict(n) for n in data.get("nested_types", [])],
+            nested_types=[
+                NestedTypeDef.from_dict(n) for n in data.get("nested_types", [])
+            ],
         )
 
 
