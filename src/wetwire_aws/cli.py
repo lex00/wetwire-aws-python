@@ -251,8 +251,30 @@ def build_command(args: argparse.Namespace) -> None:
     """Generate CloudFormation template from registered resources."""
     registry = get_aws_registry()
 
+    # Handle path argument (convert to module)
+    if args.path:
+        package_path = Path(args.path).resolve()
+        if not package_path.exists():
+            print(f"Error: Path does not exist: {args.path}", file=sys.stderr)
+            sys.exit(1)
+        if not package_path.is_dir():
+            print(f"Error: Path is not a directory: {args.path}", file=sys.stderr)
+            sys.exit(1)
+        if not (package_path / "__init__.py").exists():
+            print(
+                f"Error: Path is not a Python package (missing __init__.py): {args.path}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        # Add parent directory to sys.path and use directory name as module
+        parent_dir = str(package_path.parent)
+        if parent_dir not in sys.path:
+            sys.path.insert(0, parent_dir)
+        module_name = package_path.name
+        discover_resources(module_name, registry, args.verbose)
     # Import modules to discover resources
-    if args.modules:
+    elif args.modules:
         for module_path in args.modules:
             discover_resources(module_path, registry, args.verbose)
 
@@ -352,6 +374,11 @@ def main() -> None:
     build_parser = subparsers.add_parser(
         "build",
         help="Generate CloudFormation template",
+    )
+    build_parser.add_argument(
+        "path",
+        nargs="?",
+        help="Path to package directory (alternative to --module)",
     )
     add_common_args(build_parser)
     build_parser.add_argument(
