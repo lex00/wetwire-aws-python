@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2026-01-07
+
+### Fixed
+
+- PropertyType wrapper classes now serialize correctly (#68)
+  - Bug: `_instantiate_property_type_wrapper()` read from instance `__dict__` (empty) instead of class `__dict__` (where user values are defined)
+  - Nested PropertyTypes like `BucketEncryption`, `KeySchema`, `SecurityGroupIngress` were serializing as `{}`
+  - All 12 complex imported examples now generate valid CloudFormation output
+
+### Added
+
+- Integration tests for CloudFormation output validation (#68)
+  - `TestExamplesGenerateCF` verifies imported examples generate valid CF output
+  - Checks resource count matches and no empty dicts in nested Properties
+
 ## [1.7.1] - 2026-01-07
 
 ### Added
