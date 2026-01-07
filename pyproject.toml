@@ -35,7 +35,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "dataclass-dsl>=1.1.0",
+    "dataclass-dsl>=1.1.1",
     "pyyaml>=6.0",
 ]
 
