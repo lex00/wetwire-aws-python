@@ -249,6 +249,43 @@ def _get_aws_namespace() -> dict[str, Any]:
     return namespace
 
 
+def _register_template_elements(package_globals: dict[str, Any]) -> None:
+    """Auto-register Parameter, Output, Mapping, and Condition subclasses.
+
+    Scans the package globals for classes that inherit from template element
+    base classes and registers them in the appropriate registries.
+
+    Args:
+        package_globals: The package's globals() dict
+    """
+    from wetwire_aws.decorator import (
+        _is_condition_subclass,
+        _is_mapping_subclass,
+        _is_output_subclass,
+        _is_parameter_subclass,
+        register_condition,
+        register_mapping,
+        register_output,
+        register_parameter,
+    )
+
+    for name, obj in package_globals.items():
+        if name.startswith("_"):
+            continue
+        if not isinstance(obj, type):
+            continue
+
+        # Register based on inheritance
+        if _is_parameter_subclass(obj):
+            register_parameter(obj)
+        elif _is_output_subclass(obj):
+            register_output(obj)
+        elif _is_mapping_subclass(obj):
+            register_mapping(obj)
+        elif _is_condition_subclass(obj):
+            register_condition(obj)
+
+
 def setup_params(package_globals: dict[str, Any]) -> None:
     """Inject AWS types needed by params.py into the package namespace.
 
@@ -396,7 +433,8 @@ def setup_resources(
     4. Imports modules in topological order
     5. Injects AWS decorators, types, and service modules into each module's namespace
     6. Auto-decorates classes with `resource:` annotation
-    7. Generates .pyi stubs with AWS-specific imports for IDE support
+    7. Auto-registers Parameter, Output, Mapping, Condition subclasses
+    8. Generates .pyi stubs with AWS-specific imports for IDE support
 
     Args:
         init_file: Path to __init__.py (__file__)
@@ -430,3 +468,6 @@ def setup_resources(
         auto_decorate=True,
         decorator=wetwire_aws,  # type: ignore[arg-type]
     )
+
+    # Auto-register template elements (Parameter, Output, Mapping, Condition)
+    _register_template_elements(package_globals)

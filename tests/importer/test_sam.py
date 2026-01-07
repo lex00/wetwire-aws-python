@@ -38,7 +38,8 @@ class TestSAMFunctionTemplate:
         assert "timeout = 30" in code
 
     def test_has_output(self, code):
-        assert "class FunctionArnOutput:" in code
+        # Inheritance pattern: class FunctionArnOutput(Output)
+        assert "class FunctionArnOutput(Output):" in code
         assert "value = ProcessorFunction.Arn" in code
 
     def test_generated_code_is_valid_python(self, code):
@@ -54,9 +55,8 @@ class TestSAMApiFunctionTemplate:
         return generate_code(template)
 
     def test_has_parameter(self, code):
-        # Parameter class name is derived from the parameter name
-        assert "class Environment:" in code
-        assert "resource: Parameter" in code
+        # Inheritance pattern: class Environment(Parameter)
+        assert "class Environment(Parameter):" in code
         assert "default = 'dev'" in code
 
     def test_has_api_class(self, code):
@@ -83,7 +83,8 @@ class TestSAMApiFunctionTemplate:
         assert "'ENVIRONMENT': Environment" in code
 
     def test_has_api_output(self, code):
-        assert "class ApiEndpointOutput:" in code
+        # Inheritance pattern: class ApiEndpointOutput(Output)
+        assert "class ApiEndpointOutput(Output):" in code
         # Output uses Sub intrinsic
         assert "Sub(" in code
 
@@ -114,7 +115,8 @@ class TestSAMTableTemplate:
         assert "primary_key" in code
 
     def test_has_output(self, code):
-        assert "class TableArnOutput:" in code
+        # Inheritance pattern: class TableArnOutput(Output)
+        assert "class TableArnOutput(Output):" in code
         assert "value = ItemsTable.Arn" in code
 
     def test_generated_code_is_valid_python(self, code):

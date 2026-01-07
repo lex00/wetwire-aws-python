@@ -14,6 +14,12 @@ from wetwire_aws.base import CloudFormationResource, PropertyType
 # AWS-specific registry for CloudFormation resources
 cf_registry = ResourceRegistry()
 
+# Registries for template elements (Parameters, Outputs, Mappings, Conditions)
+param_registry = ResourceRegistry()
+output_registry = ResourceRegistry()
+mapping_registry = ResourceRegistry()
+condition_registry = ResourceRegistry()
+
 
 def _get_resource_class(cls: type[Any]) -> type[Any] | None:
     """Extract CloudFormation resource class from base classes.
@@ -78,3 +84,77 @@ def get_aws_registry() -> ResourceRegistry:
         decorated with @wetwire_aws.
     """
     return cf_registry
+
+
+# =============================================================================
+# Template Element Detection and Registration
+# =============================================================================
+
+
+def _is_parameter_subclass(cls: type[Any]) -> bool:
+    """Check if cls inherits from Parameter (but is not Parameter itself)."""
+    # Import here to avoid circular imports
+    from wetwire_aws.template import Parameter
+
+    return (
+        isinstance(cls, type)
+        and issubclass(cls, Parameter)
+        and cls is not Parameter
+    )
+
+
+def _is_output_subclass(cls: type[Any]) -> bool:
+    """Check if cls inherits from Output (but is not Output itself)."""
+    from wetwire_aws.template import Output
+
+    return (
+        isinstance(cls, type)
+        and issubclass(cls, Output)
+        and cls is not Output
+    )
+
+
+def _is_mapping_subclass(cls: type[Any]) -> bool:
+    """Check if cls inherits from Mapping (but is not Mapping itself)."""
+    from wetwire_aws.template import Mapping
+
+    return (
+        isinstance(cls, type)
+        and issubclass(cls, Mapping)
+        and cls is not Mapping
+    )
+
+
+def _is_condition_subclass(cls: type[Any]) -> bool:
+    """Check if cls inherits from TemplateCondition (but is not itself)."""
+    from wetwire_aws.template import TemplateCondition
+
+    return (
+        isinstance(cls, type)
+        and issubclass(cls, TemplateCondition)
+        and cls is not TemplateCondition
+    )
+
+
+def register_parameter(cls: type[Any]) -> type[Any]:
+    """Register a Parameter subclass in the param_registry."""
+    param_registry.register(cls, "Parameter")
+    return cls
+
+
+def register_output(cls: type[Any]) -> type[Any]:
+    """Register an Output subclass in the output_registry."""
+    output_registry.register(cls, "Output")
+    return cls
+
+
+def register_mapping(cls: type[Any]) -> type[Any]:
+    """Register a Mapping subclass in the mapping_registry."""
+    mapping_registry.register(cls, "Mapping")
+    return cls
+
+
+def register_condition(cls: type[Any]) -> type[Any]:
+    """Register a Condition subclass in the condition_registry."""
+    condition_registry.register(cls, "Condition")
+    return cls

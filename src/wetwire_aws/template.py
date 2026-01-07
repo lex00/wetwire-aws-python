@@ -5,19 +5,39 @@ CloudFormationTemplate collects registered resources and generates
 valid CloudFormation JSON or YAML.
 """
 
+import builtins
 import json
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, ClassVar, cast
 
 from wetwire_aws.decorator import cf_registry
 from wetwire_aws.intrinsics.functions import IntrinsicFunction
 
+# Alias for type() builtin since 'type' is used as parameter name
+builtins_type = builtins.type
 
-@dataclass
-class Parameter:
-    """CloudFormation template parameter."""
 
-    type: str
+class ParameterMeta(type):
+    """Metaclass for Parameter that enables Ref-style access.
+
+    When a Parameter subclass is referenced (e.g., `MyParam`), it can be
+    detected as a reference marker for CloudFormation Ref intrinsics.
+    """
+
+    _refs_marker: ClassVar[bool] = True
+
+
+class Parameter(metaclass=ParameterMeta):
+    """CloudFormation template parameter base class.
+
+    Use inheritance to define parameters:
+        class Environment(Parameter):
+            type = STRING
+            default = "dev"
+    """
+
+    # Class-level defaults that can be overridden by subclasses
+    type: str = "String"
     description: str = ""
     default: Any = None
     allowed_values: list[str] | None = None
@@ -29,77 +49,104 @@ class Parameter:
     no_echo: bool = False
     constraint_description: str | None = None
 
-    def to_dict(self) -> dict[str, Any]:
-        result: dict[str, Any] = {"Type": self.type}
-        if self.description:
-            result["Description"] = self.description
-        if self.default is not None:
-            result["Default"] = self.default
-        if self.allowed_values:
-            result["AllowedValues"] = self.allowed_values
-        if self.allowed_pattern:
-            result["AllowedPattern"] = self.allowed_pattern
-        if self.min_length is not None:
-            result["MinLength"] = self.min_length
-        if self.max_length is not None:
-            result["MaxLength"] = self.max_length
-        if self.min_value is not None:
-            result["MinValue"] = self.min_value
-        if self.max_value is not None:
-            result["MaxValue"] = self.max_value
-        if self.no_echo:
+    # Marker for reference detection
+    _refs_marker: ClassVar[bool] = True
+
+    @classmethod
+    def to_dict(cls) -> dict[str, Any]:
+        """Convert parameter to CloudFormation dict format."""
+        result: dict[str, Any] = {"Type": cls.type}
+        if cls.description:
+            result["Description"] = cls.description
+        if cls.default is not None:
+            result["Default"] = cls.default
+        if cls.allowed_values:
+            result["AllowedValues"] = cls.allowed_values
+        if cls.allowed_pattern:
+            result["AllowedPattern"] = cls.allowed_pattern
+        if cls.min_length is not None:
+            result["MinLength"] = cls.min_length
+        if cls.max_length is not None:
+            result["MaxLength"] = cls.max_length
+        if cls.min_value is not None:
+            result["MinValue"] = cls.min_value
+        if cls.max_value is not None:
+            result["MaxValue"] = cls.max_value
+        if cls.no_echo:
             result["NoEcho"] = True
-        if self.constraint_description:
-            result["ConstraintDescription"] = self.constraint_description
+        if cls.constraint_description:
+            result["ConstraintDescription"] = cls.constraint_description
         return result
 
 
-@dataclass
 class Output:
-    """CloudFormation template output."""
+    """CloudFormation template output base class.
 
-    value: Any
+    Use inheritance to define outputs:
+        class BucketArnOutput(Output):
+            value = MyBucket.Arn
+            description = "Bucket ARN"
+    """
+
+    value: Any = None
     description: str = ""
     export_name: str | None = None
     condition: str | None = None
 
-    def to_dict(self) -> dict[str, Any]:
-        value = (
-            self.value.to_dict()
-            if isinstance(self.value, IntrinsicFunction)
-            else self.value
-        )
+    @classmethod
+    def to_dict(cls) -> dict[str, Any]:
+        """Convert output to CloudFormation dict format."""
+        value = cls.value
+        if isinstance(value, IntrinsicFunction):
+            value = value.to_dict()
         result: dict[str, Any] = {"Value": value}
-        if self.description:
-            result["Description"] = self.description
-        if self.export_name:
-            result["Export"] = {"Name": self.export_name}
-        if self.condition:
-            result["Condition"] = self.condition
+        if cls.description:
+            result["Description"] = cls.description
+        if cls.export_name:
+            result["Export"] = {"Name": cls.export_name}
+        if cls.condition:
+            result["Condition"] = cls.condition
         return result
 
 
-@dataclass
 class Mapping:
-    """CloudFormation template mapping.
+    """CloudFormation template mapping base class.
 
-    A mapping is a two-level lookup table used with Fn::FindInMap.
+    Use inheritance to define mappings:
+        class RegionMapMapping(Mapping):
+            map_data = {"us-east-1": {"AMI": "ami-12345"}}
     """
 
-    map_data: dict[str, dict[str, Any]] = field(default_factory=dict)
+    map_data: dict[str, dict[str, Any]] = {}
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
-        return self.map_data
+    @classmethod
+    def to_dict(cls) -> dict[str, dict[str, Any]]:
+        """Return the mapping data."""
+        return cls.map_data
 
 
-class Condition:
-    """CloudFormation template condition.
+class TemplateCondition:
+    """CloudFormation template condition base class.
 
-    Represents a condition definition in the Conditions section.
-    Note: This is different from the Condition intrinsic function.
+    Use inheritance to define conditions:
+        class IsProdCondition(TemplateCondition):
+            expression = Equals(Environment, "prod")
+
+    Note: Named TemplateCondition to avoid conflict with the Condition
+    intrinsic function.
     """
 
-    pass
+    expression: Any = None
+    logical_id: str | None = None  # Optional override for the condition name
+
+    @classmethod
+    def get_expression(cls) -> Any:
+        """Get the condition expression."""
+        return cls.expression
+
+
+# Alias for backward compatibility
+Condition = TemplateCondition
 
 
 @dataclass
@@ -112,11 +159,11 @@ class CloudFormationTemplate:
     """
 
     description: str = ""
-    parameters: dict[str, Parameter] = field(default_factory=dict)
+    parameters: dict[str, type[Parameter]] = field(default_factory=dict)
     mappings: dict[str, dict[str, dict[str, Any]]] = field(default_factory=dict)
     conditions: dict[str, Any] = field(default_factory=dict)
     resources: dict[str, Any] = field(default_factory=dict)
-    outputs: dict[str, Output] = field(default_factory=dict)
+    outputs: dict[str, type[Output]] = field(default_factory=dict)
     transform: str | list[str] | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -125,11 +172,14 @@ class CloudFormationTemplate:
         cls,
         scope_package: str | None = None,
         description: str = "",
-        parameters: dict[str, Parameter] | None = None,
-        outputs: dict[str, Output] | None = None,
+        parameters: dict[str, type["Parameter"]] | None = None,
+        outputs: dict[str, type["Output"]] | None = None,
     ) -> "CloudFormationTemplate":
         """
-        Create a template from registered resources.
+        Create a template from registered resources and template elements.
+
+        Resources, Parameters, Outputs, Mappings, and Conditions are
+        automatically collected from their respective registries.
 
         Resources are topologically sorted by dependencies using dataclass-dsl
         get_dependencies(), so resources appear in creation order.
@@ -137,14 +187,53 @@ class CloudFormationTemplate:
         Args:
             scope_package: Optional package name to filter resources
             description: Template description
-            parameters: Template parameters
-            outputs: Template outputs
+            parameters: Additional parameters (merged with auto-collected)
+            outputs: Additional outputs (merged with auto-collected)
 
         Returns:
-            CloudFormationTemplate with all registered resources
+            CloudFormationTemplate with all registered elements
         """
+        from wetwire_aws.decorator import (
+            condition_registry,
+            mapping_registry,
+            output_registry,
+            param_registry,
+        )
+
         registry = cf_registry
         resources: dict[str, Any] = {}
+
+        # Auto-collect parameters from registry
+        auto_parameters: dict[str, type[Parameter]] = {}
+        for param_cls in param_registry.get_all(scope_package):
+            auto_parameters[param_cls.__name__] = param_cls
+
+        # Auto-collect outputs from registry
+        auto_outputs: dict[str, type[Output]] = {}
+        for output_cls in output_registry.get_all(scope_package):
+            # Remove "Output" suffix if present for cleaner names
+            name = output_cls.__name__
+            if name.endswith("Output"):
+                name = name[:-6]
+            auto_outputs[name] = output_cls
+
+        # Auto-collect mappings from registry
+        auto_mappings: dict[str, dict[str, dict[str, Any]]] = {}
+        for mapping_cls in mapping_registry.get_all(scope_package):
+            # Remove "Mapping" suffix if present
+            name = mapping_cls.__name__
+            if name.endswith("Mapping"):
+                name = name[:-7]
+            auto_mappings[name] = mapping_cls.to_dict()
+
+        # Auto-collect conditions from registry
+        auto_conditions: dict[str, Any] = {}
+        for cond_cls in condition_registry.get_all(scope_package):
+            # Use logical_id if set, otherwise derive from class name
+            name = getattr(cond_cls, "logical_id", None) or cond_cls.__name__
+            if name.endswith("Condition"):
+                name = name[:-9]
+            auto_conditions[name] = cond_cls.get_expression()
 
 
         from dataclass_dsl import is_attr_ref, is_class_ref
@@ -277,11 +366,18 @@ class CloudFormationTemplate:
             resource_instance = resource_type_cls(**props)
             resources[logical_name] = resource_instance.to_dict()
 
+        # Merge auto-collected with manually passed elements
+        # Manual parameters/outputs override auto-collected ones
+        final_parameters = {**auto_parameters, **(parameters or {})}
+        final_outputs = {**auto_outputs, **(outputs or {})}
+
         return cls(
             description=description,
-            parameters=parameters or {},
+            parameters=final_parameters,
+            mappings=auto_mappings,
+            conditions=auto_conditions,
             resources=resources,
-            outputs=outputs or {},
+            outputs=final_outputs,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -379,20 +475,35 @@ class CloudFormationTemplate:
         no_echo: bool = False,
         constraint_description: str | None = None,
     ) -> None:
-        """Add a parameter to the template."""
-        self.parameters[name] = Parameter(
-            type=type,
-            description=description,
-            default=default,
-            allowed_values=allowed_values,
-            allowed_pattern=allowed_pattern,
-            min_length=min_length,
-            max_length=max_length,
-            min_value=min_value,
-            max_value=max_value,
-            no_echo=no_echo,
-            constraint_description=constraint_description,
-        )
+        """Add a parameter to the template.
+
+        Dynamically creates a Parameter subclass with the given attributes.
+        """
+        attrs: dict[str, Any] = {"type": type}
+        if description:
+            attrs["description"] = description
+        if default is not None:
+            attrs["default"] = default
+        if allowed_values:
+            attrs["allowed_values"] = allowed_values
+        if allowed_pattern:
+            attrs["allowed_pattern"] = allowed_pattern
+        if min_length is not None:
+            attrs["min_length"] = min_length
+        if max_length is not None:
+            attrs["max_length"] = max_length
+        if min_value is not None:
+            attrs["min_value"] = min_value
+        if max_value is not None:
+            attrs["max_value"] = max_value
+        if no_echo:
+            attrs["no_echo"] = no_echo
+        if constraint_description:
+            attrs["constraint_description"] = constraint_description
+
+        # Dynamically create a Parameter subclass
+        param_cls = cast("builtins.type[Parameter]", builtins_type(name, (Parameter,), attrs))
+        self.parameters[name] = param_cls
 
     def add_output(
         self,
@@ -403,13 +514,21 @@ class CloudFormationTemplate:
         export_name: str | None = None,
         condition: str | None = None,
     ) -> None:
-        """Add an output to the template."""
-        self.outputs[name] = Output(
-            value=value,
-            description=description,
-            export_name=export_name,
-            condition=condition,
-        )
+        """Add an output to the template.
+
+        Dynamically creates an Output subclass with the given attributes.
+        """
+        attrs: dict[str, Any] = {"value": value}
+        if description:
+            attrs["description"] = description
+        if export_name:
+            attrs["export_name"] = export_name
+        if condition:
+            attrs["condition"] = condition
+
+        # Dynamically create an Output subclass
+        output_cls = cast(type[Output], builtins_type(name, (Output,), attrs))
+        self.outputs[name] = output_cls
 
     def add_resource(self, logical_name: str, resource: Any) -> None:
         """Add a resource to the template."""

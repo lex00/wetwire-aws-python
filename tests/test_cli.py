@@ -94,4 +94,5 @@ class TestCLI:
             env=env,
         )
         assert result.returncode != 0
-        assert "Unknown persona" in result.stderr
+        # Either "Unknown persona" (if wetwire-core installed) or "wetwire-core required"
+        assert "Unknown persona" in result.stderr or "wetwire-core required" in result.stderr

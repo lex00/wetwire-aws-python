@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
 
 def generate_parameter_class(param: IRParameter, ctx: CodegenContext) -> str:
-    """Generate a Parameter wrapper class definition."""
+    """Generate a Parameter class using inheritance pattern."""
     lines = []
 
     # Docstring
@@ -47,9 +47,8 @@ def generate_parameter_class(param: IRParameter, ctx: CodegenContext) -> str:
         lines.append(f"    {escape_docstring(param.description)}")
         lines.append("")
 
-    # Resource type annotation
+    # Import Parameter base class
     ctx.add_import("wetwire_aws", "Parameter")
-    lines.append("    resource: Parameter")
 
     # Type - use constant if available
     if param.type in PARAMETER_TYPE_MAP:
@@ -86,7 +85,8 @@ def generate_parameter_class(param: IRParameter, ctx: CodegenContext) -> str:
         lines.append("    no_echo = True")
 
     class_name = sanitize_class_name(param.logical_id)
-    return f"class {class_name}:\n" + "\n".join(lines)
+    # Use inheritance pattern: class MyParam(Parameter):
+    return f"class {class_name}(Parameter):\n" + "\n".join(lines)
 
 
 # =============================================================================
@@ -167,7 +167,7 @@ def generate_resource_class(resource: IRResource, ctx: CodegenContext) -> str:
 
 
 def generate_output_class(output: IROutput, ctx: CodegenContext) -> str:
-    """Generate an output wrapper class."""
+    """Generate an Output class using inheritance pattern."""
     lines = []
 
     # Docstring
@@ -176,7 +176,6 @@ def generate_output_class(output: IROutput, ctx: CodegenContext) -> str:
         lines.append("")
 
     ctx.add_import("wetwire_aws", "Output")
-    lines.append("    resource: Output")
 
     # Value
     value_str = value_to_python(output.value, ctx, indent=1)
@@ -192,7 +191,8 @@ def generate_output_class(output: IROutput, ctx: CodegenContext) -> str:
         lines.append(f"    condition = {escape_string(output.condition)}")
 
     class_name = sanitize_class_name(output.logical_id)
-    return f"class {class_name}Output:\n" + "\n".join(lines)
+    # Use inheritance pattern: class MyOutput(Output):
+    return f"class {class_name}Output(Output):\n" + "\n".join(lines)
 
 
 # =============================================================================
@@ -201,18 +201,18 @@ def generate_output_class(output: IROutput, ctx: CodegenContext) -> str:
 
 
 def generate_mapping_class(mapping: IRMapping, ctx: CodegenContext) -> str:
-    """Generate a mapping wrapper class."""
+    """Generate a Mapping class using inheritance pattern."""
     lines = []
 
     ctx.add_import("wetwire_aws", "Mapping")
-    lines.append("    resource: Mapping")
 
     # Map data as dict
     map_str = value_to_python(mapping.map_data, ctx, indent=1)
     lines.append(f"    map_data = {map_str}")
 
     class_name = sanitize_class_name(mapping.logical_id)
-    return f"class {class_name}Mapping:\n" + "\n".join(lines)
+    # Use inheritance pattern: class MyMapping(Mapping):
+    return f"class {class_name}Mapping(Mapping):\n" + "\n".join(lines)
 
 
 # =============================================================================
@@ -221,11 +221,10 @@ def generate_mapping_class(mapping: IRMapping, ctx: CodegenContext) -> str:
 
 
 def generate_condition_class(condition: IRCondition, ctx: CodegenContext) -> str:
-    """Generate a condition wrapper class."""
+    """Generate a Condition class using inheritance pattern."""
     lines = []
 
     ctx.add_import("wetwire_aws", "Condition as TemplateCondition")
-    lines.append("    resource: TemplateCondition")
 
     # Store the original logical ID for CloudFormation serialization
     lines.append(f"    logical_id = {escape_string(condition.logical_id)}")
@@ -235,4 +234,5 @@ def generate_condition_class(condition: IRCondition, ctx: CodegenContext) -> str
     lines.append(f"    expression = {expr_str}")
 
     class_name = sanitize_class_name(condition.logical_id)
-    return f"class {class_name}Condition:\n" + "\n".join(lines)
+    # Use inheritance pattern: class MyCondition(TemplateCondition):
+    return f"class {class_name}Condition(TemplateCondition):\n" + "\n".join(lines)
