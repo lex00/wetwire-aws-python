@@ -3,13 +3,18 @@ AWS-specific stub configuration for dataclass_dsl.
 
 Provides AWS_STUB_CONFIG for generating .pyi stub files that work
 with wetwire-aws imports. The stub generator uses this to expand
-star imports and re-export all service modules.
+star imports for core types.
+
+Note: Service modules (s3, ec2, lambda_, etc.) are NOT included in
+the static stub config. They are dynamically detected based on actual
+usage in each package.
 """
 
-from dataclass_dsl import StubConfig, get_package_modules
+from dataclass_dsl import StubConfig
 
 # All names exported from wetwire_aws that should be available
 # via `from . import *` in resource packages.
+# This includes only core types - NOT the 264 service modules.
 AWS_CORE_EXPORTS = [
     # Decorator
     "wetwire_aws",
@@ -110,17 +115,15 @@ AWS_CORE_EXPORTS = [
     "ARN_LIKE",
     "ARN_NOT_LIKE",
     "NULL",
-    # Loader
-    "setup_resources",
 ]
 
-# Service modules dynamically discovered from wetwire_aws.resources
-# This replaces the previous 260+ line static list
-AWS_SERVICE_MODULES = get_package_modules("wetwire_aws.resources")
-
-# Build extra header lines that include core wetwire_aws imports
+# Build extra header lines for core wetwire_aws imports only
 # These are needed because setup_params() and setup_resources() inject
-# names dynamically, but the IDE can't see that from static analysis
+# names dynamically, but the IDE can't see that from static analysis.
+#
+# Note: We do NOT import all 264 service modules here. That would bloat
+# every stub file with 500+ lines. Instead, the stub generator will
+# add imports for only the service modules actually used by each package.
 _CORE_IMPORT_LINES = [
     "# Core exports injected by setup_params() and setup_resources()",
     "from wetwire_aws import (",
@@ -224,24 +227,14 @@ _CORE_IMPORT_LINES = [
     "    ARN_LIKE,",
     "    ARN_NOT_LIKE,",
     "    NULL,",
-    "    # Loader",
-    "    setup_resources,",
-    ")",
-    "from wetwire_aws.resources import (",
-    "    " + ",\n    ".join(AWS_SERVICE_MODULES[:30]) + ",",
-    "    " + ",\n    ".join(AWS_SERVICE_MODULES[30:60]) + ",",
-    "    " + ",\n    ".join(AWS_SERVICE_MODULES[60:90]) + ",",
-    "    " + ",\n    ".join(AWS_SERVICE_MODULES[90:120]) + ",",
-    "    " + ",\n    ".join(AWS_SERVICE_MODULES[120:150]) + ",",
-    "    " + ",\n    ".join(AWS_SERVICE_MODULES[150:]) + ",",
     ")",
 ]
 
 AWS_STUB_CONFIG = StubConfig(
     package_name="wetwire_aws",
-    core_imports=AWS_CORE_EXPORTS + AWS_SERVICE_MODULES,
+    core_imports=AWS_CORE_EXPORTS,
     expand_star_imports={
-        "wetwire_aws": AWS_CORE_EXPORTS + AWS_SERVICE_MODULES,
+        "wetwire_aws": AWS_CORE_EXPORTS,
     },
     extra_header_lines=_CORE_IMPORT_LINES,
 )

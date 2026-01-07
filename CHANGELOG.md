@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - SAM `serverless` module now included in `resources.__all__` (#54)
   - Fixes `NameError: name 'serverless' is not defined` when importing SAM templates
+- Generated `.pyi` stubs no longer bloated with all 264 service modules (#55)
+  - Stubs now ~110 lines instead of ~500 lines
+  - Only core types included; service modules loaded dynamically
+  - Fixed duplicate imports in generated stubs
 
 ## [1.7.0] - 2026-01-06
 
