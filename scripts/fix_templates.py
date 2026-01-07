@@ -58,7 +58,7 @@ def fix_efs_with_automount(content: str) -> str:
             #!/bin/bash -x
             export LC_CTYPE=en_US.UTF-8
     """
-    return re.sub(r'^(\s*)"(.*)\\n",?$', r'\1\2', content, flags=re.MULTILINE)
+    return re.sub(r'^(\s*)"(.*)\\n",?$', r"\1\2", content, flags=re.MULTILINE)
 
 
 # Map of template filename -> fix function

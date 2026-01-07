@@ -218,7 +218,11 @@ def validate_package(
         )
         return ("OK", outer_name, "")
     except subprocess.TimeoutExpired:
-        return ("FAIL", outer_name, f"=== {outer_name} ===\nTimeout during validation\n")
+        return (
+            "FAIL",
+            outer_name,
+            f"=== {outer_name} ===\nTimeout during validation\n",
+        )
     except subprocess.CalledProcessError as e:
         error_output = f"=== {outer_name} ({inner_pkg}) ===\n{e.stderr}\n"
         return ("FAIL", outer_name, error_output)
@@ -450,7 +454,9 @@ def main() -> int:
 
         # Exit with appropriate code
         if validation_failed:
-            warn("Completed with validation failures - examples preserved for inspection")
+            warn(
+                "Completed with validation failures - examples preserved for inspection"
+            )
             return 1
         else:
             success("All SAM templates imported successfully!")

@@ -145,9 +145,10 @@ CF_TO_BOTOCORE_SERVICE = {
 def to_snake_case(name: str) -> str:
     """Convert PascalCase to snake_case."""
     import re
+
     # Handle consecutive capitals (e.g., EC2Fleet -> ec2_fleet)
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
 
 def generate_enum_class(name: str, enum_data: dict) -> str:
@@ -511,13 +512,23 @@ def generate_service_package(
     resource_submodule_map: dict[str, str] = {}
     for resource in resources:
         if resource.name in nested_by_resource:
-            resource_submodule_map[resource.name] = "_" + resource.name  # Keep PascalCase
+            resource_submodule_map[resource.name] = (
+                "_" + resource.name
+            )  # Keep PascalCase
 
     # Generate __init__.py
-    init_lines = [generate_init_file_header(service, cf_spec_version, GENERATOR_VERSION)]
+    init_lines = [
+        generate_init_file_header(service, cf_spec_version, GENERATOR_VERSION)
+    ]
 
     # Generate enum constants
-    reserved_enum_names = {"PropertyType", "Tag", "CloudFormationResource", "Any", "ClassVar"}
+    reserved_enum_names = {
+        "PropertyType",
+        "Tag",
+        "CloudFormationResource",
+        "Any",
+        "ClassVar",
+    }
 
     if service_enums:
         init_lines.append("# Constants")
@@ -626,8 +637,12 @@ def write_service_package(
 
 def main():
     """Generate Python resource classes from parsed CloudFormation spec."""
-    parser = argparse.ArgumentParser(description="Generate Python CloudFormation resources")
-    parser.add_argument("--input", default=SPECS_DIR / "parsed.json", help="Input parsed schema file")
+    parser = argparse.ArgumentParser(
+        description="Generate Python CloudFormation resources"
+    )
+    parser.add_argument(
+        "--input", default=SPECS_DIR / "parsed.json", help="Input parsed schema file"
+    )
     parser.add_argument("--output", default=RESOURCES_DIR, help="Output directory")
     parser.add_argument("--service", help="Generate only this service")
     args = parser.parse_args()

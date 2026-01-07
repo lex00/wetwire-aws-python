@@ -158,9 +158,7 @@ class PropertyTypeDescriptor(Generic[_PT]):
     @overload
     def __get__(self, obj: object, owner: type) -> type[_PT]: ...
 
-    def __get__(
-        self, obj: object | None, owner: type
-    ) -> type[_PT]:
+    def __get__(self, obj: object | None, owner: type) -> type[_PT]:
         """Return PropertyTypeProxy for class access, actual class for instance access.
 
         Args:

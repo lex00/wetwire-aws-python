@@ -49,7 +49,9 @@ class TestCrossFileReferences:
         # With inheritance pattern, the value is a class attribute
         role_value = getattr(AppFunction, "role", None)
         assert is_attr_ref(role_value), "role should be an AttrRef (no-parens pattern)"
-        assert role_value.target.__name__ == "AppRole", "AttrRef should reference AppRole"
+        assert role_value.target.__name__ == "AppRole", (
+            "AttrRef should reference AppRole"
+        )
         assert role_value.attr == "Arn", "AttrRef should reference 'Arn' attribute"
 
     def test_cross_file_serialization(self):
@@ -120,4 +122,22 @@ class TestCrossFileReferences:
         assert role_idx < func_idx, (
             f"AppRole (idx={role_idx}) should appear before AppFunction (idx={func_idx}). "
             f"Template resource order: {resource_names}"
+        )
+
+    def test_attr_ref_target_identity(self):
+        """Test that AttrRef.target is identical to the decorated class.
+
+        With dataclass-dsl 1.1.0, the decorator no longer creates a new class
+        when RefMeta is already applied, preserving class identity.
+        """
+        from tests.cross_file_test import AppFunction, AppRole
+
+        # Get the AttrRef from AppFunction
+        role_attr = getattr(AppFunction, "role", None)
+        assert is_attr_ref(role_attr), "AppFunction.role should be AttrRef"
+
+        # With dataclass-dsl 1.1.0 fix, target should be identical to AppRole
+        assert role_attr.target is AppRole, (
+            f"AttrRef.target should be identical to AppRole class. "
+            f"Got id(target)={id(role_attr.target)}, id(AppRole)={id(AppRole)}"
         )
