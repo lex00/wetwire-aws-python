@@ -17,6 +17,7 @@ class TaskDefinitionContainerDefinition(ecs.TaskDefinition.ContainerDefinition):
 
 
 class TaskDefinition(ecs.TaskDefinition):
+    resource: ecs.TaskDefinition
     family = ServiceName
     cpu = ContainerCpu
     memory = ContainerMemory
@@ -60,6 +61,7 @@ class ServiceLoadBalancer(ecs.TaskSet.LoadBalancer):
 
 
 class Service(ecs.Service):
+    resource: ecs.Service
     service_name = ServiceName
     cluster = ImportValue(Join(':', [
     StackName,

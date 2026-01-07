@@ -3,48 +3,43 @@
 from . import *  # noqa: F403
 
 
-class KeyName:
+class KeyName(Parameter):
     """Name of an existing EC2 KeyPair to enable SSH access to the instance"""
 
-    resource: Parameter
     type = KEY_PAIR
     description = 'Name of an existing EC2 KeyPair to enable SSH access to the instance'
     constraint_description = 'must be the name of an existing EC2 KeyPair.'
 
 
-class InstanceType:
+class InstanceType(Parameter):
     """EC2 instance type"""
 
-    resource: Parameter
     type = STRING
     description = 'EC2 instance type'
     default = 't3.medium'
     constraint_description = 'must be a valid EC2 instance type.'
 
 
-class InstanceAMI:
+class InstanceAMI(Parameter):
     """Managed AMI ID for EC2 Instance"""
 
-    resource: Parameter
     type = 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     description = 'Managed AMI ID for EC2 Instance'
     default = '/aws/service/canonical/ubuntu/eks-pro/22.04/1.29/stable/current/amd64/hvm/ebs-gp2/ami-id'
 
 
-class IAMRole:
+class IAMRole(Parameter):
     """EC2 attached IAM role"""
 
-    resource: Parameter
     type = STRING
     description = 'EC2 attached IAM role'
     default = 'CloudWatchAgentAdminRole'
     constraint_description = 'must be an existing IAM role which will be attached to EC2 instance.'
 
 
-class SSHLocation:
+class SSHLocation(Parameter):
     """The IP address range that can be used to SSH to the EC2 instances"""
 
-    resource: Parameter
     type = STRING
     description = 'The IP address range that can be used to SSH to the EC2 instances'
     default = '0.0.0.0/0'
@@ -54,6 +49,5 @@ class SSHLocation:
     constraint_description = 'must be a valid IP CIDR range of the form x.x.x.x/x.'
 
 
-class SubnetId:
-    resource: Parameter
+class SubnetId(Parameter):
     type = SUBNET_ID

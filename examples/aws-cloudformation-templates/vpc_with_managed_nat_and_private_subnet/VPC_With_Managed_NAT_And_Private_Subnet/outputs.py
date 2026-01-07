@@ -3,55 +3,49 @@
 from . import *  # noqa: F403
 
 
-class VPCIdOutput:
+class VPCIdOutput(Output):
     """VPCId of VPC"""
 
-    resource: Output
     value = VPC
     description = 'VPCId of VPC'
     export_name = Sub('${AWS::Region}-${AWS::StackName}-VPC')
 
 
-class PublicSubnet0Output:
+class PublicSubnet0Output(Output):
     """SubnetId of public subnet 0"""
 
-    resource: Output
     value = PublicSubnet0
     description = 'SubnetId of public subnet 0'
     export_name = Sub('${AWS::Region}-${AWS::StackName}-PublicSubnet0')
 
 
-class PublicSubnet1Output:
+class PublicSubnet1Output(Output):
     """SubnetId of public subnet 1"""
 
-    resource: Output
     value = PublicSubnet1
     description = 'SubnetId of public subnet 1'
     export_name = Sub('${AWS::Region}-${AWS::StackName}-PublicSubnet1')
 
 
-class PrivateSubnet0Output:
+class PrivateSubnet0Output(Output):
     """SubnetId of private subnet 0"""
 
-    resource: Output
     value = PrivateSubnet0
     description = 'SubnetId of private subnet 0'
     export_name = Sub('${AWS::Region}-${AWS::StackName}-PrivateSubnet0')
 
 
-class PrivateSubnet1Output:
+class PrivateSubnet1Output(Output):
     """SubnetId of private subnet 1"""
 
-    resource: Output
     value = PrivateSubnet1
     description = 'SubnetId of private subnet 1'
     export_name = Sub('${AWS::Region}-${AWS::StackName}-PrivateSubnet1')
 
 
-class DefaultSecurityGroupOutput:
+class DefaultSecurityGroupOutput(Output):
     """DefaultSecurityGroup Id"""
 
-    resource: Output
     value = VPC.DefaultSecurityGroup
     description = 'DefaultSecurityGroup Id'
     export_name = Sub('${AWS::Region}-${AWS::StackName}-DefaultSecurityGroup')

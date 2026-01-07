@@ -23,5 +23,6 @@ class ConfigBucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.Publi
 
 
 class ConfigBucket(s3.Bucket):
+    resource: s3.Bucket
     bucket_encryption = ConfigBucketBucketEncryption
     public_access_block_configuration = ConfigBucketPublicAccessBlockConfiguration

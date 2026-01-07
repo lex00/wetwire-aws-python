@@ -20,6 +20,7 @@ class DirectorySettingsLambdaFunctionCapacityProviderVpcConfig(lambda_.CapacityP
 
 
 class DirectorySettingsLambdaFunction(lambda_.Function):
+    resource: lambda_.Function
     function_name = LambdaFunctionName
     handler = 'directory_settings_custom_resource.lambda_handler'
     role = DirectorySettingsLambdaRole.Arn

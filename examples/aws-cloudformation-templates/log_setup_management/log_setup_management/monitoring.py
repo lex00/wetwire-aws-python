@@ -1,9 +1,17 @@
-"""Monitoring resources: CentralEventLog, CentralEventLogPolicy, CentralEventLogQuery, CentralEventLogQueryReason."""
+"""Monitoring resources: CentralEventLogQueryReason, CentralEventLog, CentralEventLogPolicy, CentralEventLogQuery."""
 
 from . import *  # noqa: F403
 
 
+class CentralEventLogQueryReason(logs.QueryDefinition):
+    resource: logs.QueryDefinition
+    name = 'CentralCloudFormationFailures'
+    query_string = 'fields time, account, region, `detail.resource-type`, `detail.logical-resource-id`, `detail.status-details.status` as status, `detail.status-details.status-reason` as reason | sort @timestamp desc | filter status like "FAILED" | filter reason not like "canceled" | filter resource not like "AWS::CloudFormation::Stack" '
+    log_group_names = [CentralEventLogName]
+
+
 class CentralEventLog(logs.LogGroup):
+    resource: logs.LogGroup
     log_group_class = logs.LogGroupClass.STANDARD
     log_group_name = CentralEventLogName
     kms_key_id = CentralEventLogKey.Arn
@@ -11,6 +19,7 @@ class CentralEventLog(logs.LogGroup):
 
 
 class CentralEventLogPolicy(logs.ResourcePolicy):
+    resource: logs.ResourcePolicy
     policy_name = 'CentralEventLogResourcePolicy'
     policy_document = Sub("""{
   "Statement": [
@@ -34,12 +43,7 @@ class CentralEventLogPolicy(logs.ResourcePolicy):
 
 
 class CentralEventLogQuery(logs.QueryDefinition):
+    resource: logs.QueryDefinition
     name = 'CentralCloudFormationEventLogs'
     query_string = 'fields time, account, region, `detail.resource-type`, `detail.logical-resource-id`, `detail.status-details.status` | sort @timestamp desc'
-    log_group_names = [CentralEventLogName]
-
-
-class CentralEventLogQueryReason(logs.QueryDefinition):
-    name = 'CentralCloudFormationFailures'
-    query_string = 'fields time, account, region, `detail.resource-type`, `detail.logical-resource-id`, `detail.status-details.status` as status, `detail.status-details.status-reason` as reason | sort @timestamp desc | filter status like "FAILED" | filter reason not like "canceled" | filter resource not like "AWS::CloudFormation::Stack" '
     log_group_names = [CentralEventLogName]

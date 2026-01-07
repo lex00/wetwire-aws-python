@@ -3,11 +3,9 @@
 from . import *  # noqa: F403
 
 
-class AppName:
-    resource: Parameter
+class AppName(Parameter):
     type = STRING
 
 
-class UserPoolArn:
-    resource: Parameter
+class UserPoolArn(Parameter):
     type = STRING

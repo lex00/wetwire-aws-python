@@ -9,6 +9,7 @@ class VPCPeeringConnectionAssociationParameter(ec2.Instance.AssociationParameter
 
 
 class VPCPeeringConnection(ec2.VPCPeeringConnection):
+    resource: ec2.VPCPeeringConnection
     vpc_id = VPCID
     peer_vpc_id = PeerVPCID
     peer_owner_id = PeerOwnerId

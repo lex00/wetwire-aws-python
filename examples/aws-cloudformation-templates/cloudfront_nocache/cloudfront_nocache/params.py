@@ -3,17 +3,14 @@
 from . import *  # noqa: F403
 
 
-class Name:
-    resource: Parameter
+class Name(Parameter):
     type = STRING
 
 
-class DomainName:
-    resource: Parameter
+class DomainName(Parameter):
     type = STRING
 
 
-class Port:
-    resource: Parameter
+class Port(Parameter):
     type = STRING
     default = 80

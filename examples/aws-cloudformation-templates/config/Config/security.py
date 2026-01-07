@@ -33,6 +33,7 @@ class LambdaExecutionRolePolicy(iam.User.Policy):
 
 
 class LambdaExecutionRole(iam.Role):
+    resource: iam.Role
     assume_role_policy_document = LambdaExecutionRoleAssumeRolePolicyDocument
     policies = [LambdaExecutionRolePolicy]
 
@@ -87,6 +88,7 @@ class ConfigRolePolicy(iam.User.Policy):
 
 
 class ConfigRole(iam.Role):
+    resource: iam.Role
     assume_role_policy_document = ConfigRoleAssumeRolePolicyDocument
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWS_ConfigRole']
     policies = [ConfigRolePolicy]

@@ -3,10 +3,9 @@
 from . import *  # noqa: F403
 
 
-class ReadCapacityUnits:
+class ReadCapacityUnits(Parameter):
     """Provisioned read throughput"""
 
-    resource: Parameter
     type = NUMBER
     description = 'Provisioned read throughput'
     default = '5'
@@ -15,10 +14,9 @@ class ReadCapacityUnits:
     constraint_description = 'must be between 5 and 10000'
 
 
-class WriteCapacityUnits:
+class WriteCapacityUnits(Parameter):
     """Provisioned write throughput"""
 
-    resource: Parameter
     type = NUMBER
     description = 'Provisioned write throughput'
     default = '10'

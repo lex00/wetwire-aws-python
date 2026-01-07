@@ -3,17 +3,15 @@
 from . import *  # noqa: F403
 
 
-class BucketName:
+class BucketName(Parameter):
     """The name of the S3 Bucket to create, make this unique"""
 
-    resource: Parameter
     type = STRING
     description = 'The name of the S3 Bucket to create, make this unique'
 
 
-class PublisherAccountID:
+class PublisherAccountID(Parameter):
     """The AWS account ID with whom you are sharing access"""
 
-    resource: Parameter
     type = STRING
     description = 'The AWS account ID with whom you are sharing access'

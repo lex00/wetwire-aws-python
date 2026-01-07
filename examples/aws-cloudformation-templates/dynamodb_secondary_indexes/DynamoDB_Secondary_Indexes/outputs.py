@@ -3,9 +3,8 @@
 from . import *  # noqa: F403
 
 
-class TableNameOutput:
+class TableNameOutput(Output):
     """Name of the newly created DynamoDB table"""
 
-    resource: Output
     value = TableOfBooks
     description = 'Name of the newly created DynamoDB table'

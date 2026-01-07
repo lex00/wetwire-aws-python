@@ -3,16 +3,13 @@
 from . import *  # noqa: F403
 
 
-class ConfigRuleForVolumeTagsArnOutput:
-    resource: Output
+class ConfigRuleForVolumeTagsArnOutput(Output):
     value = ConfigRuleForVolumeTags.Arn
 
 
-class ConfigRuleForVolumeTagsConfigRuleIdOutput:
-    resource: Output
+class ConfigRuleForVolumeTagsConfigRuleIdOutput(Output):
     value = ConfigRuleForVolumeTags.ConfigRuleId
 
 
-class ConfigRuleForVolumeAutoEnableIOComplianceTypeOutput:
-    resource: Output
+class ConfigRuleForVolumeAutoEnableIOComplianceTypeOutput(Output):
     value = ConfigRuleForVolumeAutoEnableIO.Compliance.Type

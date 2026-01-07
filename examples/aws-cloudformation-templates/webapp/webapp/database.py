@@ -14,6 +14,7 @@ class TestTableKeySchema(dynamodb.Table.KeySchema):
 
 
 class TestTable(dynamodb.Table):
+    resource: dynamodb.Table
     billing_mode = dynamodb.BillingMode.PAY_PER_REQUEST
     table_name = Sub('${AppName}-test')
     attribute_definitions = [TestTableAttributeDefinition]

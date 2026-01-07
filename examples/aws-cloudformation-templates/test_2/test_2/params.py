@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class BucketMapMapping:
-    resource: Mapping
+class BucketMapMapping(Mapping):
     map_data = {
         'Monthly': {
             'ResourceName': 'MyThirtyDayBucket',

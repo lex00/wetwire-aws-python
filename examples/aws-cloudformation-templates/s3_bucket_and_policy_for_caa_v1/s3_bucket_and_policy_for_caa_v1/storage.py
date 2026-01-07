@@ -27,6 +27,7 @@ class BucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.PublicAcces
 
 
 class Bucket(s3.Bucket):
+    resource: s3.Bucket
     bucket_name = BucketName
     bucket_encryption = BucketBucketEncryption
     versioning_configuration = BucketDeleteMarkerReplication
@@ -72,5 +73,6 @@ class BucketPolicyPolicyDocument(PolicyDocument):
 
 
 class BucketPolicy(s3.BucketPolicy):
+    resource: s3.BucketPolicy
     bucket = Bucket
     policy_document = BucketPolicyPolicyDocument

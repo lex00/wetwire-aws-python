@@ -4,5 +4,6 @@ from . import *  # noqa: F403
 
 
 class Macro(cloudformation.Macro):
+    resource: cloudformation.Macro
     name = 'Explode'
     function_name = MacroFunction.Arn

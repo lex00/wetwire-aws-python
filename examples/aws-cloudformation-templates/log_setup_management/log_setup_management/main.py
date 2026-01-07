@@ -14,6 +14,7 @@ class CentralEventRuleTarget(events.Rule.Target):
 
 
 class CentralEventRule(events.Rule):
+    resource: events.Rule
     name = 'CloudFormationLogs'
     event_bus_name = CentralEventBusName
     state = events.RuleState.ENABLED

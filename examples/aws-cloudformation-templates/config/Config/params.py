@@ -3,10 +3,9 @@
 from . import *  # noqa: F403
 
 
-class DeliveryChannelExists:
+class DeliveryChannelExists(Parameter):
     """Do you have an exisiting AWS Config delivery channel?"""
 
-    resource: Parameter
     type = STRING
     description = 'Do you have an exisiting AWS Config delivery channel?'
     default = 'false'
@@ -16,8 +15,7 @@ class DeliveryChannelExists:
 ]
 
 
-class Ec2VolumeAutoEnableIO:
-    resource: Parameter
+class Ec2VolumeAutoEnableIO(Parameter):
     type = STRING
     default = 'false'
     allowed_values = [
@@ -26,13 +24,11 @@ class Ec2VolumeAutoEnableIO:
 ]
 
 
-class Ec2VolumeTagKey:
-    resource: Parameter
+class Ec2VolumeTagKey(Parameter):
     type = STRING
     default = 'CostCenter'
 
 
-class CreateDeliveryChannelCondition:
-    resource: TemplateCondition
+class CreateDeliveryChannelCondition(TemplateCondition):
     logical_id = 'CreateDeliveryChannel'
     expression = Equals(DeliveryChannelExists, 'false')

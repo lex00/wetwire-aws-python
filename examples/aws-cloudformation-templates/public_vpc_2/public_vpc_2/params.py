@@ -3,8 +3,7 @@
 from . import *  # noqa: F403
 
 
-class SubnetConfigMapping:
-    resource: Mapping
+class SubnetConfigMapping(Mapping):
     map_data = {
         'VPC': {
             'CIDR': '10.0.0.0/16',

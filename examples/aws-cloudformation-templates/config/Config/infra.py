@@ -1,6 +1,18 @@
-"""Infra resources: ConfigRecorder, ConfigRuleForVolumeTags, DeliveryChannel, ConfigRuleForVolumeAutoEnableIO."""
+"""Infra resources: DeliveryChannel, ConfigRecorder, ConfigRuleForVolumeTags, ConfigRuleForVolumeAutoEnableIO."""
 
 from . import *  # noqa: F403
+
+
+class DeliveryChannelConfigSnapshotDeliveryProperties(config.DeliveryChannel.ConfigSnapshotDeliveryProperties):
+    delivery_frequency = 'Six_Hours'
+
+
+class DeliveryChannel(config.DeliveryChannel):
+    resource: config.DeliveryChannel
+    config_snapshot_delivery_properties = DeliveryChannelConfigSnapshotDeliveryProperties
+    s3_bucket_name = ConfigBucket
+    sns_topic_arn = ConfigTopic
+    condition = 'CreateDeliveryChannel'
 
 
 class ConfigRecorderExclusionByResourceTypes(config.ConfigurationRecorder.ExclusionByResourceTypes):
@@ -8,6 +20,7 @@ class ConfigRecorderExclusionByResourceTypes(config.ConfigurationRecorder.Exclus
 
 
 class ConfigRecorder(config.ConfigurationRecorder):
+    resource: config.ConfigurationRecorder
     name = 'default'
     recording_group = ConfigRecorderExclusionByResourceTypes
     role_arn = ConfigRole.Arn
@@ -23,23 +36,13 @@ class ConfigRuleForVolumeTagsSource(config.ConfigRule.Source):
 
 
 class ConfigRuleForVolumeTags(config.ConfigRule):
+    resource: config.ConfigRule
     input_parameters = {
         'tag1Key': 'CostCenter',
     }
     scope = ConfigRuleForVolumeTagsScope
     source = ConfigRuleForVolumeTagsSource
     depends_on = [ConfigRecorder]
-
-
-class DeliveryChannelConfigSnapshotDeliveryProperties(config.DeliveryChannel.ConfigSnapshotDeliveryProperties):
-    delivery_frequency = 'Six_Hours'
-
-
-class DeliveryChannel(config.DeliveryChannel):
-    config_snapshot_delivery_properties = DeliveryChannelConfigSnapshotDeliveryProperties
-    s3_bucket_name = ConfigBucket
-    sns_topic_arn = ConfigTopic
-    condition = 'CreateDeliveryChannel'
 
 
 class ConfigRuleForVolumeAutoEnableIOScope(config.ConfigRule.Scope):
@@ -59,6 +62,7 @@ class ConfigRuleForVolumeAutoEnableIOSource(config.ConfigRule.Source):
 
 
 class ConfigRuleForVolumeAutoEnableIO(config.ConfigRule):
+    resource: config.ConfigRule
     config_rule_name = 'ConfigRuleForVolumeAutoEnableIO'
     scope = ConfigRuleForVolumeAutoEnableIOScope
     source = ConfigRuleForVolumeAutoEnableIOSource

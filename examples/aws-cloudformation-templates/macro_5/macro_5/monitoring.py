@@ -4,6 +4,7 @@ from . import *  # noqa: F403
 
 
 class Dashboard(cloudwatch.Dashboard):
+    resource: cloudwatch.Dashboard
     dashboard_name = 'CloudFormation-Stacks'
     dashboard_body = """{
     "widgets": [

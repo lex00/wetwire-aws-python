@@ -3,61 +3,54 @@
 from . import *  # noqa: F403
 
 
-class KeyName:
+class KeyName(Parameter):
     """Name of an existing EC2 KeyPair to enable SSH access to the ECS instances."""
 
-    resource: Parameter
     type = KEY_PAIR
     description = 'Name of an existing EC2 KeyPair to enable SSH access to the ECS instances.'
 
 
-class VpcId:
+class VpcId(Parameter):
     """Select a VPC that allows instances to access the Internet."""
 
-    resource: Parameter
     type = VPC_ID
     description = 'Select a VPC that allows instances to access the Internet.'
 
 
-class SubnetId:
+class SubnetId(Parameter):
     """Select at two subnets in your selected VPC."""
 
-    resource: Parameter
     type = LIST_SUBNET_ID
     description = 'Select at two subnets in your selected VPC.'
 
 
-class DesiredCapacity:
+class DesiredCapacity(Parameter):
     """Number of instances to launch in your ECS cluster."""
 
-    resource: Parameter
     type = NUMBER
     description = 'Number of instances to launch in your ECS cluster.'
     default = 1
 
 
-class MaxSize:
+class MaxSize(Parameter):
     """Maximum number of instances that can be launched in your ECS cluster."""
 
-    resource: Parameter
     type = NUMBER
     description = 'Maximum number of instances that can be launched in your ECS cluster.'
     default = 1
 
 
-class SchedulerTasksCount:
+class SchedulerTasksCount(Parameter):
     """Maximum number of Tasks that you want to the Scheduler to run"""
 
-    resource: Parameter
     type = NUMBER
     description = 'Maximum number of Tasks that you want to the Scheduler to run'
     default = 1
 
 
-class CronOrRate:
+class CronOrRate(Parameter):
     """Choose to use a cron expression or a rate expression you want to use."""
 
-    resource: Parameter
     type = STRING
     description = 'Choose to use a cron expression or a rate expression you want to use.'
     default = 'cron'
@@ -67,28 +60,25 @@ class CronOrRate:
 ]
 
 
-class CronSchedule:
+class CronSchedule(Parameter):
     """This defines the Schedule at which to run the. Cron Expressions - http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#CronExpressions"""
 
-    resource: Parameter
     type = STRING
     description = 'This defines the Schedule at which to run the. Cron Expressions - http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#CronExpressions'
     default = 'cron(00 11 ? * * *)'
 
 
-class RateSchedule:
+class RateSchedule(Parameter):
     """This defines the Schedule at which to run the. Rate Expressions - http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions"""
 
-    resource: Parameter
     type = STRING
     description = 'This defines the Schedule at which to run the. Rate Expressions - http://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#RateExpressions'
     default = 'rate(1 day)'
 
 
-class InstanceType:
+class InstanceType(Parameter):
     """EC2 instance type"""
 
-    resource: Parameter
     type = STRING
     description = 'EC2 instance type'
     default = 't2.micro'
@@ -129,13 +119,11 @@ class InstanceType:
     constraint_description = 'Please choose a valid instance type.'
 
 
-class LatestAmiId:
-    resource: Parameter
+class LatestAmiId(Parameter):
     type = 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     default = '/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id'
 
 
-class CronRateCondition:
-    resource: TemplateCondition
+class CronRateCondition(TemplateCondition):
     logical_id = 'CronRate'
     expression = Equals(CronOrRate, 'cron')

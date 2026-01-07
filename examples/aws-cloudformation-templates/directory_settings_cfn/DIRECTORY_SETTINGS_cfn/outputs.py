@@ -3,9 +3,8 @@
 from . import *  # noqa: F403
 
 
-class DirectoryAliasUrlOutput:
+class DirectoryAliasUrlOutput(Output):
     """Directory Alias"""
 
-    resource: Output
     value = DirectorySettingsResource.AliasUrl
     description = 'Directory Alias'

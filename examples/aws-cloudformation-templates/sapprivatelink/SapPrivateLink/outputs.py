@@ -3,27 +3,24 @@
 from . import *  # noqa: F403
 
 
-class CertificateURLOutput:
+class CertificateURLOutput(Output):
     """Go to this URL to check certificate issued or not (also find domain verification details)"""
 
-    resource: Output
     value = Sub('https://${AWS::Region}.console.aws.amazon.com/acm/home?region=${AWS::Region}#/certificates/${CertificateId}', {
     'CertificateId': Select(1, Split('/', ASCPrivateLinkCertificate)),
 })
     description = 'Go to this URL to check certificate issued or not (also find domain verification details)'
 
 
-class VPCEndpointServiceURLOutput:
+class VPCEndpointServiceURLOutput(Output):
     """Go to this URL to check VPC Endpoint Service attributes (also find privateDNS domain verification details)"""
 
-    resource: Output
     value = Sub('https://${AWS::Region}.console.aws.amazon.com/vpc/home?region=${AWS::Region}#VpcEndpointServiceDetails:EndpointServiceId=${ASCPrivateLinkVPCES}')
     description = 'Go to this URL to check VPC Endpoint Service attributes (also find privateDNS domain verification details)'
 
 
-class TargetGroupURLOutput:
+class TargetGroupURLOutput(Output):
     """Go to this URL to check target group health check status (to see if got connectivity to SAP)"""
 
-    resource: Output
     value = Sub('https://${AWS::Region}.console.aws.amazon.com/ec2/home?region=${AWS::Region}#TargetGroup:targetGroupArn=${ASCPrivateLinkTargetGroup}')
     description = 'Go to this URL to check target group health check status (to see if got connectivity to SAP)'

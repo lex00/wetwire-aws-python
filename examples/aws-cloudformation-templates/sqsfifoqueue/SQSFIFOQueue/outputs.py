@@ -3,25 +3,22 @@
 from . import *  # noqa: F403
 
 
-class QueueURLOutput:
+class QueueURLOutput(Output):
     """URL of newly created SQS Queue"""
 
-    resource: Output
     value = SQSQueue
     description = 'URL of newly created SQS Queue'
 
 
-class QueueARNOutput:
+class QueueARNOutput(Output):
     """ARN of newly created SQS Queue"""
 
-    resource: Output
     value = SQSQueue.Arn
     description = 'ARN of newly created SQS Queue'
 
 
-class QueueNameOutput:
+class QueueNameOutput(Output):
     """Name newly created SQS Queue"""
 
-    resource: Output
     value = SQSQueue.QueueName
     description = 'Name newly created SQS Queue'

@@ -18,6 +18,7 @@ class ServerAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class Server(ec2.Instance):
+    resource: ec2.Instance
     availability_zone = Select(0, GetAZs())
     block_device_mappings = [ServerBlockDeviceMapping]
     iam_instance_profile = InstanceProfile

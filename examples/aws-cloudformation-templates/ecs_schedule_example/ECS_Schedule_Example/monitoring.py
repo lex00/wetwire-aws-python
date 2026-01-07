@@ -4,6 +4,7 @@ from . import *  # noqa: F403
 
 
 class CloudwatchLogsGroup(logs.LogGroup):
+    resource: logs.LogGroup
     log_group_name = Join('-', [
     'ECSLogGroup',
     AWS_STACK_NAME,
@@ -18,6 +19,7 @@ class ALB500sAlarmScaleUpDimension(cloudwatch.Alarm.Dimension):
 
 
 class ALB500sAlarmScaleUp(cloudwatch.Alarm):
+    resource: cloudwatch.Alarm
     evaluation_periods = '1'
     statistic = 'Average'
     threshold = '10'

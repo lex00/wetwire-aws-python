@@ -32,6 +32,7 @@ class CachePolicyCachePolicyConfig(cloudfront.CachePolicy.CachePolicyConfig):
 
 
 class CachePolicy(cloudfront.CachePolicy):
+    resource: cloudfront.CachePolicy
     cache_policy_config = CachePolicyCachePolicyConfig
 
 
@@ -73,6 +74,7 @@ class DistributionDistributionConfig(cloudfront.Distribution.DistributionConfig)
 
 
 class Distribution(cloudfront.Distribution):
+    resource: cloudfront.Distribution
     tags = [{
         'Key': 'Name',
         'Value': Name,

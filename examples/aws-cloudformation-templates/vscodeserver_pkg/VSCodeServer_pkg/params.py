@@ -3,29 +3,25 @@
 from . import *  # noqa: F403
 
 
-class LatestAMI:
-    resource: Parameter
+class LatestAMI(Parameter):
     type = 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     default = '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64'
 
 
-class InstanceType:
-    resource: Parameter
+class InstanceType(Parameter):
     type = STRING
     default = 't3.medium'
 
 
-class SecretName:
+class SecretName(Parameter):
     """The name of the secrets manager secret that stores the password to be used for the VSCode Server. The password must be a simple plaintext string with no JSON."""
 
-    resource: Parameter
     type = STRING
     description = 'The name of the secrets manager secret that stores the password to be used for the VSCode Server. The password must be a simple plaintext string with no JSON.'
     default = 'vscode-password'
 
 
-class PrefixesMapping:
-    resource: Mapping
+class PrefixesMapping(Mapping):
     map_data = {
         'ap-northeast-1': {
             'PrefixList': 'pl-58a04531',

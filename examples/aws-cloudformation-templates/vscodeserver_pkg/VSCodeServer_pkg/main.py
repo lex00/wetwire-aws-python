@@ -41,6 +41,7 @@ class CloudFrontDistributionDistributionConfig(cloudfront.Distribution.Distribut
 
 
 class CloudFrontDistribution(cloudfront.Distribution):
+    resource: cloudfront.Distribution
     tags = [{
         'Key': 'Name',
         'Value': 'vscode-server',

@@ -3,10 +3,9 @@
 from . import *  # noqa: F403
 
 
-class URLOutput:
+class URLOutput(Output):
     """URL of the sample website"""
 
-    resource: Output
     value = Join('', [
     'http://',
     ElasticLoadBalancer.DNSName,

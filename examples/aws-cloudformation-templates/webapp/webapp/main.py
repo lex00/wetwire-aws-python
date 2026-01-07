@@ -3,10 +3,6 @@
 from . import *  # noqa: F403
 
 
-class RestApi(apigateway.RestApi):
-    name = AppName
-
-
 class SiteDistributionDefaultCacheBehavior(cloudfront.Distribution.DefaultCacheBehavior):
     cache_policy_id = '658327ea-f89d-4fab-a63d-7e88639e58f6'
     compress = True
@@ -46,16 +42,64 @@ class SiteDistributionDistributionConfig(cloudfront.Distribution.DistributionCon
 
 
 class SiteDistribution(cloudfront.Distribution):
+    resource: cloudfront.Distribution
     distribution_config = SiteDistributionDistributionConfig
 
 
+class RestApi(apigateway.RestApi):
+    resource: apigateway.RestApi
+    name = AppName
+
+
+class RestApiAuthorizer(apigateway.Authorizer):
+    resource: apigateway.Authorizer
+    identity_source = 'method.request.header.authorization'
+    name = 'CognitoApiAuthorizer'
+    provider_ar_ns = [CognitoUserPool.Arn]
+    rest_api_id = RestApi
+    type_ = 'COGNITO_USER_POOLS'
+
+
 class TestResourceResource(apigateway.Resource):
+    resource: apigateway.Resource
     parent_id = Sub('${RestApi.RootResourceId}')
     path_part = 'test'
     rest_api_id = RestApi
 
 
+class TestResourceGetIntegration(apigateway.Method.Integration):
+    integration_http_method = 'POST'
+    type_ = 'AWS_PROXY'
+    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestResourceHandler.Arn}/invocations')
+
+
+class TestResourceGet(apigateway.Method):
+    resource: apigateway.Method
+    http_method = 'GET'
+    resource_id = TestResourceResource
+    rest_api_id = RestApi
+    authorization_type = 'COGNITO_USER_POOLS'
+    authorizer_id = RestApiAuthorizer
+    integration = TestResourceGetIntegration
+
+
+class TestResourceOptionsIntegration(apigateway.Method.Integration):
+    integration_http_method = 'POST'
+    type_ = 'AWS_PROXY'
+    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestResourceHandler.Arn}/invocations')
+
+
+class TestResourceOptions(apigateway.Method):
+    resource: apigateway.Method
+    http_method = 'OPTIONS'
+    resource_id = TestResourceResource
+    rest_api_id = RestApi
+    authorization_type = 'NONE'
+    integration = TestResourceOptionsIntegration
+
+
 class JwtResourceResource(apigateway.Resource):
+    resource: apigateway.Resource
     parent_id = Sub('${RestApi.RootResourceId}')
     path_part = 'jwt'
     rest_api_id = RestApi
@@ -68,25 +112,12 @@ class JwtResourceOptionsIntegration(apigateway.Method.Integration):
 
 
 class JwtResourceOptions(apigateway.Method):
+    resource: apigateway.Method
     http_method = 'OPTIONS'
     resource_id = JwtResourceResource
     rest_api_id = RestApi
     authorization_type = 'NONE'
     integration = JwtResourceOptionsIntegration
-
-
-class TestResourceOptionsIntegration(apigateway.Method.Integration):
-    integration_http_method = 'POST'
-    type_ = 'AWS_PROXY'
-    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestResourceHandler.Arn}/invocations')
-
-
-class TestResourceOptions(apigateway.Method):
-    http_method = 'OPTIONS'
-    resource_id = TestResourceResource
-    rest_api_id = RestApi
-    authorization_type = 'NONE'
-    integration = TestResourceOptionsIntegration
 
 
 class JwtResourceGetIntegration(apigateway.Method.Integration):
@@ -96,6 +127,7 @@ class JwtResourceGetIntegration(apigateway.Method.Integration):
 
 
 class JwtResourceGet(apigateway.Method):
+    resource: apigateway.Method
     http_method = 'GET'
     resource_id = JwtResourceResource
     rest_api_id = RestApi
@@ -104,35 +136,14 @@ class JwtResourceGet(apigateway.Method):
     integration = JwtResourceGetIntegration
 
 
-class RestApiAuthorizer(apigateway.Authorizer):
-    identity_source = 'method.request.header.authorization'
-    name = 'CognitoApiAuthorizer'
-    provider_ar_ns = [CognitoUserPool.Arn]
-    rest_api_id = RestApi
-    type_ = 'COGNITO_USER_POOLS'
-
-
-class TestResourceGetIntegration(apigateway.Method.Integration):
-    integration_http_method = 'POST'
-    type_ = 'AWS_PROXY'
-    uri = Sub('arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TestResourceHandler.Arn}/invocations')
-
-
-class TestResourceGet(apigateway.Method):
-    http_method = 'GET'
-    resource_id = TestResourceResource
-    rest_api_id = RestApi
-    authorization_type = 'COGNITO_USER_POOLS'
-    authorizer_id = RestApiAuthorizer
-    integration = TestResourceGetIntegration
-
-
 class RestApiDeployment(apigateway.Deployment):
+    resource: apigateway.Deployment
     rest_api_id = RestApi
     depends_on = [TestResourceGet, TestResourceOptions, JwtResourceGet, JwtResourceOptions]
 
 
 class RestApiStage(apigateway.Stage):
+    resource: apigateway.Stage
     rest_api_id = RestApi
     deployment_id = RestApiDeployment
     stage_name = 'prod'

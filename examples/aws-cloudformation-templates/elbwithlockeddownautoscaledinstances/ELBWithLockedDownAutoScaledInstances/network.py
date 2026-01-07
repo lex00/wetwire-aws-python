@@ -18,6 +18,7 @@ class ElasticLoadBalancerHealthCheck(elasticloadbalancing.LoadBalancer.HealthChe
 
 
 class ElasticLoadBalancer(elasticloadbalancing.LoadBalancer):
+    resource: elasticloadbalancing.LoadBalancer
     availability_zones = GetAZs()
     cross_zone = 'true'
     listeners = [ElasticLoadBalancerListeners]
@@ -40,5 +41,6 @@ class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
 
 
 class InstanceSecurityGroup(ec2.SecurityGroup):
+    resource: ec2.SecurityGroup
     group_description = 'Enable SSH access and HTTP access on the inbound port'
     security_group_ingress = [InstanceSecurityGroupIngress, InstanceSecurityGroupEgress]

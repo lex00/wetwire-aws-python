@@ -47,5 +47,6 @@ class CentralEventLogKeyKeyPolicy(PolicyDocument):
 
 
 class CentralEventLogKey(kms.Key):
+    resource: kms.Key
     description = 'KMS key for log group'
     key_policy = CentralEventLogKeyKeyPolicy

@@ -4,6 +4,7 @@ from . import *  # noqa: F403
 
 
 class EcsSecurityGroup(ec2.SecurityGroup):
+    resource: ec2.SecurityGroup
     group_description = 'ECS Security Group'
     vpc_id = VpcId
 
@@ -14,6 +15,7 @@ class ECSALBTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupA
 
 
 class ECSALB(elasticloadbalancingv2.LoadBalancer):
+    resource: elasticloadbalancingv2.LoadBalancer
     name = 'ECSALB'
     scheme = 'internet-facing'
     load_balancer_attributes = [ECSALBTargetGroupAttribute]
@@ -22,6 +24,7 @@ class ECSALB(elasticloadbalancingv2.LoadBalancer):
 
 
 class ECSTG(elasticloadbalancingv2.TargetGroup):
+    resource: elasticloadbalancingv2.TargetGroup
     health_check_interval_seconds = 10
     health_check_path = '/'
     health_check_protocol = 'HTTP'
@@ -41,6 +44,7 @@ class ALBListenerAction(elasticloadbalancingv2.ListenerRule.Action):
 
 
 class ALBListener(elasticloadbalancingv2.Listener):
+    resource: elasticloadbalancingv2.Listener
     default_actions = [ALBListenerAction]
     load_balancer_arn = ECSALB
     port = '80'
@@ -59,6 +63,7 @@ class ECSALBListenerRuleRuleCondition(elasticloadbalancingv2.ListenerRule.RuleCo
 
 
 class ECSALBListenerRule(elasticloadbalancingv2.ListenerRule):
+    resource: elasticloadbalancingv2.ListenerRule
     actions = [ECSALBListenerRuleAction]
     conditions = [ECSALBListenerRuleRuleCondition]
     listener_arn = ALBListener
@@ -67,6 +72,7 @@ class ECSALBListenerRule(elasticloadbalancingv2.ListenerRule):
 
 
 class EcsSecurityGroupALBports(ec2.SecurityGroupIngress):
+    resource: ec2.SecurityGroupIngress
     group_id = EcsSecurityGroup
     ip_protocol = 'tcp'
     from_port = '31000'
@@ -75,6 +81,7 @@ class EcsSecurityGroupALBports(ec2.SecurityGroupIngress):
 
 
 class EcsSecurityGroupSSHinbound(ec2.SecurityGroupIngress):
+    resource: ec2.SecurityGroupIngress
     group_id = EcsSecurityGroup
     ip_protocol = 'tcp'
     from_port = '22'
@@ -83,6 +90,7 @@ class EcsSecurityGroupSSHinbound(ec2.SecurityGroupIngress):
 
 
 class EcsSecurityGroupHTTPinbound(ec2.SecurityGroupIngress):
+    resource: ec2.SecurityGroupIngress
     group_id = EcsSecurityGroup
     ip_protocol = 'tcp'
     from_port = '80'

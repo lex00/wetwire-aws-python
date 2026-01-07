@@ -36,6 +36,7 @@ class ASCPrivateLinkLambdaRolePolicy(iam.User.Policy):
 
 
 class ASCPrivateLinkLambdaRole(iam.Role):
+    resource: iam.Role
     assume_role_policy_document = ASCPrivateLinkLambdaRoleAssumeRolePolicyDocument
     path = '/'
     policies = [ASCPrivateLinkLambdaRolePolicy]

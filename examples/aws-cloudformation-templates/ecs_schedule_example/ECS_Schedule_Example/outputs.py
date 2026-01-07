@@ -3,24 +3,20 @@
 from . import *  # noqa: F403
 
 
-class EcsServiceOutput:
-    resource: Output
+class EcsServiceOutput(Output):
     value = Service
 
 
-class EcsClusterOutput:
-    resource: Output
+class EcsClusterOutput(Output):
     value = ECSCluster
 
 
-class EcsTaskDefOutput:
-    resource: Output
+class EcsTaskDefOutput(Output):
     value = TaskDefinition
 
 
-class ECSALBOutput:
+class ECSALBOutput(Output):
     """Your ALB DNS URL"""
 
-    resource: Output
     value = Join('', [ECSALB.DNSName])
     description = 'Your ALB DNS URL'

@@ -3,18 +3,16 @@
 from . import *  # noqa: F403
 
 
-class VPCOutput:
+class VPCOutput(Output):
     """A reference to the created VPC"""
 
-    resource: Output
     value = VPC
     description = 'A reference to the created VPC'
 
 
-class PublicSubnetsOutput:
+class PublicSubnetsOutput(Output):
     """A list of the public subnets"""
 
-    resource: Output
     value = Join(',', [
     PublicSubnet1,
     PublicSubnet2,
@@ -22,10 +20,9 @@ class PublicSubnetsOutput:
     description = 'A list of the public subnets'
 
 
-class PrivateSubnetsOutput:
+class PrivateSubnetsOutput(Output):
     """A list of the private subnets"""
 
-    resource: Output
     value = Join(',', [
     PrivateSubnet1,
     PrivateSubnet2,
@@ -33,9 +30,8 @@ class PrivateSubnetsOutput:
     description = 'A list of the private subnets'
 
 
-class CfnEndpointOutput:
+class CfnEndpointOutput(Output):
     """A reference to the CloudFormation Endpoint used for signaling from the private instance"""
 
-    resource: Output
     value = CfnEndpoint
     description = 'A reference to the CloudFormation Endpoint used for signaling from the private instance'

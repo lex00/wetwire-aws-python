@@ -3,7 +3,6 @@
 from . import *  # noqa: F403
 
 
-class InputString:
-    resource: Parameter
+class InputString(Parameter):
     type = STRING
     default = 'This is a test input string'

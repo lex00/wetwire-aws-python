@@ -74,6 +74,7 @@ class DirectorySettingsLambdaRolePolicy1(iam.User.Policy):
 
 
 class DirectorySettingsLambdaRole(iam.Role):
+    resource: iam.Role
     role_name = Sub('${LambdaFunctionName}-LambdaRole')
     description = Sub('Rights to Setup Directory Settings for Directory ID, ${DirectoryID}')
     assume_role_policy_document = DirectorySettingsLambdaRoleAssumeRolePolicyDocument
@@ -97,6 +98,7 @@ class DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAssumeRolePolicyDocument(Pol
 
 
 class DirectoryConsoleDelegatedAccessEC2ReadOnlyRole(iam.Role):
+    resource: iam.Role
     description = 'IAM Role for Directory Service \'AWS Management Console\' Delegated Access for "EC2 ReadOnly"'
     assume_role_policy_document = DirectoryConsoleDelegatedAccessEC2ReadOnlyRoleAssumeRolePolicyDocument
     managed_policy_arns = [Sub('arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ReadOnlyAccess')]
@@ -120,6 +122,7 @@ class DirectoryConsoleDelegatedAccessSecurityAuditRoleAssumeRolePolicyDocument(P
 
 
 class DirectoryConsoleDelegatedAccessSecurityAuditRole(iam.Role):
+    resource: iam.Role
     description = 'IAM Role for Directory Service \'AWS Management Console\' Delegated Access for "Security Audit"'
     assume_role_policy_document = DirectoryConsoleDelegatedAccessSecurityAuditRoleAssumeRolePolicyDocument
     managed_policy_arns = [Sub('arn:${AWS::Partition}:iam::aws:policy/SecurityAudit')]

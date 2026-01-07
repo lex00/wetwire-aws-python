@@ -14,4 +14,5 @@ class SiteOriginAccessControlOriginAccessControlConfig(cloudfront.OriginAccessCo
 
 
 class SiteOriginAccessControl(cloudfront.OriginAccessControl):
+    resource: cloudfront.OriginAccessControl
     origin_access_control_config = SiteOriginAccessControlOriginAccessControlConfig

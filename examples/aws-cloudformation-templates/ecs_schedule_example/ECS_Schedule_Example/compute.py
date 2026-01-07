@@ -1,13 +1,14 @@
-"""Compute resources: ECSCluster, ContainerInstances, ECSAutoScalingGroup, Service."""
+"""Compute resources: ECSCluster, ContainerInstances, ECSAutoScalingGroup."""
 
 from . import *  # noqa: F403
 
 
 class ECSCluster(ecs.Cluster):
-    pass
+    resource: ecs.Cluster
 
 
 class ContainerInstances(autoscaling.LaunchConfiguration):
+    resource: autoscaling.LaunchConfiguration
     image_id = LatestAmiId
     security_groups = [EcsSecurityGroup]
     instance_type = InstanceType
@@ -23,23 +24,9 @@ yum install -y aws-cfn-bootstrap
 
 
 class ECSAutoScalingGroup(autoscaling.AutoScalingGroup):
+    resource: autoscaling.AutoScalingGroup
     vpc_zone_identifier = SubnetId
     launch_configuration_name = ContainerInstances
     min_size = '1'
     max_size = MaxSize
     desired_capacity = DesiredCapacity
-
-
-class ServiceLoadBalancer(ecs.TaskSet.LoadBalancer):
-    container_name = 'simple-app'
-    container_port = '80'
-    target_group_arn = ECSTG
-
-
-class Service(ecs.Service):
-    cluster = ECSCluster
-    desired_count = '1'
-    load_balancers = [ServiceLoadBalancer]
-    role = ECSServiceRole
-    task_definition = TaskDefinition
-    depends_on = [ALBListener]

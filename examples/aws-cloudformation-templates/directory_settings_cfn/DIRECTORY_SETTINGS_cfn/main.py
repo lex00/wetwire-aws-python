@@ -5,6 +5,7 @@ from . import *  # noqa: F403
 
 class DirectorySettingsResource(CloudFormationResource):
     # Unknown resource type: Custom::DirectorySettingsResource
+    resource: CloudFormationResource
     service_token = DirectorySettingsLambdaFunction.Arn
     directory_id = DirectoryID
     create_directory_alias = CreateDirectoryAlias

@@ -3,10 +3,9 @@
 from . import *  # noqa: F403
 
 
-class InstanceType:
+class InstanceType(Parameter):
     """WebServer EC2 instance type"""
 
-    resource: Parameter
     type = STRING
     description = 'WebServer EC2 instance type'
     default = 't2.small'
@@ -67,19 +66,17 @@ class InstanceType:
     constraint_description = 'must be a valid EC2 instance type.'
 
 
-class KeyName:
+class KeyName(Parameter):
     """Name of an existing EC2 KeyPair to enable SSH access to the instances"""
 
-    resource: Parameter
     type = KEY_PAIR
     description = 'Name of an existing EC2 KeyPair to enable SSH access to the instances'
     constraint_description = 'must be the name of an existing EC2 KeyPair.'
 
 
-class SSHLocation:
+class SSHLocation(Parameter):
     """The IP address range that can be used to SSH to the EC2 instances"""
 
-    resource: Parameter
     type = STRING
     description = 'The IP address range that can be used to SSH to the EC2 instances'
     default = '0.0.0.0/0'
@@ -89,14 +86,12 @@ class SSHLocation:
     constraint_description = 'must be a valid IP CIDR range of the form x.x.x.x/x.'
 
 
-class LatestAmiId:
-    resource: Parameter
+class LatestAmiId(Parameter):
     type = 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     default = '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
 
 
-class Region2ExamplesMapping:
-    resource: Mapping
+class Region2ExamplesMapping(Mapping):
     map_data = {
         'us-east-1': {
             'Examples': 'https://s3.amazonaws.com/cloudformation-examples-us-east-1',

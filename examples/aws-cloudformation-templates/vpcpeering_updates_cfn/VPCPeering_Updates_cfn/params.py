@@ -3,10 +3,9 @@
 from . import *  # noqa: F403
 
 
-class NumberOfRouteTables:
+class NumberOfRouteTables(Parameter):
     """Number of Route Table IDs to update. This must match your items in the comma-separated list of RouteTableIds parameter."""
 
-    resource: Parameter
     type = STRING
     description = 'Number of Route Table IDs to update. This must match your items in the comma-separated list of RouteTableIds parameter.'
     allowed_values = [
@@ -19,10 +18,9 @@ class NumberOfRouteTables:
 ]
 
 
-class NumberOfSecurityGroups:
+class NumberOfSecurityGroups(Parameter):
     """Number of Security Group IDs. This must match your selections in the list of SecurityGroupIds parameter."""
 
-    resource: Parameter
     type = STRING
     description = 'Number of Security Group IDs. This must match your selections in the list of SecurityGroupIds parameter.'
     allowed_values = [
@@ -35,108 +33,93 @@ class NumberOfSecurityGroups:
 ]
 
 
-class PeerName:
+class PeerName(Parameter):
     """Name of the VPC Peer"""
 
-    resource: Parameter
     type = STRING
     description = 'Name of the VPC Peer'
     max_length = 255
 
 
-class PeerVPCCIDR:
+class PeerVPCCIDR(Parameter):
     """CIDR of the VPC Peer"""
 
-    resource: Parameter
     type = STRING
     description = 'CIDR of the VPC Peer'
     allowed_pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$'
     constraint_description = 'CIDR block parameter must be in the form x.x.x.x/16-28'
 
 
-class RouteTableIds:
+class RouteTableIds(Parameter):
     """Route Table IDs that will be updated to allow communications via the VPC peering connection. Note, the logical order is preserved."""
 
-    resource: Parameter
     type = STRING
     description = 'Route Table IDs that will be updated to allow communications via the VPC peering connection. Note, the logical order is preserved.'
     allowed_pattern = '^(rtb-[0-9a-f]{17})$|^((rtb-[0-9a-f]{17}(,|, ))*rtb-[0-9a-f]{17})$'
     constraint_description = 'Must have a prefix of "rtb-". Followed by 17 characters (numbers, letters "a-f"). Additional route tables can be provided, separated by a "comma".'
 
 
-class SecurityGroupIds:
+class SecurityGroupIds(Parameter):
     """Security Group IDs that will be updated to allow communications via the VPC peering connection. Note, the logical order is preserved."""
 
-    resource: Parameter
     type = LIST_SECURITY_GROUP_ID
     description = 'Security Group IDs that will be updated to allow communications via the VPC peering connection. Note, the logical order is preserved.'
 
 
-class VPCPeeringConnectionId:
+class VPCPeeringConnectionId(Parameter):
     """ID of the VPC Peering Connection"""
 
-    resource: Parameter
     type = STRING
     description = 'ID of the VPC Peering Connection'
     allowed_pattern = '^pcx-[0-9a-f]{17}$'
     constraint_description = 'Must have a prefix of "pcx-". Followed by 17 characters (numbers, letters "a-f")'
 
 
-class _2RouteTableConditionCondition:
-    resource: TemplateCondition
+class _2RouteTableConditionCondition(TemplateCondition):
     logical_id = '2RouteTableCondition'
     expression = Or(conditions=[Equals(NumberOfRouteTables, 2), Condition("3RouteTableCondition"), Condition("4RouteTableCondition"), Condition("5RouteTableCondition"), Condition("6RouteTableCondition")])
 
 
-class _3RouteTableConditionCondition:
-    resource: TemplateCondition
+class _3RouteTableConditionCondition(TemplateCondition):
     logical_id = '3RouteTableCondition'
     expression = Or(conditions=[Equals(NumberOfRouteTables, 3), Condition("4RouteTableCondition"), Condition("5RouteTableCondition"), Condition("6RouteTableCondition")])
 
 
-class _4RouteTableConditionCondition:
-    resource: TemplateCondition
+class _4RouteTableConditionCondition(TemplateCondition):
     logical_id = '4RouteTableCondition'
     expression = Or(conditions=[Equals(NumberOfRouteTables, 4), Condition("5RouteTableCondition"), Condition("6RouteTableCondition")])
 
 
-class _5RouteTableConditionCondition:
-    resource: TemplateCondition
+class _5RouteTableConditionCondition(TemplateCondition):
     logical_id = '5RouteTableCondition'
     expression = Or(conditions=[Equals(NumberOfRouteTables, 5), Condition("6RouteTableCondition")])
 
 
-class _6RouteTableConditionCondition:
-    resource: TemplateCondition
+class _6RouteTableConditionCondition(TemplateCondition):
     logical_id = '6RouteTableCondition'
     expression = Equals(NumberOfRouteTables, 6)
 
 
-class _2SecurityGroupConditionCondition:
-    resource: TemplateCondition
+class _2SecurityGroupConditionCondition(TemplateCondition):
     logical_id = '2SecurityGroupCondition'
     expression = Or(conditions=[Equals(NumberOfSecurityGroups, 2), Condition("3SecurityGroupCondition"), Condition("4SecurityGroupCondition"), Condition("5SecurityGroupCondition"), Condition("6SecurityGroupCondition")])
 
 
-class _3SecurityGroupConditionCondition:
-    resource: TemplateCondition
+class _3SecurityGroupConditionCondition(TemplateCondition):
     logical_id = '3SecurityGroupCondition'
     expression = Or(conditions=[Equals(NumberOfSecurityGroups, 3), Condition("4SecurityGroupCondition"), Condition("5SecurityGroupCondition"), Condition("6SecurityGroupCondition")])
 
 
-class _4SecurityGroupConditionCondition:
-    resource: TemplateCondition
+class _4SecurityGroupConditionCondition(TemplateCondition):
     logical_id = '4SecurityGroupCondition'
     expression = Or(conditions=[Equals(NumberOfSecurityGroups, 4), Condition("5SecurityGroupCondition"), Condition("6SecurityGroupCondition")])
 
 
-class _5SecurityGroupConditionCondition:
-    resource: TemplateCondition
+class _5SecurityGroupConditionCondition(TemplateCondition):
     logical_id = '5SecurityGroupCondition'
     expression = Or(conditions=[Equals(NumberOfSecurityGroups, 5), Condition("6SecurityGroupCondition")])
 
 
-class _6SecurityGroupConditionCondition:
-    resource: TemplateCondition
+class _6SecurityGroupConditionCondition(TemplateCondition):
     logical_id = '6SecurityGroupCondition'
     expression = Equals(NumberOfSecurityGroups, 6)

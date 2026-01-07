@@ -3,31 +3,25 @@
 from . import *  # noqa: F403
 
 
-class SiteURLOutput:
-    resource: Output
+class SiteURLOutput(Output):
     value = Sub('https://${SiteDistribution.DomainName}')
 
 
-class RedirectURIOutput:
-    resource: Output
+class RedirectURIOutput(Output):
     value = Sub('https://${SiteDistribution.DomainName}/index.html')
 
 
-class AppNameOutput:
-    resource: Output
+class AppNameOutput(Output):
     value = AppName
 
 
-class RestApiInvokeURLOutput:
-    resource: Output
+class RestApiInvokeURLOutput(Output):
     value = Sub('https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStage}')
 
 
-class AppClientIdOutput:
-    resource: Output
+class AppClientIdOutput(Output):
     value = CognitoClient
 
 
-class CognitoDomainPrefixOutput:
-    resource: Output
+class CognitoDomainPrefixOutput(Output):
     value = AppName

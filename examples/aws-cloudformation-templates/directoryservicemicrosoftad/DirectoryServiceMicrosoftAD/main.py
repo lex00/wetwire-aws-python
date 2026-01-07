@@ -9,6 +9,7 @@ class rMSDirectoryVpcSettings(directoryservice.SimpleAD.VpcSettings):
 
 
 class rMSDirectory(directoryservice.MicrosoftAD):
+    resource: directoryservice.MicrosoftAD
     create_alias = pCreateAlias
     edition = pEdition
     enable_sso = pEnableSingleSignOn

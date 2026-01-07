@@ -1,4 +1,4 @@
-"""Security resources: InstanceRole, InstanceProfile, InstanceRolePolicy."""
+"""Security resources: InstanceRole, InstanceRolePolicy, InstanceProfile."""
 
 from . import *  # noqa: F403
 
@@ -15,15 +15,12 @@ class InstanceRoleAssumeRolePolicyDocument(PolicyDocument):
 
 
 class InstanceRole(iam.Role):
+    resource: iam.Role
     assume_role_policy_document = InstanceRoleAssumeRolePolicyDocument
     tags = [{
         'Key': 'Name',
         'Value': 'vscode-server-instance',
     }]
-
-
-class InstanceProfile(iam.InstanceProfile):
-    roles = [InstanceRole]
 
 
 class InstanceRolePolicyAllowStatement0(PolicyStatement):
@@ -41,6 +38,12 @@ class InstanceRolePolicyPolicyDocument(PolicyDocument):
 
 
 class InstanceRolePolicy(iam.RolePolicy):
+    resource: iam.RolePolicy
     policy_document = InstanceRolePolicyPolicyDocument
     policy_name = 'InstanceRolePolicy'
     role_name = InstanceRole
+
+
+class InstanceProfile(iam.InstanceProfile):
+    resource: iam.InstanceProfile
+    roles = [InstanceRole]

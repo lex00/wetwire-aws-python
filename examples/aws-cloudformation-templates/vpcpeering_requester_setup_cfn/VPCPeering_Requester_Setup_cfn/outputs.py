@@ -3,9 +3,8 @@
 from . import *  # noqa: F403
 
 
-class VPCPeeringConnectionIdOutput:
+class VPCPeeringConnectionIdOutput(Output):
     """VPC Peering Connection ID"""
 
-    resource: Output
     value = VPCPeeringConnection
     description = 'VPC Peering Connection ID'

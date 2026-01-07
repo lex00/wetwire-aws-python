@@ -29,11 +29,13 @@ class DescribeHealthRolePolicy(iam.User.Policy):
 
 
 class DescribeHealthRole(iam.Role):
+    resource: iam.Role
     assume_role_policy_document = DescribeHealthRoleAssumeRolePolicyDocument
     path = '/'
     policies = [DescribeHealthRolePolicy]
 
 
 class WebServerInstanceProfile(iam.InstanceProfile):
+    resource: iam.InstanceProfile
     path = '/'
     roles = [DescribeHealthRole]

@@ -3,34 +3,30 @@
 from . import *  # noqa: F403
 
 
-class DirectoryIDOutput:
+class DirectoryIDOutput(Output):
     """ID of the MS Directory"""
 
-    resource: Output
     value = rMSDirectory
     description = 'ID of the MS Directory'
 
 
-class PrimaryDNSOutput:
+class PrimaryDNSOutput(Output):
     """DNS IPs of the MS Directory"""
 
-    resource: Output
     value = Select(0, rMSDirectory.DnsIpAddresses)
     description = 'DNS IPs of the MS Directory'
 
 
-class SecondaryDNSOutput:
+class SecondaryDNSOutput(Output):
     """DNS IPs of the MSDirectory"""
 
-    resource: Output
     value = Select(1, rMSDirectory.DnsIpAddresses)
     description = 'DNS IPs of the MSDirectory'
 
 
-class DirectoryAliasOutput:
+class DirectoryAliasOutput(Output):
     """URL for the alias"""
 
-    resource: Output
     value = rMSDirectory.Alias
     description = 'URL for the alias'
     condition = 'cAlias'

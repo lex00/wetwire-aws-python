@@ -29,6 +29,7 @@ class TargetAccountLoggingAutoDeployment(cloudformation.StackSet.AutoDeployment)
 
 
 class TargetAccountLogging(cloudformation.StackSet):
+    resource: cloudformation.StackSet
     template_body = {
         'Rain::Embed': 'log-setup-target-accounts.yaml',
     }
