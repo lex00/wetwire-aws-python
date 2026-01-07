@@ -40,7 +40,6 @@ class LambdaEdgeFunctionCode(lambda_.Function.Code):
 
 
 class LambdaEdgeFunction(lambda_.Function):
-    resource: lambda_.Function
     description = 'A custom Lambda@Edge function for serving custom headers from CloudFront Distribution'
     function_name = Sub('${AppName}-lambda-edge-${Environment}')
     handler = 'index.handler'
@@ -52,5 +51,4 @@ class LambdaEdgeFunction(lambda_.Function):
 
 
 class LambdaEdgeVersion(lambda_.Version):
-    resource: lambda_.Version
     function_name = LambdaEdgeFunction

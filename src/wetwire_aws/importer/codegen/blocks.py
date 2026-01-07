@@ -8,15 +8,13 @@ For example, instead of:
     bucket_encryption = {'ServerSideEncryptionConfiguration': [...]}
 
 Block mode generates:
-    class MyBucketBucketEncryption:
-        resource: s3.Bucket.BucketEncryption
+    class MyBucketBucketEncryption(s3.Bucket.BucketEncryption):
         server_side_encryption_configuration = [MyBucketServerSideEncryptionRule]
 
-    class MyBucket:
-        resource: s3.Bucket
+    class MyBucket(s3.Bucket):
         bucket_encryption = MyBucketBucketEncryption
 
-Classes with `resource:` annotations are auto-decorated by setup_resources().
+Resources inherit from generated types; setup_resources() auto-decorates them.
 
 Key function: property_value_to_python_block()
 """

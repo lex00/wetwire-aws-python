@@ -112,14 +112,11 @@ def generate_resource_class(resource: IRResource, ctx: CodegenContext) -> str:
         # Import the module for inheritance: class MyBucket(s3.Bucket)
         ctx.add_import("wetwire_aws.resources", module)
         class_decl = f"class {wrapper_class_name}({module}.{type_class_name}):"
-        # Add resource annotation for auto_decorate detection
-        lines.append(f"    resource: {module}.{type_class_name}")
     else:
         # Unknown resource type - use base class
         ctx.add_import("wetwire_aws.base", "CloudFormationResource")
         class_decl = f"class {wrapper_class_name}(CloudFormationResource):"
         lines.append(f"    # Unknown resource type: {resource.resource_type}")
-        lines.append("    resource: CloudFormationResource")
 
     # Properties - use block mode for all values
     for prop in resource.properties.values():
