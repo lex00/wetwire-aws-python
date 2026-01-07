@@ -8,7 +8,10 @@ Check the specific failing example to diagnose the issue.
 """
 
 import ast
+import importlib
+import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -96,6 +99,114 @@ class TestExamplesCompile:
                 pytest.fail(
                     f"example {example_name} file {py_file.name} failed to compile:\n{e}"
                 )
+
+
+def find_empty_dicts(obj: Any, path: str = "") -> list[str]:
+    """Recursively find empty dicts in a nested structure.
+
+    Returns list of paths where empty dicts were found.
+    """
+    empty_paths = []
+    if isinstance(obj, dict):
+        if obj == {}:
+            empty_paths.append(path or "(root)")
+        else:
+            for key, value in obj.items():
+                new_path = f"{path}.{key}" if path else key
+                empty_paths.extend(find_empty_dicts(value, new_path))
+    elif isinstance(obj, list):
+        for i, item in enumerate(obj):
+            empty_paths.extend(find_empty_dicts(item, f"{path}[{i}]"))
+    return empty_paths
+
+
+# Examples with known serialization issues (PropertyTypes serialize as empty dicts)
+# See: https://github.com/lex00/wetwire-aws-python/issues/68
+KNOWN_BROKEN_EXAMPLES = {
+    "cloudfront",  # BucketEncryption, OwnershipControls, etc. serialize as {}
+    "dynamodb_table",  # KeySchema, AttributeDefinitions serialize as [{}]
+    "lambdasample",  # FunctionCode serializes as {}
+    "ec2instancewithsecuritygroupsample",  # SecurityGroupIngress serializes as {}
+    "cognito",  # UserPoolSchema serializes as {}
+    "load_balancer",  # HealthCheck, Listeners serialize as {}
+    "neptune",  # DBClusterParameterGroup, etc. serialize as {}
+    "iotanalytics",  # Channel, Pipeline configs serialize as {}
+    "cloudformation_codebuild_template",  # BuildSpec serializes as {}
+    "eip_with_association",  # SecurityGroupIngress serializes as {}
+    "compliant_bucket",  # BucketEncryption serializes as {}
+}
+
+
+class TestExamplesGenerateCF:
+    """Test that examples generate valid CloudFormation output."""
+
+    @pytest.mark.parametrize("example_name", COMPLEX_EXAMPLES)
+    def test_example_generates_valid_cloudformation(
+        self, examples_dir: Path, example_name: str
+    ):
+        """Verify example generates valid CloudFormation with correct resource count."""
+        if example_name in KNOWN_BROKEN_EXAMPLES:
+            pytest.xfail(f"Known issue: {example_name} has serialization bugs (see #68)")
+
+        example_path = examples_dir / example_name
+        if not example_path.exists():
+            pytest.skip(f"example {example_name} not found")
+
+        # Find the package directory (has __init__.py)
+        pkg_dirs = [
+            d
+            for d in example_path.iterdir()
+            if d.is_dir() and (d / "__init__.py").exists()
+        ]
+        if not pkg_dirs:
+            pytest.skip(f"example {example_name} has no package directory")
+
+        pkg_dir = pkg_dirs[0]
+        pkg_name = pkg_dir.name
+
+        # Import the package (triggers setup_resources)
+        sys.path.insert(0, str(example_path))
+        try:
+            # Clear any previous registry state
+            from wetwire_aws.decorator import get_aws_registry
+
+            get_aws_registry().clear()
+
+            # Import the package
+            importlib.import_module(pkg_name)
+
+            # Generate CloudFormation
+            from wetwire_aws import CloudFormationTemplate
+
+            template = CloudFormationTemplate.from_registry()
+            output = template.to_dict()
+
+            # Count resources in output
+            cf_resource_count = len(output.get("Resources", {}))
+
+            # Count resources in registry (filter to only resources, not parameters etc)
+            registry = get_aws_registry()
+            py_resource_count = len(list(registry.get_all()))
+
+            # Verify counts match
+            assert cf_resource_count == py_resource_count, (
+                f"Resource count mismatch for {example_name}: "
+                f"{py_resource_count} Python classes, {cf_resource_count} CF resources"
+            )
+
+            # Check for empty dicts in Properties (indicates data loss)
+            for resource_name, resource_data in output.get("Resources", {}).items():
+                props = resource_data.get("Properties", {})
+                empty_paths = find_empty_dicts(props)
+                assert not empty_paths, (
+                    f"Found empty dicts in {example_name}/{resource_name}: {empty_paths}"
+                )
+        finally:
+            sys.path.remove(str(example_path))
+            # Cleanup sys.modules
+            for mod_name in list(sys.modules.keys()):
+                if mod_name.startswith(pkg_name):
+                    del sys.modules[mod_name]
 
 
 class TestNamingSanitization:
