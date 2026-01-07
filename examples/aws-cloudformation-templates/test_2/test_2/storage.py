@@ -1,21 +1,20 @@
-"""Storage resources: Bucket, NonExplodingBucket."""
+"""Storage resources: NonExplodingBucket, Bucket."""
 
 from . import *  # noqa: F403
 
 
-class BucketOwnershipControlsRule(s3.Bucket.OwnershipControlsRule):
-    # Unknown CF key: ExpirationInDays = '!Explode Retention'
-    # Unknown CF key: Status = 'Enabled'
+class NonExplodingBucket(s3.Bucket):
+    pass
+
+
+class BucketRule(s3.Bucket.Rule):
+    expiration_in_days = '!Explode Retention'
+    status = s3.BucketVersioningStatus.ENABLED
 
 
 class BucketOwnershipControls(s3.Bucket.OwnershipControls):
-    rules = [BucketOwnershipControlsRule]
+    rules = [BucketRule]
 
 
 class Bucket(s3.Bucket):
-    resource: s3.Bucket
     lifecycle_configuration = BucketOwnershipControls
-
-
-class NonExplodingBucket(s3.Bucket):
-    resource: s3.Bucket

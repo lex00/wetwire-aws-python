@@ -15,7 +15,6 @@ class InstanceRoleAssumeRolePolicyDocument(PolicyDocument):
 
 
 class InstanceRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = InstanceRoleAssumeRolePolicyDocument
     tags = [{
         'Key': 'Name',
@@ -24,7 +23,6 @@ class InstanceRole(iam.Role):
 
 
 class InstanceProfile(iam.InstanceProfile):
-    resource: iam.InstanceProfile
     roles = [InstanceRole]
 
 
@@ -43,7 +41,6 @@ class InstanceRolePolicyPolicyDocument(PolicyDocument):
 
 
 class InstanceRolePolicy(iam.RolePolicy):
-    resource: iam.RolePolicy
     policy_document = InstanceRolePolicyPolicyDocument
     policy_name = 'InstanceRolePolicy'
     role_name = InstanceRole

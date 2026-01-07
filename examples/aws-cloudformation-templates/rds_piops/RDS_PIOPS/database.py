@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class myDB(rds.DBInstance):
-    resource: rds.DBInstance
     allocated_storage = '100'
     db_instance_class = 'db.t3.small'
     backup_retention_period = 7

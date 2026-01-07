@@ -11,7 +11,6 @@ class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
 
 
 class InstanceSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Allow http to client host'
     vpc_id = VPC
     security_group_ingress = [InstanceSecurityGroupEgress]

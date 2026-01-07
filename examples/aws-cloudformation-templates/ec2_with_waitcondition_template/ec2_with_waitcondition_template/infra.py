@@ -4,10 +4,9 @@ from . import *  # noqa: F403
 
 
 class KWOSWaitHandle(cloudformation.WaitConditionHandle):
-    resource: cloudformation.WaitConditionHandle
+    pass
 
 
 class KWOSWaitCondition(cloudformation.WaitCondition):
-    resource: cloudformation.WaitCondition
     handle = KWOSWaitHandle
     timeout = '300'

@@ -43,7 +43,7 @@ class S3BucketSourceReplicationDestination(s3.Bucket.ReplicationDestination):
     access_control_translation = S3BucketSourceAccessControlTranslation
 
 
-class S3BucketSourceReplicationRuleFilter(s3.Bucket.ReplicationRuleFilter):
+class S3BucketSourceReplicationRuleAndOperator(s3.Bucket.ReplicationRuleAndOperator):
     prefix = ''
 
 
@@ -51,12 +51,12 @@ class S3BucketSourceDeleteMarkerReplication1(s3.Bucket.DeleteMarkerReplication):
     status = 'Disabled'
 
 
-class S3BucketSourceSseKmsEncryptedObjects(s3.Bucket.SseKmsEncryptedObjects):
+class S3BucketSourceDeleteMarkerReplication2(s3.Bucket.DeleteMarkerReplication):
     status = s3.BucketVersioningStatus.ENABLED
 
 
 class S3BucketSourceSourceSelectionCriteria(s3.Bucket.SourceSelectionCriteria):
-    sse_kms_encrypted_objects = S3BucketSourceSseKmsEncryptedObjects
+    sse_kms_encrypted_objects = S3BucketSourceDeleteMarkerReplication2
 
 
 class S3BucketSourceReplicationRule(s3.Bucket.ReplicationRule):
@@ -64,7 +64,7 @@ class S3BucketSourceReplicationRule(s3.Bucket.ReplicationRule):
     priority = 0
     status = s3.BucketVersioningStatus.ENABLED
     destination = S3BucketSourceReplicationDestination
-    filter = S3BucketSourceReplicationRuleFilter
+    filter = S3BucketSourceReplicationRuleAndOperator
     delete_marker_replication = S3BucketSourceDeleteMarkerReplication1
     source_selection_criteria = S3BucketSourceSourceSelectionCriteria
 
@@ -75,7 +75,6 @@ class S3BucketSourceReplicationConfiguration(s3.Bucket.ReplicationConfiguration)
 
 
 class S3BucketSource(s3.Bucket):
-    resource: s3.Bucket
     bucket_name = Sub('${AWS::StackName}-${AWS::AccountId}-bucket')
     bucket_encryption = S3BucketSourceBucketEncryption
     public_access_block_configuration = S3BucketSourcePublicAccessBlockConfiguration

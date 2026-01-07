@@ -11,6 +11,5 @@ class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
 
 
 class InstanceSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Enable SSH access via port 22'
     security_group_ingress = [InstanceSecurityGroupEgress]

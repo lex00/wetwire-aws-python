@@ -18,7 +18,6 @@ class ELBSecurityGroupEgress1(ec2.SecurityGroup.Egress):
 
 
 class ELBSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Enable public access HTTP and HTTPS'
     security_group_ingress = [ELBSecurityGroupEgress, ELBSecurityGroupEgress1]
     vpc_id = VPC
@@ -43,7 +42,6 @@ class ElasticLoadBalancerListeners(elasticloadbalancing.LoadBalancer.Listeners):
 
 
 class ElasticLoadBalancer(elasticloadbalancing.LoadBalancer):
-    resource: elasticloadbalancing.LoadBalancer
     security_groups = [ELBSecurityGroup]
     subnets = Subnets
     cross_zone = 'true'
@@ -66,7 +64,6 @@ class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
 
 
 class InstanceSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Enable SSH public access and HTTP from the load balancer only'
     security_group_ingress = [InstanceSecurityGroupEgress, InstanceSecurityGroupIngress]
     vpc_id = VPC
@@ -80,7 +77,6 @@ class EFSSecurityGroupIngress(ec2.SecurityGroup.Ingress):
 
 
 class EFSSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Enable NFS access from EC2'
     security_group_ingress = [EFSSecurityGroupIngress]
     vpc_id = VPC

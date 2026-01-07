@@ -29,7 +29,6 @@ class PeerRolePolicy(iam.User.Policy):
 
 
 class PeerRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = PeerRoleAssumeRolePolicyDocument
     path = '/'
     tags = [{

@@ -29,7 +29,6 @@ class S3BucketDestinationDeleteMarkerReplication(s3.Bucket.DeleteMarkerReplicati
 
 
 class S3BucketDestination(s3.Bucket):
-    resource: s3.Bucket
     bucket_name = Sub('${AWS::StackName}-${AWS::AccountId}-bucket')
     bucket_encryption = S3BucketDestinationBucketEncryption
     public_access_block_configuration = S3BucketDestinationPublicAccessBlockConfiguration
@@ -74,6 +73,5 @@ class S3BucketDestinationPolicyPolicyDocument(PolicyDocument):
 
 
 class S3BucketDestinationPolicy(s3.BucketPolicy):
-    resource: s3.BucketPolicy
     bucket = S3BucketDestination
     policy_document = S3BucketDestinationPolicyPolicyDocument

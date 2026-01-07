@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class VPCPeeringAccepterTagStack(cloudformation.Stack):
-    resource: cloudformation.Stack
     template_url = Sub('https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${S3KeyPrefix}templates/VPCPeering-Accepter-Tag.cfn.yaml', {
     'S3Bucket': TemplatesS3BucketName,
     'S3KeyPrefix': TemplatesS3KeyPrefix,
@@ -22,7 +21,6 @@ class VPCPeeringAccepterTagStack(cloudformation.Stack):
 
 
 class VPCPeeringUpdatesStack(cloudformation.Stack):
-    resource: cloudformation.Stack
     template_url = Sub('https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${S3KeyPrefix}templates/VPCPeering-Updates.cfn.yaml', {
     'S3Bucket': TemplatesS3BucketName,
     'S3KeyPrefix': TemplatesS3KeyPrefix,

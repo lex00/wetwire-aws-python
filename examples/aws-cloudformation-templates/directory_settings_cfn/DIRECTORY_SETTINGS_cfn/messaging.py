@@ -9,7 +9,6 @@ class DirectoryMonitoringTopicSubscription(sns.Topic.Subscription):
 
 
 class DirectoryMonitoringTopic(sns.Topic):
-    resource: sns.Topic
     kms_master_key_id = If("DirectoryMonitoringSNSTopicKMSKeyCondition", DirectoryMonitoringSNSTopicKMSKey, 'aws/sns')
     subscription = [DirectoryMonitoringTopicSubscription]
     tags = [{

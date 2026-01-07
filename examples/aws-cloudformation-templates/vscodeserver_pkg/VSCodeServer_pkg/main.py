@@ -21,7 +21,7 @@ class CloudFrontDistributionDefaultCacheBehavior(cloudfront.Distribution.Default
     viewer_protocol_policy = 'allow-all'
 
 
-class CloudFrontDistributionCustomOriginConfig(cloudfront.Distribution.CustomOriginConfig):
+class CloudFrontDistributionLegacyCustomOrigin(cloudfront.Distribution.LegacyCustomOrigin):
     http_port = 8080
     origin_protocol_policy = 'http-only'
 
@@ -29,7 +29,7 @@ class CloudFrontDistributionCustomOriginConfig(cloudfront.Distribution.CustomOri
 class CloudFrontDistributionOrigin(cloudfront.Distribution.Origin):
     domain_name = Server.PublicDnsName
     id = Sub('CloudFront-${AWS::StackName}')
-    custom_origin_config = CloudFrontDistributionCustomOriginConfig
+    custom_origin_config = CloudFrontDistributionLegacyCustomOrigin
 
 
 class CloudFrontDistributionDistributionConfig(cloudfront.Distribution.DistributionConfig):
@@ -41,7 +41,6 @@ class CloudFrontDistributionDistributionConfig(cloudfront.Distribution.Distribut
 
 
 class CloudFrontDistribution(cloudfront.Distribution):
-    resource: cloudfront.Distribution
     tags = [{
         'Key': 'Name',
         'Value': 'vscode-server',

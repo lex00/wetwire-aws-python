@@ -23,7 +23,6 @@ class UserPoolSchemaAttribute2(cognito.UserPool.SchemaAttribute):
 
 
 class UserPool(cognito.UserPool):
-    resource: cognito.UserPool
     user_pool_name = AppName
     admin_create_user_config = UserPoolAdminCreateUserConfig
     auto_verified_attributes = ['email']
@@ -32,13 +31,11 @@ class UserPool(cognito.UserPool):
 
 
 class Domain(cognito.UserPoolDomain):
-    resource: cognito.UserPoolDomain
     domain = AppName
     user_pool_id = UserPool
 
 
 class Client(cognito.UserPoolClient):
-    resource: cognito.UserPoolClient
     client_name = AppName
     generate_secret = False
     user_pool_id = UserPool

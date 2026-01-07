@@ -4,13 +4,11 @@ from . import *  # noqa: F403
 
 
 class MyDeadLetterQueue(sqs.Queue):
-    resource: sqs.Queue
     message_retention_period = 1209600
     condition = 'CreateDeadLetterQueue'
 
 
 class SQSQueue(sqs.Queue):
-    resource: sqs.Queue
     delay_seconds = DelaySeconds
     maximum_message_size = MaximumMessageSize
     message_retention_period = MessageRetentionPeriod

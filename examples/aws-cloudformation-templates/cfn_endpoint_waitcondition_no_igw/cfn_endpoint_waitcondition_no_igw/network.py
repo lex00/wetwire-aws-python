@@ -1,4 +1,4 @@
-"""Network resources: VPC, PrivateSG, EndpointSG, PrivateSubnet2, PrivateRouteTable1, PrivateSubnet1, PrivateSubnet1RouteTableAssociation, CfnEndpoint, PrivateRouteTable2, S3Endpoint, PrivateSubnet2RouteTableAssociation."""
+"""Network resources: VPC, PrivateSG, PrivateRouteTable2, PrivateRouteTable1, S3Endpoint, PrivateSubnet1, PrivateSubnet2, EndpointSG, CfnEndpoint, PrivateSubnet1RouteTableAssociation, PrivateSubnet2RouteTableAssociation."""
 
 from . import *  # noqa: F403
 
@@ -9,7 +9,6 @@ class VPCAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class VPC(ec2.VPC):
-    resource: ec2.VPC
     enable_dns_support = True
     enable_dns_hostnames = True
     cidr_block = VpcCIDR
@@ -29,11 +28,74 @@ class PrivateSGAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class PrivateSG(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Traffic from Bastion'
     security_group_ingress = [PrivateSGEgress]
     vpc_id = VPC
     tags = [PrivateSGAssociationParameter]
+
+
+class PrivateRouteTable2AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${EnvironmentName} Private Routes (AZ2)')
+
+
+class PrivateRouteTable2(ec2.RouteTable):
+    vpc_id = VPC
+    tags = [PrivateRouteTable2AssociationParameter]
+
+
+class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${EnvironmentName} Private Routes (AZ1)')
+
+
+class PrivateRouteTable1(ec2.RouteTable):
+    vpc_id = VPC
+    tags = [PrivateRouteTable1AssociationParameter]
+
+
+class S3EndpointAllowStatement0(PolicyStatement):
+    principal = '*'
+    action = ['s3:PutObject']
+    resource_arn = [Sub('arn:${AWS::Partition}:s3:::cloudformation-waitcondition-${AWS::Region}/*')]
+
+
+class S3EndpointPolicyDocument(PolicyDocument):
+    statement = [S3EndpointAllowStatement0]
+
+
+class S3Endpoint(ec2.VPCEndpoint):
+    vpc_id = VPC
+    service_name = Sub('com.amazonaws.${AWS::Region}.s3')
+    vpc_endpoint_type = 'Gateway'
+    policy_document = S3EndpointPolicyDocument
+    route_table_ids = [PrivateRouteTable1, PrivateRouteTable2]
+
+
+class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${EnvironmentName} Private Subnet (AZ1)')
+
+
+class PrivateSubnet1(ec2.Subnet):
+    vpc_id = VPC
+    availability_zone = Select(0, GetAZs())
+    cidr_block = PrivateSubnet1CIDR
+    map_public_ip_on_launch = False
+    tags = [PrivateSubnet1AssociationParameter]
+
+
+class PrivateSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = Sub('${EnvironmentName} Private Subnet (AZ2)')
+
+
+class PrivateSubnet2(ec2.Subnet):
+    vpc_id = VPC
+    availability_zone = Select(1, GetAZs())
+    cidr_block = PrivateSubnet2CIDR
+    map_public_ip_on_launch = False
+    tags = [PrivateSubnet2AssociationParameter]
 
 
 class EndpointSGEgress(ec2.SecurityGroup.Egress):
@@ -49,60 +111,13 @@ class EndpointSGAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class EndpointSG(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Traffic into CloudFormation Endpoint'
     security_group_ingress = [EndpointSGEgress]
     vpc_id = VPC
     tags = [EndpointSGAssociationParameter]
 
 
-class PrivateSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${EnvironmentName} Private Subnet (AZ2)')
-
-
-class PrivateSubnet2(ec2.Subnet):
-    resource: ec2.Subnet
-    vpc_id = VPC
-    availability_zone = Select(1, GetAZs())
-    cidr_block = PrivateSubnet2CIDR
-    map_public_ip_on_launch = False
-    tags = [PrivateSubnet2AssociationParameter]
-
-
-class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${EnvironmentName} Private Routes (AZ1)')
-
-
-class PrivateRouteTable1(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-    tags = [PrivateRouteTable1AssociationParameter]
-
-
-class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${EnvironmentName} Private Subnet (AZ1)')
-
-
-class PrivateSubnet1(ec2.Subnet):
-    resource: ec2.Subnet
-    vpc_id = VPC
-    availability_zone = Select(0, GetAZs())
-    cidr_block = PrivateSubnet1CIDR
-    map_public_ip_on_launch = False
-    tags = [PrivateSubnet1AssociationParameter]
-
-
-class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
-    route_table_id = PrivateRouteTable1
-    subnet_id = PrivateSubnet1
-
-
 class CfnEndpoint(ec2.VPCEndpoint):
-    resource: ec2.VPCEndpoint
     vpc_id = VPC
     service_name = Sub('com.amazonaws.${AWS::Region}.cloudformation')
     vpc_endpoint_type = 'Interface'
@@ -111,37 +126,11 @@ class CfnEndpoint(ec2.VPCEndpoint):
     security_group_ids = [EndpointSG]
 
 
-class PrivateRouteTable2AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${EnvironmentName} Private Routes (AZ2)')
-
-
-class PrivateRouteTable2(ec2.RouteTable):
-    resource: ec2.RouteTable
-    vpc_id = VPC
-    tags = [PrivateRouteTable2AssociationParameter]
-
-
-class S3EndpointAllowStatement0(PolicyStatement):
-    principal = '*'
-    action = ['s3:PutObject']
-    resource_arn = [Sub('arn:${AWS::Partition}:s3:::cloudformation-waitcondition-${AWS::Region}/*')]
-
-
-class S3EndpointPolicyDocument(PolicyDocument):
-    statement = [S3EndpointAllowStatement0]
-
-
-class S3Endpoint(ec2.VPCEndpoint):
-    resource: ec2.VPCEndpoint
-    vpc_id = VPC
-    service_name = Sub('com.amazonaws.${AWS::Region}.s3')
-    vpc_endpoint_type = 'Gateway'
-    policy_document = S3EndpointPolicyDocument
-    route_table_ids = [PrivateRouteTable1, PrivateRouteTable2]
+class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = PrivateRouteTable1
+    subnet_id = PrivateSubnet1
 
 
 class PrivateSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    resource: ec2.SubnetRouteTableAssociation
     route_table_id = PrivateRouteTable2
     subnet_id = PrivateSubnet2

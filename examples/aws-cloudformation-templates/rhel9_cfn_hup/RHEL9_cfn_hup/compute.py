@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class EC2Instance(ec2.Instance):
-    resource: ec2.Instance
     instance_type = InstanceType
     subnet_id = SubnetId
     security_group_ids = [InstanceSecurityGroup.GroupId]

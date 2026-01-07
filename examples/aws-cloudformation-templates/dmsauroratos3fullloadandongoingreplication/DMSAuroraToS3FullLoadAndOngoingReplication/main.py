@@ -4,13 +4,11 @@ from . import *  # noqa: F403
 
 
 class DMSReplicationSubnetGroup(dms.ReplicationSubnetGroup):
-    resource: dms.ReplicationSubnetGroup
     replication_subnet_group_description = 'Subnets available for DMS'
     subnet_ids = [DBSubnet1, DBSubnet2]
 
 
 class DMSReplicationInstance(dms.ReplicationInstance):
-    resource: dms.ReplicationInstance
     availability_zone = DBSubnet1.AvailabilityZone
     publicly_accessible = False
     replication_instance_class = 'dms.t3.medium'
@@ -26,7 +24,6 @@ class S3TargetEndpointRedshiftSettings(dms.Endpoint.RedshiftSettings):
 
 
 class S3TargetEndpoint(dms.Endpoint):
-    resource: dms.Endpoint
     endpoint_type = 'target'
     engine_name = 'S3'
     extra_connection_attributes = 'addColumnName=true'
@@ -35,7 +32,6 @@ class S3TargetEndpoint(dms.Endpoint):
 
 
 class AuroraSourceEndpoint(dms.Endpoint):
-    resource: dms.Endpoint
     endpoint_type = 'source'
     engine_name = 'AURORA'
     password = '{{resolve:secretsmanager:aurora-source-enpoint-password:SecretString:password}}'
@@ -46,7 +42,6 @@ class AuroraSourceEndpoint(dms.Endpoint):
 
 
 class DMSReplicationTask(dms.ReplicationTask):
-    resource: dms.ReplicationTask
     migration_type = 'full-load-and-cdc'
     replication_instance_arn = DMSReplicationInstance
     replication_task_settings = '{ "Logging" : { "EnableLogging" : true, "LogComponents": [ { "Id" : "SOURCE_UNLOAD", "Severity" : "LOGGER_SEVERITY_DEFAULT" }, { "Id" : "SOURCE_CAPTURE", "Severity" : "LOGGER_SEVERITY_DEFAULT" }, { "Id" : "TARGET_LOAD", "Severity" : "LOGGER_SEVERITY_DEFAULT" }, { "Id" : "TARGET_APPLY", "Severity" : "LOGGER_SEVERITY_DEFAULT" } ] } }'

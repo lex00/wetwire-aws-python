@@ -49,7 +49,6 @@ class KWOSInstanceAssociationParameter8(ec2.Instance.AssociationParameter):
 
 
 class KWOSInstance(ec2.Instance):
-    resource: ec2.Instance
     image_id = ImageId
     instance_type = InstanceType
     subnet_id = SubnetId

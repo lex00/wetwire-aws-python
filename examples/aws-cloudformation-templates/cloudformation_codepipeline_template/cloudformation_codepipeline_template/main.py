@@ -36,7 +36,6 @@ class EventRolePolicy(iam.User.Policy):
 
 
 class EventRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = EventRoleAssumeRolePolicyDocument
     path = '/'
     policies = [EventRolePolicy]

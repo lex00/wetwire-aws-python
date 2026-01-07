@@ -15,7 +15,6 @@ class EKSClusterRoleAssumeRolePolicyDocument(PolicyDocument):
 
 
 class EKSClusterRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = EKSClusterRoleAssumeRolePolicyDocument
     managed_policy_arns = [Sub('arn:${AWS::Partition}:iam::aws:policy/AmazonEKSClusterPolicy'), Sub('arn:${AWS::Partition}:iam::aws:policy/AmazonEKSVPCResourceController')]
 
@@ -32,7 +31,6 @@ class NodeInstanceRoleAssumeRolePolicyDocument(PolicyDocument):
 
 
 class NodeInstanceRole(iam.Role):
-    resource: iam.Role
     role_name = Sub('${AWS::StackName}-eks-node-role')
     assume_role_policy_document = NodeInstanceRoleAssumeRolePolicyDocument
     managed_policy_arns = [Sub('arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly'), Sub('arn:${AWS::Partition}:iam::aws:policy/AmazonEKSWorkerNodePolicy'), Sub('arn:${AWS::Partition}:iam::aws:policy/AmazonEKS_CNI_Policy'), Sub('arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore')]

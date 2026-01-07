@@ -29,7 +29,6 @@ class IamRoleLambdaPolicy(iam.User.Policy):
 
 
 class IamRoleLambda(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = IamRoleLambdaAssumeRolePolicyDocument
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole']
     policies = [IamRoleLambdaPolicy]

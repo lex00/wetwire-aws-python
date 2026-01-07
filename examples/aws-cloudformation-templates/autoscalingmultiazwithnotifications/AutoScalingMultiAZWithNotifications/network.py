@@ -1,16 +1,6 @@
-"""Network resources: TargetGroup, LoadBalancerSecurityGroup, InstanceSecurityGroup, ElasticLoadBalancer, LoadBalancerListener."""
+"""Network resources: LoadBalancerSecurityGroup, InstanceSecurityGroup, ElasticLoadBalancer, TargetGroup, LoadBalancerListener."""
 
 from . import *  # noqa: F403
-
-
-class TargetGroup(elasticloadbalancingv2.TargetGroup):
-    resource: elasticloadbalancingv2.TargetGroup
-    health_check_path = '/'
-    name = 'MyTargetGroup'
-    port = 80
-    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
-    target_type = elasticloadbalancingv2.TargetTypeEnum.INSTANCE
-    vpc_id = VPC
 
 
 class LoadBalancerSecurityGroupEgress(ec2.SecurityGroup.Egress):
@@ -21,7 +11,6 @@ class LoadBalancerSecurityGroupEgress(ec2.SecurityGroup.Egress):
 
 
 class LoadBalancerSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Allows inbound traffic on port 443'
     security_group_ingress = [LoadBalancerSecurityGroupEgress]
     vpc_id = VPC
@@ -42,17 +31,24 @@ class InstanceSecurityGroupIngress(ec2.SecurityGroup.Ingress):
 
 
 class InstanceSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Enable SSH access and HTTP from the load balancer only'
     security_group_ingress = [InstanceSecurityGroupEgress, InstanceSecurityGroupIngress]
 
 
 class ElasticLoadBalancer(elasticloadbalancingv2.LoadBalancer):
-    resource: elasticloadbalancingv2.LoadBalancer
     scheme = 'internet-facing'
     security_groups = [LoadBalancerSecurityGroup]
     subnets = Subnets
     type_ = 'application'
+
+
+class TargetGroup(elasticloadbalancingv2.TargetGroup):
+    health_check_path = '/'
+    name = 'MyTargetGroup'
+    port = 80
+    protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
+    target_type = elasticloadbalancingv2.TargetTypeEnum.INSTANCE
+    vpc_id = VPC
 
 
 class LoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):
@@ -65,7 +61,6 @@ class LoadBalancerListenerCertificate(elasticloadbalancingv2.ListenerCertificate
 
 
 class LoadBalancerListener(elasticloadbalancingv2.Listener):
-    resource: elasticloadbalancingv2.Listener
     default_actions = [LoadBalancerListenerAction]
     load_balancer_arn = ElasticLoadBalancer
     port = 443

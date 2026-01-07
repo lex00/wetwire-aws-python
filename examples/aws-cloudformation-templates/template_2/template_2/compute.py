@@ -1,6 +1,18 @@
-"""Compute resources: LaunchTemplate, ControlPlane, ManagedNodeGroup."""
+"""Compute resources: ControlPlane, LaunchTemplate, ManagedNodeGroup."""
 
 from . import *  # noqa: F403
+
+
+class ControlPlaneResourcesVpcConfig(eks.Cluster.ResourcesVpcConfig):
+    security_group_ids = [ControlPlaneSecurityGroup]
+    subnet_ids = [PublicSubnet1, PublicSubnet2, PublicSubnet3, PrivateSubnet1, PrivateSubnet2, PrivateSubnet3]
+
+
+class ControlPlane(eks.Cluster):
+    name = Sub('${AWS::StackName}-cluster')
+    resources_vpc_config = ControlPlaneResourcesVpcConfig
+    role_arn = EKSClusterRole.Arn
+    version = EKSClusterVersion
 
 
 class LaunchTemplateEbs(ec2.LaunchTemplate.Ebs):
@@ -20,7 +32,7 @@ class LaunchTemplateMetadataOptions(ec2.LaunchTemplate.MetadataOptions):
     http_tokens = 'optional'
 
 
-class LaunchTemplateTagSpecification(ec2.LaunchTemplate.TagSpecification):
+class LaunchTemplateLaunchTemplateTagSpecification(ec2.LaunchTemplate.LaunchTemplateTagSpecification):
     resource_type = 'instance'
     tags = [{
         'Key': 'Name',
@@ -34,7 +46,7 @@ class LaunchTemplateTagSpecification(ec2.LaunchTemplate.TagSpecification):
     }]
 
 
-class LaunchTemplateTagSpecification1(ec2.LaunchTemplate.TagSpecification):
+class LaunchTemplateLaunchTemplateTagSpecification1(ec2.LaunchTemplate.LaunchTemplateTagSpecification):
     resource_type = 'volume'
     tags = [{
         'Key': 'Name',
@@ -48,7 +60,7 @@ class LaunchTemplateTagSpecification1(ec2.LaunchTemplate.TagSpecification):
     }]
 
 
-class LaunchTemplateTagSpecification2(ec2.LaunchTemplate.TagSpecification):
+class LaunchTemplateLaunchTemplateTagSpecification2(ec2.LaunchTemplate.LaunchTemplateTagSpecification):
     resource_type = 'network-interface'
     tags = [{
         'Key': 'Name',
@@ -66,26 +78,12 @@ class LaunchTemplateLaunchTemplateData(ec2.LaunchTemplate.LaunchTemplateData):
     block_device_mappings = [LaunchTemplateBlockDeviceMapping]
     metadata_options = LaunchTemplateMetadataOptions
     security_group_ids = [ControlPlaneSecurityGroup]
-    tag_specifications = [LaunchTemplateTagSpecification, LaunchTemplateTagSpecification1, LaunchTemplateTagSpecification2]
+    tag_specifications = [LaunchTemplateLaunchTemplateTagSpecification, LaunchTemplateLaunchTemplateTagSpecification1, LaunchTemplateLaunchTemplateTagSpecification2]
 
 
 class LaunchTemplate(ec2.LaunchTemplate):
-    resource: ec2.LaunchTemplate
     launch_template_data = LaunchTemplateLaunchTemplateData
     launch_template_name = Sub('${AWS::StackName}-LaunchTemplate')
-
-
-class ControlPlaneResourcesVpcConfig(eks.Cluster.ResourcesVpcConfig):
-    security_group_ids = [ControlPlaneSecurityGroup]
-    subnet_ids = [PublicSubnet1, PublicSubnet2, PublicSubnet3, PrivateSubnet1, PrivateSubnet2, PrivateSubnet3]
-
-
-class ControlPlane(eks.Cluster):
-    resource: eks.Cluster
-    name = Sub('${AWS::StackName}-cluster')
-    resources_vpc_config = ControlPlaneResourcesVpcConfig
-    role_arn = EKSClusterRole.Arn
-    version = EKSClusterVersion
 
 
 class ManagedNodeGroupSsoIdentity(eks.Capability.SsoIdentity):
@@ -99,7 +97,6 @@ class ManagedNodeGroupScalingConfig(eks.Nodegroup.ScalingConfig):
 
 
 class ManagedNodeGroup(eks.Nodegroup):
-    resource: eks.Nodegroup
     ami_type = 'AL2_x86_64'
     cluster_name = ControlPlane
     instance_types = [NodeGroupInstanceTypes]

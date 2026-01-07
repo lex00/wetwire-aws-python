@@ -34,7 +34,6 @@ class StackSetAutoDeployment(cloudformation.StackSet.AutoDeployment):
 
 
 class StackSet(cloudformation.StackSet):
-    resource: cloudformation.StackSet
     template_body = """AWSTemplateFormatVersion: "2010-09-09"
 Description: |
   This template has resources that will be installed into all managed accounts

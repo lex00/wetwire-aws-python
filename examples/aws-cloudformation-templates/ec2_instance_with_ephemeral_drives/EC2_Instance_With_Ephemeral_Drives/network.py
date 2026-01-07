@@ -11,6 +11,5 @@ class EC2SecurityGroupEgress(ec2.SecurityGroup.Egress):
 
 
 class EC2SecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'SSH access'
     security_group_ingress = [EC2SecurityGroupEgress]

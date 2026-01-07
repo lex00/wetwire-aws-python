@@ -1,10 +1,9 @@
-"""Compute resources: LaunchConfig, AutoScalingGroup, ScaleDownPolicy, ScaleUpPolicy."""
+"""Compute resources: LaunchConfig, AutoScalingGroup, ScaleUpPolicy, ScaleDownPolicy."""
 
 from . import *  # noqa: F403
 
 
 class LaunchConfig(autoscaling.LaunchConfiguration):
-    resource: autoscaling.LaunchConfiguration
     iam_instance_profile = InstanceProfile
     image_id = FindInMap("EC2RegionMap", AWS_REGION, '64')
     instance_type = InstanceType
@@ -24,7 +23,6 @@ class LaunchConfig(autoscaling.LaunchConfiguration):
 
 
 class AutoScalingGroup(autoscaling.AutoScalingGroup):
-    resource: autoscaling.AutoScalingGroup
     launch_configuration_name = LaunchConfig
     load_balancer_names = [ElasticLoadBalancer]
     max_size = '3'
@@ -32,17 +30,15 @@ class AutoScalingGroup(autoscaling.AutoScalingGroup):
     vpc_zone_identifier = Subnets
 
 
-class ScaleDownPolicy(autoscaling.ScalingPolicy):
-    resource: autoscaling.ScalingPolicy
-    adjustment_type = 'ChangeInCapacity'
-    auto_scaling_group_name = AutoScalingGroup
-    cooldown = '60'
-    scaling_adjustment = '-1'
-
-
 class ScaleUpPolicy(autoscaling.ScalingPolicy):
-    resource: autoscaling.ScalingPolicy
     adjustment_type = 'ChangeInCapacity'
     auto_scaling_group_name = AutoScalingGroup
     cooldown = '60'
     scaling_adjustment = '1'
+
+
+class ScaleDownPolicy(autoscaling.ScalingPolicy):
+    adjustment_type = 'ChangeInCapacity'
+    auto_scaling_group_name = AutoScalingGroup
+    cooldown = '60'
+    scaling_adjustment = '-1'

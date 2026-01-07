@@ -39,7 +39,6 @@ class KWOSSecurityGroupEgress4(ec2.SecurityGroup.Egress):
 
 
 class KWOSSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     vpc_id = VpcId
     group_description = 'Enable HTTP access via port 80/22/443 and ICMP access via port *'
     security_group_ingress = [KWOSSecurityGroupEgress, KWOSSecurityGroupEgress1, KWOSSecurityGroupEgress2, KWOSSecurityGroupEgress3, KWOSSecurityGroupEgress4]

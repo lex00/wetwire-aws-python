@@ -46,7 +46,6 @@ class IAMAssumeInstanceRolePolicy(iam.User.Policy):
 
 
 class IAMAssumeInstanceRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = IAMAssumeInstanceRoleAssumeRolePolicyDocument
     path = '/'
     policies = [IAMAssumeInstanceRolePolicy]
@@ -58,7 +57,6 @@ class IAMAssumeInstanceRole(iam.Role):
 
 
 class InstanceProfile(iam.InstanceProfile):
-    resource: iam.InstanceProfile
     instance_profile_name = Join('-', [
     'IAM',
     'InstanceProfile',

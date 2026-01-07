@@ -15,7 +15,7 @@ class PipelineActionTypeId(codepipeline.Pipeline.ActionTypeId):
     version = 1
 
 
-class PipelineOutputArtifact(codepipeline.Pipeline.OutputArtifact):
+class PipelineInputArtifact(codepipeline.Pipeline.InputArtifact):
     name = 'Source'
 
 
@@ -27,7 +27,7 @@ class PipelineActionDeclaration(codepipeline.Pipeline.ActionDeclaration):
         'BranchName': 'main',
         'PollForSourceChanges': False,
     }
-    output_artifacts = [PipelineOutputArtifact]
+    output_artifacts = [PipelineInputArtifact]
 
 
 class PipelineStageDeclaration(codepipeline.Pipeline.StageDeclaration):
@@ -42,11 +42,11 @@ class PipelineActionTypeId1(codepipeline.Pipeline.ActionTypeId):
     version = 1
 
 
-class PipelineInputArtifact(codepipeline.Pipeline.InputArtifact):
+class PipelineInputArtifact1(codepipeline.Pipeline.InputArtifact):
     name = 'Source'
 
 
-class PipelineOutputArtifact1(codepipeline.Pipeline.OutputArtifact):
+class PipelineInputArtifact2(codepipeline.Pipeline.InputArtifact):
     name = 'FullZip'
 
 
@@ -56,8 +56,8 @@ class PipelineActionDeclaration1(codepipeline.Pipeline.ActionDeclaration):
     configuration = {
         'ProjectName': ImportValue(Sub('${CodeBuildStack}-AppBuild')),
     }
-    input_artifacts = [PipelineInputArtifact]
-    output_artifacts = [PipelineOutputArtifact1]
+    input_artifacts = [PipelineInputArtifact1]
+    output_artifacts = [PipelineInputArtifact2]
     run_order = 1
 
 
@@ -89,11 +89,11 @@ class PipelineActionTypeId3(codepipeline.Pipeline.ActionTypeId):
     version = 1
 
 
-class PipelineInputArtifact1(codepipeline.Pipeline.InputArtifact):
+class PipelineInputArtifact3(codepipeline.Pipeline.InputArtifact):
     name = 'Source'
 
 
-class PipelineInputArtifact2(codepipeline.Pipeline.InputArtifact):
+class PipelineInputArtifact4(codepipeline.Pipeline.InputArtifact):
     name = 'FullZip'
 
 
@@ -105,7 +105,7 @@ class PipelineActionDeclaration3(codepipeline.Pipeline.ActionDeclaration):
         'PrimarySource': 'Source',
         'EnvironmentVariables': '[{"name":"ENVIRONMENT","value":"SampleEnv","type":"PLAINTEXT"}]',
     }
-    input_artifacts = [PipelineInputArtifact1, PipelineInputArtifact2]
+    input_artifacts = [PipelineInputArtifact3, PipelineInputArtifact4]
     run_order = 3
 
 
@@ -115,7 +115,6 @@ class PipelineStageDeclaration2(codepipeline.Pipeline.StageDeclaration):
 
 
 class Pipeline(codepipeline.Pipeline):
-    resource: codepipeline.Pipeline
     name = Sub('${AWS::StackName}-Code-Pipeline')
     artifact_store = PipelineArtifactStore
     restart_execution_on_update = False

@@ -17,7 +17,6 @@ class EventRuleTarget(events.Rule.Target):
 
 
 class EventRule(events.Rule):
-    resource: events.Rule
     event_pattern = {
         'source': ['aws.codecommit'],
         'detail-type': ['CodeCommit Repository State Change'],

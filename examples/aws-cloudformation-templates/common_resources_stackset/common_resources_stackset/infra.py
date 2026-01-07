@@ -29,7 +29,6 @@ class StackSetAutoDeployment(cloudformation.StackSet.AutoDeployment):
 
 
 class StackSet(cloudformation.StackSet):
-    resource: cloudformation.StackSet
     template_body = {
         'Rain::Embed': 'common-resources-pkg.yaml',
     }

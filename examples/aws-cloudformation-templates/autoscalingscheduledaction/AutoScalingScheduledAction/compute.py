@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class LaunchConfig(autoscaling.LaunchConfiguration):
-    resource: autoscaling.LaunchConfiguration
     key_name = KeyName
     image_id = FindInMap("AWSRegionArch2AMI", AWS_REGION, FindInMap("AWSInstanceType2Arch", InstanceType, 'Arch'))
     security_groups = [InstanceSecurityGroup]
@@ -30,7 +29,6 @@ class LaunchConfig(autoscaling.LaunchConfiguration):
 
 
 class WebServerGroup(autoscaling.AutoScalingGroup):
-    resource: autoscaling.AutoScalingGroup
     availability_zones = GetAZs()
     launch_configuration_name = LaunchConfig
     min_size = 2
@@ -39,7 +37,6 @@ class WebServerGroup(autoscaling.AutoScalingGroup):
 
 
 class ScheduledActionDown(autoscaling.ScheduledAction):
-    resource: autoscaling.ScheduledAction
     auto_scaling_group_name = WebServerGroup
     max_size = '1'
     min_size = '1'
@@ -47,7 +44,6 @@ class ScheduledActionDown(autoscaling.ScheduledAction):
 
 
 class ScheduledActionUp(autoscaling.ScheduledAction):
-    resource: autoscaling.ScheduledAction
     auto_scaling_group_name = WebServerGroup
     max_size = '10'
     min_size = '5'

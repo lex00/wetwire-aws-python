@@ -9,7 +9,6 @@ class SimpleADVpcSettings(directoryservice.SimpleAD.VpcSettings):
 
 
 class SimpleAD(directoryservice.SimpleAD):
-    resource: directoryservice.SimpleAD
     create_alias = False
     enable_sso = False
     name = DomainName

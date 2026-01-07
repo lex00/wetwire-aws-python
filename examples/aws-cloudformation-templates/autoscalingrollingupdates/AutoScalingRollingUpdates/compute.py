@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class LaunchConfig(autoscaling.LaunchConfiguration):
-    resource: autoscaling.LaunchConfiguration
     key_name = KeyName
     image_id = FindInMap("AWSRegionArch2AMI", AWS_REGION, FindInMap("AWSInstanceType2Arch", InstanceType, 'Arch'))
     instance_type = InstanceType
@@ -18,7 +17,6 @@ yum install -y aws-cfn-bootstrap
 
 
 class WebServerGroup(autoscaling.AutoScalingGroup):
-    resource: autoscaling.AutoScalingGroup
     availability_zones = GetAZs()
     launch_configuration_name = LaunchConfig
     min_size = 2

@@ -3,12 +3,12 @@
 from . import *  # noqa: F403
 
 
-class PipelineS3BucketServerSideEncryptionByDefault(s3.Bucket.ServerSideEncryptionByDefault):
+class PipelineS3BucketMetadataTableEncryptionConfiguration(s3.Bucket.MetadataTableEncryptionConfiguration):
     sse_algorithm = s3.ServerSideEncryption.AES256
 
 
 class PipelineS3BucketServerSideEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
-    server_side_encryption_by_default = PipelineS3BucketServerSideEncryptionByDefault
+    server_side_encryption_by_default = PipelineS3BucketMetadataTableEncryptionConfiguration
 
 
 class PipelineS3BucketBucketEncryption(s3.Bucket.BucketEncryption):
@@ -23,7 +23,6 @@ class PipelineS3BucketPublicAccessBlockConfiguration(s3.MultiRegionAccessPoint.P
 
 
 class PipelineS3Bucket(s3.Bucket):
-    resource: s3.Bucket
     bucket_name = Sub('${AWS::StackName}-bucket')
     bucket_encryption = PipelineS3BucketBucketEncryption
     public_access_block_configuration = PipelineS3BucketPublicAccessBlockConfiguration

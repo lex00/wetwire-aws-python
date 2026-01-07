@@ -9,7 +9,6 @@ class EC2InstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
 
 
 class EC2Instance(ec2.Instance):
-    resource: ec2.Instance
     instance_type = InstanceType
     subnet_id = Select(0, Subnets)
     security_groups = [EC2SecurityGroup]

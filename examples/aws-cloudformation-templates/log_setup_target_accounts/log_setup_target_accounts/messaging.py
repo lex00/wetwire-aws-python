@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class DeadLetterQueue(sqs.Queue):
-    resource: sqs.Queue
     queue_name = 'CloudFormation-Logs-DLQ'
 
 
@@ -27,7 +26,6 @@ class DeadLetterQueuePolicyPolicyDocument(PolicyDocument):
 
 
 class DeadLetterQueuePolicy(sqs.QueuePolicy):
-    resource: sqs.QueuePolicy
     policy_document = DeadLetterQueuePolicyPolicyDocument
     queues = [DeadLetterQueue]
 
@@ -44,7 +42,6 @@ class CloudFormationEventRuleTarget(events.Rule.Target):
 
 
 class CloudFormationEventRule(events.Rule):
-    resource: events.Rule
     name = 'CloudFormationEventRule'
     event_bus_name = Sub('arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/default')
     event_pattern = {

@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class LaunchConfig(autoscaling.LaunchConfiguration):
-    resource: autoscaling.LaunchConfiguration
     key_name = KeyName
     image_id = LatestAmiId
     security_groups = [InstanceSecurityGroup]
@@ -22,7 +21,6 @@ yum update -y aws-cfn-bootstrap
 
 
 class WebServerGroup(autoscaling.AutoScalingGroup):
-    resource: autoscaling.AutoScalingGroup
     availability_zones = GetAZs()
     launch_configuration_name = LaunchConfig
     min_size = 2

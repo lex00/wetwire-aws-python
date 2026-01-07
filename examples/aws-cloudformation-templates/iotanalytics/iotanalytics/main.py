@@ -4,7 +4,6 @@ from . import *  # noqa: F403
 
 
 class Channel(iotanalytics.Channel):
-    resource: iotanalytics.Channel
     channel_name = Sub('${ProjectName}_channel')
     tags = [{
         'Key': 'Project',
@@ -13,7 +12,6 @@ class Channel(iotanalytics.Channel):
 
 
 class Datastore(iotanalytics.Datastore):
-    resource: iotanalytics.Datastore
     datastore_name = Sub('${ProjectName}_datastore')
     tags = [{
         'Key': 'Project',
@@ -44,7 +42,6 @@ class SqlDatasetRetentionPeriod(iotanalytics.Channel.RetentionPeriod):
 
 
 class SqlDataset(iotanalytics.Dataset):
-    resource: iotanalytics.Dataset
     dataset_name = Sub('${ProjectName}_dataset')
     actions = [SqlDatasetAction]
     triggers = [SqlDatasetTrigger]
@@ -73,7 +70,6 @@ class PipelineActivity(iotanalytics.Pipeline.Activity):
 
 
 class Pipeline(iotanalytics.Pipeline):
-    resource: iotanalytics.Pipeline
     pipeline_name = Sub('${ProjectName}_pipeline')
     pipeline_activities = [PipelineActivity]
     tags = [{

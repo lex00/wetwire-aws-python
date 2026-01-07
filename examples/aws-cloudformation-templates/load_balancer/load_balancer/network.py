@@ -1,4 +1,4 @@
-"""Network resources: LoadBalancerSecurityGroup, LoadBalancer, LoadBalancerEgress, TargetGroup, LoadBalancerListener."""
+"""Network resources: LoadBalancerSecurityGroup, LoadBalancer, TargetGroup, LoadBalancerListener, LoadBalancerEgress."""
 
 from . import *  # noqa: F403
 
@@ -12,7 +12,6 @@ class LoadBalancerSecurityGroupEgress(ec2.SecurityGroup.Egress):
 
 
 class LoadBalancerSecurityGroup(ec2.SecurityGroup):
-    resource: ec2.SecurityGroup
     group_description = 'Automatically created Security Group for ELB'
     security_group_ingress = [LoadBalancerSecurityGroupEgress]
     vpc_id = VPCId
@@ -29,22 +28,11 @@ class LoadBalancerTargetGroupAttribute1(elasticloadbalancingv2.TargetGroup.Targe
 
 
 class LoadBalancer(elasticloadbalancingv2.LoadBalancer):
-    resource: elasticloadbalancingv2.LoadBalancer
     load_balancer_attributes = [LoadBalancerTargetGroupAttribute, LoadBalancerTargetGroupAttribute1]
     scheme = 'internet-facing'
     security_groups = [LoadBalancerSecurityGroup.GroupId]
     subnets = [PublicSubnet1, PublicSubnet2]
     type_ = 'application'
-
-
-class LoadBalancerEgress(ec2.SecurityGroupEgress):
-    resource: ec2.SecurityGroupEgress
-    description = 'Load balancer to target'
-    destination_security_group_id = DestinationSecurityGroupId
-    from_port = 80
-    group_id = LoadBalancerSecurityGroup.GroupId
-    ip_protocol = 'tcp'
-    to_port = 80
 
 
 class TargetGroupTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
@@ -58,7 +46,6 @@ class TargetGroupTargetGroupAttribute1(elasticloadbalancingv2.TargetGroup.Target
 
 
 class TargetGroup(elasticloadbalancingv2.TargetGroup):
-    resource: elasticloadbalancingv2.TargetGroup
     port = 80
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
     target_group_attributes = [TargetGroupTargetGroupAttribute, TargetGroupTargetGroupAttribute1]
@@ -76,10 +63,18 @@ class LoadBalancerListenerCertificate(elasticloadbalancingv2.ListenerCertificate
 
 
 class LoadBalancerListener(elasticloadbalancingv2.Listener):
-    resource: elasticloadbalancingv2.Listener
     default_actions = [LoadBalancerListenerAction]
     load_balancer_arn = LoadBalancer
     port = 443
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTPS
     certificates = [LoadBalancerListenerCertificate]
     ssl_policy = 'ELBSecurityPolicy-TLS13-1-2-2021-06'
+
+
+class LoadBalancerEgress(ec2.SecurityGroupEgress):
+    description = 'Load balancer to target'
+    destination_security_group_id = DestinationSecurityGroupId
+    from_port = 80
+    group_id = LoadBalancerSecurityGroup.GroupId
+    ip_protocol = 'tcp'
+    to_port = 80

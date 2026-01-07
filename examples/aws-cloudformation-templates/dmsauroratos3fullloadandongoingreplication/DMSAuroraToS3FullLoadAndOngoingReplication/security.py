@@ -40,7 +40,6 @@ class S3TargetDMSRolePolicy(iam.User.Policy):
 
 
 class S3TargetDMSRole(iam.Role):
-    resource: iam.Role
     role_name = 'dms-s3-target-role'
     assume_role_policy_document = S3TargetDMSRoleAssumeRolePolicyDocument
     path = '/'
@@ -60,7 +59,6 @@ class DMSCloudwatchRoleAssumeRolePolicyDocument(PolicyDocument):
 
 
 class DMSCloudwatchRole(iam.Role):
-    resource: iam.Role
     role_name = 'dms-cloudwatch-logs-role'
     assume_role_policy_document = DMSCloudwatchRoleAssumeRolePolicyDocument
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSCloudWatchLogsRole']
@@ -80,7 +78,6 @@ class DMSVpcRoleAssumeRolePolicyDocument(PolicyDocument):
 
 
 class DMSVpcRole(iam.Role):
-    resource: iam.Role
     role_name = 'dms-vpc-role'
     assume_role_policy_document = DMSVpcRoleAssumeRolePolicyDocument
     managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole']

@@ -9,7 +9,6 @@ class PrivateInstanceAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class PrivateInstance(ec2.Instance):
-    resource: ec2.Instance
     key_name = KeyName
     instance_type = 't2.micro'
     security_group_ids = [PrivateSG]
@@ -32,7 +31,6 @@ class BastionInstanceAssociationParameter(ec2.Instance.AssociationParameter):
 
 
 class BastionInstance(ec2.Instance):
-    resource: ec2.Instance
     key_name = KeyName
     instance_type = 't2.micro'
     security_group_ids = [BastionSG]

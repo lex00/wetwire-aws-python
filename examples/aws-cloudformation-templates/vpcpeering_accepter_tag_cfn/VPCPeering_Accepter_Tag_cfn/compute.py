@@ -62,7 +62,6 @@ def handler(event, context):
 
 
 class TagVpcPeeringConnectionsLambdaFunction(lambda_.Function):
-    resource: lambda_.Function
     function_name = LambdaFunctionName
     handler = 'index.handler'
     role = TagVpcPeeringConnectionsLambdaRole.Arn

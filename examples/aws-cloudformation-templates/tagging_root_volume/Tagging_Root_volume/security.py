@@ -32,13 +32,11 @@ class InstanceRolePolicy(iam.User.Policy):
 
 
 class InstanceRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = InstanceRoleAssumeRolePolicyDocument
     path = '/'
     policies = [InstanceRolePolicy]
 
 
 class InstanceProfile(iam.InstanceProfile):
-    resource: iam.InstanceProfile
     path = '/'
     roles = [InstanceRole]

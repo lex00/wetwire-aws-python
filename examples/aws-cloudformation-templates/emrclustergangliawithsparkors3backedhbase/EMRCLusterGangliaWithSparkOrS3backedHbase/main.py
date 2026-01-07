@@ -44,7 +44,6 @@ class EMRClusterJobFlowInstancesConfig(emr.Cluster.JobFlowInstancesConfig):
 
 
 class EMRCluster(emr.Cluster):
-    resource: emr.Cluster
     applications = [EMRClusterBootstrapActionConfig, If("Spark", {
     'Name': 'Spark',
 }, AWS_NO_VALUE), If("Hbase", {

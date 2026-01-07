@@ -72,6 +72,5 @@ class CodeBuildRolePolicy2(iam.User.Policy):
 
 
 class CodeBuildRole(iam.Role):
-    resource: iam.Role
     assume_role_policy_document = CodeBuildRoleAssumeRolePolicyDocument
     policies = [CodeBuildRolePolicy, CodeBuildRolePolicy1, CodeBuildRolePolicy2]

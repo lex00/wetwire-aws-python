@@ -15,12 +15,12 @@ class EC2InstanceBlockDeviceMapping(ec2.Instance.BlockDeviceMapping):
 
 class EC2InstanceAssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = [Sub('${AppName}-${Environment}-ec2-instance')]
+    value = Sub('${AppName}-${Environment}-ec2-instance')
 
 
 class EC2InstanceAssociationParameter1(ec2.Instance.AssociationParameter):
     key = 'Environment'
-    value = [Environment]
+    value = Environment
 
 
 class EC2Instance(ec2.Instance):
