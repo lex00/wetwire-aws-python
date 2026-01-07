@@ -18,7 +18,7 @@ Usage in a resources package __init__.py:
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from typing import Any
 
 from dataclass_dsl import Attr, Ref, RefDict, RefList
 from dataclass_dsl import setup_resources as _setup_resources
@@ -413,7 +413,7 @@ def setup_params(package_globals: dict[str, Any]) -> None:
 
 def _auto_decorate_resources(
     package_globals: dict[str, Any],
-    decorator: Callable[[type[Any]], type[Any]],
+    decorator: Any,  # Decorator from dataclass_dsl
 ) -> None:
     """Auto-decorate classes that inherit from CloudFormationResource.
 

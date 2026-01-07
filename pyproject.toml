@@ -132,4 +132,18 @@ pythonpath = ["src"]
 source = ["src/wetwire_aws"]
 omit = ["*/tests/*", "*/codegen/*", "*/resources/*"]
 
+[tool.ty.src]
+# Only check main source code
+include = ["src"]
+# Exclude generated code and examples
+exclude = ["examples/**", "src/wetwire_aws/resources/**"]
+
+[tool.ty.rules]
+# These patterns are used correctly but rely on dynamic Python features
+# that ty cannot statically analyze:
+# - PropertyTypeDescriptor returns types via __mro_entries__ (PEP 560)
+# - Metaclass __getattr__ provides GetAtt attributes (e.g., MyRole.Arn)
+unsupported-base = "ignore"  # class Foo(Module.Type.Nested): pattern
+unresolved-attribute = "ignore"  # MyResource.Arn pattern
+
 

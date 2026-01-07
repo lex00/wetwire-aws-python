@@ -249,38 +249,45 @@ class CloudFormationTemplate:
 
         # Custom dependency detection for inheritance pattern
         # dataclass_dsl doesn't detect dependencies from class attributes
-        def get_wrapper_dependencies(cls: type) -> set[type]:
-            """Get dependencies from class attributes (AttrRef and class refs)."""
-            deps: set[type] = set()
+        # NOTE: We use class NAMES for comparison because the decorator creates
+        # new class objects, so AttrRef.target points to pre-decorated class
+        # while registry contains decorated class (different identity, same name)
+        def get_wrapper_dependency_names(cls: type) -> set[str]:
+            """Get dependency class names from class attributes."""
+            dep_names: set[str] = set()
             for name, value in cls.__dict__.items():
                 if name.startswith("_"):
                     continue
                 if is_attr_ref(value):
-                    deps.add(value.target)
+                    dep_names.add(value.target.__name__)
                 elif is_class_ref(value):
-                    deps.add(value)
+                    dep_names.add(value.__name__)
                 elif isinstance(value, type) and issubclass(
                     value, CloudFormationResource
                 ):
-                    deps.add(value)
-            return deps
+                    dep_names.add(value.__name__)
+            return dep_names
 
         # Custom topological sort using our dependency detection
         def custom_topological_sort(classes: list[type]) -> list[type]:
             """Sort classes by dependencies (dependencies first)."""
-            class_set = set(classes)
+            # Build name -> class mapping
+            class_by_name = {cls.__name__: cls for cls in classes}
+            class_names = set(class_by_name.keys())
+
             sorted_result: list[type] = []
+            sorted_names: set[str] = set()
             remaining = set(classes)
 
             while remaining:
                 # Find classes whose dependencies are all satisfied
-                ready = [
-                    cls
-                    for cls in remaining
-                    if get_wrapper_dependencies(cls)
-                    .intersection(class_set)
-                    .issubset(set(sorted_result))
-                ]
+                ready = []
+                for cls in remaining:
+                    dep_names = get_wrapper_dependency_names(cls)
+                    # Only consider dependencies that are in our class set
+                    relevant_deps = dep_names.intersection(class_names)
+                    if relevant_deps.issubset(sorted_names):
+                        ready.append(cls)
 
                 if not ready:
                     # No progress - take any remaining class to break cycle
@@ -288,6 +295,7 @@ class CloudFormationTemplate:
 
                 for cls in ready:
                     sorted_result.append(cls)
+                    sorted_names.add(cls.__name__)
                     remaining.remove(cls)
 
             return sorted_result

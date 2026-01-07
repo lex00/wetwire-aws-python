@@ -6,7 +6,9 @@ to resource properties. This module provides type aliases that make these patter
 type-safe.
 """
 
-from typing import TypeVar, Union
+from __future__ import annotations
+
+from typing import TypeVar
 
 from dataclass_dsl import AttrRef
 
@@ -20,4 +22,4 @@ T = TypeVar("T")
 # - Class references (type[Parameter], type[Resource], type[PropertyType])
 # - Intrinsic functions (Sub, Ref, GetAtt, etc.)
 # - AttrRef markers (from MyResource.Attribute syntax)
-DslValue = Union[T, type, IntrinsicFunction, AttrRef]
+DslValue = T | type | IntrinsicFunction | AttrRef
