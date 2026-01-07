@@ -65,6 +65,7 @@ dev = [
     "pytest-cov>=4.1",
     "ruff>=0.1",
     "types-PyYAML>=6.0",
+    "pyright>=1.1.407",
 ]
 codegen = [
     "jinja2>=3.1",
@@ -130,4 +131,5 @@ pythonpath = ["src"]
 [tool.coverage.run]
 source = ["src/wetwire_aws"]
 omit = ["*/tests/*", "*/codegen/*", "*/resources/*"]
+
 

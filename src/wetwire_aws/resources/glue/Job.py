@@ -6,26 +6,27 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ConnectionsList(PropertyType):
-    connections: list[String] = field(default_factory=list)
+    connections: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class ExecutionProperty(PropertyType):
-    max_concurrent_runs: float | None = None
+    max_concurrent_runs: DslValue[float] | None = None
 
 
 @dataclass
 class JobCommand(PropertyType):
-    name: str | None = None
-    python_version: str | None = None
-    runtime: str | None = None
-    script_location: str | None = None
+    name: DslValue[str] | None = None
+    python_version: DslValue[str] | None = None
+    runtime: DslValue[str] | None = None
+    script_location: DslValue[str] | None = None
 
 
 @dataclass
 class NotificationProperty(PropertyType):
-    notify_delay_after: int | None = None
+    notify_delay_after: DslValue[int] | None = None

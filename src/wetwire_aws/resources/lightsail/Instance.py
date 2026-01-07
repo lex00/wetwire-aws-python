@@ -6,18 +6,19 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AddOn(PropertyType):
-    add_on_type: str | None = None
-    auto_snapshot_add_on_request: AutoSnapshotAddOn | None = None
-    status: str | None = None
+    add_on_type: DslValue[str] | None = None
+    auto_snapshot_add_on_request: DslValue[AutoSnapshotAddOn] | None = None
+    status: DslValue[str] | None = None
 
 
 @dataclass
 class AutoSnapshotAddOn(PropertyType):
-    snapshot_time_of_day: str | None = None
+    snapshot_time_of_day: DslValue[str] | None = None
 
 
 @dataclass
@@ -26,54 +27,54 @@ class Disk(PropertyType):
         "iops": "IOPS",
     }
 
-    disk_name: str | None = None
-    path: str | None = None
-    attached_to: str | None = None
-    attachment_state: str | None = None
-    iops: int | None = None
-    is_system_disk: bool | None = None
-    size_in_gb: str | None = None
+    disk_name: DslValue[str] | None = None
+    path: DslValue[str] | None = None
+    attached_to: DslValue[str] | None = None
+    attachment_state: DslValue[str] | None = None
+    iops: DslValue[int] | None = None
+    is_system_disk: DslValue[bool] | None = None
+    size_in_gb: DslValue[str] | None = None
 
 
 @dataclass
 class Hardware(PropertyType):
-    cpu_count: int | None = None
-    disks: list[Disk] = field(default_factory=list)
-    ram_size_in_gb: int | None = None
+    cpu_count: DslValue[int] | None = None
+    disks: list[DslValue[Disk]] = field(default_factory=list)
+    ram_size_in_gb: DslValue[int] | None = None
 
 
 @dataclass
 class Location(PropertyType):
-    availability_zone: str | None = None
-    region_name: str | None = None
+    availability_zone: DslValue[str] | None = None
+    region_name: DslValue[str] | None = None
 
 
 @dataclass
 class MonthlyTransfer(PropertyType):
-    gb_per_month_allocated: str | None = None
+    gb_per_month_allocated: DslValue[str] | None = None
 
 
 @dataclass
 class Networking(PropertyType):
-    ports: list[Port] = field(default_factory=list)
-    monthly_transfer: MonthlyTransfer | None = None
+    ports: list[DslValue[Port]] = field(default_factory=list)
+    monthly_transfer: DslValue[MonthlyTransfer] | None = None
 
 
 @dataclass
 class Port(PropertyType):
-    access_direction: str | None = None
-    access_from: str | None = None
-    access_type: str | None = None
-    cidr_list_aliases: list[String] = field(default_factory=list)
-    cidrs: list[String] = field(default_factory=list)
-    common_name: str | None = None
-    from_port: int | None = None
-    ipv6_cidrs: list[String] = field(default_factory=list)
-    protocol: str | None = None
-    to_port: int | None = None
+    access_direction: DslValue[str] | None = None
+    access_from: DslValue[str] | None = None
+    access_type: DslValue[str] | None = None
+    cidr_list_aliases: list[DslValue[str]] = field(default_factory=list)
+    cidrs: list[DslValue[str]] = field(default_factory=list)
+    common_name: DslValue[str] | None = None
+    from_port: DslValue[int] | None = None
+    ipv6_cidrs: list[DslValue[str]] = field(default_factory=list)
+    protocol: DslValue[str] | None = None
+    to_port: DslValue[int] | None = None
 
 
 @dataclass
 class State(PropertyType):
-    code: int | None = None
-    name: str | None = None
+    code: DslValue[int] | None = None
+    name: DslValue[str] | None = None

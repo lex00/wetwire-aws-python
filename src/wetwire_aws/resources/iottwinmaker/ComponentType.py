@@ -6,89 +6,90 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CompositeComponentType(PropertyType):
-    component_type_id: str | None = None
+    component_type_id: DslValue[str] | None = None
 
 
 @dataclass
 class DataConnector(PropertyType):
-    is_native: bool | None = None
-    lambda_: LambdaFunction | None = None
+    is_native: DslValue[bool] | None = None
+    lambda_: DslValue[LambdaFunction] | None = None
 
 
 @dataclass
 class DataType(PropertyType):
-    type_: str | None = None
-    allowed_values: list[DataValue] = field(default_factory=list)
-    nested_type: DataType | None = None
-    relationship: Relationship | None = None
-    unit_of_measure: str | None = None
+    type_: DslValue[str] | None = None
+    allowed_values: list[DslValue[DataValue]] = field(default_factory=list)
+    nested_type: DslValue[DataType] | None = None
+    relationship: DslValue[Relationship] | None = None
+    unit_of_measure: DslValue[str] | None = None
 
 
 @dataclass
 class DataValue(PropertyType):
-    boolean_value: bool | None = None
-    double_value: float | None = None
-    expression: str | None = None
-    integer_value: int | None = None
-    list_value: list[DataValue] = field(default_factory=list)
-    long_value: float | None = None
-    map_value: dict[str, DataValue] = field(default_factory=dict)
-    relationship_value: RelationshipValue | None = None
-    string_value: str | None = None
+    boolean_value: DslValue[bool] | None = None
+    double_value: DslValue[float] | None = None
+    expression: DslValue[str] | None = None
+    integer_value: DslValue[int] | None = None
+    list_value: list[DslValue[DataValue]] = field(default_factory=list)
+    long_value: DslValue[float] | None = None
+    map_value: dict[str, DslValue[DataValue]] = field(default_factory=dict)
+    relationship_value: DslValue[RelationshipValue] | None = None
+    string_value: DslValue[str] | None = None
 
 
 @dataclass
 class Error(PropertyType):
-    code: str | None = None
-    message: str | None = None
+    code: DslValue[str] | None = None
+    message: DslValue[str] | None = None
 
 
 @dataclass
 class Function(PropertyType):
-    implemented_by: DataConnector | None = None
-    required_properties: list[String] = field(default_factory=list)
-    scope: str | None = None
+    implemented_by: DslValue[DataConnector] | None = None
+    required_properties: list[DslValue[str]] = field(default_factory=list)
+    scope: DslValue[str] | None = None
 
 
 @dataclass
 class LambdaFunction(PropertyType):
-    arn: str | None = None
+    arn: DslValue[str] | None = None
 
 
 @dataclass
 class PropertyDefinition(PropertyType):
-    configurations: dict[str, String] = field(default_factory=dict)
-    data_type: DataType | None = None
-    default_value: DataValue | None = None
-    is_external_id: bool | None = None
-    is_required_in_entity: bool | None = None
-    is_stored_externally: bool | None = None
-    is_time_series: bool | None = None
+    configurations: dict[str, DslValue[str]] = field(default_factory=dict)
+    data_type: DslValue[DataType] | None = None
+    default_value: DslValue[DataValue] | None = None
+    is_external_id: DslValue[bool] | None = None
+    is_required_in_entity: DslValue[bool] | None = None
+    is_stored_externally: DslValue[bool] | None = None
+    is_time_series: DslValue[bool] | None = None
 
 
 @dataclass
 class PropertyGroup(PropertyType):
-    group_type: str | None = None
-    property_names: list[String] = field(default_factory=list)
+    group_type: DslValue[str] | None = None
+    property_names: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class Relationship(PropertyType):
-    relationship_type: str | None = None
-    target_component_type_id: str | None = None
+    relationship_type: DslValue[str] | None = None
+    target_component_type_id: DslValue[str] | None = None
 
 
 @dataclass
 class RelationshipValue(PropertyType):
-    target_component_name: str | None = None
-    target_entity_id: str | None = None
+    target_component_name: DslValue[str] | None = None
+    target_entity_id: DslValue[str] | None = None
 
 
 @dataclass
 class Status(PropertyType):
-    error: Error | None = None
-    state: str | None = None
+    error: DslValue[Error] | None = None
+    state: DslValue[str] | None = None

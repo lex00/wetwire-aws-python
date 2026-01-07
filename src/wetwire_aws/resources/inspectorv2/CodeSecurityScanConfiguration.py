@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -16,11 +17,11 @@ class CodeSecurityScanConfiguration(PropertyType):
         "rule_set_categories": "ruleSetCategories",
     }
 
-    rule_set_categories: list[String] = field(default_factory=list)
+    rule_set_categories: list[DslValue[str]] = field(default_factory=list)
     continuous_integration_scan_configuration: (
-        ContinuousIntegrationScanConfiguration | None
+        DslValue[ContinuousIntegrationScanConfiguration] | None
     ) = None
-    periodic_scan_configuration: PeriodicScanConfiguration | None = None
+    periodic_scan_configuration: DslValue[PeriodicScanConfiguration] | None = None
 
 
 @dataclass
@@ -29,7 +30,7 @@ class ContinuousIntegrationScanConfiguration(PropertyType):
         "supported_events": "supportedEvents",
     }
 
-    supported_events: list[String] = field(default_factory=list)
+    supported_events: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
@@ -39,8 +40,8 @@ class PeriodicScanConfiguration(PropertyType):
         "frequency_expression": "frequencyExpression",
     }
 
-    frequency: str | None = None
-    frequency_expression: str | None = None
+    frequency: DslValue[str] | None = None
+    frequency_expression: DslValue[str] | None = None
 
 
 @dataclass
@@ -49,4 +50,4 @@ class ScopeSettings(PropertyType):
         "project_selection_scope": "projectSelectionScope",
     }
 
-    project_selection_scope: str | None = None
+    project_selection_scope: DslValue[str] | None = None

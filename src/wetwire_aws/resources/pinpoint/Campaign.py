@@ -6,85 +6,86 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AttributeDimension(PropertyType):
-    attribute_type: str | None = None
-    values: list[String] = field(default_factory=list)
+    attribute_type: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class CampaignCustomMessage(PropertyType):
-    data: str | None = None
+    data: DslValue[str] | None = None
 
 
 @dataclass
 class CampaignEmailMessage(PropertyType):
-    body: str | None = None
-    from_address: str | None = None
-    html_body: str | None = None
-    title: str | None = None
+    body: DslValue[str] | None = None
+    from_address: DslValue[str] | None = None
+    html_body: DslValue[str] | None = None
+    title: DslValue[str] | None = None
 
 
 @dataclass
 class CampaignEventFilter(PropertyType):
-    dimensions: EventDimensions | None = None
-    filter_type: str | None = None
+    dimensions: DslValue[EventDimensions] | None = None
+    filter_type: DslValue[str] | None = None
 
 
 @dataclass
 class CampaignHook(PropertyType):
-    lambda_function_name: str | None = None
-    mode: str | None = None
-    web_url: str | None = None
+    lambda_function_name: DslValue[str] | None = None
+    mode: DslValue[str] | None = None
+    web_url: DslValue[str] | None = None
 
 
 @dataclass
 class CampaignInAppMessage(PropertyType):
-    content: list[InAppMessageContent] = field(default_factory=list)
-    custom_config: dict[str, Any] | None = None
-    layout: str | None = None
+    content: list[DslValue[InAppMessageContent]] = field(default_factory=list)
+    custom_config: DslValue[dict[str, Any]] | None = None
+    layout: DslValue[str] | None = None
 
 
 @dataclass
 class CampaignSmsMessage(PropertyType):
-    body: str | None = None
-    entity_id: str | None = None
-    message_type: str | None = None
-    origination_number: str | None = None
-    sender_id: str | None = None
-    template_id: str | None = None
+    body: DslValue[str] | None = None
+    entity_id: DslValue[str] | None = None
+    message_type: DslValue[str] | None = None
+    origination_number: DslValue[str] | None = None
+    sender_id: DslValue[str] | None = None
+    template_id: DslValue[str] | None = None
 
 
 @dataclass
 class CustomDeliveryConfiguration(PropertyType):
-    delivery_uri: str | None = None
-    endpoint_types: list[String] = field(default_factory=list)
+    delivery_uri: DslValue[str] | None = None
+    endpoint_types: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class DefaultButtonConfiguration(PropertyType):
-    background_color: str | None = None
-    border_radius: int | None = None
-    button_action: str | None = None
-    link: str | None = None
-    text: str | None = None
-    text_color: str | None = None
+    background_color: DslValue[str] | None = None
+    border_radius: DslValue[int] | None = None
+    button_action: DslValue[str] | None = None
+    link: DslValue[str] | None = None
+    text: DslValue[str] | None = None
+    text_color: DslValue[str] | None = None
 
 
 @dataclass
 class EventDimensions(PropertyType):
-    attributes: dict[str, Any] | None = None
-    event_type: SetDimension | None = None
-    metrics: dict[str, Any] | None = None
+    attributes: DslValue[dict[str, Any]] | None = None
+    event_type: DslValue[SetDimension] | None = None
+    metrics: DslValue[dict[str, Any]] | None = None
 
 
 @dataclass
 class InAppMessageBodyConfig(PropertyType):
-    alignment: str | None = None
-    body: str | None = None
-    text_color: str | None = None
+    alignment: DslValue[str] | None = None
+    body: DslValue[str] | None = None
+    text_color: DslValue[str] | None = None
 
 
 @dataclass
@@ -93,52 +94,52 @@ class InAppMessageButton(PropertyType):
         "ios": "IOS",
     }
 
-    android: OverrideButtonConfiguration | None = None
-    default_config: DefaultButtonConfiguration | None = None
-    ios: OverrideButtonConfiguration | None = None
-    web: OverrideButtonConfiguration | None = None
+    android: DslValue[OverrideButtonConfiguration] | None = None
+    default_config: DslValue[DefaultButtonConfiguration] | None = None
+    ios: DslValue[OverrideButtonConfiguration] | None = None
+    web: DslValue[OverrideButtonConfiguration] | None = None
 
 
 @dataclass
 class InAppMessageContent(PropertyType):
-    background_color: str | None = None
-    body_config: InAppMessageBodyConfig | None = None
-    header_config: InAppMessageHeaderConfig | None = None
-    image_url: str | None = None
-    primary_btn: InAppMessageButton | None = None
-    secondary_btn: InAppMessageButton | None = None
+    background_color: DslValue[str] | None = None
+    body_config: DslValue[InAppMessageBodyConfig] | None = None
+    header_config: DslValue[InAppMessageHeaderConfig] | None = None
+    image_url: DslValue[str] | None = None
+    primary_btn: DslValue[InAppMessageButton] | None = None
+    secondary_btn: DslValue[InAppMessageButton] | None = None
 
 
 @dataclass
 class InAppMessageHeaderConfig(PropertyType):
-    alignment: str | None = None
-    header: str | None = None
-    text_color: str | None = None
+    alignment: DslValue[str] | None = None
+    header: DslValue[str] | None = None
+    text_color: DslValue[str] | None = None
 
 
 @dataclass
 class Limits(PropertyType):
-    daily: int | None = None
-    maximum_duration: int | None = None
-    messages_per_second: int | None = None
-    session: int | None = None
-    total: int | None = None
+    daily: DslValue[int] | None = None
+    maximum_duration: DslValue[int] | None = None
+    messages_per_second: DslValue[int] | None = None
+    session: DslValue[int] | None = None
+    total: DslValue[int] | None = None
 
 
 @dataclass
 class Message(PropertyType):
-    action: str | None = None
-    body: str | None = None
-    image_icon_url: str | None = None
-    image_small_icon_url: str | None = None
-    image_url: str | None = None
-    json_body: str | None = None
-    media_url: str | None = None
-    raw_content: str | None = None
-    silent_push: bool | None = None
-    time_to_live: int | None = None
-    title: str | None = None
-    url: str | None = None
+    action: DslValue[str] | None = None
+    body: DslValue[str] | None = None
+    image_icon_url: DslValue[str] | None = None
+    image_small_icon_url: DslValue[str] | None = None
+    image_url: DslValue[str] | None = None
+    json_body: DslValue[str] | None = None
+    media_url: DslValue[str] | None = None
+    raw_content: DslValue[str] | None = None
+    silent_push: DslValue[bool] | None = None
+    time_to_live: DslValue[int] | None = None
+    title: DslValue[str] | None = None
+    url: DslValue[str] | None = None
 
 
 @dataclass
@@ -150,56 +151,56 @@ class MessageConfiguration(PropertyType):
         "sms_message": "SMSMessage",
     }
 
-    adm_message: Message | None = None
-    apns_message: Message | None = None
-    baidu_message: Message | None = None
-    custom_message: CampaignCustomMessage | None = None
-    default_message: Message | None = None
-    email_message: CampaignEmailMessage | None = None
-    gcm_message: Message | None = None
-    in_app_message: CampaignInAppMessage | None = None
-    sms_message: CampaignSmsMessage | None = None
+    adm_message: DslValue[Message] | None = None
+    apns_message: DslValue[Message] | None = None
+    baidu_message: DslValue[Message] | None = None
+    custom_message: DslValue[CampaignCustomMessage] | None = None
+    default_message: DslValue[Message] | None = None
+    email_message: DslValue[CampaignEmailMessage] | None = None
+    gcm_message: DslValue[Message] | None = None
+    in_app_message: DslValue[CampaignInAppMessage] | None = None
+    sms_message: DslValue[CampaignSmsMessage] | None = None
 
 
 @dataclass
 class MetricDimension(PropertyType):
-    comparison_operator: str | None = None
-    value: float | None = None
+    comparison_operator: DslValue[str] | None = None
+    value: DslValue[float] | None = None
 
 
 @dataclass
 class OverrideButtonConfiguration(PropertyType):
-    button_action: str | None = None
-    link: str | None = None
+    button_action: DslValue[str] | None = None
+    link: DslValue[str] | None = None
 
 
 @dataclass
 class QuietTime(PropertyType):
-    end: str | None = None
-    start: str | None = None
+    end: DslValue[str] | None = None
+    start: DslValue[str] | None = None
 
 
 @dataclass
 class Schedule(PropertyType):
-    end_time: str | None = None
-    event_filter: CampaignEventFilter | None = None
-    frequency: str | None = None
-    is_local_time: bool | None = None
-    quiet_time: QuietTime | None = None
-    start_time: str | None = None
-    time_zone: str | None = None
+    end_time: DslValue[str] | None = None
+    event_filter: DslValue[CampaignEventFilter] | None = None
+    frequency: DslValue[str] | None = None
+    is_local_time: DslValue[bool] | None = None
+    quiet_time: DslValue[QuietTime] | None = None
+    start_time: DslValue[str] | None = None
+    time_zone: DslValue[str] | None = None
 
 
 @dataclass
 class SetDimension(PropertyType):
-    dimension_type: str | None = None
-    values: list[String] = field(default_factory=list)
+    dimension_type: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class Template(PropertyType):
-    name: str | None = None
-    version: str | None = None
+    name: DslValue[str] | None = None
+    version: DslValue[str] | None = None
 
 
 @dataclass
@@ -208,18 +209,18 @@ class TemplateConfiguration(PropertyType):
         "sms_template": "SMSTemplate",
     }
 
-    email_template: Template | None = None
-    push_template: Template | None = None
-    sms_template: Template | None = None
-    voice_template: Template | None = None
+    email_template: DslValue[Template] | None = None
+    push_template: DslValue[Template] | None = None
+    sms_template: DslValue[Template] | None = None
+    voice_template: DslValue[Template] | None = None
 
 
 @dataclass
 class WriteTreatmentResource(PropertyType):
-    custom_delivery_configuration: CustomDeliveryConfiguration | None = None
-    message_configuration: MessageConfiguration | None = None
-    schedule: Schedule | None = None
-    size_percent: int | None = None
-    template_configuration: TemplateConfiguration | None = None
-    treatment_description: str | None = None
-    treatment_name: str | None = None
+    custom_delivery_configuration: DslValue[CustomDeliveryConfiguration] | None = None
+    message_configuration: DslValue[MessageConfiguration] | None = None
+    schedule: DslValue[Schedule] | None = None
+    size_percent: DslValue[int] | None = None
+    template_configuration: DslValue[TemplateConfiguration] | None = None
+    treatment_description: DslValue[str] | None = None
+    treatment_name: DslValue[str] | None = None

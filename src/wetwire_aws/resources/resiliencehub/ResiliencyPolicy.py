@@ -6,12 +6,13 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class FailurePolicy(PropertyType):
-    rpo_in_secs: int | None = None
-    rto_in_secs: int | None = None
+    rpo_in_secs: DslValue[int] | None = None
+    rto_in_secs: DslValue[int] | None = None
 
 
 @dataclass
@@ -20,7 +21,7 @@ class PolicyMap(PropertyType):
         "az": "AZ",
     }
 
-    az: FailurePolicy | None = None
-    hardware: FailurePolicy | None = None
-    software: FailurePolicy | None = None
-    region: FailurePolicy | None = None
+    az: DslValue[FailurePolicy] | None = None
+    hardware: DslValue[FailurePolicy] | None = None
+    software: DslValue[FailurePolicy] | None = None
+    region: DslValue[FailurePolicy] | None = None

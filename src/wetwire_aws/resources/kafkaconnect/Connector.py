@@ -6,109 +6,110 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ApacheKafkaCluster(PropertyType):
-    bootstrap_servers: str | None = None
-    vpc: Vpc | None = None
+    bootstrap_servers: DslValue[str] | None = None
+    vpc: DslValue[Vpc] | None = None
 
 
 @dataclass
 class AutoScaling(PropertyType):
-    max_worker_count: int | None = None
-    mcu_count: int | None = None
-    min_worker_count: int | None = None
-    scale_in_policy: ScaleInPolicy | None = None
-    scale_out_policy: ScaleOutPolicy | None = None
+    max_worker_count: DslValue[int] | None = None
+    mcu_count: DslValue[int] | None = None
+    min_worker_count: DslValue[int] | None = None
+    scale_in_policy: DslValue[ScaleInPolicy] | None = None
+    scale_out_policy: DslValue[ScaleOutPolicy] | None = None
 
 
 @dataclass
 class Capacity(PropertyType):
-    auto_scaling: AutoScaling | None = None
-    provisioned_capacity: ProvisionedCapacity | None = None
+    auto_scaling: DslValue[AutoScaling] | None = None
+    provisioned_capacity: DslValue[ProvisionedCapacity] | None = None
 
 
 @dataclass
 class CloudWatchLogsLogDelivery(PropertyType):
-    enabled: bool | None = None
-    log_group: str | None = None
+    enabled: DslValue[bool] | None = None
+    log_group: DslValue[str] | None = None
 
 
 @dataclass
 class CustomPlugin(PropertyType):
-    custom_plugin_arn: str | None = None
-    revision: int | None = None
+    custom_plugin_arn: DslValue[str] | None = None
+    revision: DslValue[int] | None = None
 
 
 @dataclass
 class FirehoseLogDelivery(PropertyType):
-    enabled: bool | None = None
-    delivery_stream: str | None = None
+    enabled: DslValue[bool] | None = None
+    delivery_stream: DslValue[str] | None = None
 
 
 @dataclass
 class KafkaCluster(PropertyType):
-    apache_kafka_cluster: ApacheKafkaCluster | None = None
+    apache_kafka_cluster: DslValue[ApacheKafkaCluster] | None = None
 
 
 @dataclass
 class KafkaClusterClientAuthentication(PropertyType):
-    authentication_type: str | None = None
+    authentication_type: DslValue[str] | None = None
 
 
 @dataclass
 class KafkaClusterEncryptionInTransit(PropertyType):
-    encryption_type: str | None = None
+    encryption_type: DslValue[str] | None = None
 
 
 @dataclass
 class LogDelivery(PropertyType):
-    worker_log_delivery: WorkerLogDelivery | None = None
+    worker_log_delivery: DslValue[WorkerLogDelivery] | None = None
 
 
 @dataclass
 class Plugin(PropertyType):
-    custom_plugin: CustomPlugin | None = None
+    custom_plugin: DslValue[CustomPlugin] | None = None
 
 
 @dataclass
 class ProvisionedCapacity(PropertyType):
-    worker_count: int | None = None
-    mcu_count: int | None = None
+    worker_count: DslValue[int] | None = None
+    mcu_count: DslValue[int] | None = None
 
 
 @dataclass
 class S3LogDelivery(PropertyType):
-    enabled: bool | None = None
-    bucket: str | None = None
-    prefix: str | None = None
+    enabled: DslValue[bool] | None = None
+    bucket: DslValue[str] | None = None
+    prefix: DslValue[str] | None = None
 
 
 @dataclass
 class ScaleInPolicy(PropertyType):
-    cpu_utilization_percentage: int | None = None
+    cpu_utilization_percentage: DslValue[int] | None = None
 
 
 @dataclass
 class ScaleOutPolicy(PropertyType):
-    cpu_utilization_percentage: int | None = None
+    cpu_utilization_percentage: DslValue[int] | None = None
 
 
 @dataclass
 class Vpc(PropertyType):
-    security_groups: list[String] = field(default_factory=list)
-    subnets: list[String] = field(default_factory=list)
+    security_groups: list[DslValue[str]] = field(default_factory=list)
+    subnets: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class WorkerConfiguration(PropertyType):
-    revision: int | None = None
-    worker_configuration_arn: str | None = None
+    revision: DslValue[int] | None = None
+    worker_configuration_arn: DslValue[str] | None = None
 
 
 @dataclass
 class WorkerLogDelivery(PropertyType):
-    cloud_watch_logs: CloudWatchLogsLogDelivery | None = None
-    firehose: FirehoseLogDelivery | None = None
-    s3: S3LogDelivery | None = None
+    cloud_watch_logs: DslValue[CloudWatchLogsLogDelivery] | None = None
+    firehose: DslValue[FirehoseLogDelivery] | None = None
+    s3: DslValue[S3LogDelivery] | None = None

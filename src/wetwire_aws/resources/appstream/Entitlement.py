@@ -6,9 +6,10 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Attribute(PropertyType):
-    name: str | None = None
-    value: str | None = None
+    name: DslValue[str] | None = None
+    value: DslValue[str] | None = None

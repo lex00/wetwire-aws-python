@@ -6,57 +6,58 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ConfigParameter(PropertyType):
-    parameter_key: str | None = None
-    parameter_value: str | None = None
+    parameter_key: DslValue[str] | None = None
+    parameter_value: DslValue[str] | None = None
 
 
 @dataclass
 class Endpoint(PropertyType):
-    address: str | None = None
-    port: int | None = None
-    vpc_endpoints: list[VpcEndpoint] = field(default_factory=list)
+    address: DslValue[str] | None = None
+    port: DslValue[int] | None = None
+    vpc_endpoints: list[DslValue[VpcEndpoint]] = field(default_factory=list)
 
 
 @dataclass
 class NetworkInterface(PropertyType):
-    availability_zone: str | None = None
-    network_interface_id: str | None = None
-    private_ip_address: str | None = None
-    subnet_id: str | None = None
+    availability_zone: DslValue[str] | None = None
+    network_interface_id: DslValue[str] | None = None
+    private_ip_address: DslValue[str] | None = None
+    subnet_id: DslValue[str] | None = None
 
 
 @dataclass
 class PerformanceTarget(PropertyType):
-    level: int | None = None
-    status: str | None = None
+    level: DslValue[int] | None = None
+    status: DslValue[str] | None = None
 
 
 @dataclass
 class VpcEndpoint(PropertyType):
-    network_interfaces: list[NetworkInterface] = field(default_factory=list)
-    vpc_endpoint_id: str | None = None
-    vpc_id: str | None = None
+    network_interfaces: list[DslValue[NetworkInterface]] = field(default_factory=list)
+    vpc_endpoint_id: DslValue[str] | None = None
+    vpc_id: DslValue[str] | None = None
 
 
 @dataclass
 class Workgroup(PropertyType):
-    base_capacity: int | None = None
-    config_parameters: list[ConfigParameter] = field(default_factory=list)
-    creation_date: str | None = None
-    endpoint: Endpoint | None = None
-    enhanced_vpc_routing: bool | None = None
-    max_capacity: int | None = None
-    namespace_name: str | None = None
-    price_performance_target: PerformanceTarget | None = None
-    publicly_accessible: bool | None = None
-    security_group_ids: list[String] = field(default_factory=list)
-    status: str | None = None
-    subnet_ids: list[String] = field(default_factory=list)
-    track_name: str | None = None
-    workgroup_arn: str | None = None
-    workgroup_id: str | None = None
-    workgroup_name: str | None = None
+    base_capacity: DslValue[int] | None = None
+    config_parameters: list[DslValue[ConfigParameter]] = field(default_factory=list)
+    creation_date: DslValue[str] | None = None
+    endpoint: DslValue[Endpoint] | None = None
+    enhanced_vpc_routing: DslValue[bool] | None = None
+    max_capacity: DslValue[int] | None = None
+    namespace_name: DslValue[str] | None = None
+    price_performance_target: DslValue[PerformanceTarget] | None = None
+    publicly_accessible: DslValue[bool] | None = None
+    security_group_ids: list[DslValue[str]] = field(default_factory=list)
+    status: DslValue[str] | None = None
+    subnet_ids: list[DslValue[str]] = field(default_factory=list)
+    track_name: DslValue[str] | None = None
+    workgroup_arn: DslValue[str] | None = None
+    workgroup_id: DslValue[str] | None = None
+    workgroup_name: DslValue[str] | None = None

@@ -6,17 +6,18 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class DataSource(PropertyType):
-    data_location: str | None = None
+    data_location: DslValue[str] | None = None
 
 
 @dataclass
 class DatasetImportJob(PropertyType):
-    data_source: DataSource | None = None
-    dataset_arn: str | None = None
-    dataset_import_job_arn: str | None = None
-    job_name: str | None = None
-    role_arn: str | None = None
+    data_source: DslValue[DataSource] | None = None
+    dataset_arn: DslValue[str] | None = None
+    dataset_import_job_arn: DslValue[str] | None = None
+    job_name: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None

@@ -6,21 +6,22 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AppConfigResourceObject(PropertyType):
-    application_id: str | None = None
-    environment_id: str | None = None
+    application_id: DslValue[str] | None = None
+    environment_id: DslValue[str] | None = None
 
 
 @dataclass
 class DataDeliveryObject(PropertyType):
-    log_group: str | None = None
-    s3: S3Destination | None = None
+    log_group: DslValue[str] | None = None
+    s3: DslValue[S3Destination] | None = None
 
 
 @dataclass
 class S3Destination(PropertyType):
-    bucket_name: str | None = None
-    prefix: str | None = None
+    bucket_name: DslValue[str] | None = None
+    prefix: DslValue[str] | None = None

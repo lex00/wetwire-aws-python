@@ -6,10 +6,11 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class IpAddressRequest(PropertyType):
-    subnet_id: str | None = None
-    ip: str | None = None
-    ipv6: str | None = None
+    subnet_id: DslValue[str] | None = None
+    ip: DslValue[str] | None = None
+    ipv6: DslValue[str] | None = None

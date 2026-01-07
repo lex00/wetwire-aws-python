@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class MailFromAttributes(PropertyType):
-    behavior_on_mx_failure: str | None = None
-    mail_from_domain: str | None = None
+    behavior_on_mx_failure: DslValue[str] | None = None
+    mail_from_domain: DslValue[str] | None = None
 
 
 @dataclass
 class Tags(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None

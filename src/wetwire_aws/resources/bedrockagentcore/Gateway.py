@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,50 +15,50 @@ class AuthorizerConfiguration(PropertyType):
         "custom_jwt_authorizer": "CustomJWTAuthorizer",
     }
 
-    custom_jwt_authorizer: CustomJWTAuthorizerConfiguration | None = None
+    custom_jwt_authorizer: DslValue[CustomJWTAuthorizerConfiguration] | None = None
 
 
 @dataclass
 class CustomJWTAuthorizerConfiguration(PropertyType):
-    discovery_url: str | None = None
-    allowed_audience: list[String] = field(default_factory=list)
-    allowed_clients: list[String] = field(default_factory=list)
+    discovery_url: DslValue[str] | None = None
+    allowed_audience: list[DslValue[str]] = field(default_factory=list)
+    allowed_clients: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class GatewayInterceptorConfiguration(PropertyType):
-    interception_points: list[String] = field(default_factory=list)
-    interceptor: InterceptorConfiguration | None = None
-    input_configuration: InterceptorInputConfiguration | None = None
+    interception_points: list[DslValue[str]] = field(default_factory=list)
+    interceptor: DslValue[InterceptorConfiguration] | None = None
+    input_configuration: DslValue[InterceptorInputConfiguration] | None = None
 
 
 @dataclass
 class GatewayProtocolConfiguration(PropertyType):
-    mcp: MCPGatewayConfiguration | None = None
+    mcp: DslValue[MCPGatewayConfiguration] | None = None
 
 
 @dataclass
 class InterceptorConfiguration(PropertyType):
-    lambda_: LambdaInterceptorConfiguration | None = None
+    lambda_: DslValue[LambdaInterceptorConfiguration] | None = None
 
 
 @dataclass
 class InterceptorInputConfiguration(PropertyType):
-    pass_request_headers: bool | None = None
+    pass_request_headers: DslValue[bool] | None = None
 
 
 @dataclass
 class LambdaInterceptorConfiguration(PropertyType):
-    arn: str | None = None
+    arn: DslValue[str] | None = None
 
 
 @dataclass
 class MCPGatewayConfiguration(PropertyType):
-    instructions: str | None = None
-    search_type: str | None = None
-    supported_versions: list[String] = field(default_factory=list)
+    instructions: DslValue[str] | None = None
+    search_type: DslValue[str] | None = None
+    supported_versions: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class WorkloadIdentityDetails(PropertyType):
-    workload_identity_arn: str | None = None
+    workload_identity_arn: DslValue[str] | None = None

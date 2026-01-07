@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,24 +15,24 @@ class CacheUsageLimits(PropertyType):
         "ecpu_per_second": "ECPUPerSecond",
     }
 
-    data_storage: DataStorage | None = None
-    ecpu_per_second: ECPUPerSecond | None = None
+    data_storage: DslValue[DataStorage] | None = None
+    ecpu_per_second: DslValue[ECPUPerSecond] | None = None
 
 
 @dataclass
 class DataStorage(PropertyType):
-    unit: str | None = None
-    maximum: int | None = None
-    minimum: int | None = None
+    unit: DslValue[str] | None = None
+    maximum: DslValue[int] | None = None
+    minimum: DslValue[int] | None = None
 
 
 @dataclass
 class ECPUPerSecond(PropertyType):
-    maximum: int | None = None
-    minimum: int | None = None
+    maximum: DslValue[int] | None = None
+    minimum: DslValue[int] | None = None
 
 
 @dataclass
 class Endpoint(PropertyType):
-    address: str | None = None
-    port: str | None = None
+    address: DslValue[str] | None = None
+    port: DslValue[str] | None = None

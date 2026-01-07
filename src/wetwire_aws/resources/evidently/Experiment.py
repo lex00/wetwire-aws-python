@@ -6,41 +6,42 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class MetricGoalObject(PropertyType):
-    desired_change: str | None = None
-    entity_id_key: str | None = None
-    metric_name: str | None = None
-    value_key: str | None = None
-    event_pattern: str | None = None
-    unit_label: str | None = None
+    desired_change: DslValue[str] | None = None
+    entity_id_key: DslValue[str] | None = None
+    metric_name: DslValue[str] | None = None
+    value_key: DslValue[str] | None = None
+    event_pattern: DslValue[str] | None = None
+    unit_label: DslValue[str] | None = None
 
 
 @dataclass
 class OnlineAbConfigObject(PropertyType):
-    control_treatment_name: str | None = None
-    treatment_weights: list[TreatmentToWeight] = field(default_factory=list)
+    control_treatment_name: DslValue[str] | None = None
+    treatment_weights: list[DslValue[TreatmentToWeight]] = field(default_factory=list)
 
 
 @dataclass
 class RunningStatusObject(PropertyType):
-    status: str | None = None
-    analysis_complete_time: str | None = None
-    desired_state: str | None = None
-    reason: str | None = None
+    status: DslValue[str] | None = None
+    analysis_complete_time: DslValue[str] | None = None
+    desired_state: DslValue[str] | None = None
+    reason: DslValue[str] | None = None
 
 
 @dataclass
 class TreatmentObject(PropertyType):
-    feature: str | None = None
-    treatment_name: str | None = None
-    variation: str | None = None
-    description: str | None = None
+    feature: DslValue[str] | None = None
+    treatment_name: DslValue[str] | None = None
+    variation: DslValue[str] | None = None
+    description: DslValue[str] | None = None
 
 
 @dataclass
 class TreatmentToWeight(PropertyType):
-    split_weight: int | None = None
-    treatment: str | None = None
+    split_weight: DslValue[int] | None = None
+    treatment: DslValue[str] | None = None

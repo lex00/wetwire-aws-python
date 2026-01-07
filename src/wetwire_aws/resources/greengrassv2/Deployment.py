@@ -6,93 +6,94 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ComponentConfigurationUpdate(PropertyType):
-    merge: str | None = None
-    reset: list[String] = field(default_factory=list)
+    merge: DslValue[str] | None = None
+    reset: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class ComponentDeploymentSpecification(PropertyType):
-    component_version: str | None = None
-    configuration_update: ComponentConfigurationUpdate | None = None
-    run_with: ComponentRunWith | None = None
+    component_version: DslValue[str] | None = None
+    configuration_update: DslValue[ComponentConfigurationUpdate] | None = None
+    run_with: DslValue[ComponentRunWith] | None = None
 
 
 @dataclass
 class ComponentRunWith(PropertyType):
-    posix_user: str | None = None
-    system_resource_limits: SystemResourceLimits | None = None
-    windows_user: str | None = None
+    posix_user: DslValue[str] | None = None
+    system_resource_limits: DslValue[SystemResourceLimits] | None = None
+    windows_user: DslValue[str] | None = None
 
 
 @dataclass
 class DeploymentComponentUpdatePolicy(PropertyType):
-    action: str | None = None
-    timeout_in_seconds: int | None = None
+    action: DslValue[str] | None = None
+    timeout_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class DeploymentConfigurationValidationPolicy(PropertyType):
-    timeout_in_seconds: int | None = None
+    timeout_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class DeploymentIoTJobConfiguration(PropertyType):
-    abort_config: IoTJobAbortConfig | None = None
-    job_executions_rollout_config: IoTJobExecutionsRolloutConfig | None = None
-    timeout_config: IoTJobTimeoutConfig | None = None
+    abort_config: DslValue[IoTJobAbortConfig] | None = None
+    job_executions_rollout_config: DslValue[IoTJobExecutionsRolloutConfig] | None = None
+    timeout_config: DslValue[IoTJobTimeoutConfig] | None = None
 
 
 @dataclass
 class DeploymentPolicies(PropertyType):
-    component_update_policy: DeploymentComponentUpdatePolicy | None = None
-    configuration_validation_policy: DeploymentConfigurationValidationPolicy | None = (
-        None
-    )
-    failure_handling_policy: str | None = None
+    component_update_policy: DslValue[DeploymentComponentUpdatePolicy] | None = None
+    configuration_validation_policy: (
+        DslValue[DeploymentConfigurationValidationPolicy] | None
+    ) = None
+    failure_handling_policy: DslValue[str] | None = None
 
 
 @dataclass
 class IoTJobAbortConfig(PropertyType):
-    criteria_list: list[IoTJobAbortCriteria] = field(default_factory=list)
+    criteria_list: list[DslValue[IoTJobAbortCriteria]] = field(default_factory=list)
 
 
 @dataclass
 class IoTJobAbortCriteria(PropertyType):
-    action: str | None = None
-    failure_type: str | None = None
-    min_number_of_executed_things: int | None = None
-    threshold_percentage: float | None = None
+    action: DslValue[str] | None = None
+    failure_type: DslValue[str] | None = None
+    min_number_of_executed_things: DslValue[int] | None = None
+    threshold_percentage: DslValue[float] | None = None
 
 
 @dataclass
 class IoTJobExecutionsRolloutConfig(PropertyType):
-    exponential_rate: IoTJobExponentialRolloutRate | None = None
-    maximum_per_minute: int | None = None
+    exponential_rate: DslValue[IoTJobExponentialRolloutRate] | None = None
+    maximum_per_minute: DslValue[int] | None = None
 
 
 @dataclass
 class IoTJobExponentialRolloutRate(PropertyType):
-    base_rate_per_minute: int | None = None
-    increment_factor: float | None = None
-    rate_increase_criteria: IoTJobRateIncreaseCriteria | None = None
+    base_rate_per_minute: DslValue[int] | None = None
+    increment_factor: DslValue[float] | None = None
+    rate_increase_criteria: DslValue[IoTJobRateIncreaseCriteria] | None = None
 
 
 @dataclass
 class IoTJobRateIncreaseCriteria(PropertyType):
-    number_of_notified_things: int | None = None
-    number_of_succeeded_things: int | None = None
+    number_of_notified_things: DslValue[int] | None = None
+    number_of_succeeded_things: DslValue[int] | None = None
 
 
 @dataclass
 class IoTJobTimeoutConfig(PropertyType):
-    in_progress_timeout_in_minutes: int | None = None
+    in_progress_timeout_in_minutes: DslValue[int] | None = None
 
 
 @dataclass
 class SystemResourceLimits(PropertyType):
-    cpus: float | None = None
-    memory: int | None = None
+    cpus: DslValue[float] | None = None
+    memory: DslValue[int] | None = None

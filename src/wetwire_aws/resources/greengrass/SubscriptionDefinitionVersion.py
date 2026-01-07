@@ -6,11 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Subscription(PropertyType):
-    id: str | None = None
-    source: str | None = None
-    subject: str | None = None
-    target: str | None = None
+    id: DslValue[str] | None = None
+    source: DslValue[str] | None = None
+    subject: DslValue[str] | None = None
+    target: DslValue[str] | None = None

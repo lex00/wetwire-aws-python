@@ -6,38 +6,39 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ConnectionPortRange(PropertyType):
-    from_port: int | None = None
-    to_port: int | None = None
+    from_port: DslValue[int] | None = None
+    to_port: DslValue[int] | None = None
 
 
 @dataclass
 class DeploymentConfiguration(PropertyType):
-    impairment_strategy: str | None = None
-    minimum_healthy_percentage: int | None = None
-    protection_strategy: str | None = None
+    impairment_strategy: DslValue[str] | None = None
+    minimum_healthy_percentage: DslValue[int] | None = None
+    protection_strategy: DslValue[str] | None = None
 
 
 @dataclass
 class DeploymentDetails(PropertyType):
-    latest_deployment_id: str | None = None
+    latest_deployment_id: DslValue[str] | None = None
 
 
 @dataclass
 class GameSessionCreationLimitPolicy(PropertyType):
-    new_game_sessions_per_creator: int | None = None
-    policy_period_in_minutes: int | None = None
+    new_game_sessions_per_creator: DslValue[int] | None = None
+    policy_period_in_minutes: DslValue[int] | None = None
 
 
 @dataclass
 class IpPermission(PropertyType):
-    from_port: int | None = None
-    ip_range: str | None = None
-    protocol: str | None = None
-    to_port: int | None = None
+    from_port: DslValue[int] | None = None
+    ip_range: DslValue[str] | None = None
+    protocol: DslValue[str] | None = None
+    to_port: DslValue[int] | None = None
 
 
 @dataclass
@@ -46,38 +47,38 @@ class LocationCapacity(PropertyType):
         "desired_ec2_instances": "DesiredEC2Instances",
     }
 
-    max_size: int | None = None
-    min_size: int | None = None
-    desired_ec2_instances: int | None = None
+    max_size: DslValue[int] | None = None
+    min_size: DslValue[int] | None = None
+    desired_ec2_instances: DslValue[int] | None = None
 
 
 @dataclass
 class LocationConfiguration(PropertyType):
-    location: str | None = None
-    location_capacity: LocationCapacity | None = None
-    stopped_actions: list[String] = field(default_factory=list)
+    location: DslValue[str] | None = None
+    location_capacity: DslValue[LocationCapacity] | None = None
+    stopped_actions: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class LogConfiguration(PropertyType):
-    log_destination: str | None = None
-    log_group_arn: str | None = None
-    s3_bucket_name: str | None = None
+    log_destination: DslValue[str] | None = None
+    log_group_arn: DslValue[str] | None = None
+    s3_bucket_name: DslValue[str] | None = None
 
 
 @dataclass
 class ScalingPolicy(PropertyType):
-    metric_name: str | None = None
-    name: str | None = None
-    comparison_operator: str | None = None
-    evaluation_periods: int | None = None
-    policy_type: str | None = None
-    scaling_adjustment: int | None = None
-    scaling_adjustment_type: str | None = None
-    target_configuration: TargetConfiguration | None = None
-    threshold: float | None = None
+    metric_name: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    comparison_operator: DslValue[str] | None = None
+    evaluation_periods: DslValue[int] | None = None
+    policy_type: DslValue[str] | None = None
+    scaling_adjustment: DslValue[int] | None = None
+    scaling_adjustment_type: DslValue[str] | None = None
+    target_configuration: DslValue[TargetConfiguration] | None = None
+    threshold: DslValue[float] | None = None
 
 
 @dataclass
 class TargetConfiguration(PropertyType):
-    target_value: float | None = None
+    target_value: DslValue[float] | None = None

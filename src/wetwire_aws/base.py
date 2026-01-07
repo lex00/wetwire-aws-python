@@ -7,7 +7,7 @@ Context is the base class for environment-specific configuration.
 """
 
 from dataclasses import dataclass, field
-from typing import Annotated, Any, ClassVar, Generic, TypeVar, overload
+from typing import Annotated, Any, ClassVar, Generic, TypeVar, cast, overload
 
 from dataclass_dsl import AttrRef, ContextRef, Resource, is_attr_ref, is_class_ref
 from dataclass_dsl import PropertyType as PropertyTypeBase
@@ -153,14 +153,14 @@ class PropertyTypeDescriptor(Generic[_PT]):
         self._name = pt_name
 
     @overload
-    def __get__(self, obj: None, owner: type) -> PropertyTypeProxy[_PT]: ...
+    def __get__(self, obj: None, owner: type) -> type[_PT]: ...
 
     @overload
     def __get__(self, obj: object, owner: type) -> type[_PT]: ...
 
     def __get__(
         self, obj: object | None, owner: type
-    ) -> PropertyTypeProxy[_PT] | type[_PT]:
+    ) -> type[_PT]:
         """Return PropertyTypeProxy for class access, actual class for instance access.
 
         Args:
@@ -169,10 +169,16 @@ class PropertyTypeDescriptor(Generic[_PT]):
 
         Returns:
             PropertyTypeProxy for class-level access, PropertyType class otherwise
+
+        Note:
+            We cast PropertyTypeProxy to type[_PT] because PropertyTypeProxy implements
+            __mro_entries__ (PEP 560) which allows it to be used as a base class.
+            The cast tells type checkers this is intentional.
         """
         if obj is None:
             # Class-level access: MyDB.Endpoint
-            return PropertyTypeProxy(owner, self._name, self._class)
+            # Cast is safe because PropertyTypeProxy implements __mro_entries__
+            return cast(type[_PT], PropertyTypeProxy(owner, self._name, self._class))
         # Instance-level access (rare, but return the actual class)
         return self._class
 

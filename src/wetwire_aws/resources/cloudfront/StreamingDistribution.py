@@ -6,33 +6,34 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Logging(PropertyType):
-    bucket: str | None = None
-    enabled: bool | None = None
-    prefix: str | None = None
+    bucket: DslValue[str] | None = None
+    enabled: DslValue[bool] | None = None
+    prefix: DslValue[str] | None = None
 
 
 @dataclass
 class S3Origin(PropertyType):
-    domain_name: str | None = None
-    origin_access_identity: str | None = None
+    domain_name: DslValue[str] | None = None
+    origin_access_identity: DslValue[str] | None = None
 
 
 @dataclass
 class StreamingDistributionConfig(PropertyType):
-    comment: str | None = None
-    enabled: bool | None = None
-    s3_origin: S3Origin | None = None
-    trusted_signers: TrustedSigners | None = None
-    aliases: list[String] = field(default_factory=list)
-    logging: Logging | None = None
-    price_class: str | None = None
+    comment: DslValue[str] | None = None
+    enabled: DslValue[bool] | None = None
+    s3_origin: DslValue[S3Origin] | None = None
+    trusted_signers: DslValue[TrustedSigners] | None = None
+    aliases: list[DslValue[str]] = field(default_factory=list)
+    logging: DslValue[Logging] | None = None
+    price_class: DslValue[str] | None = None
 
 
 @dataclass
 class TrustedSigners(PropertyType):
-    enabled: bool | None = None
-    aws_account_numbers: list[String] = field(default_factory=list)
+    enabled: DslValue[bool] | None = None
+    aws_account_numbers: list[DslValue[str]] = field(default_factory=list)

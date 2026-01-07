@@ -6,12 +6,13 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AttributeMapItems(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
@@ -22,16 +23,16 @@ class FederationParameters(PropertyType):
         "saml_metadata_url": "SamlMetadataURL",
     }
 
-    application_call_back_url: str | None = None
-    attribute_map: list[AttributeMapItems] = field(default_factory=list)
-    federation_provider_name: str | None = None
-    federation_urn: str | None = None
-    saml_metadata_document: str | None = None
-    saml_metadata_url: str | None = None
+    application_call_back_url: DslValue[str] | None = None
+    attribute_map: list[DslValue[AttributeMapItems]] = field(default_factory=list)
+    federation_provider_name: DslValue[str] | None = None
+    federation_urn: DslValue[str] | None = None
+    saml_metadata_document: DslValue[str] | None = None
+    saml_metadata_url: DslValue[str] | None = None
 
 
 @dataclass
 class SuperuserParameters(PropertyType):
-    email_address: str | None = None
-    first_name: str | None = None
-    last_name: str | None = None
+    email_address: DslValue[str] | None = None
+    first_name: DslValue[str] | None = None
+    last_name: DslValue[str] | None = None

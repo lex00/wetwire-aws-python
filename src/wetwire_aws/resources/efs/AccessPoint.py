@@ -6,29 +6,30 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AccessPointTag(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class CreationInfo(PropertyType):
-    owner_gid: str | None = None
-    owner_uid: str | None = None
-    permissions: str | None = None
+    owner_gid: DslValue[str] | None = None
+    owner_uid: DslValue[str] | None = None
+    permissions: DslValue[str] | None = None
 
 
 @dataclass
 class PosixUser(PropertyType):
-    gid: str | None = None
-    uid: str | None = None
-    secondary_gids: list[String] = field(default_factory=list)
+    gid: DslValue[str] | None = None
+    uid: DslValue[str] | None = None
+    secondary_gids: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class RootDirectory(PropertyType):
-    creation_info: CreationInfo | None = None
-    path: str | None = None
+    creation_info: DslValue[CreationInfo] | None = None
+    path: DslValue[str] | None = None

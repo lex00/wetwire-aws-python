@@ -6,21 +6,22 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class IamUserProfileDetails(PropertyType):
-    arn: str | None = None
+    arn: DslValue[str] | None = None
 
 
 @dataclass
 class SsoUserProfileDetails(PropertyType):
-    first_name: str | None = None
-    last_name: str | None = None
-    username: str | None = None
+    first_name: DslValue[str] | None = None
+    last_name: DslValue[str] | None = None
+    username: DslValue[str] | None = None
 
 
 @dataclass
 class UserProfileDetails(PropertyType):
-    iam: IamUserProfileDetails | None = None
-    sso: SsoUserProfileDetails | None = None
+    iam: DslValue[IamUserProfileDetails] | None = None
+    sso: DslValue[SsoUserProfileDetails] | None = None

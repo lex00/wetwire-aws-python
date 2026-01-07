@@ -6,14 +6,15 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class LambdaEndpointInput(PropertyType):
-    arn: str | None = None
+    arn: DslValue[str] | None = None
 
 
 @dataclass
 class UrlEndpointInput(PropertyType):
-    url: str | None = None
-    health_url: str | None = None
+    url: DslValue[str] | None = None
+    health_url: DslValue[str] | None = None

@@ -6,92 +6,93 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Action(PropertyType):
-    header_tag: HeaderTagAction | None = None
-    no_bid: NoBidAction | None = None
+    header_tag: DslValue[HeaderTagAction] | None = None
+    no_bid: DslValue[NoBidAction] | None = None
 
 
 @dataclass
 class ApplicationLogs(PropertyType):
-    link_application_log_sampling: LinkApplicationLogSampling | None = None
+    link_application_log_sampling: DslValue[LinkApplicationLogSampling] | None = None
 
 
 @dataclass
 class Filter(PropertyType):
-    criteria: list[FilterCriterion] = field(default_factory=list)
+    criteria: list[DslValue[FilterCriterion]] = field(default_factory=list)
 
 
 @dataclass
 class FilterCriterion(PropertyType):
-    path: str | None = None
-    values: list[String] = field(default_factory=list)
+    path: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class HeaderTagAction(PropertyType):
-    name: str | None = None
-    value: str | None = None
+    name: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class LinkApplicationLogSampling(PropertyType):
-    error_log: float | None = None
-    filter_log: float | None = None
+    error_log: DslValue[float] | None = None
+    filter_log: DslValue[float] | None = None
 
 
 @dataclass
 class LinkAttributes(PropertyType):
-    customer_provided_id: str | None = None
-    responder_error_masking: list[ResponderErrorMaskingForHttpCode] = field(
+    customer_provided_id: DslValue[str] | None = None
+    responder_error_masking: list[DslValue[ResponderErrorMaskingForHttpCode]] = field(
         default_factory=list
     )
 
 
 @dataclass
 class LinkLogSettings(PropertyType):
-    application_logs: ApplicationLogs | None = None
+    application_logs: DslValue[ApplicationLogs] | None = None
 
 
 @dataclass
 class ModuleConfiguration(PropertyType):
-    name: str | None = None
-    depends_on: list[String] = field(default_factory=list)
-    module_parameters: ModuleParameters | None = None
-    version: str | None = None
+    name: DslValue[str] | None = None
+    depends_on: list[DslValue[str]] = field(default_factory=list)
+    module_parameters: DslValue[ModuleParameters] | None = None
+    version: DslValue[str] | None = None
 
 
 @dataclass
 class ModuleParameters(PropertyType):
-    no_bid: NoBidModuleParameters | None = None
-    open_rtb_attribute: OpenRtbAttributeModuleParameters | None = None
+    no_bid: DslValue[NoBidModuleParameters] | None = None
+    open_rtb_attribute: DslValue[OpenRtbAttributeModuleParameters] | None = None
 
 
 @dataclass
 class NoBidAction(PropertyType):
-    no_bid_reason_code: int | None = None
+    no_bid_reason_code: DslValue[int] | None = None
 
 
 @dataclass
 class NoBidModuleParameters(PropertyType):
-    pass_through_percentage: float | None = None
-    reason: str | None = None
-    reason_code: int | None = None
+    pass_through_percentage: DslValue[float] | None = None
+    reason: DslValue[str] | None = None
+    reason_code: DslValue[int] | None = None
 
 
 @dataclass
 class OpenRtbAttributeModuleParameters(PropertyType):
-    action: Action | None = None
-    filter_configuration: list[Filter] = field(default_factory=list)
-    filter_type: str | None = None
-    holdback_percentage: float | None = None
+    action: DslValue[Action] | None = None
+    filter_configuration: list[DslValue[Filter]] = field(default_factory=list)
+    filter_type: DslValue[str] | None = None
+    holdback_percentage: DslValue[float] | None = None
 
 
 @dataclass
 class ResponderErrorMaskingForHttpCode(PropertyType):
-    action: str | None = None
-    http_code: str | None = None
-    logging_types: list[String] = field(default_factory=list)
-    response_logging_percentage: float | None = None
+    action: DslValue[str] | None = None
+    http_code: DslValue[str] | None = None
+    logging_types: list[DslValue[str]] = field(default_factory=list)
+    response_logging_percentage: DslValue[float] | None = None

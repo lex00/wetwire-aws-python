@@ -6,16 +6,17 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class EncryptionConfig(PropertyType):
-    sse_algorithm: str | None = None
-    kms_key_arn: str | None = None
+    sse_algorithm: DslValue[str] | None = None
+    kms_key_arn: DslValue[str] | None = None
 
 
 @dataclass
 class LogSource(PropertyType):
-    name: str | None = None
-    type_: str | None = None
-    identifier: str | None = None
+    name: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    identifier: DslValue[str] | None = None

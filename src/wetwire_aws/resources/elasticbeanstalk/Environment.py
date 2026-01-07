@@ -6,18 +6,19 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class OptionSetting(PropertyType):
-    namespace: str | None = None
-    option_name: str | None = None
-    resource_name: str | None = None
-    value: str | None = None
+    namespace: DslValue[str] | None = None
+    option_name: DslValue[str] | None = None
+    resource_name: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class Tier(PropertyType):
-    name: str | None = None
-    type_: str | None = None
-    version: str | None = None
+    name: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    version: DslValue[str] | None = None

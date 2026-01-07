@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -17,7 +18,7 @@ class Ingress(PropertyType):
         "ec2_security_group_owner_id": "EC2SecurityGroupOwnerId",
     }
 
-    cidrip: str | None = None
-    ec2_security_group_id: str | None = None
-    ec2_security_group_name: str | None = None
-    ec2_security_group_owner_id: str | None = None
+    cidrip: DslValue[str] | None = None
+    ec2_security_group_id: DslValue[str] | None = None
+    ec2_security_group_name: DslValue[str] | None = None
+    ec2_security_group_owner_id: DslValue[str] | None = None

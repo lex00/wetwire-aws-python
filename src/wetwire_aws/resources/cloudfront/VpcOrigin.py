@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -16,9 +17,9 @@ class VpcOriginEndpointConfig(PropertyType):
         "origin_ssl_protocols": "OriginSSLProtocols",
     }
 
-    arn: str | None = None
-    name: str | None = None
-    http_port: int | None = None
-    https_port: int | None = None
-    origin_protocol_policy: str | None = None
-    origin_ssl_protocols: list[String] = field(default_factory=list)
+    arn: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    http_port: DslValue[int] | None = None
+    https_port: DslValue[int] | None = None
+    origin_protocol_policy: DslValue[str] | None = None
+    origin_ssl_protocols: list[DslValue[str]] = field(default_factory=list)

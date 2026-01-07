@@ -6,23 +6,24 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Frequency(PropertyType):
-    unit: str | None = None
-    value: int | None = None
+    unit: DslValue[str] | None = None
+    value: DslValue[int] | None = None
 
 
 @dataclass
 class RefreshSchedule(PropertyType):
-    frequency: Frequency | None = None
-    status: str | None = None
-    time_of_day: str | None = None
+    frequency: DslValue[Frequency] | None = None
+    status: DslValue[str] | None = None
+    time_of_day: DslValue[str] | None = None
 
 
 @dataclass
 class Widget(PropertyType):
-    query_statement: str | None = None
-    query_parameters: list[String] = field(default_factory=list)
-    view_properties: dict[str, String] = field(default_factory=dict)
+    query_statement: DslValue[str] | None = None
+    query_parameters: list[DslValue[str]] = field(default_factory=list)
+    view_properties: dict[str, DslValue[str]] = field(default_factory=dict)

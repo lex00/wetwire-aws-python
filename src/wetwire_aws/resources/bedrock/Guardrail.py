@@ -6,126 +6,131 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AutomatedReasoningPolicyConfig(PropertyType):
-    policies: list[String] = field(default_factory=list)
-    confidence_threshold: float | None = None
+    policies: list[DslValue[str]] = field(default_factory=list)
+    confidence_threshold: DslValue[float] | None = None
 
 
 @dataclass
 class ContentFilterConfig(PropertyType):
-    input_strength: str | None = None
-    output_strength: str | None = None
-    type_: str | None = None
-    input_action: str | None = None
-    input_enabled: bool | None = None
-    input_modalities: list[String] = field(default_factory=list)
-    output_action: str | None = None
-    output_enabled: bool | None = None
-    output_modalities: list[String] = field(default_factory=list)
+    input_strength: DslValue[str] | None = None
+    output_strength: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    input_action: DslValue[str] | None = None
+    input_enabled: DslValue[bool] | None = None
+    input_modalities: list[DslValue[str]] = field(default_factory=list)
+    output_action: DslValue[str] | None = None
+    output_enabled: DslValue[bool] | None = None
+    output_modalities: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class ContentFiltersTierConfig(PropertyType):
-    tier_name: str | None = None
+    tier_name: DslValue[str] | None = None
 
 
 @dataclass
 class ContentPolicyConfig(PropertyType):
-    filters_config: list[ContentFilterConfig] = field(default_factory=list)
-    content_filters_tier_config: ContentFiltersTierConfig | None = None
+    filters_config: list[DslValue[ContentFilterConfig]] = field(default_factory=list)
+    content_filters_tier_config: DslValue[ContentFiltersTierConfig] | None = None
 
 
 @dataclass
 class ContextualGroundingFilterConfig(PropertyType):
-    threshold: float | None = None
-    type_: str | None = None
-    action: str | None = None
-    enabled: bool | None = None
+    threshold: DslValue[float] | None = None
+    type_: DslValue[str] | None = None
+    action: DslValue[str] | None = None
+    enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class ContextualGroundingPolicyConfig(PropertyType):
-    filters_config: list[ContextualGroundingFilterConfig] = field(default_factory=list)
+    filters_config: list[DslValue[ContextualGroundingFilterConfig]] = field(
+        default_factory=list
+    )
 
 
 @dataclass
 class GuardrailCrossRegionConfig(PropertyType):
-    guardrail_profile_arn: str | None = None
+    guardrail_profile_arn: DslValue[str] | None = None
 
 
 @dataclass
 class ManagedWordsConfig(PropertyType):
-    type_: str | None = None
-    input_action: str | None = None
-    input_enabled: bool | None = None
-    output_action: str | None = None
-    output_enabled: bool | None = None
+    type_: DslValue[str] | None = None
+    input_action: DslValue[str] | None = None
+    input_enabled: DslValue[bool] | None = None
+    output_action: DslValue[str] | None = None
+    output_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class PiiEntityConfig(PropertyType):
-    action: str | None = None
-    type_: str | None = None
-    input_action: str | None = None
-    input_enabled: bool | None = None
-    output_action: str | None = None
-    output_enabled: bool | None = None
+    action: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    input_action: DslValue[str] | None = None
+    input_enabled: DslValue[bool] | None = None
+    output_action: DslValue[str] | None = None
+    output_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class RegexConfig(PropertyType):
-    action: str | None = None
-    name: str | None = None
-    pattern: str | None = None
-    description: str | None = None
-    input_action: str | None = None
-    input_enabled: bool | None = None
-    output_action: str | None = None
-    output_enabled: bool | None = None
+    action: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    pattern: DslValue[str] | None = None
+    description: DslValue[str] | None = None
+    input_action: DslValue[str] | None = None
+    input_enabled: DslValue[bool] | None = None
+    output_action: DslValue[str] | None = None
+    output_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class SensitiveInformationPolicyConfig(PropertyType):
-    pii_entities_config: list[PiiEntityConfig] = field(default_factory=list)
-    regexes_config: list[RegexConfig] = field(default_factory=list)
+    pii_entities_config: list[DslValue[PiiEntityConfig]] = field(default_factory=list)
+    regexes_config: list[DslValue[RegexConfig]] = field(default_factory=list)
 
 
 @dataclass
 class TopicConfig(PropertyType):
-    definition: str | None = None
-    name: str | None = None
-    type_: str | None = None
-    examples: list[String] = field(default_factory=list)
-    input_action: str | None = None
-    input_enabled: bool | None = None
-    output_action: str | None = None
-    output_enabled: bool | None = None
+    definition: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    examples: list[DslValue[str]] = field(default_factory=list)
+    input_action: DslValue[str] | None = None
+    input_enabled: DslValue[bool] | None = None
+    output_action: DslValue[str] | None = None
+    output_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class TopicPolicyConfig(PropertyType):
-    topics_config: list[TopicConfig] = field(default_factory=list)
-    topics_tier_config: TopicsTierConfig | None = None
+    topics_config: list[DslValue[TopicConfig]] = field(default_factory=list)
+    topics_tier_config: DslValue[TopicsTierConfig] | None = None
 
 
 @dataclass
 class TopicsTierConfig(PropertyType):
-    tier_name: str | None = None
+    tier_name: DslValue[str] | None = None
 
 
 @dataclass
 class WordConfig(PropertyType):
-    text: str | None = None
-    input_action: str | None = None
-    input_enabled: bool | None = None
-    output_action: str | None = None
-    output_enabled: bool | None = None
+    text: DslValue[str] | None = None
+    input_action: DslValue[str] | None = None
+    input_enabled: DslValue[bool] | None = None
+    output_action: DslValue[str] | None = None
+    output_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class WordPolicyConfig(PropertyType):
-    managed_word_lists_config: list[ManagedWordsConfig] = field(default_factory=list)
-    words_config: list[WordConfig] = field(default_factory=list)
+    managed_word_lists_config: list[DslValue[ManagedWordsConfig]] = field(
+        default_factory=list
+    )
+    words_config: list[DslValue[WordConfig]] = field(default_factory=list)

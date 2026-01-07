@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ThemeValue(PropertyType):
-    children: list[ThemeValues] = field(default_factory=list)
-    value: str | None = None
+    children: list[DslValue[ThemeValues]] = field(default_factory=list)
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class ThemeValues(PropertyType):
-    key: str | None = None
-    value: ThemeValue | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[ThemeValue] | None = None

@@ -6,29 +6,30 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class PauseClusterMessage(PropertyType):
-    cluster_identifier: str | None = None
+    cluster_identifier: DslValue[str] | None = None
 
 
 @dataclass
 class ResizeClusterMessage(PropertyType):
-    cluster_identifier: str | None = None
-    classic: bool | None = None
-    cluster_type: str | None = None
-    node_type: str | None = None
-    number_of_nodes: int | None = None
+    cluster_identifier: DslValue[str] | None = None
+    classic: DslValue[bool] | None = None
+    cluster_type: DslValue[str] | None = None
+    node_type: DslValue[str] | None = None
+    number_of_nodes: DslValue[int] | None = None
 
 
 @dataclass
 class ResumeClusterMessage(PropertyType):
-    cluster_identifier: str | None = None
+    cluster_identifier: DslValue[str] | None = None
 
 
 @dataclass
 class ScheduledActionType(PropertyType):
-    pause_cluster: PauseClusterMessage | None = None
-    resize_cluster: ResizeClusterMessage | None = None
-    resume_cluster: ResumeClusterMessage | None = None
+    pause_cluster: DslValue[PauseClusterMessage] | None = None
+    resize_cluster: DslValue[ResizeClusterMessage] | None = None
+    resume_cluster: DslValue[ResumeClusterMessage] | None = None

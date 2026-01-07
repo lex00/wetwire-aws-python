@@ -6,137 +6,138 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AddKeyEntry(PropertyType):
-    key: str | None = None
-    value: str | None = None
-    overwrite_if_exists: bool | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
+    overwrite_if_exists: DslValue[bool] | None = None
 
 
 @dataclass
 class AddKeys(PropertyType):
-    entries: list[AddKeyEntry] = field(default_factory=list)
+    entries: list[DslValue[AddKeyEntry]] = field(default_factory=list)
 
 
 @dataclass
 class CopyValue(PropertyType):
-    entries: list[CopyValueEntry] = field(default_factory=list)
+    entries: list[DslValue[CopyValueEntry]] = field(default_factory=list)
 
 
 @dataclass
 class CopyValueEntry(PropertyType):
-    source: str | None = None
-    target: str | None = None
-    overwrite_if_exists: bool | None = None
+    source: DslValue[str] | None = None
+    target: DslValue[str] | None = None
+    overwrite_if_exists: DslValue[bool] | None = None
 
 
 @dataclass
 class Csv(PropertyType):
-    columns: list[String] = field(default_factory=list)
-    delimiter: str | None = None
-    quote_character: str | None = None
-    source: str | None = None
+    columns: list[DslValue[str]] = field(default_factory=list)
+    delimiter: DslValue[str] | None = None
+    quote_character: DslValue[str] | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class DateTimeConverter(PropertyType):
-    match_patterns: list[String] = field(default_factory=list)
-    source: str | None = None
-    target: str | None = None
-    locale: str | None = None
-    source_timezone: str | None = None
-    target_format: str | None = None
-    target_timezone: str | None = None
+    match_patterns: list[DslValue[str]] = field(default_factory=list)
+    source: DslValue[str] | None = None
+    target: DslValue[str] | None = None
+    locale: DslValue[str] | None = None
+    source_timezone: DslValue[str] | None = None
+    target_format: DslValue[str] | None = None
+    target_timezone: DslValue[str] | None = None
 
 
 @dataclass
 class DeleteKeys(PropertyType):
-    with_keys: list[String] = field(default_factory=list)
+    with_keys: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class Grok(PropertyType):
-    match: str | None = None
-    source: str | None = None
+    match: DslValue[str] | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class ListToMap(PropertyType):
-    key: str | None = None
-    source: str | None = None
-    flatten: bool | None = None
-    flattened_element: str | None = None
-    target: str | None = None
-    value_key: str | None = None
+    key: DslValue[str] | None = None
+    source: DslValue[str] | None = None
+    flatten: DslValue[bool] | None = None
+    flattened_element: DslValue[str] | None = None
+    target: DslValue[str] | None = None
+    value_key: DslValue[str] | None = None
 
 
 @dataclass
 class LowerCaseString(PropertyType):
-    with_keys: list[String] = field(default_factory=list)
+    with_keys: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class MoveKeyEntry(PropertyType):
-    source: str | None = None
-    target: str | None = None
-    overwrite_if_exists: bool | None = None
+    source: DslValue[str] | None = None
+    target: DslValue[str] | None = None
+    overwrite_if_exists: DslValue[bool] | None = None
 
 
 @dataclass
 class MoveKeys(PropertyType):
-    entries: list[MoveKeyEntry] = field(default_factory=list)
+    entries: list[DslValue[MoveKeyEntry]] = field(default_factory=list)
 
 
 @dataclass
 class ParseCloudfront(PropertyType):
-    source: str | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class ParseJSON(PropertyType):
-    destination: str | None = None
-    source: str | None = None
+    destination: DslValue[str] | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class ParseKeyValue(PropertyType):
-    destination: str | None = None
-    field_delimiter: str | None = None
-    key_prefix: str | None = None
-    key_value_delimiter: str | None = None
-    non_match_value: str | None = None
-    overwrite_if_exists: bool | None = None
-    source: str | None = None
+    destination: DslValue[str] | None = None
+    field_delimiter: DslValue[str] | None = None
+    key_prefix: DslValue[str] | None = None
+    key_value_delimiter: DslValue[str] | None = None
+    non_match_value: DslValue[str] | None = None
+    overwrite_if_exists: DslValue[bool] | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class ParsePostgres(PropertyType):
-    source: str | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class ParseRoute53(PropertyType):
-    source: str | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class ParseToOCSF(PropertyType):
-    event_source: str | None = None
-    ocsf_version: str | None = None
-    mapping_version: str | None = None
-    source: str | None = None
+    event_source: DslValue[str] | None = None
+    ocsf_version: DslValue[str] | None = None
+    mapping_version: DslValue[str] | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class ParseVPC(PropertyType):
-    source: str | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class ParseWAF(PropertyType):
-    source: str | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
@@ -148,82 +149,82 @@ class Processor(PropertyType):
         "parse_waf": "ParseWAF",
     }
 
-    add_keys: AddKeys | None = None
-    copy_value: CopyValue | None = None
-    csv: Csv | None = None
-    date_time_converter: DateTimeConverter | None = None
-    delete_keys: DeleteKeys | None = None
-    grok: Grok | None = None
-    list_to_map: ListToMap | None = None
-    lower_case_string: LowerCaseString | None = None
-    move_keys: MoveKeys | None = None
-    parse_cloudfront: ParseCloudfront | None = None
-    parse_json: ParseJSON | None = None
-    parse_key_value: ParseKeyValue | None = None
-    parse_postgres: ParsePostgres | None = None
-    parse_route53: ParseRoute53 | None = None
-    parse_to_ocsf: ParseToOCSF | None = None
-    parse_vpc: ParseVPC | None = None
-    parse_waf: ParseWAF | None = None
-    rename_keys: RenameKeys | None = None
-    split_string: SplitString | None = None
-    substitute_string: SubstituteString | None = None
-    trim_string: TrimString | None = None
-    type_converter: TypeConverter | None = None
-    upper_case_string: UpperCaseString | None = None
+    add_keys: DslValue[AddKeys] | None = None
+    copy_value: DslValue[CopyValue] | None = None
+    csv: DslValue[Csv] | None = None
+    date_time_converter: DslValue[DateTimeConverter] | None = None
+    delete_keys: DslValue[DeleteKeys] | None = None
+    grok: DslValue[Grok] | None = None
+    list_to_map: DslValue[ListToMap] | None = None
+    lower_case_string: DslValue[LowerCaseString] | None = None
+    move_keys: DslValue[MoveKeys] | None = None
+    parse_cloudfront: DslValue[ParseCloudfront] | None = None
+    parse_json: DslValue[ParseJSON] | None = None
+    parse_key_value: DslValue[ParseKeyValue] | None = None
+    parse_postgres: DslValue[ParsePostgres] | None = None
+    parse_route53: DslValue[ParseRoute53] | None = None
+    parse_to_ocsf: DslValue[ParseToOCSF] | None = None
+    parse_vpc: DslValue[ParseVPC] | None = None
+    parse_waf: DslValue[ParseWAF] | None = None
+    rename_keys: DslValue[RenameKeys] | None = None
+    split_string: DslValue[SplitString] | None = None
+    substitute_string: DslValue[SubstituteString] | None = None
+    trim_string: DslValue[TrimString] | None = None
+    type_converter: DslValue[TypeConverter] | None = None
+    upper_case_string: DslValue[UpperCaseString] | None = None
 
 
 @dataclass
 class RenameKeyEntry(PropertyType):
-    key: str | None = None
-    rename_to: str | None = None
-    overwrite_if_exists: bool | None = None
+    key: DslValue[str] | None = None
+    rename_to: DslValue[str] | None = None
+    overwrite_if_exists: DslValue[bool] | None = None
 
 
 @dataclass
 class RenameKeys(PropertyType):
-    entries: list[RenameKeyEntry] = field(default_factory=list)
+    entries: list[DslValue[RenameKeyEntry]] = field(default_factory=list)
 
 
 @dataclass
 class SplitString(PropertyType):
-    entries: list[SplitStringEntry] = field(default_factory=list)
+    entries: list[DslValue[SplitStringEntry]] = field(default_factory=list)
 
 
 @dataclass
 class SplitStringEntry(PropertyType):
-    delimiter: str | None = None
-    source: str | None = None
+    delimiter: DslValue[str] | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class SubstituteString(PropertyType):
-    entries: list[SubstituteStringEntry] = field(default_factory=list)
+    entries: list[DslValue[SubstituteStringEntry]] = field(default_factory=list)
 
 
 @dataclass
 class SubstituteStringEntry(PropertyType):
-    from_: str | None = None
-    source: str | None = None
-    to: str | None = None
+    from_: DslValue[str] | None = None
+    source: DslValue[str] | None = None
+    to: DslValue[str] | None = None
 
 
 @dataclass
 class TrimString(PropertyType):
-    with_keys: list[String] = field(default_factory=list)
+    with_keys: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class TypeConverter(PropertyType):
-    entries: list[TypeConverterEntry] = field(default_factory=list)
+    entries: list[DslValue[TypeConverterEntry]] = field(default_factory=list)
 
 
 @dataclass
 class TypeConverterEntry(PropertyType):
-    key: str | None = None
-    type_: str | None = None
+    key: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class UpperCaseString(PropertyType):
-    with_keys: list[String] = field(default_factory=list)
+    with_keys: list[DslValue[str]] = field(default_factory=list)

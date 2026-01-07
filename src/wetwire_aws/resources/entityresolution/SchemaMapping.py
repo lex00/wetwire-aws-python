@@ -6,13 +6,14 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class SchemaInputAttribute(PropertyType):
-    field_name: str | None = None
-    type_: str | None = None
-    group_name: str | None = None
-    hashed: bool | None = None
-    match_key: str | None = None
-    sub_type: str | None = None
+    field_name: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    group_name: DslValue[str] | None = None
+    hashed: DslValue[bool] | None = None
+    match_key: DslValue[str] | None = None
+    sub_type: DslValue[str] | None = None

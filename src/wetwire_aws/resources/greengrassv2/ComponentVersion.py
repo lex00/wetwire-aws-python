@@ -6,18 +6,19 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ComponentDependencyRequirement(PropertyType):
-    dependency_type: str | None = None
-    version_requirement: str | None = None
+    dependency_type: DslValue[str] | None = None
+    version_requirement: DslValue[str] | None = None
 
 
 @dataclass
 class ComponentPlatform(PropertyType):
-    attributes: dict[str, String] = field(default_factory=dict)
-    name: str | None = None
+    attributes: dict[str, DslValue[str]] = field(default_factory=dict)
+    name: DslValue[str] | None = None
 
 
 @dataclass
@@ -27,61 +28,61 @@ class LambdaContainerParams(PropertyType):
         "mount_ro_sysfs": "MountROSysfs",
     }
 
-    devices: list[LambdaDeviceMount] = field(default_factory=list)
-    memory_size_in_kb: int | None = None
-    mount_ro_sysfs: bool | None = None
-    volumes: list[LambdaVolumeMount] = field(default_factory=list)
+    devices: list[DslValue[LambdaDeviceMount]] = field(default_factory=list)
+    memory_size_in_kb: DslValue[int] | None = None
+    mount_ro_sysfs: DslValue[bool] | None = None
+    volumes: list[DslValue[LambdaVolumeMount]] = field(default_factory=list)
 
 
 @dataclass
 class LambdaDeviceMount(PropertyType):
-    add_group_owner: bool | None = None
-    path: str | None = None
-    permission: str | None = None
+    add_group_owner: DslValue[bool] | None = None
+    path: DslValue[str] | None = None
+    permission: DslValue[str] | None = None
 
 
 @dataclass
 class LambdaEventSource(PropertyType):
-    topic: str | None = None
-    type_: str | None = None
+    topic: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class LambdaExecutionParameters(PropertyType):
-    environment_variables: dict[str, String] = field(default_factory=dict)
-    event_sources: list[LambdaEventSource] = field(default_factory=list)
-    exec_args: list[String] = field(default_factory=list)
-    input_payload_encoding_type: str | None = None
-    linux_process_params: LambdaLinuxProcessParams | None = None
-    max_idle_time_in_seconds: int | None = None
-    max_instances_count: int | None = None
-    max_queue_size: int | None = None
-    pinned: bool | None = None
-    status_timeout_in_seconds: int | None = None
-    timeout_in_seconds: int | None = None
+    environment_variables: dict[str, DslValue[str]] = field(default_factory=dict)
+    event_sources: list[DslValue[LambdaEventSource]] = field(default_factory=list)
+    exec_args: list[DslValue[str]] = field(default_factory=list)
+    input_payload_encoding_type: DslValue[str] | None = None
+    linux_process_params: DslValue[LambdaLinuxProcessParams] | None = None
+    max_idle_time_in_seconds: DslValue[int] | None = None
+    max_instances_count: DslValue[int] | None = None
+    max_queue_size: DslValue[int] | None = None
+    pinned: DslValue[bool] | None = None
+    status_timeout_in_seconds: DslValue[int] | None = None
+    timeout_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class LambdaFunctionRecipeSource(PropertyType):
-    component_dependencies: dict[str, ComponentDependencyRequirement] = field(
+    component_dependencies: dict[str, DslValue[ComponentDependencyRequirement]] = field(
         default_factory=dict
     )
-    component_lambda_parameters: LambdaExecutionParameters | None = None
-    component_name: str | None = None
-    component_platforms: list[ComponentPlatform] = field(default_factory=list)
-    component_version: str | None = None
-    lambda_arn: str | None = None
+    component_lambda_parameters: DslValue[LambdaExecutionParameters] | None = None
+    component_name: DslValue[str] | None = None
+    component_platforms: list[DslValue[ComponentPlatform]] = field(default_factory=list)
+    component_version: DslValue[str] | None = None
+    lambda_arn: DslValue[str] | None = None
 
 
 @dataclass
 class LambdaLinuxProcessParams(PropertyType):
-    container_params: LambdaContainerParams | None = None
-    isolation_mode: str | None = None
+    container_params: DslValue[LambdaContainerParams] | None = None
+    isolation_mode: DslValue[str] | None = None
 
 
 @dataclass
 class LambdaVolumeMount(PropertyType):
-    add_group_owner: bool | None = None
-    destination_path: str | None = None
-    permission: str | None = None
-    source_path: str | None = None
+    add_group_owner: DslValue[bool] | None = None
+    destination_path: DslValue[str] | None = None
+    permission: DslValue[str] | None = None
+    source_path: DslValue[str] | None = None

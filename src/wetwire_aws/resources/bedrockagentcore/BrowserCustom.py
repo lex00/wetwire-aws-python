@@ -6,32 +6,33 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class BrowserNetworkConfiguration(PropertyType):
-    network_mode: str | None = None
-    vpc_config: VpcConfig | None = None
+    network_mode: DslValue[str] | None = None
+    vpc_config: DslValue[VpcConfig] | None = None
 
 
 @dataclass
 class BrowserSigning(PropertyType):
-    enabled: bool | None = None
+    enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class RecordingConfig(PropertyType):
-    enabled: bool | None = None
-    s3_location: S3Location | None = None
+    enabled: DslValue[bool] | None = None
+    s3_location: DslValue[S3Location] | None = None
 
 
 @dataclass
 class S3Location(PropertyType):
-    bucket: str | None = None
-    prefix: str | None = None
+    bucket: DslValue[str] | None = None
+    prefix: DslValue[str] | None = None
 
 
 @dataclass
 class VpcConfig(PropertyType):
-    security_groups: list[String] = field(default_factory=list)
-    subnets: list[String] = field(default_factory=list)
+    security_groups: list[DslValue[str]] = field(default_factory=list)
+    subnets: list[DslValue[str]] = field(default_factory=list)

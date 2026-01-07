@@ -6,12 +6,13 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CfnStackParameter(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
@@ -21,32 +22,34 @@ class CfnTemplateProviderDetail(PropertyType):
         "template_url": "TemplateURL",
     }
 
-    template_name: str | None = None
-    template_url: str | None = None
-    parameters: list[CfnStackParameter] = field(default_factory=list)
-    role_arn: str | None = None
+    template_name: DslValue[str] | None = None
+    template_url: DslValue[str] | None = None
+    parameters: list[DslValue[CfnStackParameter]] = field(default_factory=list)
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
 class ProvisioningParameter(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class ServiceCatalogProvisionedProductDetails(PropertyType):
-    provisioned_product_id: str | None = None
-    provisioned_product_status_message: str | None = None
+    provisioned_product_id: DslValue[str] | None = None
+    provisioned_product_status_message: DslValue[str] | None = None
 
 
 @dataclass
 class ServiceCatalogProvisioningDetails(PropertyType):
-    product_id: str | None = None
-    path_id: str | None = None
-    provisioning_artifact_id: str | None = None
-    provisioning_parameters: list[ProvisioningParameter] = field(default_factory=list)
+    product_id: DslValue[str] | None = None
+    path_id: DslValue[str] | None = None
+    provisioning_artifact_id: DslValue[str] | None = None
+    provisioning_parameters: list[DslValue[ProvisioningParameter]] = field(
+        default_factory=list
+    )
 
 
 @dataclass
 class TemplateProviderDetail(PropertyType):
-    cfn_template_provider_detail: CfnTemplateProviderDetail | None = None
+    cfn_template_provider_detail: DslValue[CfnTemplateProviderDetail] | None = None

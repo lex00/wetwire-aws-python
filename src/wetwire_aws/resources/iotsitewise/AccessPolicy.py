@@ -6,19 +6,20 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AccessPolicyIdentity(PropertyType):
-    iam_role: IamRole | None = None
-    iam_user: IamUser | None = None
-    user: User | None = None
+    iam_role: DslValue[IamRole] | None = None
+    iam_user: DslValue[IamUser] | None = None
+    user: DslValue[User] | None = None
 
 
 @dataclass
 class AccessPolicyResource(PropertyType):
-    portal: Portal | None = None
-    project: Project | None = None
+    portal: DslValue[Portal] | None = None
+    project: DslValue[Project] | None = None
 
 
 @dataclass
@@ -27,7 +28,7 @@ class IamRole(PropertyType):
         "arn": "arn",
     }
 
-    arn: str | None = None
+    arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -36,7 +37,7 @@ class IamUser(PropertyType):
         "arn": "arn",
     }
 
-    arn: str | None = None
+    arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -45,7 +46,7 @@ class Portal(PropertyType):
         "id": "id",
     }
 
-    id: str | None = None
+    id: DslValue[str] | None = None
 
 
 @dataclass
@@ -54,7 +55,7 @@ class Project(PropertyType):
         "id": "id",
     }
 
-    id: str | None = None
+    id: DslValue[str] | None = None
 
 
 @dataclass
@@ -63,4 +64,4 @@ class User(PropertyType):
         "id": "id",
     }
 
-    id: str | None = None
+    id: DslValue[str] | None = None

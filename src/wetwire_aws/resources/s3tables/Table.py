@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,34 +15,34 @@ class Compaction(PropertyType):
         "target_file_size_mb": "TargetFileSizeMB",
     }
 
-    status: str | None = None
-    target_file_size_mb: int | None = None
+    status: DslValue[str] | None = None
+    target_file_size_mb: DslValue[int] | None = None
 
 
 @dataclass
 class IcebergMetadata(PropertyType):
-    iceberg_schema: IcebergSchema | None = None
+    iceberg_schema: DslValue[IcebergSchema] | None = None
 
 
 @dataclass
 class IcebergSchema(PropertyType):
-    schema_field_list: list[SchemaField] = field(default_factory=list)
+    schema_field_list: list[DslValue[SchemaField]] = field(default_factory=list)
 
 
 @dataclass
 class SchemaField(PropertyType):
-    name: str | None = None
-    type_: str | None = None
-    required: bool | None = None
+    name: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    required: DslValue[bool] | None = None
 
 
 @dataclass
 class SnapshotManagement(PropertyType):
-    max_snapshot_age_hours: int | None = None
-    min_snapshots_to_keep: int | None = None
-    status: str | None = None
+    max_snapshot_age_hours: DslValue[int] | None = None
+    min_snapshots_to_keep: DslValue[int] | None = None
+    status: DslValue[str] | None = None
 
 
 @dataclass
 class StorageClassConfiguration(PropertyType):
-    storage_class: str | None = None
+    storage_class: DslValue[str] | None = None

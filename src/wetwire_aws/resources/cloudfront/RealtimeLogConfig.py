@@ -6,15 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class EndPoint(PropertyType):
-    kinesis_stream_config: KinesisStreamConfig | None = None
-    stream_type: str | None = None
+    kinesis_stream_config: DslValue[KinesisStreamConfig] | None = None
+    stream_type: DslValue[str] | None = None
 
 
 @dataclass
 class KinesisStreamConfig(PropertyType):
-    role_arn: str | None = None
-    stream_arn: str | None = None
+    role_arn: DslValue[str] | None = None
+    stream_arn: DslValue[str] | None = None

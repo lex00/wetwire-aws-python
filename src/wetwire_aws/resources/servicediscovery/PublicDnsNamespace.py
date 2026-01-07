@@ -6,11 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Properties(PropertyType):
-    dns_properties: PublicDnsPropertiesMutable | None = None
+    dns_properties: DslValue[PublicDnsPropertiesMutable] | None = None
 
 
 @dataclass
@@ -19,7 +20,7 @@ class PublicDnsPropertiesMutable(PropertyType):
         "soa": "SOA",
     }
 
-    soa: SOA | None = None
+    soa: DslValue[SOA] | None = None
 
 
 @dataclass
@@ -28,4 +29,4 @@ class SOA(PropertyType):
         "ttl": "TTL",
     }
 
-    ttl: float | None = None
+    ttl: DslValue[float] | None = None

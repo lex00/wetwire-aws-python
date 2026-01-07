@@ -6,48 +6,49 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CertificateAuthenticationRequest(PropertyType):
-    client_root_certificate_chain_arn: str | None = None
+    client_root_certificate_chain_arn: DslValue[str] | None = None
 
 
 @dataclass
 class ClientAuthenticationRequest(PropertyType):
-    type_: str | None = None
-    active_directory: DirectoryServiceAuthenticationRequest | None = None
-    federated_authentication: FederatedAuthenticationRequest | None = None
-    mutual_authentication: CertificateAuthenticationRequest | None = None
+    type_: DslValue[str] | None = None
+    active_directory: DslValue[DirectoryServiceAuthenticationRequest] | None = None
+    federated_authentication: DslValue[FederatedAuthenticationRequest] | None = None
+    mutual_authentication: DslValue[CertificateAuthenticationRequest] | None = None
 
 
 @dataclass
 class ClientConnectOptions(PropertyType):
-    enabled: bool | None = None
-    lambda_function_arn: str | None = None
+    enabled: DslValue[bool] | None = None
+    lambda_function_arn: DslValue[str] | None = None
 
 
 @dataclass
 class ClientLoginBannerOptions(PropertyType):
-    enabled: bool | None = None
-    banner_text: str | None = None
+    enabled: DslValue[bool] | None = None
+    banner_text: DslValue[str] | None = None
 
 
 @dataclass
 class ClientRouteEnforcementOptions(PropertyType):
-    enforced: bool | None = None
+    enforced: DslValue[bool] | None = None
 
 
 @dataclass
 class ConnectionLogOptions(PropertyType):
-    enabled: bool | None = None
-    cloudwatch_log_group: str | None = None
-    cloudwatch_log_stream: str | None = None
+    enabled: DslValue[bool] | None = None
+    cloudwatch_log_group: DslValue[str] | None = None
+    cloudwatch_log_stream: DslValue[str] | None = None
 
 
 @dataclass
 class DirectoryServiceAuthenticationRequest(PropertyType):
-    directory_id: str | None = None
+    directory_id: DslValue[str] | None = None
 
 
 @dataclass
@@ -57,11 +58,11 @@ class FederatedAuthenticationRequest(PropertyType):
         "self_service_saml_provider_arn": "SelfServiceSAMLProviderArn",
     }
 
-    saml_provider_arn: str | None = None
-    self_service_saml_provider_arn: str | None = None
+    saml_provider_arn: DslValue[str] | None = None
+    self_service_saml_provider_arn: DslValue[str] | None = None
 
 
 @dataclass
 class TagSpecification(PropertyType):
-    resource_type: str | None = None
-    tags: list[Tag] = field(default_factory=list)
+    resource_type: DslValue[str] | None = None
+    tags: list[DslValue[Tag]] = field(default_factory=list)

@@ -6,9 +6,10 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ServerlessV2ScalingConfiguration(PropertyType):
-    max_capacity: float | None = None
-    min_capacity: float | None = None
+    max_capacity: DslValue[float] | None = None
+    min_capacity: DslValue[float] | None = None

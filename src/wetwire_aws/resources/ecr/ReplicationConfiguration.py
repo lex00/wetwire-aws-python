@@ -6,26 +6,27 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ReplicationConfiguration(PropertyType):
-    rules: list[ReplicationRule] = field(default_factory=list)
+    rules: list[DslValue[ReplicationRule]] = field(default_factory=list)
 
 
 @dataclass
 class ReplicationDestination(PropertyType):
-    region: str | None = None
-    registry_id: str | None = None
+    region: DslValue[str] | None = None
+    registry_id: DslValue[str] | None = None
 
 
 @dataclass
 class ReplicationRule(PropertyType):
-    destinations: list[ReplicationDestination] = field(default_factory=list)
-    repository_filters: list[RepositoryFilter] = field(default_factory=list)
+    destinations: list[DslValue[ReplicationDestination]] = field(default_factory=list)
+    repository_filters: list[DslValue[RepositoryFilter]] = field(default_factory=list)
 
 
 @dataclass
 class RepositoryFilter(PropertyType):
-    filter: str | None = None
-    filter_type: str | None = None
+    filter: DslValue[str] | None = None
+    filter_type: DslValue[str] | None = None

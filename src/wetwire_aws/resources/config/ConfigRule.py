@@ -6,43 +6,44 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Compliance(PropertyType):
-    type_: str | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class CustomPolicyDetails(PropertyType):
-    enable_debug_log_delivery: bool | None = None
-    policy_runtime: str | None = None
-    policy_text: str | None = None
+    enable_debug_log_delivery: DslValue[bool] | None = None
+    policy_runtime: DslValue[str] | None = None
+    policy_text: DslValue[str] | None = None
 
 
 @dataclass
 class EvaluationModeConfiguration(PropertyType):
-    mode: str | None = None
+    mode: DslValue[str] | None = None
 
 
 @dataclass
 class Scope(PropertyType):
-    compliance_resource_id: str | None = None
-    compliance_resource_types: list[String] = field(default_factory=list)
-    tag_key: str | None = None
-    tag_value: str | None = None
+    compliance_resource_id: DslValue[str] | None = None
+    compliance_resource_types: list[DslValue[str]] = field(default_factory=list)
+    tag_key: DslValue[str] | None = None
+    tag_value: DslValue[str] | None = None
 
 
 @dataclass
 class Source(PropertyType):
-    owner: str | None = None
-    custom_policy_details: CustomPolicyDetails | None = None
-    source_details: list[SourceDetail] = field(default_factory=list)
-    source_identifier: str | None = None
+    owner: DslValue[str] | None = None
+    custom_policy_details: DslValue[CustomPolicyDetails] | None = None
+    source_details: list[DslValue[SourceDetail]] = field(default_factory=list)
+    source_identifier: DslValue[str] | None = None
 
 
 @dataclass
 class SourceDetail(PropertyType):
-    event_source: str | None = None
-    message_type: str | None = None
-    maximum_execution_frequency: str | None = None
+    event_source: DslValue[str] | None = None
+    message_type: DslValue[str] | None = None
+    maximum_execution_frequency: DslValue[str] | None = None

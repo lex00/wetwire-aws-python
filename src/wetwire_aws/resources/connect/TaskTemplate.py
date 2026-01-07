@@ -6,44 +6,45 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Constraints(PropertyType):
-    invisible_fields: list[InvisibleFieldInfo] = field(default_factory=list)
-    read_only_fields: list[ReadOnlyFieldInfo] = field(default_factory=list)
-    required_fields: list[RequiredFieldInfo] = field(default_factory=list)
+    invisible_fields: list[DslValue[InvisibleFieldInfo]] = field(default_factory=list)
+    read_only_fields: list[DslValue[ReadOnlyFieldInfo]] = field(default_factory=list)
+    required_fields: list[DslValue[RequiredFieldInfo]] = field(default_factory=list)
 
 
 @dataclass
 class DefaultFieldValue(PropertyType):
-    default_value: str | None = None
-    id: FieldIdentifier | None = None
+    default_value: DslValue[str] | None = None
+    id: DslValue[FieldIdentifier] | None = None
 
 
 @dataclass
 class Field(PropertyType):
-    id: FieldIdentifier | None = None
-    type_: str | None = None
-    description: str | None = None
-    single_select_options: list[String] = field(default_factory=list)
+    id: DslValue[FieldIdentifier] | None = None
+    type_: DslValue[str] | None = None
+    description: DslValue[str] | None = None
+    single_select_options: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class FieldIdentifier(PropertyType):
-    name: str | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class InvisibleFieldInfo(PropertyType):
-    id: FieldIdentifier | None = None
+    id: DslValue[FieldIdentifier] | None = None
 
 
 @dataclass
 class ReadOnlyFieldInfo(PropertyType):
-    id: FieldIdentifier | None = None
+    id: DslValue[FieldIdentifier] | None = None
 
 
 @dataclass
 class RequiredFieldInfo(PropertyType):
-    id: FieldIdentifier | None = None
+    id: DslValue[FieldIdentifier] | None = None

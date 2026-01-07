@@ -1,0 +1,8 @@
+{
+  "include": ["src", "tests", "examples"],
+  "extraPaths": [
+    "examples/aws-cloudformation-templates/cloudfront"
+  ],
+  "pythonVersion": "3.11",
+  "typeCheckingMode": "standard"
+}

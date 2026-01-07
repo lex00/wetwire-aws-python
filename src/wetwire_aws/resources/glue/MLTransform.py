@@ -6,27 +6,28 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class FindMatchesParameters(PropertyType):
-    primary_key_column_name: str | None = None
-    accuracy_cost_tradeoff: float | None = None
-    enforce_provided_labels: bool | None = None
-    precision_recall_tradeoff: float | None = None
+    primary_key_column_name: DslValue[str] | None = None
+    accuracy_cost_tradeoff: DslValue[float] | None = None
+    enforce_provided_labels: DslValue[bool] | None = None
+    precision_recall_tradeoff: DslValue[float] | None = None
 
 
 @dataclass
 class GlueTables(PropertyType):
-    database_name: str | None = None
-    table_name: str | None = None
-    catalog_id: str | None = None
-    connection_name: str | None = None
+    database_name: DslValue[str] | None = None
+    table_name: DslValue[str] | None = None
+    catalog_id: DslValue[str] | None = None
+    connection_name: DslValue[str] | None = None
 
 
 @dataclass
 class InputRecordTables(PropertyType):
-    glue_tables: list[GlueTables] = field(default_factory=list)
+    glue_tables: list[DslValue[GlueTables]] = field(default_factory=list)
 
 
 @dataclass
@@ -35,8 +36,8 @@ class MLUserDataEncryption(PropertyType):
         "ml_user_data_encryption_mode": "MLUserDataEncryptionMode",
     }
 
-    ml_user_data_encryption_mode: str | None = None
-    kms_key_id: str | None = None
+    ml_user_data_encryption_mode: DslValue[str] | None = None
+    kms_key_id: DslValue[str] | None = None
 
 
 @dataclass
@@ -45,11 +46,11 @@ class TransformEncryption(PropertyType):
         "ml_user_data_encryption": "MLUserDataEncryption",
     }
 
-    ml_user_data_encryption: MLUserDataEncryption | None = None
-    task_run_security_configuration_name: str | None = None
+    ml_user_data_encryption: DslValue[MLUserDataEncryption] | None = None
+    task_run_security_configuration_name: DslValue[str] | None = None
 
 
 @dataclass
 class TransformParameters(PropertyType):
-    transform_type: str | None = None
-    find_matches_parameters: FindMatchesParameters | None = None
+    transform_type: DslValue[str] | None = None
+    find_matches_parameters: DslValue[FindMatchesParameters] | None = None

@@ -6,25 +6,26 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AppLifecycleManagement(PropertyType):
-    idle_settings: IdleSettings | None = None
+    idle_settings: DslValue[IdleSettings] | None = None
 
 
 @dataclass
 class CodeEditorAppSettings(PropertyType):
-    app_lifecycle_management: AppLifecycleManagement | None = None
-    built_in_lifecycle_config_arn: str | None = None
-    custom_images: list[CustomImage] = field(default_factory=list)
-    default_resource_spec: ResourceSpec | None = None
-    lifecycle_config_arns: list[String] = field(default_factory=list)
+    app_lifecycle_management: DslValue[AppLifecycleManagement] | None = None
+    built_in_lifecycle_config_arn: DslValue[str] | None = None
+    custom_images: list[DslValue[CustomImage]] = field(default_factory=list)
+    default_resource_spec: DslValue[ResourceSpec] | None = None
+    lifecycle_config_arns: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class CodeRepository(PropertyType):
-    repository_url: str | None = None
+    repository_url: DslValue[str] | None = None
 
 
 @dataclass
@@ -33,118 +34,118 @@ class CustomFileSystemConfig(PropertyType):
         "efs_file_system_config": "EFSFileSystemConfig",
     }
 
-    efs_file_system_config: EFSFileSystemConfig | None = None
-    f_sx_lustre_file_system_config: FSxLustreFileSystemConfig | None = None
-    s3_file_system_config: S3FileSystemConfig | None = None
+    efs_file_system_config: DslValue[EFSFileSystemConfig] | None = None
+    f_sx_lustre_file_system_config: DslValue[FSxLustreFileSystemConfig] | None = None
+    s3_file_system_config: DslValue[S3FileSystemConfig] | None = None
 
 
 @dataclass
 class CustomImage(PropertyType):
-    app_image_config_name: str | None = None
-    image_name: str | None = None
-    image_version_number: int | None = None
+    app_image_config_name: DslValue[str] | None = None
+    image_name: DslValue[str] | None = None
+    image_version_number: DslValue[int] | None = None
 
 
 @dataclass
 class CustomPosixUserConfig(PropertyType):
-    gid: int | None = None
-    uid: int | None = None
+    gid: DslValue[int] | None = None
+    uid: DslValue[int] | None = None
 
 
 @dataclass
 class DefaultEbsStorageSettings(PropertyType):
-    default_ebs_volume_size_in_gb: int | None = None
-    maximum_ebs_volume_size_in_gb: int | None = None
+    default_ebs_volume_size_in_gb: DslValue[int] | None = None
+    maximum_ebs_volume_size_in_gb: DslValue[int] | None = None
 
 
 @dataclass
 class DefaultSpaceStorageSettings(PropertyType):
-    default_ebs_storage_settings: DefaultEbsStorageSettings | None = None
+    default_ebs_storage_settings: DslValue[DefaultEbsStorageSettings] | None = None
 
 
 @dataclass
 class EFSFileSystemConfig(PropertyType):
-    file_system_id: str | None = None
-    file_system_path: str | None = None
+    file_system_id: DslValue[str] | None = None
+    file_system_path: DslValue[str] | None = None
 
 
 @dataclass
 class FSxLustreFileSystemConfig(PropertyType):
-    file_system_id: str | None = None
-    file_system_path: str | None = None
+    file_system_id: DslValue[str] | None = None
+    file_system_path: DslValue[str] | None = None
 
 
 @dataclass
 class HiddenSageMakerImage(PropertyType):
-    sage_maker_image_name: str | None = None
-    version_aliases: list[String] = field(default_factory=list)
+    sage_maker_image_name: DslValue[str] | None = None
+    version_aliases: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class IdleSettings(PropertyType):
-    idle_timeout_in_minutes: int | None = None
-    lifecycle_management: str | None = None
-    max_idle_timeout_in_minutes: int | None = None
-    min_idle_timeout_in_minutes: int | None = None
+    idle_timeout_in_minutes: DslValue[int] | None = None
+    lifecycle_management: DslValue[str] | None = None
+    max_idle_timeout_in_minutes: DslValue[int] | None = None
+    min_idle_timeout_in_minutes: DslValue[int] | None = None
 
 
 @dataclass
 class JupyterLabAppSettings(PropertyType):
-    app_lifecycle_management: AppLifecycleManagement | None = None
-    built_in_lifecycle_config_arn: str | None = None
-    code_repositories: list[CodeRepository] = field(default_factory=list)
-    custom_images: list[CustomImage] = field(default_factory=list)
-    default_resource_spec: ResourceSpec | None = None
-    lifecycle_config_arns: list[String] = field(default_factory=list)
+    app_lifecycle_management: DslValue[AppLifecycleManagement] | None = None
+    built_in_lifecycle_config_arn: DslValue[str] | None = None
+    code_repositories: list[DslValue[CodeRepository]] = field(default_factory=list)
+    custom_images: list[DslValue[CustomImage]] = field(default_factory=list)
+    default_resource_spec: DslValue[ResourceSpec] | None = None
+    lifecycle_config_arns: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class JupyterServerAppSettings(PropertyType):
-    default_resource_spec: ResourceSpec | None = None
-    lifecycle_config_arns: list[String] = field(default_factory=list)
+    default_resource_spec: DslValue[ResourceSpec] | None = None
+    lifecycle_config_arns: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class KernelGatewayAppSettings(PropertyType):
-    custom_images: list[CustomImage] = field(default_factory=list)
-    default_resource_spec: ResourceSpec | None = None
-    lifecycle_config_arns: list[String] = field(default_factory=list)
+    custom_images: list[DslValue[CustomImage]] = field(default_factory=list)
+    default_resource_spec: DslValue[ResourceSpec] | None = None
+    lifecycle_config_arns: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class RStudioServerProAppSettings(PropertyType):
-    access_status: str | None = None
-    user_group: str | None = None
+    access_status: DslValue[str] | None = None
+    user_group: DslValue[str] | None = None
 
 
 @dataclass
 class ResourceSpec(PropertyType):
-    instance_type: str | None = None
-    lifecycle_config_arn: str | None = None
-    sage_maker_image_arn: str | None = None
-    sage_maker_image_version_arn: str | None = None
+    instance_type: DslValue[str] | None = None
+    lifecycle_config_arn: DslValue[str] | None = None
+    sage_maker_image_arn: DslValue[str] | None = None
+    sage_maker_image_version_arn: DslValue[str] | None = None
 
 
 @dataclass
 class S3FileSystemConfig(PropertyType):
-    mount_path: str | None = None
-    s3_uri: str | None = None
+    mount_path: DslValue[str] | None = None
+    s3_uri: DslValue[str] | None = None
 
 
 @dataclass
 class SharingSettings(PropertyType):
-    notebook_output_option: str | None = None
-    s3_kms_key_id: str | None = None
-    s3_output_path: str | None = None
+    notebook_output_option: DslValue[str] | None = None
+    s3_kms_key_id: DslValue[str] | None = None
+    s3_output_path: DslValue[str] | None = None
 
 
 @dataclass
 class StudioWebPortalSettings(PropertyType):
-    hidden_app_types: list[String] = field(default_factory=list)
-    hidden_instance_types: list[String] = field(default_factory=list)
-    hidden_ml_tools: list[String] = field(default_factory=list)
-    hidden_sage_maker_image_version_aliases: list[HiddenSageMakerImage] = field(
-        default_factory=list
+    hidden_app_types: list[DslValue[str]] = field(default_factory=list)
+    hidden_instance_types: list[DslValue[str]] = field(default_factory=list)
+    hidden_ml_tools: list[DslValue[str]] = field(default_factory=list)
+    hidden_sage_maker_image_version_aliases: list[DslValue[HiddenSageMakerImage]] = (
+        field(default_factory=list)
     )
 
 
@@ -154,20 +155,22 @@ class UserSettings(PropertyType):
         "auto_mount_home_efs": "AutoMountHomeEFS",
     }
 
-    auto_mount_home_efs: str | None = None
-    code_editor_app_settings: CodeEditorAppSettings | None = None
-    custom_file_system_configs: list[CustomFileSystemConfig] = field(
+    auto_mount_home_efs: DslValue[str] | None = None
+    code_editor_app_settings: DslValue[CodeEditorAppSettings] | None = None
+    custom_file_system_configs: list[DslValue[CustomFileSystemConfig]] = field(
         default_factory=list
     )
-    custom_posix_user_config: CustomPosixUserConfig | None = None
-    default_landing_uri: str | None = None
-    execution_role: str | None = None
-    jupyter_lab_app_settings: JupyterLabAppSettings | None = None
-    jupyter_server_app_settings: JupyterServerAppSettings | None = None
-    kernel_gateway_app_settings: KernelGatewayAppSettings | None = None
-    r_studio_server_pro_app_settings: RStudioServerProAppSettings | None = None
-    security_groups: list[String] = field(default_factory=list)
-    sharing_settings: SharingSettings | None = None
-    space_storage_settings: DefaultSpaceStorageSettings | None = None
-    studio_web_portal: str | None = None
-    studio_web_portal_settings: StudioWebPortalSettings | None = None
+    custom_posix_user_config: DslValue[CustomPosixUserConfig] | None = None
+    default_landing_uri: DslValue[str] | None = None
+    execution_role: DslValue[str] | None = None
+    jupyter_lab_app_settings: DslValue[JupyterLabAppSettings] | None = None
+    jupyter_server_app_settings: DslValue[JupyterServerAppSettings] | None = None
+    kernel_gateway_app_settings: DslValue[KernelGatewayAppSettings] | None = None
+    r_studio_server_pro_app_settings: DslValue[RStudioServerProAppSettings] | None = (
+        None
+    )
+    security_groups: list[DslValue[str]] = field(default_factory=list)
+    sharing_settings: DslValue[SharingSettings] | None = None
+    space_storage_settings: DslValue[DefaultSpaceStorageSettings] | None = None
+    studio_web_portal: DslValue[str] | None = None
+    studio_web_portal_settings: DslValue[StudioWebPortalSettings] | None = None

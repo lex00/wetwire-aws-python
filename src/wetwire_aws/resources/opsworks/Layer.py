@@ -6,51 +6,52 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AutoScalingThresholds(PropertyType):
-    cpu_threshold: float | None = None
-    ignore_metrics_time: int | None = None
-    instance_count: int | None = None
-    load_threshold: float | None = None
-    memory_threshold: float | None = None
-    thresholds_wait_time: int | None = None
+    cpu_threshold: DslValue[float] | None = None
+    ignore_metrics_time: DslValue[int] | None = None
+    instance_count: DslValue[int] | None = None
+    load_threshold: DslValue[float] | None = None
+    memory_threshold: DslValue[float] | None = None
+    thresholds_wait_time: DslValue[int] | None = None
 
 
 @dataclass
 class LifecycleEventConfiguration(PropertyType):
-    shutdown_event_configuration: ShutdownEventConfiguration | None = None
+    shutdown_event_configuration: DslValue[ShutdownEventConfiguration] | None = None
 
 
 @dataclass
 class LoadBasedAutoScaling(PropertyType):
-    down_scaling: AutoScalingThresholds | None = None
-    enable: bool | None = None
-    up_scaling: AutoScalingThresholds | None = None
+    down_scaling: DslValue[AutoScalingThresholds] | None = None
+    enable: DslValue[bool] | None = None
+    up_scaling: DslValue[AutoScalingThresholds] | None = None
 
 
 @dataclass
 class Recipes(PropertyType):
-    configure: list[String] = field(default_factory=list)
-    deploy: list[String] = field(default_factory=list)
-    setup: list[String] = field(default_factory=list)
-    shutdown: list[String] = field(default_factory=list)
-    undeploy: list[String] = field(default_factory=list)
+    configure: list[DslValue[str]] = field(default_factory=list)
+    deploy: list[DslValue[str]] = field(default_factory=list)
+    setup: list[DslValue[str]] = field(default_factory=list)
+    shutdown: list[DslValue[str]] = field(default_factory=list)
+    undeploy: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class ShutdownEventConfiguration(PropertyType):
-    delay_until_elb_connections_drained: bool | None = None
-    execution_timeout: int | None = None
+    delay_until_elb_connections_drained: DslValue[bool] | None = None
+    execution_timeout: DslValue[int] | None = None
 
 
 @dataclass
 class VolumeConfiguration(PropertyType):
-    encrypted: bool | None = None
-    iops: int | None = None
-    mount_point: str | None = None
-    number_of_disks: int | None = None
-    raid_level: int | None = None
-    size: int | None = None
-    volume_type: str | None = None
+    encrypted: DslValue[bool] | None = None
+    iops: DslValue[int] | None = None
+    mount_point: DslValue[str] | None = None
+    number_of_disks: DslValue[int] | None = None
+    raid_level: DslValue[int] | None = None
+    size: DslValue[int] | None = None
+    volume_type: DslValue[str] | None = None

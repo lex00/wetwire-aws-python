@@ -6,29 +6,30 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class MediaResource(PropertyType):
-    destinations: list[MediaResourceNeighbor] = field(default_factory=list)
-    name: str | None = None
-    sources: list[MediaResourceNeighbor] = field(default_factory=list)
+    destinations: list[DslValue[MediaResourceNeighbor]] = field(default_factory=list)
+    name: DslValue[str] | None = None
+    sources: list[DslValue[MediaResourceNeighbor]] = field(default_factory=list)
 
 
 @dataclass
 class MediaResourceNeighbor(PropertyType):
-    arn: str | None = None
-    name: str | None = None
+    arn: DslValue[str] | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class MonitorDeployment(PropertyType):
-    status: str | None = None
-    details_uri: str | None = None
-    error_message: str | None = None
+    status: DslValue[str] | None = None
+    details_uri: DslValue[str] | None = None
+    error_message: DslValue[str] | None = None
 
 
 @dataclass
 class SuccessfulMonitorDeployment(PropertyType):
-    details_uri: str | None = None
-    status: str | None = None
+    details_uri: DslValue[str] | None = None
+    status: DslValue[str] | None = None

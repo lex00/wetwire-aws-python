@@ -6,24 +6,25 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CorsRule(PropertyType):
-    allowed_headers: list[String] = field(default_factory=list)
-    allowed_methods: list[String] = field(default_factory=list)
-    allowed_origins: list[String] = field(default_factory=list)
-    expose_headers: list[String] = field(default_factory=list)
-    max_age_seconds: int | None = None
+    allowed_headers: list[DslValue[str]] = field(default_factory=list)
+    allowed_methods: list[DslValue[str]] = field(default_factory=list)
+    allowed_origins: list[DslValue[str]] = field(default_factory=list)
+    expose_headers: list[DslValue[str]] = field(default_factory=list)
+    max_age_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class MetricPolicy(PropertyType):
-    container_level_metrics: str | None = None
-    metric_policy_rules: list[MetricPolicyRule] = field(default_factory=list)
+    container_level_metrics: DslValue[str] | None = None
+    metric_policy_rules: list[DslValue[MetricPolicyRule]] = field(default_factory=list)
 
 
 @dataclass
 class MetricPolicyRule(PropertyType):
-    object_group: str | None = None
-    object_group_name: str | None = None
+    object_group: DslValue[str] | None = None
+    object_group_name: DslValue[str] | None = None

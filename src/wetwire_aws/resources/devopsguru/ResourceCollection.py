@@ -6,20 +6,21 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CloudFormationCollectionFilter(PropertyType):
-    stack_names: list[String] = field(default_factory=list)
+    stack_names: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class ResourceCollectionFilter(PropertyType):
-    cloud_formation: CloudFormationCollectionFilter | None = None
-    tags: list[TagCollection] = field(default_factory=list)
+    cloud_formation: DslValue[CloudFormationCollectionFilter] | None = None
+    tags: list[DslValue[TagCollection]] = field(default_factory=list)
 
 
 @dataclass
 class TagCollection(PropertyType):
-    app_boundary_key: str | None = None
-    tag_values: list[String] = field(default_factory=list)
+    app_boundary_key: DslValue[str] | None = None
+    tag_values: list[DslValue[str]] = field(default_factory=list)

@@ -6,39 +6,42 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Integration(PropertyType):
-    type_: str | None = None
-    cache_key_parameters: list[String] = field(default_factory=list)
-    cache_namespace: str | None = None
-    connection_id: str | None = None
-    connection_type: str | None = None
-    content_handling: str | None = None
-    credentials: str | None = None
-    integration_http_method: str | None = None
-    integration_responses: list[IntegrationResponse] = field(default_factory=list)
-    integration_target: str | None = None
-    passthrough_behavior: str | None = None
-    request_parameters: dict[str, String] = field(default_factory=dict)
-    request_templates: dict[str, String] = field(default_factory=dict)
-    response_transfer_mode: str | None = None
-    timeout_in_millis: int | None = None
-    uri: str | None = None
+    type_: DslValue[str] | None = None
+    cache_key_parameters: list[DslValue[str]] = field(default_factory=list)
+    cache_namespace: DslValue[str] | None = None
+    connection_id: DslValue[str] | None = None
+    connection_type: DslValue[str] | None = None
+    content_handling: DslValue[str] | None = None
+    credentials: DslValue[str] | None = None
+    integration_http_method: DslValue[str] | None = None
+    integration_responses: list[DslValue[IntegrationResponse]] = field(
+        default_factory=list
+    )
+    integration_target: DslValue[str] | None = None
+    passthrough_behavior: DslValue[str] | None = None
+    request_parameters: dict[str, DslValue[str]] = field(default_factory=dict)
+    request_templates: dict[str, DslValue[str]] = field(default_factory=dict)
+    response_transfer_mode: DslValue[str] | None = None
+    timeout_in_millis: DslValue[int] | None = None
+    uri: DslValue[str] | None = None
 
 
 @dataclass
 class IntegrationResponse(PropertyType):
-    status_code: str | None = None
-    content_handling: str | None = None
-    response_parameters: dict[str, String] = field(default_factory=dict)
-    response_templates: dict[str, String] = field(default_factory=dict)
-    selection_pattern: str | None = None
+    status_code: DslValue[str] | None = None
+    content_handling: DslValue[str] | None = None
+    response_parameters: dict[str, DslValue[str]] = field(default_factory=dict)
+    response_templates: dict[str, DslValue[str]] = field(default_factory=dict)
+    selection_pattern: DslValue[str] | None = None
 
 
 @dataclass
 class MethodResponse(PropertyType):
-    status_code: str | None = None
-    response_models: dict[str, String] = field(default_factory=dict)
-    response_parameters: dict[str, String] = field(default_factory=dict)
+    status_code: DslValue[str] | None = None
+    response_models: dict[str, DslValue[str]] = field(default_factory=dict)
+    response_parameters: dict[str, DslValue[str]] = field(default_factory=dict)

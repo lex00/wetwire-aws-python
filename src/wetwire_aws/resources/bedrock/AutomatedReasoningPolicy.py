@@ -6,38 +6,39 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class PolicyDefinition(PropertyType):
-    rules: list[PolicyDefinitionRule] = field(default_factory=list)
-    types: list[PolicyDefinitionType] = field(default_factory=list)
-    variables: list[PolicyDefinitionVariable] = field(default_factory=list)
-    version: str | None = None
+    rules: list[DslValue[PolicyDefinitionRule]] = field(default_factory=list)
+    types: list[DslValue[PolicyDefinitionType]] = field(default_factory=list)
+    variables: list[DslValue[PolicyDefinitionVariable]] = field(default_factory=list)
+    version: DslValue[str] | None = None
 
 
 @dataclass
 class PolicyDefinitionRule(PropertyType):
-    expression: str | None = None
-    id: str | None = None
-    alternate_expression: str | None = None
+    expression: DslValue[str] | None = None
+    id: DslValue[str] | None = None
+    alternate_expression: DslValue[str] | None = None
 
 
 @dataclass
 class PolicyDefinitionType(PropertyType):
-    name: str | None = None
-    values: list[PolicyDefinitionTypeValue] = field(default_factory=list)
-    description: str | None = None
+    name: DslValue[str] | None = None
+    values: list[DslValue[PolicyDefinitionTypeValue]] = field(default_factory=list)
+    description: DslValue[str] | None = None
 
 
 @dataclass
 class PolicyDefinitionTypeValue(PropertyType):
-    value: str | None = None
-    description: str | None = None
+    value: DslValue[str] | None = None
+    description: DslValue[str] | None = None
 
 
 @dataclass
 class PolicyDefinitionVariable(PropertyType):
-    description: str | None = None
-    name: str | None = None
-    type_: str | None = None
+    description: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    type_: DslValue[str] | None = None

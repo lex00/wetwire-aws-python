@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,5 +15,5 @@ class SubnetMapping(PropertyType):
         "ip_address_type": "IPAddressType",
     }
 
-    subnet_id: str | None = None
-    ip_address_type: str | None = None
+    subnet_id: DslValue[str] | None = None
+    ip_address_type: DslValue[str] | None = None

@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,29 +15,29 @@ class Action(PropertyType):
         "sns_action": "SNSAction",
     }
 
-    add_header_action: AddHeaderAction | None = None
-    bounce_action: BounceAction | None = None
-    connect_action: ConnectAction | None = None
-    lambda_action: LambdaAction | None = None
-    s3_action: S3Action | None = None
-    sns_action: SNSAction | None = None
-    stop_action: StopAction | None = None
-    workmail_action: WorkmailAction | None = None
+    add_header_action: DslValue[AddHeaderAction] | None = None
+    bounce_action: DslValue[BounceAction] | None = None
+    connect_action: DslValue[ConnectAction] | None = None
+    lambda_action: DslValue[LambdaAction] | None = None
+    s3_action: DslValue[S3Action] | None = None
+    sns_action: DslValue[SNSAction] | None = None
+    stop_action: DslValue[StopAction] | None = None
+    workmail_action: DslValue[WorkmailAction] | None = None
 
 
 @dataclass
 class AddHeaderAction(PropertyType):
-    header_name: str | None = None
-    header_value: str | None = None
+    header_name: DslValue[str] | None = None
+    header_value: DslValue[str] | None = None
 
 
 @dataclass
 class BounceAction(PropertyType):
-    message: str | None = None
-    sender: str | None = None
-    smtp_reply_code: str | None = None
-    status_code: str | None = None
-    topic_arn: str | None = None
+    message: DslValue[str] | None = None
+    sender: DslValue[str] | None = None
+    smtp_reply_code: DslValue[str] | None = None
+    status_code: DslValue[str] | None = None
+    topic_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -46,49 +47,49 @@ class ConnectAction(PropertyType):
         "instance_arn": "InstanceARN",
     }
 
-    iam_role_arn: str | None = None
-    instance_arn: str | None = None
+    iam_role_arn: DslValue[str] | None = None
+    instance_arn: DslValue[str] | None = None
 
 
 @dataclass
 class LambdaAction(PropertyType):
-    function_arn: str | None = None
-    invocation_type: str | None = None
-    topic_arn: str | None = None
+    function_arn: DslValue[str] | None = None
+    invocation_type: DslValue[str] | None = None
+    topic_arn: DslValue[str] | None = None
 
 
 @dataclass
 class Rule(PropertyType):
-    actions: list[Action] = field(default_factory=list)
-    enabled: bool | None = None
-    name: str | None = None
-    recipients: list[String] = field(default_factory=list)
-    scan_enabled: bool | None = None
-    tls_policy: str | None = None
+    actions: list[DslValue[Action]] = field(default_factory=list)
+    enabled: DslValue[bool] | None = None
+    name: DslValue[str] | None = None
+    recipients: list[DslValue[str]] = field(default_factory=list)
+    scan_enabled: DslValue[bool] | None = None
+    tls_policy: DslValue[str] | None = None
 
 
 @dataclass
 class S3Action(PropertyType):
-    bucket_name: str | None = None
-    iam_role_arn: str | None = None
-    kms_key_arn: str | None = None
-    object_key_prefix: str | None = None
-    topic_arn: str | None = None
+    bucket_name: DslValue[str] | None = None
+    iam_role_arn: DslValue[str] | None = None
+    kms_key_arn: DslValue[str] | None = None
+    object_key_prefix: DslValue[str] | None = None
+    topic_arn: DslValue[str] | None = None
 
 
 @dataclass
 class SNSAction(PropertyType):
-    encoding: str | None = None
-    topic_arn: str | None = None
+    encoding: DslValue[str] | None = None
+    topic_arn: DslValue[str] | None = None
 
 
 @dataclass
 class StopAction(PropertyType):
-    scope: str | None = None
-    topic_arn: str | None = None
+    scope: DslValue[str] | None = None
+    topic_arn: DslValue[str] | None = None
 
 
 @dataclass
 class WorkmailAction(PropertyType):
-    organization_arn: str | None = None
-    topic_arn: str | None = None
+    organization_arn: DslValue[str] | None = None
+    topic_arn: DslValue[str] | None = None

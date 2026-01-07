@@ -6,16 +6,17 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class EncryptionConfiguration(PropertyType):
-    type_: str | None = None
-    kms_data_key_reuse_period_seconds: int | None = None
-    kms_key_id: str | None = None
+    type_: DslValue[str] | None = None
+    kms_data_key_reuse_period_seconds: DslValue[int] | None = None
+    kms_key_id: DslValue[str] | None = None
 
 
 @dataclass
 class TagsEntry(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None

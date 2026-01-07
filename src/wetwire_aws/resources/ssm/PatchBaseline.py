@@ -6,35 +6,36 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class PatchFilter(PropertyType):
-    key: str | None = None
-    values: list[String] = field(default_factory=list)
+    key: DslValue[str] | None = None
+    values: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class PatchFilterGroup(PropertyType):
-    patch_filters: list[PatchFilter] = field(default_factory=list)
+    patch_filters: list[DslValue[PatchFilter]] = field(default_factory=list)
 
 
 @dataclass
 class PatchSource(PropertyType):
-    configuration: str | None = None
-    name: str | None = None
-    products: list[String] = field(default_factory=list)
+    configuration: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    products: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class Rule(PropertyType):
-    approve_after_days: int | None = None
-    approve_until_date: str | None = None
-    compliance_level: str | None = None
-    enable_non_security: bool | None = None
-    patch_filter_group: PatchFilterGroup | None = None
+    approve_after_days: DslValue[int] | None = None
+    approve_until_date: DslValue[str] | None = None
+    compliance_level: DslValue[str] | None = None
+    enable_non_security: DslValue[bool] | None = None
+    patch_filter_group: DslValue[PatchFilterGroup] | None = None
 
 
 @dataclass
 class RuleGroup(PropertyType):
-    patch_rules: list[Rule] = field(default_factory=list)
+    patch_rules: list[DslValue[Rule]] = field(default_factory=list)

@@ -6,41 +6,42 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Field(PropertyType):
-    key: str | None = None
-    ref_value: str | None = None
-    string_value: str | None = None
+    key: DslValue[str] | None = None
+    ref_value: DslValue[str] | None = None
+    string_value: DslValue[str] | None = None
 
 
 @dataclass
 class ParameterAttribute(PropertyType):
-    key: str | None = None
-    string_value: str | None = None
+    key: DslValue[str] | None = None
+    string_value: DslValue[str] | None = None
 
 
 @dataclass
 class ParameterObject(PropertyType):
-    attributes: list[ParameterAttribute] = field(default_factory=list)
-    id: str | None = None
+    attributes: list[DslValue[ParameterAttribute]] = field(default_factory=list)
+    id: DslValue[str] | None = None
 
 
 @dataclass
 class ParameterValue(PropertyType):
-    id: str | None = None
-    string_value: str | None = None
+    id: DslValue[str] | None = None
+    string_value: DslValue[str] | None = None
 
 
 @dataclass
 class PipelineObject(PropertyType):
-    fields: list[Field] = field(default_factory=list)
-    id: str | None = None
-    name: str | None = None
+    fields: list[DslValue[Field]] = field(default_factory=list)
+    id: DslValue[str] | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class PipelineTag(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None

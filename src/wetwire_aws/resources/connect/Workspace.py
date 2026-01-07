@@ -6,80 +6,81 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class FontFamily(PropertyType):
-    default: str | None = None
+    default: DslValue[str] | None = None
 
 
 @dataclass
 class MediaItem(PropertyType):
-    type_: str | None = None
-    source: str | None = None
+    type_: DslValue[str] | None = None
+    source: DslValue[str] | None = None
 
 
 @dataclass
 class PaletteCanvas(PropertyType):
-    active_background: str | None = None
-    container_background: str | None = None
-    page_background: str | None = None
+    active_background: DslValue[str] | None = None
+    container_background: DslValue[str] | None = None
+    page_background: DslValue[str] | None = None
 
 
 @dataclass
 class PaletteHeader(PropertyType):
-    background: str | None = None
-    invert_actions_colors: bool | None = None
-    text: str | None = None
-    text_hover: str | None = None
+    background: DslValue[str] | None = None
+    invert_actions_colors: DslValue[bool] | None = None
+    text: DslValue[str] | None = None
+    text_hover: DslValue[str] | None = None
 
 
 @dataclass
 class PaletteNavigation(PropertyType):
-    background: str | None = None
-    invert_actions_colors: bool | None = None
-    text: str | None = None
-    text_active: str | None = None
-    text_background_active: str | None = None
-    text_background_hover: str | None = None
-    text_hover: str | None = None
+    background: DslValue[str] | None = None
+    invert_actions_colors: DslValue[bool] | None = None
+    text: DslValue[str] | None = None
+    text_active: DslValue[str] | None = None
+    text_background_active: DslValue[str] | None = None
+    text_background_hover: DslValue[str] | None = None
+    text_hover: DslValue[str] | None = None
 
 
 @dataclass
 class PalettePrimary(PropertyType):
-    active: str | None = None
-    contrast_text: str | None = None
-    default: str | None = None
+    active: DslValue[str] | None = None
+    contrast_text: DslValue[str] | None = None
+    default: DslValue[str] | None = None
 
 
 @dataclass
 class WorkspacePage(PropertyType):
-    page: str | None = None
-    resource_arn: str | None = None
-    input_data: str | None = None
-    slug: str | None = None
+    page: DslValue[str] | None = None
+    resource_arn: DslValue[str] | None = None
+    input_data: DslValue[str] | None = None
+    slug: DslValue[str] | None = None
 
 
 @dataclass
 class WorkspaceTheme(PropertyType):
-    dark: WorkspaceThemeConfig | None = None
-    light: WorkspaceThemeConfig | None = None
+    dark: DslValue[WorkspaceThemeConfig] | None = None
+    light: DslValue[WorkspaceThemeConfig] | None = None
 
 
 @dataclass
 class WorkspaceThemeConfig(PropertyType):
-    palette: WorkspaceThemePalette | None = None
-    typography: WorkspaceThemeTypography | None = None
+    palette: DslValue[WorkspaceThemePalette] | None = None
+    typography: DslValue[WorkspaceThemeTypography] | None = None
 
 
 @dataclass
 class WorkspaceThemePalette(PropertyType):
-    canvas: PaletteCanvas | None = None
-    header: PaletteHeader | None = None
-    navigation: PaletteNavigation | None = None
-    primary: PalettePrimary | None = None
+    canvas: DslValue[PaletteCanvas] | None = None
+    header: DslValue[PaletteHeader] | None = None
+    navigation: DslValue[PaletteNavigation] | None = None
+    primary: DslValue[PalettePrimary] | None = None
 
 
 @dataclass
 class WorkspaceThemeTypography(PropertyType):
-    font_family: FontFamily | None = None
+    font_family: DslValue[FontFamily] | None = None

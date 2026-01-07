@@ -6,11 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Video(PropertyType):
-    bitrate: int | None = None
-    framerate: float | None = None
-    height: int | None = None
-    width: int | None = None
+    bitrate: DslValue[int] | None = None
+    framerate: DslValue[float] | None = None
+    height: DslValue[int] | None = None
+    width: DslValue[int] | None = None

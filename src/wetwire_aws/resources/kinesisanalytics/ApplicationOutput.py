@@ -6,11 +6,12 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class DestinationSchema(PropertyType):
-    record_format_type: str | None = None
+    record_format_type: DslValue[str] | None = None
 
 
 @dataclass
@@ -20,8 +21,8 @@ class KinesisFirehoseOutput(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    resource_arn: str | None = None
-    role_arn: str | None = None
+    resource_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -31,8 +32,8 @@ class KinesisStreamsOutput(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    resource_arn: str | None = None
-    role_arn: str | None = None
+    resource_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -42,14 +43,14 @@ class LambdaOutput(PropertyType):
         "role_arn": "RoleARN",
     }
 
-    resource_arn: str | None = None
-    role_arn: str | None = None
+    resource_arn: DslValue[str] | None = None
+    role_arn: DslValue[str] | None = None
 
 
 @dataclass
 class Output(PropertyType):
-    destination_schema: DestinationSchema | None = None
-    kinesis_firehose_output: KinesisFirehoseOutput | None = None
-    kinesis_streams_output: KinesisStreamsOutput | None = None
-    lambda_output: LambdaOutput | None = None
-    name: str | None = None
+    destination_schema: DslValue[DestinationSchema] | None = None
+    kinesis_firehose_output: DslValue[KinesisFirehoseOutput] | None = None
+    kinesis_streams_output: DslValue[KinesisStreamsOutput] | None = None
+    lambda_output: DslValue[LambdaOutput] | None = None
+    name: DslValue[str] | None = None

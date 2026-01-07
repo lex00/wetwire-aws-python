@@ -6,13 +6,14 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class EmailContact(PropertyType):
-    address: str | None = None
-    arn: str | None = None
-    creation_time: str | None = None
-    name: str | None = None
-    status: str | None = None
-    update_time: str | None = None
+    address: DslValue[str] | None = None
+    arn: DslValue[str] | None = None
+    creation_time: DslValue[str] | None = None
+    name: DslValue[str] | None = None
+    status: DslValue[str] | None = None
+    update_time: DslValue[str] | None = None

@@ -6,59 +6,60 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class DeletionSettings(PropertyType):
-    execution_role: str | None = None
+    execution_role: DslValue[str] | None = None
 
 
 @dataclass
 class EcrConfiguration(PropertyType):
-    container_tags: list[String] = field(default_factory=list)
-    repository_name: str | None = None
+    container_tags: list[DslValue[str]] = field(default_factory=list)
+    repository_name: DslValue[str] | None = None
 
 
 @dataclass
 class ImageLoggingConfiguration(PropertyType):
-    log_group_name: str | None = None
+    log_group_name: DslValue[str] | None = None
 
 
 @dataclass
 class ImagePipelineExecutionSettings(PropertyType):
-    deployment_id: str | None = None
-    on_update: bool | None = None
+    deployment_id: DslValue[str] | None = None
+    on_update: DslValue[bool] | None = None
 
 
 @dataclass
 class ImageScanningConfiguration(PropertyType):
-    ecr_configuration: EcrConfiguration | None = None
-    image_scanning_enabled: bool | None = None
+    ecr_configuration: DslValue[EcrConfiguration] | None = None
+    image_scanning_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class ImageTestsConfiguration(PropertyType):
-    image_tests_enabled: bool | None = None
-    timeout_minutes: int | None = None
+    image_tests_enabled: DslValue[bool] | None = None
+    timeout_minutes: DslValue[int] | None = None
 
 
 @dataclass
 class LatestVersion(PropertyType):
-    arn: str | None = None
-    major: str | None = None
-    minor: str | None = None
-    patch: str | None = None
+    arn: DslValue[str] | None = None
+    major: DslValue[str] | None = None
+    minor: DslValue[str] | None = None
+    patch: DslValue[str] | None = None
 
 
 @dataclass
 class WorkflowConfiguration(PropertyType):
-    on_failure: str | None = None
-    parallel_group: str | None = None
-    parameters: list[WorkflowParameter] = field(default_factory=list)
-    workflow_arn: str | None = None
+    on_failure: DslValue[str] | None = None
+    parallel_group: DslValue[str] | None = None
+    parameters: list[DslValue[WorkflowParameter]] = field(default_factory=list)
+    workflow_arn: DslValue[str] | None = None
 
 
 @dataclass
 class WorkflowParameter(PropertyType):
-    name: str | None = None
-    value: list[String] = field(default_factory=list)
+    name: DslValue[str] | None = None
+    value: list[DslValue[str]] = field(default_factory=list)

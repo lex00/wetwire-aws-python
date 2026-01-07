@@ -6,13 +6,14 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ManifestOverridesPayload(PropertyType):
-    payload_data: str | None = None
+    payload_data: DslValue[str] | None = None
 
 
 @dataclass
 class ManifestPayload(PropertyType):
-    payload_data: str | None = None
+    payload_data: DslValue[str] | None = None

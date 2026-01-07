@@ -6,58 +6,61 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ApiPassthrough(PropertyType):
-    extensions: Extensions | None = None
-    subject: Subject | None = None
+    extensions: DslValue[Extensions] | None = None
+    subject: DslValue[Subject] | None = None
 
 
 @dataclass
 class CustomAttribute(PropertyType):
-    object_identifier: str | None = None
-    value: str | None = None
+    object_identifier: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class CustomExtension(PropertyType):
-    object_identifier: str | None = None
-    value: str | None = None
-    critical: bool | None = None
+    object_identifier: DslValue[str] | None = None
+    value: DslValue[str] | None = None
+    critical: DslValue[bool] | None = None
 
 
 @dataclass
 class EdiPartyName(PropertyType):
-    name_assigner: str | None = None
-    party_name: str | None = None
+    name_assigner: DslValue[str] | None = None
+    party_name: DslValue[str] | None = None
 
 
 @dataclass
 class ExtendedKeyUsage(PropertyType):
-    extended_key_usage_object_identifier: str | None = None
-    extended_key_usage_type: str | None = None
+    extended_key_usage_object_identifier: DslValue[str] | None = None
+    extended_key_usage_type: DslValue[str] | None = None
 
 
 @dataclass
 class Extensions(PropertyType):
-    certificate_policies: list[PolicyInformation] = field(default_factory=list)
-    custom_extensions: list[CustomExtension] = field(default_factory=list)
-    extended_key_usage: list[ExtendedKeyUsage] = field(default_factory=list)
-    key_usage: KeyUsage | None = None
-    subject_alternative_names: list[GeneralName] = field(default_factory=list)
+    certificate_policies: list[DslValue[PolicyInformation]] = field(
+        default_factory=list
+    )
+    custom_extensions: list[DslValue[CustomExtension]] = field(default_factory=list)
+    extended_key_usage: list[DslValue[ExtendedKeyUsage]] = field(default_factory=list)
+    key_usage: DslValue[KeyUsage] | None = None
+    subject_alternative_names: list[DslValue[GeneralName]] = field(default_factory=list)
 
 
 @dataclass
 class GeneralName(PropertyType):
-    directory_name: Subject | None = None
-    dns_name: str | None = None
-    edi_party_name: EdiPartyName | None = None
-    ip_address: str | None = None
-    other_name: OtherName | None = None
-    registered_id: str | None = None
-    rfc822_name: str | None = None
-    uniform_resource_identifier: str | None = None
+    directory_name: DslValue[Subject] | None = None
+    dns_name: DslValue[str] | None = None
+    edi_party_name: DslValue[EdiPartyName] | None = None
+    ip_address: DslValue[str] | None = None
+    other_name: DslValue[OtherName] | None = None
+    registered_id: DslValue[str] | None = None
+    rfc822_name: DslValue[str] | None = None
+    uniform_resource_identifier: DslValue[str] | None = None
 
 
 @dataclass
@@ -66,60 +69,60 @@ class KeyUsage(PropertyType):
         "crl_sign": "CRLSign",
     }
 
-    crl_sign: bool | None = None
-    data_encipherment: bool | None = None
-    decipher_only: bool | None = None
-    digital_signature: bool | None = None
-    encipher_only: bool | None = None
-    key_agreement: bool | None = None
-    key_cert_sign: bool | None = None
-    key_encipherment: bool | None = None
-    non_repudiation: bool | None = None
+    crl_sign: DslValue[bool] | None = None
+    data_encipherment: DslValue[bool] | None = None
+    decipher_only: DslValue[bool] | None = None
+    digital_signature: DslValue[bool] | None = None
+    encipher_only: DslValue[bool] | None = None
+    key_agreement: DslValue[bool] | None = None
+    key_cert_sign: DslValue[bool] | None = None
+    key_encipherment: DslValue[bool] | None = None
+    non_repudiation: DslValue[bool] | None = None
 
 
 @dataclass
 class OtherName(PropertyType):
-    type_id: str | None = None
-    value: str | None = None
+    type_id: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class PolicyInformation(PropertyType):
-    cert_policy_id: str | None = None
-    policy_qualifiers: list[PolicyQualifierInfo] = field(default_factory=list)
+    cert_policy_id: DslValue[str] | None = None
+    policy_qualifiers: list[DslValue[PolicyQualifierInfo]] = field(default_factory=list)
 
 
 @dataclass
 class PolicyQualifierInfo(PropertyType):
-    policy_qualifier_id: str | None = None
-    qualifier: Qualifier | None = None
+    policy_qualifier_id: DslValue[str] | None = None
+    qualifier: DslValue[Qualifier] | None = None
 
 
 @dataclass
 class Qualifier(PropertyType):
-    cps_uri: str | None = None
+    cps_uri: DslValue[str] | None = None
 
 
 @dataclass
 class Subject(PropertyType):
-    common_name: str | None = None
-    country: str | None = None
-    custom_attributes: list[CustomAttribute] = field(default_factory=list)
-    distinguished_name_qualifier: str | None = None
-    generation_qualifier: str | None = None
-    given_name: str | None = None
-    initials: str | None = None
-    locality: str | None = None
-    organization: str | None = None
-    organizational_unit: str | None = None
-    pseudonym: str | None = None
-    serial_number: str | None = None
-    state: str | None = None
-    surname: str | None = None
-    title: str | None = None
+    common_name: DslValue[str] | None = None
+    country: DslValue[str] | None = None
+    custom_attributes: list[DslValue[CustomAttribute]] = field(default_factory=list)
+    distinguished_name_qualifier: DslValue[str] | None = None
+    generation_qualifier: DslValue[str] | None = None
+    given_name: DslValue[str] | None = None
+    initials: DslValue[str] | None = None
+    locality: DslValue[str] | None = None
+    organization: DslValue[str] | None = None
+    organizational_unit: DslValue[str] | None = None
+    pseudonym: DslValue[str] | None = None
+    serial_number: DslValue[str] | None = None
+    state: DslValue[str] | None = None
+    surname: DslValue[str] | None = None
+    title: DslValue[str] | None = None
 
 
 @dataclass
 class Validity(PropertyType):
-    type_: str | None = None
-    value: float | None = None
+    type_: DslValue[str] | None = None
+    value: DslValue[float] | None = None

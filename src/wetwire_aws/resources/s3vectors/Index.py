@@ -6,14 +6,15 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class EncryptionConfiguration(PropertyType):
-    kms_key_arn: str | None = None
-    sse_type: str | None = None
+    kms_key_arn: DslValue[str] | None = None
+    sse_type: DslValue[str] | None = None
 
 
 @dataclass
 class MetadataConfiguration(PropertyType):
-    non_filterable_metadata_keys: list[String] = field(default_factory=list)
+    non_filterable_metadata_keys: list[DslValue[str]] = field(default_factory=list)

@@ -6,150 +6,163 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Application(PropertyType):
-    additional_info: dict[str, String] = field(default_factory=dict)
-    args: list[String] = field(default_factory=list)
-    name: str | None = None
-    version: str | None = None
+    additional_info: dict[str, DslValue[str]] = field(default_factory=dict)
+    args: list[DslValue[str]] = field(default_factory=list)
+    name: DslValue[str] | None = None
+    version: DslValue[str] | None = None
 
 
 @dataclass
 class AutoScalingPolicy(PropertyType):
-    constraints: ScalingConstraints | None = None
-    rules: list[ScalingRule] = field(default_factory=list)
+    constraints: DslValue[ScalingConstraints] | None = None
+    rules: list[DslValue[ScalingRule]] = field(default_factory=list)
 
 
 @dataclass
 class AutoTerminationPolicy(PropertyType):
-    idle_timeout: int | None = None
+    idle_timeout: DslValue[int] | None = None
 
 
 @dataclass
 class BootstrapActionConfig(PropertyType):
-    name: str | None = None
-    script_bootstrap_action: ScriptBootstrapActionConfig | None = None
+    name: DslValue[str] | None = None
+    script_bootstrap_action: DslValue[ScriptBootstrapActionConfig] | None = None
 
 
 @dataclass
 class CloudWatchAlarmDefinition(PropertyType):
-    comparison_operator: str | None = None
-    metric_name: str | None = None
-    period: int | None = None
-    threshold: float | None = None
-    dimensions: list[MetricDimension] = field(default_factory=list)
-    evaluation_periods: int | None = None
-    namespace: str | None = None
-    statistic: str | None = None
-    unit: str | None = None
+    comparison_operator: DslValue[str] | None = None
+    metric_name: DslValue[str] | None = None
+    period: DslValue[int] | None = None
+    threshold: DslValue[float] | None = None
+    dimensions: list[DslValue[MetricDimension]] = field(default_factory=list)
+    evaluation_periods: DslValue[int] | None = None
+    namespace: DslValue[str] | None = None
+    statistic: DslValue[str] | None = None
+    unit: DslValue[str] | None = None
 
 
 @dataclass
 class ComputeLimits(PropertyType):
-    maximum_capacity_units: int | None = None
-    minimum_capacity_units: int | None = None
-    unit_type: str | None = None
-    maximum_core_capacity_units: int | None = None
-    maximum_on_demand_capacity_units: int | None = None
+    maximum_capacity_units: DslValue[int] | None = None
+    minimum_capacity_units: DslValue[int] | None = None
+    unit_type: DslValue[str] | None = None
+    maximum_core_capacity_units: DslValue[int] | None = None
+    maximum_on_demand_capacity_units: DslValue[int] | None = None
 
 
 @dataclass
 class Configuration(PropertyType):
-    classification: str | None = None
-    configuration_properties: dict[str, String] = field(default_factory=dict)
-    configurations: list[Configuration] = field(default_factory=list)
+    classification: DslValue[str] | None = None
+    configuration_properties: dict[str, DslValue[str]] = field(default_factory=dict)
+    configurations: list[DslValue[Configuration]] = field(default_factory=list)
 
 
 @dataclass
 class EbsBlockDeviceConfig(PropertyType):
-    volume_specification: VolumeSpecification | None = None
-    volumes_per_instance: int | None = None
+    volume_specification: DslValue[VolumeSpecification] | None = None
+    volumes_per_instance: DslValue[int] | None = None
 
 
 @dataclass
 class EbsConfiguration(PropertyType):
-    ebs_block_device_configs: list[EbsBlockDeviceConfig] = field(default_factory=list)
-    ebs_optimized: bool | None = None
+    ebs_block_device_configs: list[DslValue[EbsBlockDeviceConfig]] = field(
+        default_factory=list
+    )
+    ebs_optimized: DslValue[bool] | None = None
 
 
 @dataclass
 class HadoopJarStepConfig(PropertyType):
-    jar: str | None = None
-    args: list[String] = field(default_factory=list)
-    main_class: str | None = None
-    step_properties: list[KeyValue] = field(default_factory=list)
+    jar: DslValue[str] | None = None
+    args: list[DslValue[str]] = field(default_factory=list)
+    main_class: DslValue[str] | None = None
+    step_properties: list[DslValue[KeyValue]] = field(default_factory=list)
 
 
 @dataclass
 class InstanceFleetConfig(PropertyType):
-    instance_type_configs: list[InstanceTypeConfig] = field(default_factory=list)
-    launch_specifications: InstanceFleetProvisioningSpecifications | None = None
-    name: str | None = None
-    resize_specifications: InstanceFleetResizingSpecifications | None = None
-    target_on_demand_capacity: int | None = None
-    target_spot_capacity: int | None = None
+    instance_type_configs: list[DslValue[InstanceTypeConfig]] = field(
+        default_factory=list
+    )
+    launch_specifications: DslValue[InstanceFleetProvisioningSpecifications] | None = (
+        None
+    )
+    name: DslValue[str] | None = None
+    resize_specifications: DslValue[InstanceFleetResizingSpecifications] | None = None
+    target_on_demand_capacity: DslValue[int] | None = None
+    target_spot_capacity: DslValue[int] | None = None
 
 
 @dataclass
 class InstanceFleetProvisioningSpecifications(PropertyType):
-    on_demand_specification: OnDemandProvisioningSpecification | None = None
-    spot_specification: SpotProvisioningSpecification | None = None
+    on_demand_specification: DslValue[OnDemandProvisioningSpecification] | None = None
+    spot_specification: DslValue[SpotProvisioningSpecification] | None = None
 
 
 @dataclass
 class InstanceFleetResizingSpecifications(PropertyType):
-    on_demand_resize_specification: OnDemandResizingSpecification | None = None
-    spot_resize_specification: SpotResizingSpecification | None = None
+    on_demand_resize_specification: DslValue[OnDemandResizingSpecification] | None = (
+        None
+    )
+    spot_resize_specification: DslValue[SpotResizingSpecification] | None = None
 
 
 @dataclass
 class InstanceGroupConfig(PropertyType):
-    instance_count: int | None = None
-    instance_type: str | None = None
-    auto_scaling_policy: AutoScalingPolicy | None = None
-    bid_price: str | None = None
-    configurations: list[Configuration] = field(default_factory=list)
-    custom_ami_id: str | None = None
-    ebs_configuration: EbsConfiguration | None = None
-    market: str | None = None
-    name: str | None = None
+    instance_count: DslValue[int] | None = None
+    instance_type: DslValue[str] | None = None
+    auto_scaling_policy: DslValue[AutoScalingPolicy] | None = None
+    bid_price: DslValue[str] | None = None
+    configurations: list[DslValue[Configuration]] = field(default_factory=list)
+    custom_ami_id: DslValue[str] | None = None
+    ebs_configuration: DslValue[EbsConfiguration] | None = None
+    market: DslValue[str] | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class InstanceTypeConfig(PropertyType):
-    instance_type: str | None = None
-    bid_price: str | None = None
-    bid_price_as_percentage_of_on_demand_price: float | None = None
-    configurations: list[Configuration] = field(default_factory=list)
-    custom_ami_id: str | None = None
-    ebs_configuration: EbsConfiguration | None = None
-    priority: float | None = None
-    weighted_capacity: int | None = None
+    instance_type: DslValue[str] | None = None
+    bid_price: DslValue[str] | None = None
+    bid_price_as_percentage_of_on_demand_price: DslValue[float] | None = None
+    configurations: list[DslValue[Configuration]] = field(default_factory=list)
+    custom_ami_id: DslValue[str] | None = None
+    ebs_configuration: DslValue[EbsConfiguration] | None = None
+    priority: DslValue[float] | None = None
+    weighted_capacity: DslValue[int] | None = None
 
 
 @dataclass
 class JobFlowInstancesConfig(PropertyType):
-    additional_master_security_groups: list[String] = field(default_factory=list)
-    additional_slave_security_groups: list[String] = field(default_factory=list)
-    core_instance_fleet: InstanceFleetConfig | None = None
-    core_instance_group: InstanceGroupConfig | None = None
-    ec2_key_name: str | None = None
-    ec2_subnet_id: str | None = None
-    ec2_subnet_ids: list[String] = field(default_factory=list)
-    emr_managed_master_security_group: str | None = None
-    emr_managed_slave_security_group: str | None = None
-    hadoop_version: str | None = None
-    keep_job_flow_alive_when_no_steps: bool | None = None
-    master_instance_fleet: InstanceFleetConfig | None = None
-    master_instance_group: InstanceGroupConfig | None = None
-    placement: PlacementType | None = None
-    service_access_security_group: str | None = None
-    task_instance_fleets: list[InstanceFleetConfig] = field(default_factory=list)
-    task_instance_groups: list[InstanceGroupConfig] = field(default_factory=list)
-    termination_protected: bool | None = None
-    unhealthy_node_replacement: bool | None = None
+    additional_master_security_groups: list[DslValue[str]] = field(default_factory=list)
+    additional_slave_security_groups: list[DslValue[str]] = field(default_factory=list)
+    core_instance_fleet: DslValue[InstanceFleetConfig] | None = None
+    core_instance_group: DslValue[InstanceGroupConfig] | None = None
+    ec2_key_name: DslValue[str] | None = None
+    ec2_subnet_id: DslValue[str] | None = None
+    ec2_subnet_ids: list[DslValue[str]] = field(default_factory=list)
+    emr_managed_master_security_group: DslValue[str] | None = None
+    emr_managed_slave_security_group: DslValue[str] | None = None
+    hadoop_version: DslValue[str] | None = None
+    keep_job_flow_alive_when_no_steps: DslValue[bool] | None = None
+    master_instance_fleet: DslValue[InstanceFleetConfig] | None = None
+    master_instance_group: DslValue[InstanceGroupConfig] | None = None
+    placement: DslValue[PlacementType] | None = None
+    service_access_security_group: DslValue[str] | None = None
+    task_instance_fleets: list[DslValue[InstanceFleetConfig]] = field(
+        default_factory=list
+    )
+    task_instance_groups: list[DslValue[InstanceGroupConfig]] = field(
+        default_factory=list
+    )
+    termination_protected: DslValue[bool] | None = None
+    unhealthy_node_replacement: DslValue[bool] | None = None
 
 
 @dataclass
@@ -159,120 +172,126 @@ class KerberosAttributes(PropertyType):
         "ad_domain_join_user": "ADDomainJoinUser",
     }
 
-    kdc_admin_password: str | None = None
-    realm: str | None = None
-    ad_domain_join_password: str | None = None
-    ad_domain_join_user: str | None = None
-    cross_realm_trust_principal_password: str | None = None
+    kdc_admin_password: DslValue[str] | None = None
+    realm: DslValue[str] | None = None
+    ad_domain_join_password: DslValue[str] | None = None
+    ad_domain_join_user: DslValue[str] | None = None
+    cross_realm_trust_principal_password: DslValue[str] | None = None
 
 
 @dataclass
 class KeyValue(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class ManagedScalingPolicy(PropertyType):
-    compute_limits: ComputeLimits | None = None
-    scaling_strategy: str | None = None
-    utilization_performance_index: int | None = None
+    compute_limits: DslValue[ComputeLimits] | None = None
+    scaling_strategy: DslValue[str] | None = None
+    utilization_performance_index: DslValue[int] | None = None
 
 
 @dataclass
 class MetricDimension(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class OnDemandCapacityReservationOptions(PropertyType):
-    capacity_reservation_preference: str | None = None
-    capacity_reservation_resource_group_arn: str | None = None
-    usage_strategy: str | None = None
+    capacity_reservation_preference: DslValue[str] | None = None
+    capacity_reservation_resource_group_arn: DslValue[str] | None = None
+    usage_strategy: DslValue[str] | None = None
 
 
 @dataclass
 class OnDemandProvisioningSpecification(PropertyType):
-    allocation_strategy: str | None = None
-    capacity_reservation_options: OnDemandCapacityReservationOptions | None = None
+    allocation_strategy: DslValue[str] | None = None
+    capacity_reservation_options: (
+        DslValue[OnDemandCapacityReservationOptions] | None
+    ) = None
 
 
 @dataclass
 class OnDemandResizingSpecification(PropertyType):
-    allocation_strategy: str | None = None
-    capacity_reservation_options: OnDemandCapacityReservationOptions | None = None
-    timeout_duration_minutes: int | None = None
+    allocation_strategy: DslValue[str] | None = None
+    capacity_reservation_options: (
+        DslValue[OnDemandCapacityReservationOptions] | None
+    ) = None
+    timeout_duration_minutes: DslValue[int] | None = None
 
 
 @dataclass
 class PlacementGroupConfig(PropertyType):
-    instance_role: str | None = None
-    placement_strategy: str | None = None
+    instance_role: DslValue[str] | None = None
+    placement_strategy: DslValue[str] | None = None
 
 
 @dataclass
 class PlacementType(PropertyType):
-    availability_zone: str | None = None
+    availability_zone: DslValue[str] | None = None
 
 
 @dataclass
 class ScalingAction(PropertyType):
-    simple_scaling_policy_configuration: SimpleScalingPolicyConfiguration | None = None
-    market: str | None = None
+    simple_scaling_policy_configuration: (
+        DslValue[SimpleScalingPolicyConfiguration] | None
+    ) = None
+    market: DslValue[str] | None = None
 
 
 @dataclass
 class ScalingConstraints(PropertyType):
-    max_capacity: int | None = None
-    min_capacity: int | None = None
+    max_capacity: DslValue[int] | None = None
+    min_capacity: DslValue[int] | None = None
 
 
 @dataclass
 class ScalingRule(PropertyType):
-    action: ScalingAction | None = None
-    name: str | None = None
-    trigger: ScalingTrigger | None = None
-    description: str | None = None
+    action: DslValue[ScalingAction] | None = None
+    name: DslValue[str] | None = None
+    trigger: DslValue[ScalingTrigger] | None = None
+    description: DslValue[str] | None = None
 
 
 @dataclass
 class ScalingTrigger(PropertyType):
-    cloud_watch_alarm_definition: CloudWatchAlarmDefinition | None = None
+    cloud_watch_alarm_definition: DslValue[CloudWatchAlarmDefinition] | None = None
 
 
 @dataclass
 class ScriptBootstrapActionConfig(PropertyType):
-    path: str | None = None
-    args: list[String] = field(default_factory=list)
+    path: DslValue[str] | None = None
+    args: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class SimpleScalingPolicyConfiguration(PropertyType):
-    scaling_adjustment: int | None = None
-    adjustment_type: str | None = None
-    cool_down: int | None = None
+    scaling_adjustment: DslValue[int] | None = None
+    adjustment_type: DslValue[str] | None = None
+    cool_down: DslValue[int] | None = None
 
 
 @dataclass
 class SpotProvisioningSpecification(PropertyType):
-    timeout_action: str | None = None
-    timeout_duration_minutes: int | None = None
-    allocation_strategy: str | None = None
-    block_duration_minutes: int | None = None
+    timeout_action: DslValue[str] | None = None
+    timeout_duration_minutes: DslValue[int] | None = None
+    allocation_strategy: DslValue[str] | None = None
+    block_duration_minutes: DslValue[int] | None = None
 
 
 @dataclass
 class SpotResizingSpecification(PropertyType):
-    allocation_strategy: str | None = None
-    timeout_duration_minutes: int | None = None
+    allocation_strategy: DslValue[str] | None = None
+    timeout_duration_minutes: DslValue[int] | None = None
 
 
 @dataclass
 class StepConfig(PropertyType):
-    hadoop_jar_step: HadoopJarStepConfig | None = None
-    name: str | None = None
-    action_on_failure: str | None = None
+    hadoop_jar_step: DslValue[HadoopJarStepConfig] | None = None
+    name: DslValue[str] | None = None
+    action_on_failure: DslValue[str] | None = None
 
 
 @dataclass
@@ -281,7 +300,7 @@ class VolumeSpecification(PropertyType):
         "size_in_gb": "SizeInGB",
     }
 
-    size_in_gb: int | None = None
-    volume_type: str | None = None
-    iops: int | None = None
-    throughput: int | None = None
+    size_in_gb: DslValue[int] | None = None
+    volume_type: DslValue[str] | None = None
+    iops: DslValue[int] | None = None
+    throughput: DslValue[int] | None = None

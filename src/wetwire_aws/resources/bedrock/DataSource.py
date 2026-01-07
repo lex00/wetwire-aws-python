@@ -6,145 +6,154 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class BedrockDataAutomationConfiguration(PropertyType):
-    parsing_modality: str | None = None
+    parsing_modality: DslValue[str] | None = None
 
 
 @dataclass
 class BedrockFoundationModelConfiguration(PropertyType):
-    model_arn: str | None = None
-    parsing_modality: str | None = None
-    parsing_prompt: ParsingPrompt | None = None
+    model_arn: DslValue[str] | None = None
+    parsing_modality: DslValue[str] | None = None
+    parsing_prompt: DslValue[ParsingPrompt] | None = None
 
 
 @dataclass
 class BedrockFoundationModelContextEnrichmentConfiguration(PropertyType):
-    enrichment_strategy_configuration: EnrichmentStrategyConfiguration | None = None
-    model_arn: str | None = None
+    enrichment_strategy_configuration: (
+        DslValue[EnrichmentStrategyConfiguration] | None
+    ) = None
+    model_arn: DslValue[str] | None = None
 
 
 @dataclass
 class ChunkingConfiguration(PropertyType):
-    chunking_strategy: str | None = None
-    fixed_size_chunking_configuration: FixedSizeChunkingConfiguration | None = None
-    hierarchical_chunking_configuration: HierarchicalChunkingConfiguration | None = None
-    semantic_chunking_configuration: SemanticChunkingConfiguration | None = None
+    chunking_strategy: DslValue[str] | None = None
+    fixed_size_chunking_configuration: (
+        DslValue[FixedSizeChunkingConfiguration] | None
+    ) = None
+    hierarchical_chunking_configuration: (
+        DslValue[HierarchicalChunkingConfiguration] | None
+    ) = None
+    semantic_chunking_configuration: DslValue[SemanticChunkingConfiguration] | None = (
+        None
+    )
 
 
 @dataclass
 class ConfluenceCrawlerConfiguration(PropertyType):
-    filter_configuration: CrawlFilterConfiguration | None = None
+    filter_configuration: DslValue[CrawlFilterConfiguration] | None = None
 
 
 @dataclass
 class ConfluenceDataSourceConfiguration(PropertyType):
-    source_configuration: ConfluenceSourceConfiguration | None = None
-    crawler_configuration: ConfluenceCrawlerConfiguration | None = None
+    source_configuration: DslValue[ConfluenceSourceConfiguration] | None = None
+    crawler_configuration: DslValue[ConfluenceCrawlerConfiguration] | None = None
 
 
 @dataclass
 class ConfluenceSourceConfiguration(PropertyType):
-    auth_type: str | None = None
-    credentials_secret_arn: str | None = None
-    host_type: str | None = None
-    host_url: str | None = None
+    auth_type: DslValue[str] | None = None
+    credentials_secret_arn: DslValue[str] | None = None
+    host_type: DslValue[str] | None = None
+    host_url: DslValue[str] | None = None
 
 
 @dataclass
 class ContextEnrichmentConfiguration(PropertyType):
-    type_: str | None = None
+    type_: DslValue[str] | None = None
     bedrock_foundation_model_configuration: (
-        BedrockFoundationModelContextEnrichmentConfiguration | None
+        DslValue[BedrockFoundationModelContextEnrichmentConfiguration] | None
     ) = None
 
 
 @dataclass
 class CrawlFilterConfiguration(PropertyType):
-    type_: str | None = None
-    pattern_object_filter: PatternObjectFilterConfiguration | None = None
+    type_: DslValue[str] | None = None
+    pattern_object_filter: DslValue[PatternObjectFilterConfiguration] | None = None
 
 
 @dataclass
 class CustomTransformationConfiguration(PropertyType):
-    intermediate_storage: IntermediateStorage | None = None
-    transformations: list[Transformation] = field(default_factory=list)
+    intermediate_storage: DslValue[IntermediateStorage] | None = None
+    transformations: list[DslValue[Transformation]] = field(default_factory=list)
 
 
 @dataclass
 class DataSourceConfiguration(PropertyType):
-    type_: str | None = None
-    confluence_configuration: ConfluenceDataSourceConfiguration | None = None
-    s3_configuration: S3DataSourceConfiguration | None = None
-    salesforce_configuration: SalesforceDataSourceConfiguration | None = None
-    share_point_configuration: SharePointDataSourceConfiguration | None = None
-    web_configuration: WebDataSourceConfiguration | None = None
+    type_: DslValue[str] | None = None
+    confluence_configuration: DslValue[ConfluenceDataSourceConfiguration] | None = None
+    s3_configuration: DslValue[S3DataSourceConfiguration] | None = None
+    salesforce_configuration: DslValue[SalesforceDataSourceConfiguration] | None = None
+    share_point_configuration: DslValue[SharePointDataSourceConfiguration] | None = None
+    web_configuration: DslValue[WebDataSourceConfiguration] | None = None
 
 
 @dataclass
 class EnrichmentStrategyConfiguration(PropertyType):
-    method: str | None = None
+    method: DslValue[str] | None = None
 
 
 @dataclass
 class FixedSizeChunkingConfiguration(PropertyType):
-    max_tokens: int | None = None
-    overlap_percentage: int | None = None
+    max_tokens: DslValue[int] | None = None
+    overlap_percentage: DslValue[int] | None = None
 
 
 @dataclass
 class HierarchicalChunkingConfiguration(PropertyType):
-    level_configurations: list[HierarchicalChunkingLevelConfiguration] = field(
-        default_factory=list
+    level_configurations: list[DslValue[HierarchicalChunkingLevelConfiguration]] = (
+        field(default_factory=list)
     )
-    overlap_tokens: int | None = None
+    overlap_tokens: DslValue[int] | None = None
 
 
 @dataclass
 class HierarchicalChunkingLevelConfiguration(PropertyType):
-    max_tokens: int | None = None
+    max_tokens: DslValue[int] | None = None
 
 
 @dataclass
 class IntermediateStorage(PropertyType):
-    s3_location: S3Location | None = None
+    s3_location: DslValue[S3Location] | None = None
 
 
 @dataclass
 class ParsingConfiguration(PropertyType):
-    parsing_strategy: str | None = None
-    bedrock_data_automation_configuration: BedrockDataAutomationConfiguration | None = (
-        None
-    )
+    parsing_strategy: DslValue[str] | None = None
+    bedrock_data_automation_configuration: (
+        DslValue[BedrockDataAutomationConfiguration] | None
+    ) = None
     bedrock_foundation_model_configuration: (
-        BedrockFoundationModelConfiguration | None
+        DslValue[BedrockFoundationModelConfiguration] | None
     ) = None
 
 
 @dataclass
 class ParsingPrompt(PropertyType):
-    parsing_prompt_text: str | None = None
+    parsing_prompt_text: DslValue[str] | None = None
 
 
 @dataclass
 class PatternObjectFilter(PropertyType):
-    object_type: str | None = None
-    exclusion_filters: list[String] = field(default_factory=list)
-    inclusion_filters: list[String] = field(default_factory=list)
+    object_type: DslValue[str] | None = None
+    exclusion_filters: list[DslValue[str]] = field(default_factory=list)
+    inclusion_filters: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class PatternObjectFilterConfiguration(PropertyType):
-    filters: list[PatternObjectFilter] = field(default_factory=list)
+    filters: list[DslValue[PatternObjectFilter]] = field(default_factory=list)
 
 
 @dataclass
 class S3DataSourceConfiguration(PropertyType):
-    bucket_arn: str | None = None
-    bucket_owner_account_id: str | None = None
-    inclusion_prefixes: list[String] = field(default_factory=list)
+    bucket_arn: DslValue[str] | None = None
+    bucket_owner_account_id: DslValue[str] | None = None
+    inclusion_prefixes: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
@@ -153,116 +162,122 @@ class S3Location(PropertyType):
         "uri": "URI",
     }
 
-    uri: str | None = None
+    uri: DslValue[str] | None = None
 
 
 @dataclass
 class SalesforceCrawlerConfiguration(PropertyType):
-    filter_configuration: CrawlFilterConfiguration | None = None
+    filter_configuration: DslValue[CrawlFilterConfiguration] | None = None
 
 
 @dataclass
 class SalesforceDataSourceConfiguration(PropertyType):
-    source_configuration: SalesforceSourceConfiguration | None = None
-    crawler_configuration: SalesforceCrawlerConfiguration | None = None
+    source_configuration: DslValue[SalesforceSourceConfiguration] | None = None
+    crawler_configuration: DslValue[SalesforceCrawlerConfiguration] | None = None
 
 
 @dataclass
 class SalesforceSourceConfiguration(PropertyType):
-    auth_type: str | None = None
-    credentials_secret_arn: str | None = None
-    host_url: str | None = None
+    auth_type: DslValue[str] | None = None
+    credentials_secret_arn: DslValue[str] | None = None
+    host_url: DslValue[str] | None = None
 
 
 @dataclass
 class SeedUrl(PropertyType):
-    url: str | None = None
+    url: DslValue[str] | None = None
 
 
 @dataclass
 class SemanticChunkingConfiguration(PropertyType):
-    breakpoint_percentile_threshold: int | None = None
-    buffer_size: int | None = None
-    max_tokens: int | None = None
+    breakpoint_percentile_threshold: DslValue[int] | None = None
+    buffer_size: DslValue[int] | None = None
+    max_tokens: DslValue[int] | None = None
 
 
 @dataclass
 class ServerSideEncryptionConfiguration(PropertyType):
-    kms_key_arn: str | None = None
+    kms_key_arn: DslValue[str] | None = None
 
 
 @dataclass
 class SharePointCrawlerConfiguration(PropertyType):
-    filter_configuration: CrawlFilterConfiguration | None = None
+    filter_configuration: DslValue[CrawlFilterConfiguration] | None = None
 
 
 @dataclass
 class SharePointDataSourceConfiguration(PropertyType):
-    source_configuration: SharePointSourceConfiguration | None = None
-    crawler_configuration: SharePointCrawlerConfiguration | None = None
+    source_configuration: DslValue[SharePointSourceConfiguration] | None = None
+    crawler_configuration: DslValue[SharePointCrawlerConfiguration] | None = None
 
 
 @dataclass
 class SharePointSourceConfiguration(PropertyType):
-    auth_type: str | None = None
-    credentials_secret_arn: str | None = None
-    domain: str | None = None
-    host_type: str | None = None
-    site_urls: list[String] = field(default_factory=list)
-    tenant_id: str | None = None
+    auth_type: DslValue[str] | None = None
+    credentials_secret_arn: DslValue[str] | None = None
+    domain: DslValue[str] | None = None
+    host_type: DslValue[str] | None = None
+    site_urls: list[DslValue[str]] = field(default_factory=list)
+    tenant_id: DslValue[str] | None = None
 
 
 @dataclass
 class Transformation(PropertyType):
-    step_to_apply: str | None = None
-    transformation_function: TransformationFunction | None = None
+    step_to_apply: DslValue[str] | None = None
+    transformation_function: DslValue[TransformationFunction] | None = None
 
 
 @dataclass
 class TransformationFunction(PropertyType):
-    transformation_lambda_configuration: TransformationLambdaConfiguration | None = None
+    transformation_lambda_configuration: (
+        DslValue[TransformationLambdaConfiguration] | None
+    ) = None
 
 
 @dataclass
 class TransformationLambdaConfiguration(PropertyType):
-    lambda_arn: str | None = None
+    lambda_arn: DslValue[str] | None = None
 
 
 @dataclass
 class UrlConfiguration(PropertyType):
-    seed_urls: list[SeedUrl] = field(default_factory=list)
+    seed_urls: list[DslValue[SeedUrl]] = field(default_factory=list)
 
 
 @dataclass
 class VectorIngestionConfiguration(PropertyType):
-    chunking_configuration: ChunkingConfiguration | None = None
-    context_enrichment_configuration: ContextEnrichmentConfiguration | None = None
-    custom_transformation_configuration: CustomTransformationConfiguration | None = None
-    parsing_configuration: ParsingConfiguration | None = None
+    chunking_configuration: DslValue[ChunkingConfiguration] | None = None
+    context_enrichment_configuration: (
+        DslValue[ContextEnrichmentConfiguration] | None
+    ) = None
+    custom_transformation_configuration: (
+        DslValue[CustomTransformationConfiguration] | None
+    ) = None
+    parsing_configuration: DslValue[ParsingConfiguration] | None = None
 
 
 @dataclass
 class WebCrawlerConfiguration(PropertyType):
-    crawler_limits: WebCrawlerLimits | None = None
-    exclusion_filters: list[String] = field(default_factory=list)
-    inclusion_filters: list[String] = field(default_factory=list)
-    scope: str | None = None
-    user_agent: str | None = None
-    user_agent_header: str | None = None
+    crawler_limits: DslValue[WebCrawlerLimits] | None = None
+    exclusion_filters: list[DslValue[str]] = field(default_factory=list)
+    inclusion_filters: list[DslValue[str]] = field(default_factory=list)
+    scope: DslValue[str] | None = None
+    user_agent: DslValue[str] | None = None
+    user_agent_header: DslValue[str] | None = None
 
 
 @dataclass
 class WebCrawlerLimits(PropertyType):
-    max_pages: int | None = None
-    rate_limit: int | None = None
+    max_pages: DslValue[int] | None = None
+    rate_limit: DslValue[int] | None = None
 
 
 @dataclass
 class WebDataSourceConfiguration(PropertyType):
-    source_configuration: WebSourceConfiguration | None = None
-    crawler_configuration: WebCrawlerConfiguration | None = None
+    source_configuration: DslValue[WebSourceConfiguration] | None = None
+    crawler_configuration: DslValue[WebCrawlerConfiguration] | None = None
 
 
 @dataclass
 class WebSourceConfiguration(PropertyType):
-    url_configuration: UrlConfiguration | None = None
+    url_configuration: DslValue[UrlConfiguration] | None = None

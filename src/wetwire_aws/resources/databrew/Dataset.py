@@ -6,112 +6,113 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CsvOptions(PropertyType):
-    delimiter: str | None = None
-    header_row: bool | None = None
+    delimiter: DslValue[str] | None = None
+    header_row: DslValue[bool] | None = None
 
 
 @dataclass
 class DataCatalogInputDefinition(PropertyType):
-    catalog_id: str | None = None
-    database_name: str | None = None
-    table_name: str | None = None
-    temp_directory: S3Location | None = None
+    catalog_id: DslValue[str] | None = None
+    database_name: DslValue[str] | None = None
+    table_name: DslValue[str] | None = None
+    temp_directory: DslValue[S3Location] | None = None
 
 
 @dataclass
 class DatabaseInputDefinition(PropertyType):
-    glue_connection_name: str | None = None
-    database_table_name: str | None = None
-    query_string: str | None = None
-    temp_directory: S3Location | None = None
+    glue_connection_name: DslValue[str] | None = None
+    database_table_name: DslValue[str] | None = None
+    query_string: DslValue[str] | None = None
+    temp_directory: DslValue[S3Location] | None = None
 
 
 @dataclass
 class DatasetParameter(PropertyType):
-    name: str | None = None
-    type_: str | None = None
-    create_column: bool | None = None
-    datetime_options: DatetimeOptions | None = None
-    filter: FilterExpression | None = None
+    name: DslValue[str] | None = None
+    type_: DslValue[str] | None = None
+    create_column: DslValue[bool] | None = None
+    datetime_options: DslValue[DatetimeOptions] | None = None
+    filter: DslValue[FilterExpression] | None = None
 
 
 @dataclass
 class DatetimeOptions(PropertyType):
-    format: str | None = None
-    locale_code: str | None = None
-    timezone_offset: str | None = None
+    format: DslValue[str] | None = None
+    locale_code: DslValue[str] | None = None
+    timezone_offset: DslValue[str] | None = None
 
 
 @dataclass
 class ExcelOptions(PropertyType):
-    header_row: bool | None = None
-    sheet_indexes: list[Integer] = field(default_factory=list)
-    sheet_names: list[String] = field(default_factory=list)
+    header_row: DslValue[bool] | None = None
+    sheet_indexes: list[DslValue[int]] = field(default_factory=list)
+    sheet_names: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class FilesLimit(PropertyType):
-    max_files: int | None = None
-    order: str | None = None
-    ordered_by: str | None = None
+    max_files: DslValue[int] | None = None
+    order: DslValue[str] | None = None
+    ordered_by: DslValue[str] | None = None
 
 
 @dataclass
 class FilterExpression(PropertyType):
-    expression: str | None = None
-    values_map: list[FilterValue] = field(default_factory=list)
+    expression: DslValue[str] | None = None
+    values_map: list[DslValue[FilterValue]] = field(default_factory=list)
 
 
 @dataclass
 class FilterValue(PropertyType):
-    value: str | None = None
-    value_reference: str | None = None
+    value: DslValue[str] | None = None
+    value_reference: DslValue[str] | None = None
 
 
 @dataclass
 class FormatOptions(PropertyType):
-    csv: CsvOptions | None = None
-    excel: ExcelOptions | None = None
-    json: JsonOptions | None = None
+    csv: DslValue[CsvOptions] | None = None
+    excel: DslValue[ExcelOptions] | None = None
+    json: DslValue[JsonOptions] | None = None
 
 
 @dataclass
 class Input(PropertyType):
-    data_catalog_input_definition: DataCatalogInputDefinition | None = None
-    database_input_definition: DatabaseInputDefinition | None = None
-    metadata: Metadata | None = None
-    s3_input_definition: S3Location | None = None
+    data_catalog_input_definition: DslValue[DataCatalogInputDefinition] | None = None
+    database_input_definition: DslValue[DatabaseInputDefinition] | None = None
+    metadata: DslValue[Metadata] | None = None
+    s3_input_definition: DslValue[S3Location] | None = None
 
 
 @dataclass
 class JsonOptions(PropertyType):
-    multi_line: bool | None = None
+    multi_line: DslValue[bool] | None = None
 
 
 @dataclass
 class Metadata(PropertyType):
-    source_arn: str | None = None
+    source_arn: DslValue[str] | None = None
 
 
 @dataclass
 class PathOptions(PropertyType):
-    files_limit: FilesLimit | None = None
-    last_modified_date_condition: FilterExpression | None = None
-    parameters: list[PathParameter] = field(default_factory=list)
+    files_limit: DslValue[FilesLimit] | None = None
+    last_modified_date_condition: DslValue[FilterExpression] | None = None
+    parameters: list[DslValue[PathParameter]] = field(default_factory=list)
 
 
 @dataclass
 class PathParameter(PropertyType):
-    dataset_parameter: DatasetParameter | None = None
-    path_parameter_name: str | None = None
+    dataset_parameter: DslValue[DatasetParameter] | None = None
+    path_parameter_name: DslValue[str] | None = None
 
 
 @dataclass
 class S3Location(PropertyType):
-    bucket: str | None = None
-    bucket_owner: str | None = None
-    key: str | None = None
+    bucket: DslValue[str] | None = None
+    bucket_owner: DslValue[str] | None = None
+    key: DslValue[str] | None = None

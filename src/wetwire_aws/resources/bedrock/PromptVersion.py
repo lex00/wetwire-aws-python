@@ -6,129 +6,130 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CachePointBlock(PropertyType):
-    type_: str | None = None
+    type_: DslValue[str] | None = None
 
 
 @dataclass
 class ChatPromptTemplateConfiguration(PropertyType):
-    messages: list[Message] = field(default_factory=list)
-    input_variables: list[PromptInputVariable] = field(default_factory=list)
-    system: list[SystemContentBlock] = field(default_factory=list)
-    tool_configuration: ToolConfiguration | None = None
+    messages: list[DslValue[Message]] = field(default_factory=list)
+    input_variables: list[DslValue[PromptInputVariable]] = field(default_factory=list)
+    system: list[DslValue[SystemContentBlock]] = field(default_factory=list)
+    tool_configuration: DslValue[ToolConfiguration] | None = None
 
 
 @dataclass
 class ContentBlock(PropertyType):
-    cache_point: CachePointBlock | None = None
-    text: str | None = None
+    cache_point: DslValue[CachePointBlock] | None = None
+    text: DslValue[str] | None = None
 
 
 @dataclass
 class Message(PropertyType):
-    content: list[ContentBlock] = field(default_factory=list)
-    role: str | None = None
+    content: list[DslValue[ContentBlock]] = field(default_factory=list)
+    role: DslValue[str] | None = None
 
 
 @dataclass
 class PromptAgentResource(PropertyType):
-    agent_identifier: str | None = None
+    agent_identifier: DslValue[str] | None = None
 
 
 @dataclass
 class PromptGenAiResource(PropertyType):
-    agent: PromptAgentResource | None = None
+    agent: DslValue[PromptAgentResource] | None = None
 
 
 @dataclass
 class PromptInferenceConfiguration(PropertyType):
-    text: PromptModelInferenceConfiguration | None = None
+    text: DslValue[PromptModelInferenceConfiguration] | None = None
 
 
 @dataclass
 class PromptInputVariable(PropertyType):
-    name: str | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class PromptMetadataEntry(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class PromptModelInferenceConfiguration(PropertyType):
-    max_tokens: float | None = None
-    stop_sequences: list[String] = field(default_factory=list)
-    temperature: float | None = None
-    top_p: float | None = None
+    max_tokens: DslValue[float] | None = None
+    stop_sequences: list[DslValue[str]] = field(default_factory=list)
+    temperature: DslValue[float] | None = None
+    top_p: DslValue[float] | None = None
 
 
 @dataclass
 class PromptTemplateConfiguration(PropertyType):
-    chat: ChatPromptTemplateConfiguration | None = None
-    text: TextPromptTemplateConfiguration | None = None
+    chat: DslValue[ChatPromptTemplateConfiguration] | None = None
+    text: DslValue[TextPromptTemplateConfiguration] | None = None
 
 
 @dataclass
 class PromptVariant(PropertyType):
-    name: str | None = None
-    template_configuration: PromptTemplateConfiguration | None = None
-    template_type: str | None = None
-    additional_model_request_fields: dict[str, Any] | None = None
-    gen_ai_resource: PromptGenAiResource | None = None
-    inference_configuration: PromptInferenceConfiguration | None = None
-    metadata: list[PromptMetadataEntry] = field(default_factory=list)
-    model_id: str | None = None
+    name: DslValue[str] | None = None
+    template_configuration: DslValue[PromptTemplateConfiguration] | None = None
+    template_type: DslValue[str] | None = None
+    additional_model_request_fields: DslValue[dict[str, Any]] | None = None
+    gen_ai_resource: DslValue[PromptGenAiResource] | None = None
+    inference_configuration: DslValue[PromptInferenceConfiguration] | None = None
+    metadata: list[DslValue[PromptMetadataEntry]] = field(default_factory=list)
+    model_id: DslValue[str] | None = None
 
 
 @dataclass
 class SpecificToolChoice(PropertyType):
-    name: str | None = None
+    name: DslValue[str] | None = None
 
 
 @dataclass
 class SystemContentBlock(PropertyType):
-    cache_point: CachePointBlock | None = None
-    text: str | None = None
+    cache_point: DslValue[CachePointBlock] | None = None
+    text: DslValue[str] | None = None
 
 
 @dataclass
 class TextPromptTemplateConfiguration(PropertyType):
-    text: str | None = None
-    cache_point: CachePointBlock | None = None
-    input_variables: list[PromptInputVariable] = field(default_factory=list)
+    text: DslValue[str] | None = None
+    cache_point: DslValue[CachePointBlock] | None = None
+    input_variables: list[DslValue[PromptInputVariable]] = field(default_factory=list)
 
 
 @dataclass
 class Tool(PropertyType):
-    cache_point: CachePointBlock | None = None
-    tool_spec: ToolSpecification | None = None
+    cache_point: DslValue[CachePointBlock] | None = None
+    tool_spec: DslValue[ToolSpecification] | None = None
 
 
 @dataclass
 class ToolChoice(PropertyType):
-    any: dict[str, Any] | None = None
-    auto: dict[str, Any] | None = None
-    tool: SpecificToolChoice | None = None
+    any: DslValue[dict[str, Any]] | None = None
+    auto: DslValue[dict[str, Any]] | None = None
+    tool: DslValue[SpecificToolChoice] | None = None
 
 
 @dataclass
 class ToolConfiguration(PropertyType):
-    tools: list[Tool] = field(default_factory=list)
-    tool_choice: ToolChoice | None = None
+    tools: list[DslValue[Tool]] = field(default_factory=list)
+    tool_choice: DslValue[ToolChoice] | None = None
 
 
 @dataclass
 class ToolInputSchema(PropertyType):
-    json: dict[str, Any] | None = None
+    json: DslValue[dict[str, Any]] | None = None
 
 
 @dataclass
 class ToolSpecification(PropertyType):
-    input_schema: ToolInputSchema | None = None
-    name: str | None = None
-    description: str | None = None
+    input_schema: DslValue[ToolInputSchema] | None = None
+    name: DslValue[str] | None = None
+    description: DslValue[str] | None = None

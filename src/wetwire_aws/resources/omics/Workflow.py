@@ -6,12 +6,13 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ContainerRegistryMap(PropertyType):
-    image_mappings: list[ImageMapping] = field(default_factory=list)
-    registry_mappings: list[RegistryMapping] = field(default_factory=list)
+    image_mappings: list[DslValue[ImageMapping]] = field(default_factory=list)
+    registry_mappings: list[DslValue[RegistryMapping]] = field(default_factory=list)
 
 
 @dataclass
@@ -23,24 +24,24 @@ class DefinitionRepository(PropertyType):
         "source_reference": "sourceReference",
     }
 
-    connection_arn: str | None = None
-    exclude_file_patterns: list[String] = field(default_factory=list)
-    full_repository_id: str | None = None
-    source_reference: SourceReference | None = None
+    connection_arn: DslValue[str] | None = None
+    exclude_file_patterns: list[DslValue[str]] = field(default_factory=list)
+    full_repository_id: DslValue[str] | None = None
+    source_reference: DslValue[SourceReference] | None = None
 
 
 @dataclass
 class ImageMapping(PropertyType):
-    destination_image: str | None = None
-    source_image: str | None = None
+    destination_image: DslValue[str] | None = None
+    source_image: DslValue[str] | None = None
 
 
 @dataclass
 class RegistryMapping(PropertyType):
-    ecr_account_id: str | None = None
-    ecr_repository_prefix: str | None = None
-    upstream_registry_url: str | None = None
-    upstream_repository_prefix: str | None = None
+    ecr_account_id: DslValue[str] | None = None
+    ecr_repository_prefix: DslValue[str] | None = None
+    upstream_registry_url: DslValue[str] | None = None
+    upstream_repository_prefix: DslValue[str] | None = None
 
 
 @dataclass
@@ -50,11 +51,11 @@ class SourceReference(PropertyType):
         "value": "value",
     }
 
-    type_: str | None = None
-    value: str | None = None
+    type_: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class WorkflowParameter(PropertyType):
-    description: str | None = None
-    optional: bool | None = None
+    description: DslValue[str] | None = None
+    optional: DslValue[bool] | None = None

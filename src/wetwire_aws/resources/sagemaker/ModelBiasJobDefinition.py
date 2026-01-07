@@ -6,21 +6,22 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class BatchTransformInput(PropertyType):
-    data_captured_destination_s3_uri: str | None = None
-    dataset_format: DatasetFormat | None = None
-    local_path: str | None = None
-    end_time_offset: str | None = None
-    features_attribute: str | None = None
-    inference_attribute: str | None = None
-    probability_attribute: str | None = None
-    probability_threshold_attribute: float | None = None
-    s3_data_distribution_type: str | None = None
-    s3_input_mode: str | None = None
-    start_time_offset: str | None = None
+    data_captured_destination_s3_uri: DslValue[str] | None = None
+    dataset_format: DslValue[DatasetFormat] | None = None
+    local_path: DslValue[str] | None = None
+    end_time_offset: DslValue[str] | None = None
+    features_attribute: DslValue[str] | None = None
+    inference_attribute: DslValue[str] | None = None
+    probability_attribute: DslValue[str] | None = None
+    probability_threshold_attribute: DslValue[float] | None = None
+    s3_data_distribution_type: DslValue[str] | None = None
+    s3_input_mode: DslValue[str] | None = None
+    start_time_offset: DslValue[str] | None = None
 
 
 @dataclass
@@ -29,109 +30,109 @@ class ClusterConfig(PropertyType):
         "volume_size_in_gb": "VolumeSizeInGB",
     }
 
-    instance_count: int | None = None
-    instance_type: str | None = None
-    volume_size_in_gb: int | None = None
-    volume_kms_key_id: str | None = None
+    instance_count: DslValue[int] | None = None
+    instance_type: DslValue[str] | None = None
+    volume_size_in_gb: DslValue[int] | None = None
+    volume_kms_key_id: DslValue[str] | None = None
 
 
 @dataclass
 class ConstraintsResource(PropertyType):
-    s3_uri: str | None = None
+    s3_uri: DslValue[str] | None = None
 
 
 @dataclass
 class Csv(PropertyType):
-    header: bool | None = None
+    header: DslValue[bool] | None = None
 
 
 @dataclass
 class DatasetFormat(PropertyType):
-    csv: Csv | None = None
-    json: Json | None = None
-    parquet: bool | None = None
+    csv: DslValue[Csv] | None = None
+    json: DslValue[Json] | None = None
+    parquet: DslValue[bool] | None = None
 
 
 @dataclass
 class EndpointInput(PropertyType):
-    endpoint_name: str | None = None
-    local_path: str | None = None
-    end_time_offset: str | None = None
-    features_attribute: str | None = None
-    inference_attribute: str | None = None
-    probability_attribute: str | None = None
-    probability_threshold_attribute: float | None = None
-    s3_data_distribution_type: str | None = None
-    s3_input_mode: str | None = None
-    start_time_offset: str | None = None
+    endpoint_name: DslValue[str] | None = None
+    local_path: DslValue[str] | None = None
+    end_time_offset: DslValue[str] | None = None
+    features_attribute: DslValue[str] | None = None
+    inference_attribute: DslValue[str] | None = None
+    probability_attribute: DslValue[str] | None = None
+    probability_threshold_attribute: DslValue[float] | None = None
+    s3_data_distribution_type: DslValue[str] | None = None
+    s3_input_mode: DslValue[str] | None = None
+    start_time_offset: DslValue[str] | None = None
 
 
 @dataclass
 class Json(PropertyType):
-    line: bool | None = None
+    line: DslValue[bool] | None = None
 
 
 @dataclass
 class ModelBiasAppSpecification(PropertyType):
-    config_uri: str | None = None
-    image_uri: str | None = None
-    environment: dict[str, String] = field(default_factory=dict)
+    config_uri: DslValue[str] | None = None
+    image_uri: DslValue[str] | None = None
+    environment: dict[str, DslValue[str]] = field(default_factory=dict)
 
 
 @dataclass
 class ModelBiasBaselineConfig(PropertyType):
-    baselining_job_name: str | None = None
-    constraints_resource: ConstraintsResource | None = None
+    baselining_job_name: DslValue[str] | None = None
+    constraints_resource: DslValue[ConstraintsResource] | None = None
 
 
 @dataclass
 class ModelBiasJobInput(PropertyType):
-    ground_truth_s3_input: MonitoringGroundTruthS3Input | None = None
-    batch_transform_input: BatchTransformInput | None = None
-    endpoint_input: EndpointInput | None = None
+    ground_truth_s3_input: DslValue[MonitoringGroundTruthS3Input] | None = None
+    batch_transform_input: DslValue[BatchTransformInput] | None = None
+    endpoint_input: DslValue[EndpointInput] | None = None
 
 
 @dataclass
 class MonitoringGroundTruthS3Input(PropertyType):
-    s3_uri: str | None = None
+    s3_uri: DslValue[str] | None = None
 
 
 @dataclass
 class MonitoringOutput(PropertyType):
-    s3_output: S3Output | None = None
+    s3_output: DslValue[S3Output] | None = None
 
 
 @dataclass
 class MonitoringOutputConfig(PropertyType):
-    monitoring_outputs: list[MonitoringOutput] = field(default_factory=list)
-    kms_key_id: str | None = None
+    monitoring_outputs: list[DslValue[MonitoringOutput]] = field(default_factory=list)
+    kms_key_id: DslValue[str] | None = None
 
 
 @dataclass
 class MonitoringResources(PropertyType):
-    cluster_config: ClusterConfig | None = None
+    cluster_config: DslValue[ClusterConfig] | None = None
 
 
 @dataclass
 class NetworkConfig(PropertyType):
-    enable_inter_container_traffic_encryption: bool | None = None
-    enable_network_isolation: bool | None = None
-    vpc_config: VpcConfig | None = None
+    enable_inter_container_traffic_encryption: DslValue[bool] | None = None
+    enable_network_isolation: DslValue[bool] | None = None
+    vpc_config: DslValue[VpcConfig] | None = None
 
 
 @dataclass
 class S3Output(PropertyType):
-    local_path: str | None = None
-    s3_uri: str | None = None
-    s3_upload_mode: str | None = None
+    local_path: DslValue[str] | None = None
+    s3_uri: DslValue[str] | None = None
+    s3_upload_mode: DslValue[str] | None = None
 
 
 @dataclass
 class StoppingCondition(PropertyType):
-    max_runtime_in_seconds: int | None = None
+    max_runtime_in_seconds: DslValue[int] | None = None
 
 
 @dataclass
 class VpcConfig(PropertyType):
-    security_group_ids: list[String] = field(default_factory=list)
-    subnets: list[String] = field(default_factory=list)
+    security_group_ids: list[DslValue[str]] = field(default_factory=list)
+    subnets: list[DslValue[str]] = field(default_factory=list)

@@ -12,6 +12,7 @@ from typing import Any, ClassVar, cast
 
 from wetwire_aws.decorator import cf_registry
 from wetwire_aws.intrinsics.functions import IntrinsicFunction
+from wetwire_aws.typing import DslValue
 
 # Alias for type() builtin since 'type' is used as parameter name
 builtins_type = builtins.type
@@ -88,10 +89,10 @@ class Output:
             description = "Bucket ARN"
     """
 
-    value: Any = None
-    description: str = ""
-    export_name: str | None = None
-    condition: str | None = None
+    value: DslValue[Any] = None
+    description: DslValue[str] = ""
+    export_name: DslValue[str] | None = None
+    condition: DslValue[str] | None = None
 
     @classmethod
     def to_dict(cls) -> dict[str, Any]:

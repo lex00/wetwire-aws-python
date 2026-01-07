@@ -6,16 +6,17 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AWSLocation(PropertyType):
-    subnet_arn: str | None = None
-    zone: str | None = None
+    subnet_arn: DslValue[str] | None = None
+    zone: DslValue[str] | None = None
 
 
 @dataclass
 class Location(PropertyType):
-    address: str | None = None
-    latitude: str | None = None
-    longitude: str | None = None
+    address: DslValue[str] | None = None
+    latitude: DslValue[str] | None = None
+    longitude: DslValue[str] | None = None

@@ -6,24 +6,25 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AuthenticationConfiguration(PropertyType):
-    client_id: str | None = None
-    client_secret: str | None = None
-    refresh_token: str | None = None
+    client_id: DslValue[str] | None = None
+    client_secret: DslValue[str] | None = None
+    refresh_token: DslValue[str] | None = None
 
 
 @dataclass
 class Overrides(PropertyType):
-    manifest: dict[str, Any] | None = None
+    manifest: DslValue[dict[str, Any]] | None = None
 
 
 @dataclass
 class SkillPackage(PropertyType):
-    s3_bucket: str | None = None
-    s3_key: str | None = None
-    overrides: Overrides | None = None
-    s3_bucket_role: str | None = None
-    s3_object_version: str | None = None
+    s3_bucket: DslValue[str] | None = None
+    s3_key: DslValue[str] | None = None
+    overrides: DslValue[Overrides] | None = None
+    s3_bucket_role: DslValue[str] | None = None
+    s3_object_version: DslValue[str] | None = None

@@ -6,75 +6,84 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AccountLevel(PropertyType):
-    bucket_level: BucketLevel | None = None
-    activity_metrics: ActivityMetrics | None = None
-    advanced_cost_optimization_metrics: AdvancedCostOptimizationMetrics | None = None
-    advanced_data_protection_metrics: AdvancedDataProtectionMetrics | None = None
-    advanced_performance_metrics: AdvancedPerformanceMetrics | None = None
-    detailed_status_codes_metrics: DetailedStatusCodesMetrics | None = None
-    storage_lens_group_level: StorageLensGroupLevel | None = None
+    bucket_level: DslValue[BucketLevel] | None = None
+    activity_metrics: DslValue[ActivityMetrics] | None = None
+    advanced_cost_optimization_metrics: (
+        DslValue[AdvancedCostOptimizationMetrics] | None
+    ) = None
+    advanced_data_protection_metrics: DslValue[AdvancedDataProtectionMetrics] | None = (
+        None
+    )
+    advanced_performance_metrics: DslValue[AdvancedPerformanceMetrics] | None = None
+    detailed_status_codes_metrics: DslValue[DetailedStatusCodesMetrics] | None = None
+    storage_lens_group_level: DslValue[StorageLensGroupLevel] | None = None
 
 
 @dataclass
 class ActivityMetrics(PropertyType):
-    is_enabled: bool | None = None
+    is_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class AdvancedCostOptimizationMetrics(PropertyType):
-    is_enabled: bool | None = None
+    is_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class AdvancedDataProtectionMetrics(PropertyType):
-    is_enabled: bool | None = None
+    is_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class AdvancedPerformanceMetrics(PropertyType):
-    is_enabled: bool | None = None
+    is_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class AwsOrg(PropertyType):
-    arn: str | None = None
+    arn: DslValue[str] | None = None
 
 
 @dataclass
 class BucketLevel(PropertyType):
-    activity_metrics: ActivityMetrics | None = None
-    advanced_cost_optimization_metrics: AdvancedCostOptimizationMetrics | None = None
-    advanced_data_protection_metrics: AdvancedDataProtectionMetrics | None = None
-    advanced_performance_metrics: AdvancedPerformanceMetrics | None = None
-    detailed_status_codes_metrics: DetailedStatusCodesMetrics | None = None
-    prefix_level: PrefixLevel | None = None
+    activity_metrics: DslValue[ActivityMetrics] | None = None
+    advanced_cost_optimization_metrics: (
+        DslValue[AdvancedCostOptimizationMetrics] | None
+    ) = None
+    advanced_data_protection_metrics: DslValue[AdvancedDataProtectionMetrics] | None = (
+        None
+    )
+    advanced_performance_metrics: DslValue[AdvancedPerformanceMetrics] | None = None
+    detailed_status_codes_metrics: DslValue[DetailedStatusCodesMetrics] | None = None
+    prefix_level: DslValue[PrefixLevel] | None = None
 
 
 @dataclass
 class BucketsAndRegions(PropertyType):
-    buckets: list[String] = field(default_factory=list)
-    regions: list[String] = field(default_factory=list)
+    buckets: list[DslValue[str]] = field(default_factory=list)
+    regions: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class CloudWatchMetrics(PropertyType):
-    is_enabled: bool | None = None
+    is_enabled: DslValue[bool] | None = None
 
 
 @dataclass
 class DataExport(PropertyType):
-    cloud_watch_metrics: CloudWatchMetrics | None = None
-    s3_bucket_destination: S3BucketDestination | None = None
-    storage_lens_table_destination: StorageLensTableDestination | None = None
+    cloud_watch_metrics: DslValue[CloudWatchMetrics] | None = None
+    s3_bucket_destination: DslValue[S3BucketDestination] | None = None
+    storage_lens_table_destination: DslValue[StorageLensTableDestination] | None = None
 
 
 @dataclass
 class DetailedStatusCodesMetrics(PropertyType):
-    is_enabled: bool | None = None
+    is_enabled: DslValue[bool] | None = None
 
 
 @dataclass
@@ -84,77 +93,79 @@ class Encryption(PropertyType):
         "sses3": "SSES3",
     }
 
-    ssekms: SSEKMS | None = None
-    sses3: dict[str, Any] | None = None
+    ssekms: DslValue[SSEKMS] | None = None
+    sses3: DslValue[dict[str, Any]] | None = None
 
 
 @dataclass
 class PrefixLevel(PropertyType):
-    storage_metrics: PrefixLevelStorageMetrics | None = None
+    storage_metrics: DslValue[PrefixLevelStorageMetrics] | None = None
 
 
 @dataclass
 class PrefixLevelStorageMetrics(PropertyType):
-    is_enabled: bool | None = None
-    selection_criteria: SelectionCriteria | None = None
+    is_enabled: DslValue[bool] | None = None
+    selection_criteria: DslValue[SelectionCriteria] | None = None
 
 
 @dataclass
 class S3BucketDestination(PropertyType):
-    account_id: str | None = None
-    arn: str | None = None
-    format: str | None = None
-    output_schema_version: str | None = None
-    encryption: Encryption | None = None
-    prefix: str | None = None
+    account_id: DslValue[str] | None = None
+    arn: DslValue[str] | None = None
+    format: DslValue[str] | None = None
+    output_schema_version: DslValue[str] | None = None
+    encryption: DslValue[Encryption] | None = None
+    prefix: DslValue[str] | None = None
 
 
 @dataclass
 class SSEKMS(PropertyType):
-    key_id: str | None = None
+    key_id: DslValue[str] | None = None
 
 
 @dataclass
 class SelectionCriteria(PropertyType):
-    delimiter: str | None = None
-    max_depth: int | None = None
-    min_storage_bytes_percentage: float | None = None
+    delimiter: DslValue[str] | None = None
+    max_depth: DslValue[int] | None = None
+    min_storage_bytes_percentage: DslValue[float] | None = None
 
 
 @dataclass
 class StorageLensConfiguration(PropertyType):
-    account_level: AccountLevel | None = None
-    id: str | None = None
-    is_enabled: bool | None = None
-    aws_org: AwsOrg | None = None
-    data_export: DataExport | None = None
-    exclude: BucketsAndRegions | None = None
-    expanded_prefixes_data_export: StorageLensExpandedPrefixesDataExport | None = None
-    include: BucketsAndRegions | None = None
-    prefix_delimiter: str | None = None
-    storage_lens_arn: str | None = None
+    account_level: DslValue[AccountLevel] | None = None
+    id: DslValue[str] | None = None
+    is_enabled: DslValue[bool] | None = None
+    aws_org: DslValue[AwsOrg] | None = None
+    data_export: DslValue[DataExport] | None = None
+    exclude: DslValue[BucketsAndRegions] | None = None
+    expanded_prefixes_data_export: (
+        DslValue[StorageLensExpandedPrefixesDataExport] | None
+    ) = None
+    include: DslValue[BucketsAndRegions] | None = None
+    prefix_delimiter: DslValue[str] | None = None
+    storage_lens_arn: DslValue[str] | None = None
 
 
 @dataclass
 class StorageLensExpandedPrefixesDataExport(PropertyType):
-    s3_bucket_destination: S3BucketDestination | None = None
-    storage_lens_table_destination: StorageLensTableDestination | None = None
+    s3_bucket_destination: DslValue[S3BucketDestination] | None = None
+    storage_lens_table_destination: DslValue[StorageLensTableDestination] | None = None
 
 
 @dataclass
 class StorageLensGroupLevel(PropertyType):
-    storage_lens_group_selection_criteria: StorageLensGroupSelectionCriteria | None = (
-        None
-    )
+    storage_lens_group_selection_criteria: (
+        DslValue[StorageLensGroupSelectionCriteria] | None
+    ) = None
 
 
 @dataclass
 class StorageLensGroupSelectionCriteria(PropertyType):
-    exclude: list[String] = field(default_factory=list)
-    include: list[String] = field(default_factory=list)
+    exclude: list[DslValue[str]] = field(default_factory=list)
+    include: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class StorageLensTableDestination(PropertyType):
-    is_enabled: bool | None = None
-    encryption: Encryption | None = None
+    is_enabled: DslValue[bool] | None = None
+    encryption: DslValue[Encryption] | None = None

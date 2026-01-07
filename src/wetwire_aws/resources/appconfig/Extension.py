@@ -6,10 +6,11 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class Parameter(PropertyType):
-    required: bool | None = None
-    description: str | None = None
-    dynamic: bool | None = None
+    required: DslValue[bool] | None = None
+    description: DslValue[str] | None = None
+    dynamic: DslValue[bool] | None = None

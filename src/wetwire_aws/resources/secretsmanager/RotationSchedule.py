@@ -6,31 +6,32 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class ExternalSecretRotationMetadataItem(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class HostedRotationLambda(PropertyType):
-    rotation_type: str | None = None
-    exclude_characters: str | None = None
-    kms_key_arn: str | None = None
-    master_secret_arn: str | None = None
-    master_secret_kms_key_arn: str | None = None
-    rotation_lambda_name: str | None = None
-    runtime: str | None = None
-    superuser_secret_arn: str | None = None
-    superuser_secret_kms_key_arn: str | None = None
-    vpc_security_group_ids: str | None = None
-    vpc_subnet_ids: str | None = None
+    rotation_type: DslValue[str] | None = None
+    exclude_characters: DslValue[str] | None = None
+    kms_key_arn: DslValue[str] | None = None
+    master_secret_arn: DslValue[str] | None = None
+    master_secret_kms_key_arn: DslValue[str] | None = None
+    rotation_lambda_name: DslValue[str] | None = None
+    runtime: DslValue[str] | None = None
+    superuser_secret_arn: DslValue[str] | None = None
+    superuser_secret_kms_key_arn: DslValue[str] | None = None
+    vpc_security_group_ids: DslValue[str] | None = None
+    vpc_subnet_ids: DslValue[str] | None = None
 
 
 @dataclass
 class RotationRules(PropertyType):
-    automatically_after_days: int | None = None
-    duration: str | None = None
-    schedule_expression: str | None = None
+    automatically_after_days: DslValue[int] | None = None
+    duration: DslValue[str] | None = None
+    schedule_expression: DslValue[str] | None = None

@@ -6,30 +6,31 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class KeyAttributes(PropertyType):
-    key_algorithm: str | None = None
-    key_class: str | None = None
-    key_modes_of_use: KeyModesOfUse | None = None
-    key_usage: str | None = None
+    key_algorithm: DslValue[str] | None = None
+    key_class: DslValue[str] | None = None
+    key_modes_of_use: DslValue[KeyModesOfUse] | None = None
+    key_usage: DslValue[str] | None = None
 
 
 @dataclass
 class KeyModesOfUse(PropertyType):
-    decrypt: bool | None = None
-    derive_key: bool | None = None
-    encrypt: bool | None = None
-    generate: bool | None = None
-    no_restrictions: bool | None = None
-    sign: bool | None = None
-    unwrap: bool | None = None
-    verify: bool | None = None
-    wrap: bool | None = None
+    decrypt: DslValue[bool] | None = None
+    derive_key: DslValue[bool] | None = None
+    encrypt: DslValue[bool] | None = None
+    generate: DslValue[bool] | None = None
+    no_restrictions: DslValue[bool] | None = None
+    sign: DslValue[bool] | None = None
+    unwrap: DslValue[bool] | None = None
+    verify: DslValue[bool] | None = None
+    wrap: DslValue[bool] | None = None
 
 
 @dataclass
 class ReplicationStatusType(PropertyType):
-    status: str | None = None
-    status_message: str | None = None
+    status: DslValue[str] | None = None
+    status_message: DslValue[str] | None = None

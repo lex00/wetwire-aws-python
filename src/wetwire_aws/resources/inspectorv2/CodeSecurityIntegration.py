@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
@@ -14,7 +15,9 @@ class CreateDetails(PropertyType):
         "gitlab_self_managed": "gitlabSelfManaged",
     }
 
-    gitlab_self_managed: CreateGitLabSelfManagedIntegrationDetail | None = None
+    gitlab_self_managed: DslValue[CreateGitLabSelfManagedIntegrationDetail] | None = (
+        None
+    )
 
 
 @dataclass
@@ -24,8 +27,8 @@ class CreateGitLabSelfManagedIntegrationDetail(PropertyType):
         "instance_url": "instanceUrl",
     }
 
-    access_token: str | None = None
-    instance_url: str | None = None
+    access_token: DslValue[str] | None = None
+    instance_url: DslValue[str] | None = None
 
 
 @dataclass
@@ -35,8 +38,10 @@ class UpdateDetails(PropertyType):
         "gitlab_self_managed": "gitlabSelfManaged",
     }
 
-    github: UpdateGitHubIntegrationDetail | None = None
-    gitlab_self_managed: UpdateGitLabSelfManagedIntegrationDetail | None = None
+    github: DslValue[UpdateGitHubIntegrationDetail] | None = None
+    gitlab_self_managed: DslValue[UpdateGitLabSelfManagedIntegrationDetail] | None = (
+        None
+    )
 
 
 @dataclass
@@ -46,8 +51,8 @@ class UpdateGitHubIntegrationDetail(PropertyType):
         "installation_id": "installationId",
     }
 
-    code: str | None = None
-    installation_id: str | None = None
+    code: DslValue[str] | None = None
+    installation_id: DslValue[str] | None = None
 
 
 @dataclass
@@ -56,4 +61,4 @@ class UpdateGitLabSelfManagedIntegrationDetail(PropertyType):
         "auth_code": "authCode",
     }
 
-    auth_code: str | None = None
+    auth_code: DslValue[str] | None = None

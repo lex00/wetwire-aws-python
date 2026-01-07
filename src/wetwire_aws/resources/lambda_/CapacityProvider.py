@@ -6,34 +6,37 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class CapacityProviderPermissionsConfig(PropertyType):
-    capacity_provider_operator_role_arn: str | None = None
+    capacity_provider_operator_role_arn: DslValue[str] | None = None
 
 
 @dataclass
 class CapacityProviderScalingConfig(PropertyType):
-    max_v_cpu_count: int | None = None
-    scaling_mode: str | None = None
-    scaling_policies: list[TargetTrackingScalingPolicy] = field(default_factory=list)
+    max_v_cpu_count: DslValue[int] | None = None
+    scaling_mode: DslValue[str] | None = None
+    scaling_policies: list[DslValue[TargetTrackingScalingPolicy]] = field(
+        default_factory=list
+    )
 
 
 @dataclass
 class CapacityProviderVpcConfig(PropertyType):
-    security_group_ids: list[String] = field(default_factory=list)
-    subnet_ids: list[String] = field(default_factory=list)
+    security_group_ids: list[DslValue[str]] = field(default_factory=list)
+    subnet_ids: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class InstanceRequirements(PropertyType):
-    allowed_instance_types: list[String] = field(default_factory=list)
-    architectures: list[String] = field(default_factory=list)
-    excluded_instance_types: list[String] = field(default_factory=list)
+    allowed_instance_types: list[DslValue[str]] = field(default_factory=list)
+    architectures: list[DslValue[str]] = field(default_factory=list)
+    excluded_instance_types: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class TargetTrackingScalingPolicy(PropertyType):
-    predefined_metric_type: str | None = None
-    target_value: float | None = None
+    predefined_metric_type: DslValue[str] | None = None
+    target_value: DslValue[float] | None = None

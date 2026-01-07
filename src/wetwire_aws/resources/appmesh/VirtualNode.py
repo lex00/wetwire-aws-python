@@ -6,35 +6,38 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class AccessLog(PropertyType):
-    file: FileAccessLog | None = None
+    file: DslValue[FileAccessLog] | None = None
 
 
 @dataclass
 class AwsCloudMapInstanceAttribute(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
 class AwsCloudMapServiceDiscovery(PropertyType):
-    namespace_name: str | None = None
-    service_name: str | None = None
-    attributes: list[AwsCloudMapInstanceAttribute] = field(default_factory=list)
-    ip_preference: str | None = None
+    namespace_name: DslValue[str] | None = None
+    service_name: DslValue[str] | None = None
+    attributes: list[DslValue[AwsCloudMapInstanceAttribute]] = field(
+        default_factory=list
+    )
+    ip_preference: DslValue[str] | None = None
 
 
 @dataclass
 class Backend(PropertyType):
-    virtual_service: VirtualServiceBackend | None = None
+    virtual_service: DslValue[VirtualServiceBackend] | None = None
 
 
 @dataclass
 class BackendDefaults(PropertyType):
-    client_policy: ClientPolicy | None = None
+    client_policy: DslValue[ClientPolicy] | None = None
 
 
 @dataclass
@@ -43,15 +46,15 @@ class ClientPolicy(PropertyType):
         "tls": "TLS",
     }
 
-    tls: ClientPolicyTls | None = None
+    tls: DslValue[ClientPolicyTls] | None = None
 
 
 @dataclass
 class ClientPolicyTls(PropertyType):
-    validation: TlsValidationContext | None = None
-    certificate: ClientTlsCertificate | None = None
-    enforce: bool | None = None
-    ports: list[Integer] = field(default_factory=list)
+    validation: DslValue[TlsValidationContext] | None = None
+    certificate: DslValue[ClientTlsCertificate] | None = None
+    enforce: DslValue[bool] | None = None
+    ports: list[DslValue[int]] = field(default_factory=list)
 
 
 @dataclass
@@ -60,56 +63,56 @@ class ClientTlsCertificate(PropertyType):
         "sds": "SDS",
     }
 
-    file: ListenerTlsFileCertificate | None = None
-    sds: ListenerTlsSdsCertificate | None = None
+    file: DslValue[ListenerTlsFileCertificate] | None = None
+    sds: DslValue[ListenerTlsSdsCertificate] | None = None
 
 
 @dataclass
 class DnsServiceDiscovery(PropertyType):
-    hostname: str | None = None
-    ip_preference: str | None = None
-    response_type: str | None = None
+    hostname: DslValue[str] | None = None
+    ip_preference: DslValue[str] | None = None
+    response_type: DslValue[str] | None = None
 
 
 @dataclass
 class Duration(PropertyType):
-    unit: str | None = None
-    value: int | None = None
+    unit: DslValue[str] | None = None
+    value: DslValue[int] | None = None
 
 
 @dataclass
 class FileAccessLog(PropertyType):
-    path: str | None = None
-    format: LoggingFormat | None = None
+    path: DslValue[str] | None = None
+    format: DslValue[LoggingFormat] | None = None
 
 
 @dataclass
 class GrpcTimeout(PropertyType):
-    idle: Duration | None = None
-    per_request: Duration | None = None
+    idle: DslValue[Duration] | None = None
+    per_request: DslValue[Duration] | None = None
 
 
 @dataclass
 class HealthCheck(PropertyType):
-    healthy_threshold: int | None = None
-    interval_millis: int | None = None
-    protocol: str | None = None
-    timeout_millis: int | None = None
-    unhealthy_threshold: int | None = None
-    path: str | None = None
-    port: int | None = None
+    healthy_threshold: DslValue[int] | None = None
+    interval_millis: DslValue[int] | None = None
+    protocol: DslValue[str] | None = None
+    timeout_millis: DslValue[int] | None = None
+    unhealthy_threshold: DslValue[int] | None = None
+    path: DslValue[str] | None = None
+    port: DslValue[int] | None = None
 
 
 @dataclass
 class HttpTimeout(PropertyType):
-    idle: Duration | None = None
-    per_request: Duration | None = None
+    idle: DslValue[Duration] | None = None
+    per_request: DslValue[Duration] | None = None
 
 
 @dataclass
 class JsonFormatRef(PropertyType):
-    key: str | None = None
-    value: str | None = None
+    key: DslValue[str] | None = None
+    value: DslValue[str] | None = None
 
 
 @dataclass
@@ -118,12 +121,12 @@ class Listener(PropertyType):
         "tls": "TLS",
     }
 
-    port_mapping: PortMapping | None = None
-    connection_pool: VirtualNodeConnectionPool | None = None
-    health_check: HealthCheck | None = None
-    outlier_detection: OutlierDetection | None = None
-    timeout: ListenerTimeout | None = None
-    tls: ListenerTls | None = None
+    port_mapping: DslValue[PortMapping] | None = None
+    connection_pool: DslValue[VirtualNodeConnectionPool] | None = None
+    health_check: DslValue[HealthCheck] | None = None
+    outlier_detection: DslValue[OutlierDetection] | None = None
+    timeout: DslValue[ListenerTimeout] | None = None
+    tls: DslValue[ListenerTls] | None = None
 
 
 @dataclass
@@ -135,22 +138,22 @@ class ListenerTimeout(PropertyType):
         "tcp": "TCP",
     }
 
-    grpc: GrpcTimeout | None = None
-    http: HttpTimeout | None = None
-    http2: HttpTimeout | None = None
-    tcp: TcpTimeout | None = None
+    grpc: DslValue[GrpcTimeout] | None = None
+    http: DslValue[HttpTimeout] | None = None
+    http2: DslValue[HttpTimeout] | None = None
+    tcp: DslValue[TcpTimeout] | None = None
 
 
 @dataclass
 class ListenerTls(PropertyType):
-    certificate: ListenerTlsCertificate | None = None
-    mode: str | None = None
-    validation: ListenerTlsValidationContext | None = None
+    certificate: DslValue[ListenerTlsCertificate] | None = None
+    mode: DslValue[str] | None = None
+    validation: DslValue[ListenerTlsValidationContext] | None = None
 
 
 @dataclass
 class ListenerTlsAcmCertificate(PropertyType):
-    certificate_arn: str | None = None
+    certificate_arn: DslValue[str] | None = None
 
 
 @dataclass
@@ -160,26 +163,26 @@ class ListenerTlsCertificate(PropertyType):
         "sds": "SDS",
     }
 
-    acm: ListenerTlsAcmCertificate | None = None
-    file: ListenerTlsFileCertificate | None = None
-    sds: ListenerTlsSdsCertificate | None = None
+    acm: DslValue[ListenerTlsAcmCertificate] | None = None
+    file: DslValue[ListenerTlsFileCertificate] | None = None
+    sds: DslValue[ListenerTlsSdsCertificate] | None = None
 
 
 @dataclass
 class ListenerTlsFileCertificate(PropertyType):
-    certificate_chain: str | None = None
-    private_key: str | None = None
+    certificate_chain: DslValue[str] | None = None
+    private_key: DslValue[str] | None = None
 
 
 @dataclass
 class ListenerTlsSdsCertificate(PropertyType):
-    secret_name: str | None = None
+    secret_name: DslValue[str] | None = None
 
 
 @dataclass
 class ListenerTlsValidationContext(PropertyType):
-    trust: ListenerTlsValidationContextTrust | None = None
-    subject_alternative_names: SubjectAlternativeNames | None = None
+    trust: DslValue[ListenerTlsValidationContextTrust] | None = None
+    subject_alternative_names: DslValue[SubjectAlternativeNames] | None = None
 
 
 @dataclass
@@ -188,33 +191,33 @@ class ListenerTlsValidationContextTrust(PropertyType):
         "sds": "SDS",
     }
 
-    file: TlsValidationContextFileTrust | None = None
-    sds: TlsValidationContextSdsTrust | None = None
+    file: DslValue[TlsValidationContextFileTrust] | None = None
+    sds: DslValue[TlsValidationContextSdsTrust] | None = None
 
 
 @dataclass
 class Logging(PropertyType):
-    access_log: AccessLog | None = None
+    access_log: DslValue[AccessLog] | None = None
 
 
 @dataclass
 class LoggingFormat(PropertyType):
-    json: list[JsonFormatRef] = field(default_factory=list)
-    text: str | None = None
+    json: list[DslValue[JsonFormatRef]] = field(default_factory=list)
+    text: DslValue[str] | None = None
 
 
 @dataclass
 class OutlierDetection(PropertyType):
-    base_ejection_duration: Duration | None = None
-    interval: Duration | None = None
-    max_ejection_percent: int | None = None
-    max_server_errors: int | None = None
+    base_ejection_duration: DslValue[Duration] | None = None
+    interval: DslValue[Duration] | None = None
+    max_ejection_percent: DslValue[int] | None = None
+    max_server_errors: DslValue[int] | None = None
 
 
 @dataclass
 class PortMapping(PropertyType):
-    port: int | None = None
-    protocol: str | None = None
+    port: DslValue[int] | None = None
+    protocol: DslValue[str] | None = None
 
 
 @dataclass
@@ -224,44 +227,44 @@ class ServiceDiscovery(PropertyType):
         "dns": "DNS",
     }
 
-    aws_cloud_map: AwsCloudMapServiceDiscovery | None = None
-    dns: DnsServiceDiscovery | None = None
+    aws_cloud_map: DslValue[AwsCloudMapServiceDiscovery] | None = None
+    dns: DslValue[DnsServiceDiscovery] | None = None
 
 
 @dataclass
 class SubjectAlternativeNameMatchers(PropertyType):
-    exact: list[String] = field(default_factory=list)
+    exact: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class SubjectAlternativeNames(PropertyType):
-    match: SubjectAlternativeNameMatchers | None = None
+    match: DslValue[SubjectAlternativeNameMatchers] | None = None
 
 
 @dataclass
 class TcpTimeout(PropertyType):
-    idle: Duration | None = None
+    idle: DslValue[Duration] | None = None
 
 
 @dataclass
 class TlsValidationContext(PropertyType):
-    trust: TlsValidationContextTrust | None = None
-    subject_alternative_names: SubjectAlternativeNames | None = None
+    trust: DslValue[TlsValidationContextTrust] | None = None
+    subject_alternative_names: DslValue[SubjectAlternativeNames] | None = None
 
 
 @dataclass
 class TlsValidationContextAcmTrust(PropertyType):
-    certificate_authority_arns: list[String] = field(default_factory=list)
+    certificate_authority_arns: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class TlsValidationContextFileTrust(PropertyType):
-    certificate_chain: str | None = None
+    certificate_chain: DslValue[str] | None = None
 
 
 @dataclass
 class TlsValidationContextSdsTrust(PropertyType):
-    secret_name: str | None = None
+    secret_name: DslValue[str] | None = None
 
 
 @dataclass
@@ -271,9 +274,9 @@ class TlsValidationContextTrust(PropertyType):
         "sds": "SDS",
     }
 
-    acm: TlsValidationContextAcmTrust | None = None
-    file: TlsValidationContextFileTrust | None = None
-    sds: TlsValidationContextSdsTrust | None = None
+    acm: DslValue[TlsValidationContextAcmTrust] | None = None
+    file: DslValue[TlsValidationContextFileTrust] | None = None
+    sds: DslValue[TlsValidationContextSdsTrust] | None = None
 
 
 @dataclass
@@ -285,43 +288,43 @@ class VirtualNodeConnectionPool(PropertyType):
         "tcp": "TCP",
     }
 
-    grpc: VirtualNodeGrpcConnectionPool | None = None
-    http: VirtualNodeHttpConnectionPool | None = None
-    http2: VirtualNodeHttp2ConnectionPool | None = None
-    tcp: VirtualNodeTcpConnectionPool | None = None
+    grpc: DslValue[VirtualNodeGrpcConnectionPool] | None = None
+    http: DslValue[VirtualNodeHttpConnectionPool] | None = None
+    http2: DslValue[VirtualNodeHttp2ConnectionPool] | None = None
+    tcp: DslValue[VirtualNodeTcpConnectionPool] | None = None
 
 
 @dataclass
 class VirtualNodeGrpcConnectionPool(PropertyType):
-    max_requests: int | None = None
+    max_requests: DslValue[int] | None = None
 
 
 @dataclass
 class VirtualNodeHttp2ConnectionPool(PropertyType):
-    max_requests: int | None = None
+    max_requests: DslValue[int] | None = None
 
 
 @dataclass
 class VirtualNodeHttpConnectionPool(PropertyType):
-    max_connections: int | None = None
-    max_pending_requests: int | None = None
+    max_connections: DslValue[int] | None = None
+    max_pending_requests: DslValue[int] | None = None
 
 
 @dataclass
 class VirtualNodeSpec(PropertyType):
-    backend_defaults: BackendDefaults | None = None
-    backends: list[Backend] = field(default_factory=list)
-    listeners: list[Listener] = field(default_factory=list)
-    logging: Logging | None = None
-    service_discovery: ServiceDiscovery | None = None
+    backend_defaults: DslValue[BackendDefaults] | None = None
+    backends: list[DslValue[Backend]] = field(default_factory=list)
+    listeners: list[DslValue[Listener]] = field(default_factory=list)
+    logging: DslValue[Logging] | None = None
+    service_discovery: DslValue[ServiceDiscovery] | None = None
 
 
 @dataclass
 class VirtualNodeTcpConnectionPool(PropertyType):
-    max_connections: int | None = None
+    max_connections: DslValue[int] | None = None
 
 
 @dataclass
 class VirtualServiceBackend(PropertyType):
-    virtual_service_name: str | None = None
-    client_policy: ClientPolicy | None = None
+    virtual_service_name: DslValue[str] | None = None
+    client_policy: DslValue[ClientPolicy] | None = None

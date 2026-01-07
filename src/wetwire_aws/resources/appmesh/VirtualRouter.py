@@ -6,19 +6,20 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class PortMapping(PropertyType):
-    port: int | None = None
-    protocol: str | None = None
+    port: DslValue[int] | None = None
+    protocol: DslValue[str] | None = None
 
 
 @dataclass
 class VirtualRouterListener(PropertyType):
-    port_mapping: PortMapping | None = None
+    port_mapping: DslValue[PortMapping] | None = None
 
 
 @dataclass
 class VirtualRouterSpec(PropertyType):
-    listeners: list[VirtualRouterListener] = field(default_factory=list)
+    listeners: list[DslValue[VirtualRouterListener]] = field(default_factory=list)

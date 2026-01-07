@@ -6,16 +6,17 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class HttpUrlDestinationSummary(PropertyType):
-    confirmation_url: str | None = None
+    confirmation_url: DslValue[str] | None = None
 
 
 @dataclass
 class VpcDestinationProperties(PropertyType):
-    role_arn: str | None = None
-    security_groups: list[String] = field(default_factory=list)
-    subnet_ids: list[String] = field(default_factory=list)
-    vpc_id: str | None = None
+    role_arn: DslValue[str] | None = None
+    security_groups: list[DslValue[str]] = field(default_factory=list)
+    subnet_ids: list[DslValue[str]] = field(default_factory=list)
+    vpc_id: DslValue[str] | None = None

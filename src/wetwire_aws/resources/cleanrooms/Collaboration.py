@@ -6,19 +6,20 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from wetwire_aws.base import PropertyType, Tag
+from wetwire_aws.typing import DslValue
 
 
 @dataclass
 class DataEncryptionMetadata(PropertyType):
-    allow_cleartext: bool | None = None
-    allow_duplicates: bool | None = None
-    allow_joins_on_columns_with_different_names: bool | None = None
-    preserve_nulls: bool | None = None
+    allow_cleartext: DslValue[bool] | None = None
+    allow_duplicates: DslValue[bool] | None = None
+    allow_joins_on_columns_with_different_names: DslValue[bool] | None = None
+    preserve_nulls: DslValue[bool] | None = None
 
 
 @dataclass
 class JobComputePaymentConfig(PropertyType):
-    is_responsible: bool | None = None
+    is_responsible: DslValue[bool] | None = None
 
 
 @dataclass
@@ -27,14 +28,16 @@ class MLMemberAbilities(PropertyType):
         "custom_ml_member_abilities": "CustomMLMemberAbilities",
     }
 
-    custom_ml_member_abilities: list[String] = field(default_factory=list)
+    custom_ml_member_abilities: list[DslValue[str]] = field(default_factory=list)
 
 
 @dataclass
 class MLPaymentConfig(PropertyType):
-    model_inference: ModelInferencePaymentConfig | None = None
-    model_training: ModelTrainingPaymentConfig | None = None
-    synthetic_data_generation: SyntheticDataGenerationPaymentConfig | None = None
+    model_inference: DslValue[ModelInferencePaymentConfig] | None = None
+    model_training: DslValue[ModelTrainingPaymentConfig] | None = None
+    synthetic_data_generation: DslValue[SyntheticDataGenerationPaymentConfig] | None = (
+        None
+    )
 
 
 @dataclass
@@ -43,35 +46,35 @@ class MemberSpecification(PropertyType):
         "ml_member_abilities": "MLMemberAbilities",
     }
 
-    account_id: str | None = None
-    display_name: str | None = None
-    member_abilities: list[String] = field(default_factory=list)
-    ml_member_abilities: MLMemberAbilities | None = None
-    payment_configuration: PaymentConfiguration | None = None
+    account_id: DslValue[str] | None = None
+    display_name: DslValue[str] | None = None
+    member_abilities: list[DslValue[str]] = field(default_factory=list)
+    ml_member_abilities: DslValue[MLMemberAbilities] | None = None
+    payment_configuration: DslValue[PaymentConfiguration] | None = None
 
 
 @dataclass
 class ModelInferencePaymentConfig(PropertyType):
-    is_responsible: bool | None = None
+    is_responsible: DslValue[bool] | None = None
 
 
 @dataclass
 class ModelTrainingPaymentConfig(PropertyType):
-    is_responsible: bool | None = None
+    is_responsible: DslValue[bool] | None = None
 
 
 @dataclass
 class PaymentConfiguration(PropertyType):
-    query_compute: QueryComputePaymentConfig | None = None
-    job_compute: JobComputePaymentConfig | None = None
-    machine_learning: MLPaymentConfig | None = None
+    query_compute: DslValue[QueryComputePaymentConfig] | None = None
+    job_compute: DslValue[JobComputePaymentConfig] | None = None
+    machine_learning: DslValue[MLPaymentConfig] | None = None
 
 
 @dataclass
 class QueryComputePaymentConfig(PropertyType):
-    is_responsible: bool | None = None
+    is_responsible: DslValue[bool] | None = None
 
 
 @dataclass
 class SyntheticDataGenerationPaymentConfig(PropertyType):
-    is_responsible: bool | None = None
+    is_responsible: DslValue[bool] | None = None
