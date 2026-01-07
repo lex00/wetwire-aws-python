@@ -42,10 +42,10 @@
 │                cloudformation_dataclasses (this project)                 │
 │                                                                          │
 │   @cloudformation_dataclass                                              │
-│   class MyBucket:                       Template.from_registry()         │
-│       resource: s3.Bucket                      ↓                         │
-│       bucket_name = "my-bucket"         print(template.to_json())        │
-│       versioning = ref(VersioningConfig)       ↓                         │
+│   class MyBucket(s3.Bucket):            Template.from_registry()         │
+│       bucket_name = "my-bucket"                ↓                         │
+│       versioning = ref(VersioningConfig)print(template.to_json())        │
+│                                                ↓                         │
 │                                         CloudFormation JSON              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                    User's toolchain (external)                           │
@@ -68,7 +68,7 @@
 **Core principles:**
 1. **Synthesis only** - Generate JSON, don't deploy it
 2. **CF Spec + botocore as source** - AWS's schema for all resources
-3. **Declarative wrapper pattern** - `@dataclass` with `resource:` field
+3. **Inheritance pattern** - Classes inherit from resource types
 4. **Python-native experience** - `ref()`, `get_att()`, type-safe IDE autocomplete
 
 ---
@@ -195,18 +195,15 @@ from cloudformation_dataclasses import cloudformation_dataclass, ref, get_att
 from cloudformation_dataclasses.aws import s3, lambda_, iam
 
 @cloudformation_dataclass
-class MyBucket:
-    resource: s3.Bucket
+class MyBucket(s3.Bucket):
     bucket_name = "my-bucket"
 
 @cloudformation_dataclass
-class MyRole:
-    resource: iam.Role
+class MyRole(iam.Role):
     assume_role_policy_document = MyAssumeRolePolicy
 
 @cloudformation_dataclass
-class MyFunction:
-    resource: lambda_.Function
+class MyFunction(lambda_.Function):
     role = get_att(MyRole, ARN)           # → {"Fn::GetAtt": ["MyRole", "Arn"]}
     environment = {"BUCKET": ref(MyBucket)}  # → {"Ref": "MyBucket"}
 ```
@@ -255,12 +252,11 @@ CloudFormation automatically determines dependency order from `Ref` and `GetAtt`
 
 ```python
 @cloudformation_dataclass
-class MyBucket:
-    resource: s3.Bucket
+class MyBucket(s3.Bucket):
+    pass
 
 @cloudformation_dataclass
-class MyFunction:
-    resource: lambda_.Function
+class MyFunction(lambda_.Function):
     environment = {"BUCKET": ref(MyBucket)}  # Implicit dependency
 ```
 
@@ -288,8 +284,7 @@ For dependencies without intrinsic function references:
 
 ```python
 @cloudformation_dataclass
-class MyFunction:
-    resource: lambda_.Function
+class MyFunction(lambda_.Function):
     depends_on = [MyBucket]  # Explicit DependsOn
 ```
 
@@ -330,8 +325,7 @@ Example: `my-project-api-DataBucket-prod`
 from cloudformation_dataclasses.intrinsics import AWS_REGION, AWS_ACCOUNT_ID
 
 @cloudformation_dataclass
-class MyBucket:
-    resource: s3.Bucket
+class MyBucket(s3.Bucket):
     bucket_name = Sub("${AWS::AccountId}-${AWS::Region}-data")
 ```
 

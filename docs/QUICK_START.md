@@ -53,14 +53,12 @@ class DataBucket(s3.Bucket):
     bucket_name = "data"
 
 # Policy statement as wrapper class (flattened)
-class LambdaAssumeRoleStatement:
-    resource: iam.PolicyStatement
+class LambdaAssumeRoleStatement(iam.PolicyStatement):
     effect = "Allow"
     principal = {"Service": "lambda.amazonaws.com"}
     action = "sts:AssumeRole"
 
-class LambdaAssumeRolePolicy:
-    resource: iam.PolicyDocument
+class LambdaAssumeRolePolicy(iam.PolicyDocument):
     version = "2012-10-17"
     statement = [LambdaAssumeRoleStatement]
 
@@ -190,13 +188,11 @@ class MyFunction(lambda_.Function):
     runtime = lambda_.Runtime.PYTHON3_12    # Not "python3.12"
     architectures = [lambda_.Architecture.ARM64]
 
-class MyTableKeySchema:
-    resource: dynamodb.Table.KeySchema
+class MyTableKeySchema(dynamodb.Table.KeySchema):
     attribute_name = "pk"
     key_type = dynamodb.KeyType.HASH
 
-class MyTableAttributeDefinition:
-    resource: dynamodb.Table.AttributeDefinition
+class MyTableAttributeDefinition(dynamodb.Table.AttributeDefinition):
     attribute_name = "pk"
     attribute_type = dynamodb.ScalarAttributeType.S
 

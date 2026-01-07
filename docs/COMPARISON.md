@@ -221,16 +221,13 @@ A Python dataclass with 5 typed fields is a better prompt than a 50-line YAML ex
 ```python
 from . import *
 
-class MyBucketEncryptionDefault:
-    resource: s3.Bucket.ServerSideEncryptionByDefault
+class MyBucketEncryptionDefault(s3.Bucket.ServerSideEncryptionByDefault):
     sse_algorithm = s3.ServerSideEncryption.AES256
 
-class MyBucketEncryptionRule:
-    resource: s3.Bucket.ServerSideEncryptionRule
+class MyBucketEncryptionRule(s3.Bucket.ServerSideEncryptionRule):
     server_side_encryption_by_default = MyBucketEncryptionDefault
 
-class MyBucketEncryption:
-    resource: s3.Bucket.BucketEncryption
+class MyBucketEncryption(s3.Bucket.BucketEncryption):
     server_side_encryption_configuration = [MyBucketEncryptionRule]
 
 class MyBucket(s3.Bucket):
@@ -255,14 +252,12 @@ CDK is more concise here—the L2 construct handles encryption configuration.
 ```python
 from . import *
 
-class LambdaAssumeRoleStatement:
-    resource: iam.PolicyStatement
+class LambdaAssumeRoleStatement(iam.PolicyStatement):
     effect = "Allow"
     principal = {"Service": "lambda.amazonaws.com"}
     action = "sts:AssumeRole"
 
-class LambdaAssumeRolePolicy:
-    resource: iam.PolicyDocument
+class LambdaAssumeRolePolicy(iam.PolicyDocument):
     version = "2012-10-17"
     statement = [LambdaAssumeRoleStatement]
 

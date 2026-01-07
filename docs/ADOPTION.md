@@ -55,8 +55,7 @@ When you hit an edge case the library doesn't handle cleanly.
 For properties not yet typed, pass raw dictionaries:
 
 ```python
-class MyResource:
-    resource: SomeResource
+class MyResource(SomeResource):
     # Typed properties
     name = "my-resource"
     # Raw passthrough for untyped/new properties
@@ -90,8 +89,7 @@ This gives you type safety for your properties while using a resource type the l
 For complex intrinsic function combinations:
 
 ```python
-class MyResource:
-    resource: Function
+class MyResource(lambda_.Function):
     environment = {
         "COMPLEX_VALUE": {
             "Fn::Join": ["-", [
@@ -153,8 +151,7 @@ Start with a resource file:
 ```python
 from . import *
 
-class DataBucket:
-    resource: s3.Bucket
+class DataBucket(s3.Bucket):
     bucket_name = "my-data"
 ```
 
@@ -169,13 +166,11 @@ Find something low-risk:
 
 ```python
 # Before
-class MyBucket:
-    resource: s3.Bucket
+class MyBucket(s3.Bucket):
     bucket_name = "data"
 
 # After
-class MyBucket:
-    resource: s3.Bucket
+class MyBucket(s3.Bucket):
     bucket_name = "data"
     tags = [{"Key": "Environment", "Value": "dev"}]
 ```
@@ -190,8 +185,7 @@ Create a new file in the package:
 # monitoring.py
 from . import *
 
-class AlertTopic:
-    resource: sns.Topic
+class AlertTopic(sns.Topic):
     topic_name = "alerts"
 ```
 
@@ -200,7 +194,7 @@ Resources auto-register when using `CloudFormationTemplate.from_registry()`.
 ### Day 5: Review the Patterns
 
 By now you've seen:
-- `resource: <type>` to specify the CloudFormation type
+- Classes inherit from resource types (e.g., `class MyBucket(s3.Bucket)`)
 - No-parens references (`MyBucket`, `MyRole.Arn`)
 - `Annotated[T, Ref()]` and `Annotated[str, Attr(T, "name")]` type annotations for introspection
 - Class attributes for properties

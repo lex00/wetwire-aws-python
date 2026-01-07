@@ -7,25 +7,23 @@ Currently, resources within the same file must be ordered so that dependencies c
 ```python
 # This works - B defined before A references it
 @wetwire_aws
-class B:
-    resource: s3.Bucket
+class B(s3.Bucket):
+    pass
 
 @wetwire_aws
-class A:
-    resource: s3.BucketPolicy
+class A(s3.BucketPolicy):
     bucket = B  # B exists, OK
 ```
 
 ```python
 # This fails - A references B before B is defined
 @wetwire_aws
-class A:
-    resource: s3.BucketPolicy
+class A(s3.BucketPolicy):
     bucket = B  # NameError: name 'B' is not defined
 
 @wetwire_aws
-class B:
-    resource: s3.Bucket
+class B(s3.Bucket):
+    pass
 ```
 
 The importer handles this via topological sort, but users writing code by hand may find this ordering constraint surprising.
@@ -200,13 +198,11 @@ def test_forward_reference_in_same_file():
 from . import *
 
 @wetwire_aws
-class BucketPolicy:
-    resource: s3.BucketPolicy
+class BucketPolicy(s3.BucketPolicy):
     bucket = DataBucket  # Forward reference!
 
 @wetwire_aws
-class DataBucket:
-    resource: s3.Bucket
+class DataBucket(s3.Bucket):
     bucket_name = "my-bucket"
 '''
     # Should work without NameError

@@ -34,8 +34,7 @@ wetwire-aws build --module my_infrastructure
 ```python
 from wetwire_aws import *
 
-class MyBucket:
-    resource: s3.Bucket
+class MyBucket(s3.Bucket):
     bucket_name = "my-data-bucket"
 ```
 
@@ -44,8 +43,7 @@ class MyBucket:
 Use direct class references:
 
 ```python
-class MyFunction:
-    resource: lambda_.Function
+class MyFunction(lambda_.Function):
     role = MyRole.Arn  # GetAtt reference
 ```
 
@@ -54,8 +52,7 @@ class MyFunction:
 Use the class name directly:
 
 ```python
-class MySecurityGroup:
-    resource: ec2.SecurityGroup
+class MySecurityGroup(ec2.SecurityGroup):
     vpc_id = MyVPC  # Ref reference
 ```
 
@@ -149,7 +146,7 @@ pip install wetwire-aws
 ### Build produces empty template
 
 Check that:
-1. Resources are declared as classes with `resource: <type>` annotation
+1. Resources are declared as classes inheriting from a resource type (e.g., `class MyBucket(s3.Bucket)`)
 2. The module path is correct in the build command
 3. Classes are in a module that gets imported
 
