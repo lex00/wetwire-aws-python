@@ -32,7 +32,10 @@ wetwire-aws --help     # Show help
 Generate CloudFormation template from registered resources.
 
 ```bash
-# Generate JSON to stdout
+# Build from a package path (simplest)
+wetwire-aws build ./myapp/infra > template.json
+
+# Build using Python module name
 wetwire-aws build --module myapp.infra > template.json
 
 # Generate YAML format
@@ -52,6 +55,7 @@ wetwire-aws build --module myapp --scope myapp.production
 
 | Option | Description |
 |--------|-------------|
+| `PATH` | Path to package directory (alternative to --module) |
 | `--module, -m MODULE` | Python module to import for resource discovery (can be repeated) |
 | `--scope, -s PACKAGE` | Package scope to filter resources |
 | `--format, -f {json,yaml}` | Output format (default: json) |
