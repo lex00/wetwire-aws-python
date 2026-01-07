@@ -247,19 +247,23 @@ def _instantiate_property_type_wrapper(wrapper_cls: type) -> Any:
         # Shouldn't happen if _is_property_type_wrapper was True
         return None
 
-    # Create wrapper instance to get its property values
-    wrapper_instance = wrapper_cls()
-
-    # Collect properties from wrapper (excluding private attrs)
+    # Collect properties from wrapper CLASS attributes (not instance attributes)
+    # User-defined values are class attributes, not instance attributes
     props: dict[str, Any] = {}
-    for k, v in wrapper_instance.__dict__.items():
+    for k, v in wrapper_cls.__dict__.items():
+        # Skip private/dunder attributes and None values
         if k.startswith("_") or v is None:
+            continue
+        # Skip methods and descriptors, but NOT classes (classes are callable but are values)
+        if isinstance(v, (classmethod, staticmethod, property)):
+            continue
+        # Skip functions (methods), but not class types
+        if callable(v) and not isinstance(v, type):
             continue
         # Recursively serialize nested values (handles nested wrappers, lists, etc.)
         props[k] = _serialize_value(v)
 
     # Create and return the PropertyType instance
-    # Use to_dict() on the PropertyType instance
     property_instance = property_type_cls(**props)
     return property_instance
 

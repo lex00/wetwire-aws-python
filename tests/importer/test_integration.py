@@ -122,19 +122,8 @@ def find_empty_dicts(obj: Any, path: str = "") -> list[str]:
 
 # Examples with known serialization issues (PropertyTypes serialize as empty dicts)
 # See: https://github.com/lex00/wetwire-aws-python/issues/68
-KNOWN_BROKEN_EXAMPLES = {
-    "cloudfront",  # BucketEncryption, OwnershipControls, etc. serialize as {}
-    "dynamodb_table",  # KeySchema, AttributeDefinitions serialize as [{}]
-    "lambdasample",  # FunctionCode serializes as {}
-    "ec2instancewithsecuritygroupsample",  # SecurityGroupIngress serializes as {}
-    "cognito",  # UserPoolSchema serializes as {}
-    "load_balancer",  # HealthCheck, Listeners serialize as {}
-    "neptune",  # DBClusterParameterGroup, etc. serialize as {}
-    "iotanalytics",  # Channel, Pipeline configs serialize as {}
-    "cloudformation_codebuild_template",  # BuildSpec serializes as {}
-    "eip_with_association",  # SecurityGroupIngress serializes as {}
-    "compliant_bucket",  # BucketEncryption serializes as {}
-}
+# Fixed in PR #69 - PropertyType class attributes now serialize correctly
+KNOWN_BROKEN_EXAMPLES: set[str] = set()
 
 
 class TestExamplesGenerateCF:
@@ -194,12 +183,15 @@ class TestExamplesGenerateCF:
                 f"{py_resource_count} Python classes, {cf_resource_count} CF resources"
             )
 
-            # Check for empty dicts in Properties (indicates data loss)
+            # Check for empty dicts INSIDE Properties (indicates data loss)
+            # Note: Empty Properties {} at root is valid for some resources (e.g., EC2::EIP)
             for resource_name, resource_data in output.get("Resources", {}).items():
                 props = resource_data.get("Properties", {})
                 empty_paths = find_empty_dicts(props)
-                assert not empty_paths, (
-                    f"Found empty dicts in {example_name}/{resource_name}: {empty_paths}"
+                # Filter out root-level empty (valid for some resources)
+                nested_empty = [p for p in empty_paths if p != "(root)"]
+                assert not nested_empty, (
+                    f"Found empty dicts in {example_name}/{resource_name}: {nested_empty}"
                 )
         finally:
             sys.path.remove(str(example_path))
