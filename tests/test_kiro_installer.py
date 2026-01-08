@@ -70,8 +70,10 @@ class TestKiroInstaller:
             # Verify content
             content = json.loads(config_path.read_text())
             assert content["name"] == "wetwire-runner"
-            assert "allowedTools" in content
-            assert "mcp:wetwire-aws-mcp" in content["allowedTools"]
+            assert content["model"] == "claude-sonnet-4"
+            assert "tools" in content
+            assert "mcpServers" in content
+            assert "wetwire-aws-mcp" in content["mcpServers"]
 
     def test_install_agent_config_skips_existing(self):
         """install_agent_config skips if file exists."""
@@ -129,7 +131,14 @@ class TestKiroInstaller:
             content = json.loads(config_path.read_text())
             assert "mcpServers" in content
             assert "wetwire-aws-mcp" in content["mcpServers"]
-            assert content["mcpServers"]["wetwire-aws-mcp"]["command"] == "wetwire-aws-mcp"
+            # Either uses absolute path (if found) or uv run fallback
+            mcp_server = content["mcpServers"]["wetwire-aws-mcp"]
+            assert "command" in mcp_server
+            # If absolute path found, no args; otherwise uses uv run
+            if mcp_server["command"] != "uv":
+                assert "wetwire-aws-mcp" in mcp_server["command"]
+            else:
+                assert mcp_server["args"] == ["run", "wetwire-aws-mcp"]
 
     def test_install_mcp_config_merges_existing(self):
         """install_mcp_config merges with existing config."""
@@ -218,36 +227,35 @@ class TestAgentConfig:
 
         assert AGENT_CONFIG["name"] == "wetwire-runner"
         assert "description" in AGENT_CONFIG
-        assert "allowedTools" in AGENT_CONFIG
-        assert "context" in AGENT_CONFIG
+        assert AGENT_CONFIG["model"] == "claude-sonnet-4"
+        assert "tools" in AGENT_CONFIG
+        assert "mcpServers" in AGENT_CONFIG
+        assert "prompt" in AGENT_CONFIG
 
-    def test_agent_config_allowed_tools(self):
-        """Agent config has correct allowed tools."""
+    def test_agent_config_tools(self):
+        """Agent config has correct tools setting."""
         from wetwire_aws.kiro.installer import AGENT_CONFIG
 
-        tools = AGENT_CONFIG["allowedTools"]
-        assert "fs_read" in tools
-        assert "fs_write" in tools
-        assert "bash" in tools
-        assert "mcp:wetwire-aws-mcp" in tools
+        # Uses wildcard for all tools
+        assert AGENT_CONFIG["tools"] == ["*"]
 
-    def test_agent_config_context_patterns(self):
-        """Agent config context includes syntax patterns."""
+    def test_agent_config_prompt_patterns(self):
+        """Agent config prompt includes syntax patterns."""
         from wetwire_aws.kiro.installer import AGENT_CONFIG
 
-        patterns = AGENT_CONFIG["context"]["patterns"]
-        assert "RESOURCE DECLARATION" in patterns
-        assert "DIRECT REFERENCES" in patterns
-        assert "NESTED TYPES" in patterns
-        assert "TYPE-SAFE CONSTANTS" in patterns
+        prompt = AGENT_CONFIG["prompt"]
+        assert "RESOURCE DECLARATION" in prompt
+        assert "DIRECT REFERENCES" in prompt
+        assert "NESTED TYPES" in prompt
+        assert "TYPE-SAFE CONSTANTS" in prompt
 
-    def test_agent_config_context_workflow(self):
-        """Agent config context includes workflow."""
+    def test_agent_config_prompt_workflow(self):
+        """Agent config prompt includes workflow."""
         from wetwire_aws.kiro.installer import AGENT_CONFIG
 
-        workflow = AGENT_CONFIG["context"]["workflow"]
-        assert "EXPLORE" in workflow
-        assert "PLAN" in workflow
-        assert "IMPLEMENT" in workflow
-        assert "LINT" in workflow
-        assert "BUILD" in workflow
+        prompt = AGENT_CONFIG["prompt"]
+        assert "EXPLORE" in prompt
+        assert "PLAN" in prompt
+        assert "IMPLEMENT" in prompt
+        assert "LINT" in prompt
+        assert "BUILD" in prompt

@@ -75,11 +75,14 @@ Create `.kiro/mcp.json` in your project directory:
 {
   "mcpServers": {
     "wetwire-aws-mcp": {
-      "command": "wetwire-aws-mcp"
+      "command": "uv",
+      "args": ["run", "wetwire-aws-mcp"]
     }
   }
 }
 ```
+
+> **Note**: Using `uv run` ensures the MCP server command is available in your project's virtual environment.
 
 ---
 
@@ -228,15 +231,28 @@ Reinstall with the kiro extras:
 uv add "wetwire-aws[kiro]"
 ```
 
-### wetwire-aws-mcp command not found
+### wetwire-aws-mcp command not found or MCP server not loading
 
-Ensure the package is installed in your current environment:
+If Kiro reports "One or more mcp server did not load correctly", the issue is usually that the `wetwire-aws-mcp` command isn't found in PATH. The auto-generated MCP config uses `uv run` to solve this:
+
+```json
+{
+  "mcpServers": {
+    "wetwire-aws-mcp": {
+      "command": "uv",
+      "args": ["run", "wetwire-aws-mcp"]
+    }
+  }
+}
+```
+
+Verify the MCP server works:
 
 ```bash
 uv run wetwire-aws-mcp --help
 ```
 
-If using a virtual environment, activate it first or use `uv run`.
+If you have an older config using just `"command": "wetwire-aws-mcp"`, update it to use `uv run` as shown above.
 
 ---
 
@@ -248,6 +264,19 @@ If using a virtual environment, activate it first or use `uv run`.
 | Authentication | AWS credentials | `ANTHROPIC_API_KEY` |
 | Dependency | Kiro CLI + mcp | wetwire-core |
 | Best for | Corporate AWS environments | Direct Anthropic access |
+
+## Known Limitations
+
+### Automated Testing
+
+The Kiro provider's automated tests (`wetwire-aws test --provider kiro`) run scenarios in single-shot mode rather than simulating full multi-turn conversations. This is due to kiro-cli's architecture which requires a TTY for interactive mode.
+
+**What this means:**
+- Interactive usage (`wetwire-aws design --provider kiro`) works fully with back-and-forth conversation
+- Automated persona tests send an enhanced prompt with persona characteristics and let kiro complete the task autonomously
+- The Anthropic provider can simulate full conversations in tests; the Kiro provider cannot
+
+This limitation only affects automated testing. Developers using the interactive design mode get the full conversational experience.
 
 ---
 

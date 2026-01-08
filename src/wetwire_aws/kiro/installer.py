@@ -18,12 +18,16 @@ if TYPE_CHECKING:
     from typing import Any
 
 # Embedded agent configuration
+# Note: mcpServers will be populated dynamically with the correct path
 AGENT_CONFIG: dict[str, Any] = {
     "name": "wetwire-runner",
-    "description": "Infrastructure code generator using wetwire-aws",
-    "allowedTools": ["fs_read", "fs_write", "bash", "mcp:wetwire-aws-mcp"],
-    "context": {
-        "patterns": """wetwire-aws Syntax Principles:
+    "description": "Infrastructure code generator using wetwire-aws Python syntax",
+    "model": "claude-sonnet-4",
+    "tools": ["*"],
+    "mcpServers": {},  # Populated in install_agent_config
+    "prompt": """You are an infrastructure design assistant specialized in AWS CloudFormation using wetwire-aws Python syntax.
+
+## wetwire-aws Python Syntax Principles
 
 1. RESOURCE DECLARATION - Resources are Python classes inheriting from generated types:
    class MyBucket(s3.Bucket):
@@ -41,19 +45,21 @@ AGENT_CONFIG: dict[str, Any] = {
 4. TYPE-SAFE CONSTANTS - Use typed enums instead of strings:
    runtime = lambda_.Runtime.PYTHON3_12  # Not "python3.12"
 
-Key Lint Rules (WAW001-WAW020):
+## Key Lint Rules (WAW001-WAW020)
 - WAW001-004: Use typed constants (parameters, pseudo-params, enums, intrinsics)
 - WAW006: No-parens references (use MyRole.Arn not MyRole().Arn)
 - WAW013: Use wrapper classes, not inline constructors
-- WAW019-020: Avoid explicit Ref() and GetAtt() - use direct references""",
-        "workflow": """Design Workflow:
+- WAW019-020: Avoid explicit Ref() and GetAtt() - use direct references
+
+## Design Workflow
 1. EXPLORE - Understand requirements and clarify with user
 2. PLAN - Design resource architecture
 3. IMPLEMENT - Write Python classes inheriting from AWS types
-4. LINT - Run wetwire_lint to check code patterns
-5. BUILD - Run wetwire_build to generate CloudFormation template
-6. ITERATE - Fix any issues and rebuild""",
-    },
+4. LINT - Run wetwire_lint MCP tool to check code patterns
+5. BUILD - Run wetwire_build MCP tool to generate CloudFormation template
+6. ITERATE - Fix any issues and rebuild
+
+Always use the wetwire_init, wetwire_lint, and wetwire_build MCP tools to create and validate infrastructure code.""",
 }
 
 
@@ -74,6 +80,34 @@ def check_kiro_installed() -> bool:
     return shutil.which("kiro-cli") is not None
 
 
+def _get_mcp_server_path() -> str | None:
+    """Find the absolute path to wetwire-aws-mcp command.
+
+    Returns:
+        Absolute path to the command, or None if not found.
+    """
+    # First check if it's in PATH
+    mcp_path = shutil.which("wetwire-aws-mcp")
+    if mcp_path:
+        return mcp_path
+
+    # Check common locations where uv/pip might install scripts
+    try:
+        # Try to find it via the current Python environment
+        result = subprocess.run(
+            [sys.executable, "-c", "import shutil; print(shutil.which('wetwire-aws-mcp') or '')"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        pass
+
+    return None
+
+
 def install_agent_config(force: bool = False) -> bool:
     """Install the wetwire-runner agent config.
 
@@ -88,8 +122,29 @@ def install_agent_config(force: bool = False) -> bool:
     if config_path.exists() and not force:
         return False
 
+    # Create a copy of the config to populate mcpServers
+    config = AGENT_CONFIG.copy()
+
+    # Find the MCP server path and add to agent config
+    mcp_server_path = _get_mcp_server_path()
+    if mcp_server_path:
+        config["mcpServers"] = {
+            "wetwire-aws-mcp": {
+                "command": mcp_server_path,
+                "args": [],
+            }
+        }
+    else:
+        # Fallback to uv run
+        config["mcpServers"] = {
+            "wetwire-aws-mcp": {
+                "command": "uv",
+                "args": ["run", "wetwire-aws-mcp"],
+            }
+        }
+
     config_path.parent.mkdir(parents=True, exist_ok=True)
-    config_path.write_text(json.dumps(AGENT_CONFIG, indent=2))
+    config_path.write_text(json.dumps(config, indent=2))
     return True
 
 
@@ -119,10 +174,20 @@ def install_mcp_config(project_dir: Path | None = None, force: bool = False) -> 
     else:
         mcp_config = {"mcpServers": {}}
 
-    # Add wetwire-aws-mcp server
-    mcp_config["mcpServers"]["wetwire-aws-mcp"] = {
-        "command": "wetwire-aws-mcp",
-    }
+    # Try to find absolute path to wetwire-aws-mcp
+    mcp_server_path = _get_mcp_server_path()
+
+    if mcp_server_path:
+        # Use absolute path to the installed command
+        mcp_config["mcpServers"]["wetwire-aws-mcp"] = {
+            "command": mcp_server_path,
+        }
+    else:
+        # Fall back to uv run (works if wetwire-aws is installed in project)
+        mcp_config["mcpServers"]["wetwire-aws-mcp"] = {
+            "command": "uv",
+            "args": ["run", "wetwire-aws-mcp"],
+        }
 
     config_path.parent.mkdir(parents=True, exist_ok=True)
     config_path.write_text(json.dumps(mcp_config, indent=2))
@@ -182,7 +247,7 @@ def launch_kiro(prompt: str | None = None, project_dir: Path | None = None) -> i
     # Build command
     cmd = ["kiro-cli", "chat", "--agent", "wetwire-runner"]
     if prompt:
-        cmd.extend(["--message", prompt])
+        cmd.append(prompt)
 
     # Launch Kiro
     try:
@@ -191,6 +256,73 @@ def launch_kiro(prompt: str | None = None, project_dir: Path | None = None) -> i
     except FileNotFoundError:
         print("Error: Failed to launch kiro-cli.", file=sys.stderr)
         return 1
+
+
+def _run_with_script(
+    cmd: list[str],
+    cwd: Path,
+    timeout: int,
+) -> tuple[int, str, str]:
+    """Run a command with a pseudo-terminal using the 'script' utility.
+
+    kiro-cli requires a TTY even with --no-interactive, so we use
+    the 'script' command to provide one. This is more robust than
+    using Python's pty module directly.
+
+    Args:
+        cmd: Command and arguments to run.
+        cwd: Working directory.
+        timeout: Timeout in seconds.
+
+    Returns:
+        Tuple of (exit_code, stdout, stderr).
+    """
+    import platform
+    import tempfile
+
+    # Create a temp file for output
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+        output_file = f.name
+
+    try:
+        # Build script command - differs between macOS and Linux
+        if platform.system() == "Darwin":
+            # macOS: script -q output_file command args...
+            script_cmd = ["script", "-q", output_file] + cmd
+        else:
+            # Linux: script -q -c "command args..." output_file
+            script_cmd = ["script", "-q", "-c", " ".join(cmd), output_file]
+
+        # Don't capture output - let script handle it via the output file
+        # stdin from /dev/null to prevent blocking on input
+        with open("/dev/null", "r") as devnull:
+            result = subprocess.run(
+                script_cmd,
+                cwd=cwd,
+                stdin=devnull,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=timeout,
+            )
+
+        # Read output from file
+        try:
+            with open(output_file) as f:
+                stdout = f.read()
+        except FileNotFoundError:
+            stdout = ""
+
+        return result.returncode, stdout, result.stderr or ""
+
+    except subprocess.TimeoutExpired:
+        return -1, "", f"Timeout after {timeout} seconds"
+    finally:
+        # Clean up output file
+        try:
+            Path(output_file).unlink()
+        except FileNotFoundError:
+            pass
 
 
 def run_kiro_scenario(
@@ -203,6 +335,9 @@ def run_kiro_scenario(
 
     This function runs kiro-cli with a prompt and captures output,
     suitable for automated testing and CI pipelines.
+
+    Note: kiro-cli requires a TTY even with --no-interactive, so this
+    function uses a pseudo-terminal (PTY) wrapper on Unix systems.
 
     Args:
         prompt: The infrastructure prompt to send to Kiro.
@@ -252,38 +387,36 @@ def run_kiro_scenario(
         )
 
     # Build command for non-interactive execution
+    # kiro-cli chat [OPTIONS] [INPUT] - input is positional
     cmd = [
         "kiro-cli",
         "chat",
         "--agent", "wetwire-runner",
-        "--message", full_prompt,
-        "--no-interactive",  # Run without interactive prompts
+        "--no-interactive",
+        "--trust-all-tools",  # Auto-approve tool usage for non-interactive mode
+        full_prompt,
     ]
 
-    # Run kiro-cli
+    # Run kiro-cli with PTY wrapper (required even with --no-interactive)
     try:
-        result = subprocess.run(
-            cmd,
-            cwd=project_dir,
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-        )
-    except subprocess.TimeoutExpired:
-        return {
-            "success": False,
-            "exit_code": -1,
-            "stdout": "",
-            "stderr": f"Timeout after {timeout} seconds",
-            "package_path": None,
-            "template_valid": False,
-        }
+        exit_code, stdout, stderr = _run_with_script(cmd, project_dir, timeout)
     except FileNotFoundError:
         return {
             "success": False,
             "exit_code": 1,
             "stdout": "",
             "stderr": "Failed to launch kiro-cli",
+            "package_path": None,
+            "template_valid": False,
+        }
+
+    # Handle timeout
+    if exit_code == -1 and "Timeout" in stderr:
+        return {
+            "success": False,
+            "exit_code": -1,
+            "stdout": stdout,
+            "stderr": stderr,
             "package_path": None,
             "template_valid": False,
         }
@@ -312,10 +445,10 @@ def run_kiro_scenario(
             pass
 
     return {
-        "success": result.returncode == 0 and template_valid,
-        "exit_code": result.returncode,
-        "stdout": result.stdout,
-        "stderr": result.stderr,
+        "success": exit_code == 0 and template_valid,
+        "exit_code": exit_code,
+        "stdout": stdout,
+        "stderr": stderr,
         "package_path": package_path,
         "template_valid": template_valid,
     }
