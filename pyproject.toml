@@ -55,6 +55,9 @@ agent = [
     "wetwire-core>=1.0.1",
     "anthropic>=0.40.0",
 ]
+kiro = [
+    "mcp>=1.0.0",
+]
 
 [dependency-groups]
 dev = [
@@ -80,6 +83,7 @@ Issues = "https://github.com/lex00/wetwire-aws-python/issues"
 
 [project.scripts]
 wetwire-aws = "wetwire_aws.cli:main"
+wetwire-aws-mcp = "wetwire_aws.mcp_server:main"
 
 [tool.hatch.build.hooks.custom]
 path = "hatch_build.py"

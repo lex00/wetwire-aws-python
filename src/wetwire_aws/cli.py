@@ -170,81 +170,138 @@ def import_command(args: argparse.Namespace) -> None:
 
 def design_command(args: argparse.Namespace) -> None:
     """Run AI-assisted infrastructure design."""
-    try:
-        from wetwire_core.agents import run_interactive_design
-    except ImportError:
-        print(
-            "Error: wetwire-core required for design mode. "
-            "Install with: pip install wetwire-core",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
+    provider = getattr(args, "provider", "anthropic")
     output_dir = Path(args.output) if args.output else Path.cwd()
     prompt = args.prompt if args.prompt else None
 
-    package_path, messages = run_interactive_design(
-        initial_prompt=prompt,
-        output_dir=output_dir,
-    )
+    if provider == "kiro":
+        # Use Kiro CLI provider
+        try:
+            from wetwire_aws.kiro import launch_kiro
+        except ImportError:
+            print(
+                "Error: Kiro integration requires mcp package. "
+                "Install with: pip install wetwire-aws[kiro]",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
-    if package_path:
-        print(f"\nPackage created: {package_path}")
+        exit_code = launch_kiro(prompt=prompt, project_dir=output_dir)
+        sys.exit(exit_code)
     else:
-        print("\nNo package created.")
+        # Use Anthropic API via wetwire-core
+        try:
+            from wetwire_core.agents import run_interactive_design
+        except ImportError:
+            print(
+                "Error: wetwire-core required for design mode. "
+                "Install with: pip install wetwire-core",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        package_path, messages = run_interactive_design(
+            initial_prompt=prompt,
+            output_dir=output_dir,
+        )
+
+        if package_path:
+            print(f"\nPackage created: {package_path}")
+        else:
+            print("\nNo package created.")
 
 
 def test_command(args: argparse.Namespace) -> None:
     """Run automated persona-based testing."""
-    try:
-        from wetwire_core.agents import run_ai_scenario
-    except ImportError:
-        print(
-            "Error: wetwire-core required for test mode. "
-            "Install with: pip install wetwire-core",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
-    # Persona definitions
-    personas = {
-        "beginner": "You are new to AWS. Ask clarifying questions about basic concepts.",
-        "intermediate": "You have moderate AWS experience. Ask about best practices.",
-        "expert": "You are an AWS expert. Ask about advanced configurations and edge cases.",
-        "terse": "Give minimal, short responses. Just answer what's asked.",
-        "verbose": "Provide detailed context and requirements in your responses.",
-    }
-
-    persona_name = args.persona
-    if persona_name not in personas:
-        print(f"Error: Unknown persona '{persona_name}'", file=sys.stderr)
-        print(f"Available: {', '.join(personas.keys())}", file=sys.stderr)
-        sys.exit(1)
-
+    provider = getattr(args, "provider", "anthropic")
     output_dir = Path(args.output) if args.output else Path.cwd()
 
-    print(f"Running test with persona: {persona_name}")
-    print(f"Prompt: {args.prompt}")
-    print()
+    if provider == "kiro":
+        # Use Kiro CLI provider
+        try:
+            from wetwire_aws.kiro import run_kiro_scenario
+        except ImportError:
+            print(
+                "Error: Kiro integration requires mcp package. "
+                "Install with: pip install wetwire-aws[kiro]",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
-    package_path, messages = run_ai_scenario(
-        prompt=args.prompt,
-        persona_name=persona_name,
-        persona_instructions=personas[persona_name],
-        output_dir=output_dir,
-    )
+        print(f"Running Kiro scenario: {args.prompt}")
+        print()
 
-    # Print conversation summary
-    print("\n--- Conversation Summary ---")
-    for msg in messages:
-        role = msg.role.upper()
-        content = msg.content[:100] + "..." if len(msg.content) > 100 else msg.content
-        print(f"[{role}] {content}")
+        result = run_kiro_scenario(
+            prompt=args.prompt,
+            project_dir=output_dir,
+            timeout=getattr(args, "timeout", 300),
+        )
 
-    if package_path:
-        print(f"\nPackage created: {package_path}")
+        # Print results
+        print("\n--- Scenario Results ---")
+        print(f"Success: {result['success']}")
+        print(f"Exit code: {result['exit_code']}")
+        print(f"Package: {result['package_path'] or 'None'}")
+        print(f"Template valid: {result['template_valid']}")
+
+        if result["stdout"]:
+            print("\n--- Stdout ---")
+            print(result["stdout"][:2000])
+
+        if result["stderr"]:
+            print("\n--- Stderr ---")
+            print(result["stderr"][:1000])
+
+        sys.exit(0 if result["success"] else 1)
     else:
-        print("\nNo package created (test may have failed).")
+        # Use Anthropic API via wetwire-core
+        try:
+            from wetwire_core.agents import run_ai_scenario
+        except ImportError:
+            print(
+                "Error: wetwire-core required for test mode. "
+                "Install with: pip install wetwire-core",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        # Persona definitions
+        personas = {
+            "beginner": "You are new to AWS. Ask clarifying questions about basic concepts.",
+            "intermediate": "You have moderate AWS experience. Ask about best practices.",
+            "expert": "You are an AWS expert. Ask about advanced configurations and edge cases.",
+            "terse": "Give minimal, short responses. Just answer what's asked.",
+            "verbose": "Provide detailed context and requirements in your responses.",
+        }
+
+        persona_name = args.persona
+        if persona_name not in personas:
+            print(f"Error: Unknown persona '{persona_name}'", file=sys.stderr)
+            print(f"Available: {', '.join(personas.keys())}", file=sys.stderr)
+            sys.exit(1)
+
+        print(f"Running test with persona: {persona_name}")
+        print(f"Prompt: {args.prompt}")
+        print()
+
+        package_path, messages = run_ai_scenario(
+            prompt=args.prompt,
+            persona_name=persona_name,
+            persona_instructions=personas[persona_name],
+            output_dir=output_dir,
+        )
+
+        # Print conversation summary
+        print("\n--- Conversation Summary ---")
+        for msg in messages:
+            role = msg.role.upper()
+            content = msg.content[:100] + "..." if len(msg.content) > 100 else msg.content
+            print(f"[{role}] {content}")
+
+        if package_path:
+            print(f"\nPackage created: {package_path}")
+        else:
+            print("\nNo package created (test may have failed).")
 
 
 def build_command(args: argparse.Namespace) -> None:
@@ -485,7 +542,7 @@ def main() -> None:
     # Design command (AI-assisted)
     design_parser = subparsers.add_parser(
         "design",
-        help="AI-assisted infrastructure design (requires wetwire-core)",
+        help="AI-assisted infrastructure design",
     )
     design_parser.add_argument(
         "prompt",
@@ -497,12 +554,19 @@ def main() -> None:
         "-o",
         help="Output directory (default: current directory)",
     )
+    design_parser.add_argument(
+        "--provider",
+        "-p",
+        choices=["anthropic", "kiro"],
+        default="anthropic",
+        help="AI provider to use (default: anthropic)",
+    )
     design_parser.set_defaults(func=design_command)
 
     # Test command (automated testing with personas)
     test_parser = subparsers.add_parser(
         "test",
-        help="Run automated persona-based testing (requires wetwire-core)",
+        help="Run automated scenario testing",
     )
     test_parser.add_argument(
         "prompt",
@@ -510,14 +574,27 @@ def main() -> None:
     )
     test_parser.add_argument(
         "--persona",
-        "-p",
         default="intermediate",
-        help="Persona to use: beginner, intermediate, expert, terse, verbose (default: intermediate)",
+        help="Persona to use (anthropic only): beginner, intermediate, expert, terse, verbose",
     )
     test_parser.add_argument(
         "--output",
         "-o",
         help="Output directory (default: current directory)",
+    )
+    test_parser.add_argument(
+        "--provider",
+        "-p",
+        choices=["anthropic", "kiro"],
+        default="anthropic",
+        help="AI provider to use (default: anthropic)",
+    )
+    test_parser.add_argument(
+        "--timeout",
+        "-t",
+        type=int,
+        default=300,
+        help="Timeout in seconds for kiro provider (default: 300)",
     )
     test_parser.set_defaults(func=test_command)
 
