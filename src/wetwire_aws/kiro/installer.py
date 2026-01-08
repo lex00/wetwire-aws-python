@@ -247,7 +247,7 @@ def launch_kiro(prompt: str | None = None, project_dir: Path | None = None) -> i
     install_kiro_configs(project_dir=project_dir, verbose=True)
 
     # Build command
-    cmd = ["kiro-cli", "chat", "--agent", "wetwire-runner"]
+    cmd = ["kiro-cli", "chat", "--agent", "wetwire-runner", "--trust-all-tools"]
     # Always send an initial message to start the conversation
     # If user provided a prompt, use it; otherwise ask agent to introduce itself
     initial_message = prompt if prompt else "Hello! I'm ready to design some AWS infrastructure."
