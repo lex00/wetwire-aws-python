@@ -200,8 +200,18 @@ def _build_template(path: str, output_format: str = "json") -> dict[str, Any]:
     if parent_dir not in sys.path:
         sys.path.insert(0, parent_dir)
 
-    registry = get_aws_registry()
     module_name = package_path.name
+
+    # Force reimport by clearing cached modules
+    # This ensures new files are picked up and stubs are regenerated
+    modules_to_remove = [
+        key for key in sys.modules
+        if key == module_name or key.startswith(f"{module_name}.")
+    ]
+    for mod in modules_to_remove:
+        del sys.modules[mod]
+
+    registry = get_aws_registry()
     discover_resources(module_name, registry, verbose=False)
 
     # Check if any resources are registered
