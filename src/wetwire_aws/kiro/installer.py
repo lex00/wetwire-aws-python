@@ -276,8 +276,8 @@ def launch_kiro(prompt: str | None = None, project_dir: Path | None = None) -> i
         )
         return 1
 
-    # Ensure configs are installed
-    install_kiro_configs(project_dir=project_dir, verbose=True)
+    # Force reinstall configs every time to ensure latest agent prompt is used
+    install_kiro_configs(project_dir=project_dir, force=True, verbose=True)
 
     # Build command
     cmd = ["kiro-cli", "chat", "--agent", "wetwire-runner", "--trust-all-tools"]
