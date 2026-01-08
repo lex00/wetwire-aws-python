@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Type stub file `base.pyi` for IDE support of `.Arn` attributes (#75)
+  - Declares `ResourceMeta.__getattr__` returning `AttrRef` for type checkers
+  - Enables IDE resolution of patterns like `MyBucket.Arn`
+
 ## [1.7.2] - 2026-01-07
 
 ### Fixed

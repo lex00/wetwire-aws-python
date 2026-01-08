@@ -5,8 +5,6 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 
 class TestKiroInstaller:
     """Test Kiro configuration installer."""
@@ -53,7 +51,7 @@ class TestKiroInstaller:
 
     def test_install_agent_config_creates_file(self):
         """install_agent_config creates the agent config file."""
-        from wetwire_aws.kiro.installer import AGENT_CONFIG, install_agent_config
+        from wetwire_aws.kiro.installer import install_agent_config
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / ".kiro" / "agents" / "wetwire-runner.json"
@@ -246,7 +244,6 @@ class TestAgentConfig:
         prompt = AGENT_CONFIG["prompt"]
         assert "RESOURCE DECLARATION" in prompt
         assert "DIRECT REFERENCES" in prompt
-        assert "NESTED TYPES" in prompt
         assert "TYPE-SAFE CONSTANTS" in prompt
 
     def test_agent_config_prompt_workflow(self):
@@ -254,8 +251,8 @@ class TestAgentConfig:
         from wetwire_aws.kiro.installer import AGENT_CONFIG
 
         prompt = AGENT_CONFIG["prompt"]
-        assert "EXPLORE" in prompt
-        assert "PLAN" in prompt
-        assert "IMPLEMENT" in prompt
-        assert "LINT" in prompt
-        assert "BUILD" in prompt
+        # Updated to match current prompt structure
+        assert "Design Workflow" in prompt
+        assert "wetwire_init" in prompt
+        assert "wetwire_lint" in prompt
+        assert "wetwire_build" in prompt

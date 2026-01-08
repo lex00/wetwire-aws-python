@@ -5,8 +5,6 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-
 
 class TestMCPServerHelpers:
     """Test MCP server helper functions."""

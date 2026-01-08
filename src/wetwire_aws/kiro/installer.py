@@ -378,7 +378,7 @@ def _run_with_script(
 
         # Don't capture output - let script handle it via the output file
         # stdin from /dev/null to prevent blocking on input
-        with open("/dev/null", "r") as devnull:
+        with open("/dev/null") as devnull:
             result = subprocess.run(
                 script_cmd,
                 cwd=cwd,
