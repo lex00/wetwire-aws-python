@@ -414,7 +414,9 @@ The CLI uses dataclass-dsl for:
 
 AI-assisted infrastructure design. Starts an interactive session where you describe infrastructure in natural language and the AI generates wetwire-aws Python code.
 
-**Requires:** `wetwire-core` package and an Anthropic API key in `ANTHROPIC_API_KEY`.
+**Providers:**
+- `anthropic` (default) - Requires `wetwire-core` package and `ANTHROPIC_API_KEY`
+- `kiro` - Requires Kiro CLI and `wetwire-aws[kiro]`. See [Kiro CLI Guide](AWS-KIRO-CLI.md)
 
 ```bash
 # Start interactive design session
@@ -425,6 +427,9 @@ wetwire-aws design "Create a serverless API with Lambda and API Gateway"
 
 # Specify output directory
 wetwire-aws design -o ./myproject "Create an S3 bucket with encryption"
+
+# Use Kiro CLI instead of Anthropic API
+wetwire-aws design --provider kiro "Create an S3 bucket with versioning"
 ```
 
 ### Options
@@ -433,6 +438,7 @@ wetwire-aws design -o ./myproject "Create an S3 bucket with encryption"
 |--------|-------------|
 | `prompt` | Initial prompt describing what to build (optional, interactive if omitted) |
 | `-o, --output` | Output directory (default: current directory) |
+| `-p, --provider` | AI provider: `anthropic` (default) or `kiro` |
 
 ### How It Works
 
