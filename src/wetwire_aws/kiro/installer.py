@@ -191,3 +191,131 @@ def launch_kiro(prompt: str | None = None, project_dir: Path | None = None) -> i
     except FileNotFoundError:
         print("Error: Failed to launch kiro-cli.", file=sys.stderr)
         return 1
+
+
+def run_kiro_scenario(
+    prompt: str,
+    project_dir: Path | None = None,
+    timeout: int = 300,
+    auto_exit: bool = True,
+) -> dict[str, Any]:
+    """Run a Kiro CLI scenario non-interactively for testing.
+
+    This function runs kiro-cli with a prompt and captures output,
+    suitable for automated testing and CI pipelines.
+
+    Args:
+        prompt: The infrastructure prompt to send to Kiro.
+        project_dir: Project directory. Defaults to temp directory.
+        timeout: Maximum time in seconds to wait (default: 300).
+        auto_exit: If True, append instruction to exit after completion.
+
+    Returns:
+        Dict with keys:
+            - success: bool - Whether the scenario completed successfully
+            - exit_code: int - Process exit code
+            - stdout: str - Captured stdout
+            - stderr: str - Captured stderr
+            - package_path: str | None - Path to created package if any
+            - template_valid: bool - Whether build produced valid template
+    """
+    import tempfile
+
+    if not check_kiro_installed():
+        return {
+            "success": False,
+            "exit_code": 1,
+            "stdout": "",
+            "stderr": "Kiro CLI not found",
+            "package_path": None,
+            "template_valid": False,
+        }
+
+    # Use temp directory if not specified
+    if project_dir is None:
+        temp_dir = tempfile.mkdtemp(prefix="kiro_test_")
+        project_dir = Path(temp_dir)
+    else:
+        project_dir = Path(project_dir)
+        project_dir.mkdir(parents=True, exist_ok=True)
+
+    # Ensure configs are installed
+    install_kiro_configs(project_dir=project_dir, verbose=False)
+
+    # Build the full prompt with auto-exit instruction
+    full_prompt = prompt
+    if auto_exit:
+        full_prompt = (
+            f"{prompt}\n\n"
+            "After successfully creating the package and running lint and build, "
+            "output 'SCENARIO_COMPLETE' and exit."
+        )
+
+    # Build command for non-interactive execution
+    cmd = [
+        "kiro-cli",
+        "chat",
+        "--agent", "wetwire-runner",
+        "--message", full_prompt,
+        "--no-interactive",  # Run without interactive prompts
+    ]
+
+    # Run kiro-cli
+    try:
+        result = subprocess.run(
+            cmd,
+            cwd=project_dir,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return {
+            "success": False,
+            "exit_code": -1,
+            "stdout": "",
+            "stderr": f"Timeout after {timeout} seconds",
+            "package_path": None,
+            "template_valid": False,
+        }
+    except FileNotFoundError:
+        return {
+            "success": False,
+            "exit_code": 1,
+            "stdout": "",
+            "stderr": "Failed to launch kiro-cli",
+            "package_path": None,
+            "template_valid": False,
+        }
+
+    # Find created package (look for directories with __init__.py)
+    package_path = None
+    for item in project_dir.iterdir():
+        if item.is_dir() and (item / "__init__.py").exists():
+            # Skip .kiro directory
+            if item.name != ".kiro":
+                package_path = str(item)
+                break
+
+    # Check if template is valid by running build
+    template_valid = False
+    if package_path:
+        try:
+            build_result = subprocess.run(
+                ["wetwire-aws", "build", package_path],
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            template_valid = build_result.returncode == 0
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            pass
+
+    return {
+        "success": result.returncode == 0 and template_valid,
+        "exit_code": result.returncode,
+        "stdout": result.stdout,
+        "stderr": result.stderr,
+        "package_path": package_path,
+        "template_valid": template_valid,
+    }

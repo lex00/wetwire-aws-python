@@ -17,10 +17,12 @@ from wetwire_aws.kiro.installer import (
     check_kiro_installed,
     install_kiro_configs,
     launch_kiro,
+    run_kiro_scenario,
 )
 
 __all__ = [
     "check_kiro_installed",
     "install_kiro_configs",
     "launch_kiro",
+    "run_kiro_scenario",
 ]
