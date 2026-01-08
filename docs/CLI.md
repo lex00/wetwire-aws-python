@@ -480,12 +480,14 @@ Replace `[DESCRIBE YOUR INFRASTRUCTURE]` with what you want to build, e.g., "an 
 
 ## test
 
-Run automated persona-based testing to evaluate AI code generation quality. Unlike `design`, this command uses an AI persona to simulate user responses instead of interactive input.
+Run automated scenario testing to evaluate AI code generation quality. Unlike `design`, this command runs non-interactively and reports results.
 
-**Requires:** `wetwire-core` package and an Anthropic API key in `ANTHROPIC_API_KEY`.
+**Providers:**
+- `anthropic` (default) - Uses persona-based testing with `wetwire-core` and `ANTHROPIC_API_KEY`
+- `kiro` - Uses Kiro CLI for scenario execution. See [Kiro CLI Guide](AWS-KIRO-CLI.md)
 
 ```bash
-# Run with default persona (intermediate)
+# Run with default persona (intermediate) using Anthropic
 wetwire-aws test "Create an S3 bucket with versioning"
 
 # Use a specific persona
@@ -493,6 +495,12 @@ wetwire-aws test --persona beginner "Create a Lambda function"
 
 # Specify output directory
 wetwire-aws test -o ./output "Create encrypted bucket"
+
+# Use Kiro CLI instead of Anthropic
+wetwire-aws test --provider kiro "Create an S3 bucket"
+
+# Kiro with custom timeout (default: 300s)
+wetwire-aws test --provider kiro --timeout 600 "Create a Lambda with DynamoDB"
 ```
 
 ### Personas
@@ -512,10 +520,12 @@ Personas simulate different user skill levels and communication styles:
 | Option | Description |
 |--------|-------------|
 | `prompt` | Infrastructure description to test (required) |
-| `-p, --persona` | Persona to use (default: `intermediate`) |
+| `--persona` | Persona to use for anthropic provider (default: `intermediate`) |
 | `-o, --output` | Output directory (default: current directory) |
+| `-p, --provider` | AI provider: `anthropic` (default) or `kiro` |
+| `-t, --timeout` | Timeout in seconds for kiro provider (default: 300) |
 
-### How It Works
+### How It Works (Anthropic)
 
 The `test` command runs the same workflow as `design`, but replaces human input with AI-simulated responses:
 
@@ -542,13 +552,44 @@ Prompt: Create an S3 bucket
 Package created: ./s3_bucket
 ```
 
+### How It Works (Kiro)
+
+With `--provider kiro`, the test command runs a non-interactive Kiro CLI scenario:
+
+1. **Setup**: Installs Kiro agent and MCP configs if needed
+2. **Execution**: Runs `kiro-cli` with the prompt and wetwire-runner agent
+3. **Validation**: Runs `wetwire-aws build` to verify the generated template
+4. **Results**: Reports success/failure, package path, and template validity
+
+### Kiro Output
+
+```
+Running Kiro scenario: Create an S3 bucket
+
+--- Scenario Results ---
+Success: True
+Exit code: 0
+Package: /tmp/kiro_test_abc123/s3_bucket
+Template valid: True
+```
+
+### Running Integration Tests
+
+To run the full Kiro integration test suite:
+
+```bash
+KIRO_TESTS=1 pytest tests/test_kiro_integration.py -v
+```
+
+This runs 13 scenario tests covering resource creation, pattern verification, and error handling.
+
 ---
 
 ## Dependencies
 
-### wetwire-core
+### wetwire-core (Anthropic provider)
 
-The `design` and `test` commands require [wetwire-core](https://github.com/lex00/wetwire-core-python), which provides:
+The `design` and `test` commands with `--provider anthropic` (default) require [wetwire-core](https://github.com/lex00/wetwire-core-python), which provides:
 
 - **Runner Agent**: Orchestrates the AI-driven code generation workflow
 - **Developer Agent**: Simulates user personas for automated testing
@@ -566,16 +607,34 @@ uv add wetwire-core
 
 ### Anthropic API
 
-The `design` and `test` commands require an Anthropic API key:
+The `--provider anthropic` option requires an Anthropic API key:
 
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."
 ```
+
+### Kiro CLI (Kiro provider)
+
+The `--provider kiro` option requires:
+
+1. **Kiro CLI** installed and in PATH ([installation guide](https://kiro.dev/docs/cli/))
+2. **wetwire-aws[kiro]** extras for MCP support
+
+```bash
+# Install wetwire-aws with Kiro support
+uv add "wetwire-aws[kiro]"
+
+# Verify Kiro CLI is installed
+kiro-cli --version
+```
+
+See the [Kiro CLI Guide](AWS-KIRO-CLI.md) for detailed setup instructions.
 
 ---
 
 ## See Also
 
 - [Quick Start](QUICK_START.md) - Create your first project
+- [Kiro CLI Guide](AWS-KIRO-CLI.md) - Using wetwire-aws with Kiro CLI
 - [Internals](INTERNALS.md) - How auto-registration works
 - [Adoption Guide](ADOPTION.md) - Migration strategies
