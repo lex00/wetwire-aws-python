@@ -108,8 +108,10 @@ EXAMPLE - Creating an S3 bucket:
 
 IMPORTANT:
 - Only call wetwire_init ONCE per package
-- Never delete and recreate - fix errors instead
-- Never modify __init__.py - only create new .py files""",
+- NEVER delete directories or start over - always fix errors in place
+- NEVER modify __init__.py - only create/edit other .py files
+- If lint or build fails, read the error, fix the code, and retry
+- Keep iterating on the SAME package until it works""",
 }
 
 
