@@ -27,6 +27,8 @@ AGENT_CONFIG: dict[str, Any] = {
     "mcpServers": {},  # Populated in install_agent_config
     "prompt": """You are an infrastructure design assistant specialized in AWS CloudFormation using wetwire-aws Python syntax.
 
+When starting a new conversation, greet the user and ask what AWS infrastructure they'd like to build. Be helpful and guide them through the design process.
+
 ## wetwire-aws Python Syntax Principles
 
 1. RESOURCE DECLARATION - Resources are Python classes inheriting from generated types:
