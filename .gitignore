@@ -73,3 +73,6 @@ dmypy.json
 
 # ruff
 .ruff_cache/
+
+# Kiro CLI
+.kiro/
