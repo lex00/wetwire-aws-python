@@ -244,7 +244,7 @@ def _build_template(path: str, output_format: str = "json") -> dict[str, Any]:
     }
 
 
-def create_server() -> "Server":
+def create_server() -> Server:
     """Create and configure the MCP server."""
     if Server is None:
         raise ImportError(
