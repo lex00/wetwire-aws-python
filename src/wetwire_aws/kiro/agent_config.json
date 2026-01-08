@@ -1,0 +1,9 @@
+{
+  "name": "wetwire-runner",
+  "description": "Infrastructure code generator using wetwire-aws",
+  "allowedTools": ["fs_read", "fs_write", "bash", "mcp:wetwire-aws-mcp"],
+  "context": {
+    "patterns": "wetwire-aws Syntax Principles:\n\n1. RESOURCE DECLARATION - Resources are Python classes inheriting from generated types:\n   class MyBucket(s3.Bucket):\n       bucket_name = \"my-data\"\n\n2. DIRECT REFERENCES - Reference other resources by class name:\n   class MyFunction(lambda_.Function):\n       role = MyRole.Arn  # GetAtt via attribute access\n       environment = MyEnv\n\n3. NESTED TYPES - Extract nested configs to separate classes:\n   class MyEnv(lambda_.Environment):\n       variables = MyVariables\n\n4. TYPE-SAFE CONSTANTS - Use typed enums instead of strings:\n   runtime = lambda_.Runtime.PYTHON3_12  # Not \"python3.12\"\n\nKey Lint Rules (WAW001-WAW020):\n- WAW001-004: Use typed constants (parameters, pseudo-params, enums, intrinsics)\n- WAW006: No-parens references (use MyRole.Arn not MyRole().Arn)\n- WAW013: Use wrapper classes, not inline constructors\n- WAW019-020: Avoid explicit Ref() and GetAtt() - use direct references",
+    "workflow": "Design Workflow:\n1. EXPLORE - Understand requirements and clarify with user\n2. PLAN - Design resource architecture\n3. IMPLEMENT - Write Python classes inheriting from AWS types\n4. LINT - Run wetwire_lint to check code patterns\n5. BUILD - Run wetwire_build to generate CloudFormation template\n6. ITERATE - Fix any issues and rebuild"
+  }
+}

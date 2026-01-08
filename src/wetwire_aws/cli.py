@@ -170,28 +170,45 @@ def import_command(args: argparse.Namespace) -> None:
 
 def design_command(args: argparse.Namespace) -> None:
     """Run AI-assisted infrastructure design."""
-    try:
-        from wetwire_core.agents import run_interactive_design
-    except ImportError:
-        print(
-            "Error: wetwire-core required for design mode. "
-            "Install with: pip install wetwire-core",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
+    provider = getattr(args, "provider", "anthropic")
     output_dir = Path(args.output) if args.output else Path.cwd()
     prompt = args.prompt if args.prompt else None
 
-    package_path, messages = run_interactive_design(
-        initial_prompt=prompt,
-        output_dir=output_dir,
-    )
+    if provider == "kiro":
+        # Use Kiro CLI provider
+        try:
+            from wetwire_aws.kiro import launch_kiro
+        except ImportError:
+            print(
+                "Error: Kiro integration requires mcp package. "
+                "Install with: pip install wetwire-aws[kiro]",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
-    if package_path:
-        print(f"\nPackage created: {package_path}")
+        exit_code = launch_kiro(prompt=prompt, project_dir=output_dir)
+        sys.exit(exit_code)
     else:
-        print("\nNo package created.")
+        # Use Anthropic API via wetwire-core
+        try:
+            from wetwire_core.agents import run_interactive_design
+        except ImportError:
+            print(
+                "Error: wetwire-core required for design mode. "
+                "Install with: pip install wetwire-core",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        package_path, messages = run_interactive_design(
+            initial_prompt=prompt,
+            output_dir=output_dir,
+        )
+
+        if package_path:
+            print(f"\nPackage created: {package_path}")
+        else:
+            print("\nNo package created.")
 
 
 def test_command(args: argparse.Namespace) -> None:
@@ -485,7 +502,7 @@ def main() -> None:
     # Design command (AI-assisted)
     design_parser = subparsers.add_parser(
         "design",
-        help="AI-assisted infrastructure design (requires wetwire-core)",
+        help="AI-assisted infrastructure design",
     )
     design_parser.add_argument(
         "prompt",
@@ -496,6 +513,13 @@ def main() -> None:
         "--output",
         "-o",
         help="Output directory (default: current directory)",
+    )
+    design_parser.add_argument(
+        "--provider",
+        "-p",
+        choices=["anthropic", "kiro"],
+        default="anthropic",
+        help="AI provider to use (default: anthropic)",
     )
     design_parser.set_defaults(func=design_command)
 
