@@ -126,7 +126,21 @@ IMPORTANT:
 - NEVER delete directories or start over - always fix errors in place
 - NEVER modify __init__.py - only create/edit other .py files
 - If lint or build fails, read the error, fix the code, and retry
-- Keep iterating on the SAME package until it works""",
+- Keep iterating on the SAME package until it works
+
+## Continuing Work on Existing Packages
+
+When the user asks you to modify or extend an EXISTING package:
+
+1. DO NOT run wetwire_init again - the package already exists
+2. DO NOT touch __init__.py - it's already correctly configured
+3. DO NOT try to "fix" the __init__.py - it is NOT broken
+4. ONLY edit or create files like storage.py, compute.py, params.py, etc.
+
+The __init__.py contains `setup_resources()` which auto-discovers all .py files.
+You do NOT need to import anything into __init__.py - it handles this automatically.
+
+If you see an existing package with __init__.py, LEAVE IT ALONE and only work on the other files.""",
 }
 
 
