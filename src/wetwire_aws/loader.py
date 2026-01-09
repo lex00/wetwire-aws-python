@@ -26,19 +26,125 @@ from dataclass_dsl import setup_resources as _setup_resources
 from wetwire_aws.stubs import AWS_STUB_CONFIG
 
 
+def _get_base_namespace() -> dict[str, Any]:
+    """Get the base namespace shared by both setup_params and setup_resources.
+
+    This contains the common elements needed by both params.py and resource files:
+    - wetwire_aws decorator
+    - Template components (Parameter, Output, Mapping, TemplateCondition)
+    - Policy helpers (PolicyStatement, DenyStatement, PolicyDocument)
+    - Parameter type constants (STRING, NUMBER, etc.)
+    - Condition intrinsics (Equals, Not, And, Or, If, Condition)
+    - Pseudo-parameters (AWS_REGION, AWS_ACCOUNT_ID, etc.)
+    - ref helper
+    """
+    from wetwire_aws.base import DenyStatement, PolicyDocument, PolicyStatement
+    from wetwire_aws.decorator import wetwire_aws
+    from wetwire_aws.intrinsics import ref
+    from wetwire_aws.intrinsics.functions import (
+        And,
+        Equals,
+        If,
+        Not,
+        Or,
+    )
+    from wetwire_aws.intrinsics.functions import Condition as ConditionIntrinsic
+    from wetwire_aws.intrinsics.pseudo import (
+        AWS_ACCOUNT_ID,
+        AWS_NO_VALUE,
+        AWS_REGION,
+        AWS_STACK_NAME,
+    )
+    from wetwire_aws.params import (
+        AMI_ID,
+        AVAILABILITY_ZONE,
+        COMMA_DELIMITED_LIST,
+        HOSTED_ZONE_ID,
+        INSTANCE_ID,
+        KEY_PAIR,
+        LIST_AVAILABILITY_ZONE,
+        LIST_NUMBER,
+        LIST_SECURITY_GROUP_ID,
+        LIST_SUBNET_ID,
+        NUMBER,
+        SECURITY_GROUP_ID,
+        SSM_PARAMETER_STRING,
+        SSM_PARAMETER_STRING_LIST,
+        STRING,
+        SUBNET_ID,
+        VOLUME_ID,
+        VPC_ID,
+    )
+    from wetwire_aws.template import (
+        Condition as TemplateCondition,
+    )
+    from wetwire_aws.template import (
+        Mapping,
+        Output,
+        Parameter,
+    )
+
+    return {
+        # Decorator
+        "wetwire_aws": wetwire_aws,
+        # Template components
+        "Parameter": Parameter,
+        "Output": Output,
+        "Mapping": Mapping,
+        "TemplateCondition": TemplateCondition,
+        # Policy helpers
+        "PolicyStatement": PolicyStatement,
+        "DenyStatement": DenyStatement,
+        "PolicyDocument": PolicyDocument,
+        # Parameter type constants
+        "STRING": STRING,
+        "NUMBER": NUMBER,
+        "LIST_NUMBER": LIST_NUMBER,
+        "COMMA_DELIMITED_LIST": COMMA_DELIMITED_LIST,
+        "SSM_PARAMETER_STRING": SSM_PARAMETER_STRING,
+        "SSM_PARAMETER_STRING_LIST": SSM_PARAMETER_STRING_LIST,
+        "AVAILABILITY_ZONE": AVAILABILITY_ZONE,
+        "LIST_AVAILABILITY_ZONE": LIST_AVAILABILITY_ZONE,
+        "AMI_ID": AMI_ID,
+        "INSTANCE_ID": INSTANCE_ID,
+        "KEY_PAIR": KEY_PAIR,
+        "SECURITY_GROUP_ID": SECURITY_GROUP_ID,
+        "LIST_SECURITY_GROUP_ID": LIST_SECURITY_GROUP_ID,
+        "SUBNET_ID": SUBNET_ID,
+        "LIST_SUBNET_ID": LIST_SUBNET_ID,
+        "VPC_ID": VPC_ID,
+        "VOLUME_ID": VOLUME_ID,
+        "HOSTED_ZONE_ID": HOSTED_ZONE_ID,
+        # Condition intrinsics
+        "Equals": Equals,
+        "Not": Not,
+        "And": And,
+        "Or": Or,
+        "If": If,
+        "Condition": ConditionIntrinsic,
+        # Reference helper
+        "ref": ref,
+        # Pseudo-parameters
+        "AWS_REGION": AWS_REGION,
+        "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID,
+        "AWS_STACK_NAME": AWS_STACK_NAME,
+        "AWS_NO_VALUE": AWS_NO_VALUE,
+    }
+
+
 def _get_aws_namespace() -> dict[str, Any]:
     """Get the AWS-specific namespace to inject into resource modules.
 
     This includes all the decorators, types, service modules, and helpers
     that resource files need when using `from . import *`.
+
+    Extends _get_base_namespace() with resource-specific additions.
     """
-    # Import here to avoid circular imports
+    import importlib
+
     from wetwire_aws import resources
     from wetwire_aws.base import (
         CloudFormationResource,
-        DenyStatement,
-        PolicyDocument,
-        PolicyStatement,
         PropertyType,
         Tag,
     )
@@ -70,175 +176,98 @@ def _get_aws_namespace() -> dict[str, Any]:
         STRING_NOT_EQUALS_IGNORE_CASE,
         STRING_NOT_LIKE,
     )
-    from wetwire_aws.decorator import wetwire_aws
-    from wetwire_aws.intrinsics import ARN, get_att, ref
+    from wetwire_aws.intrinsics import ARN, get_att
     from wetwire_aws.intrinsics.functions import (
-        And,
         Base64,
         Cidr,
-        Equals,
         FindInMap,
         GetAtt,
         GetAZs,
-        If,
         ImportValue,
         Join,
-        Not,
-        Or,
         Select,
         Split,
         Sub,
         Transform,
     )
-    from wetwire_aws.intrinsics.functions import Condition as ConditionIntrinsic
     from wetwire_aws.intrinsics.functions import Ref as RefIntrinsic
     from wetwire_aws.intrinsics.pseudo import (
-        AWS_ACCOUNT_ID,
-        AWS_NO_VALUE,
         AWS_NOTIFICATION_ARNS,
         AWS_PARTITION,
-        AWS_REGION,
         AWS_STACK_ID,
-        AWS_STACK_NAME,
         AWS_URL_SUFFIX,
     )
-    from wetwire_aws.params import (
-        AMI_ID,
-        AVAILABILITY_ZONE,
-        COMMA_DELIMITED_LIST,
-        HOSTED_ZONE_ID,
-        INSTANCE_ID,
-        KEY_PAIR,
-        LIST_AVAILABILITY_ZONE,
-        LIST_NUMBER,
-        LIST_SECURITY_GROUP_ID,
-        LIST_SUBNET_ID,
-        NUMBER,
-        SECURITY_GROUP_ID,
-        SSM_PARAMETER_STRING,
-        SSM_PARAMETER_STRING_LIST,
-        STRING,
-        SUBNET_ID,
-        VOLUME_ID,
-        VPC_ID,
-    )
-    from wetwire_aws.template import (
-        CloudFormationTemplate,
-        Mapping,
-        Output,
-        Parameter,
-    )
-    from wetwire_aws.template import (
-        Condition as TemplateCondition,
-    )
+    from wetwire_aws.template import CloudFormationTemplate
 
-    # Build namespace with all service modules
-    namespace: dict[str, Any] = {
-        # Decorator
-        "wetwire_aws": wetwire_aws,
-        # Base classes
-        "CloudFormationResource": CloudFormationResource,
-        "PropertyType": PropertyType,
-        "Tag": Tag,
-        # Policy helpers
-        "PolicyStatement": PolicyStatement,
-        "DenyStatement": DenyStatement,
-        "PolicyDocument": PolicyDocument,
-        # Template and components
-        "CloudFormationTemplate": CloudFormationTemplate,
-        "Parameter": Parameter,
-        "Output": Output,
-        "Mapping": Mapping,
-        "TemplateCondition": TemplateCondition,  # Renamed to avoid conflict with intrinsic
-        # Reference types from dataclass-dsl
-        "Ref": Ref,
-        "Attr": Attr,
-        "RefList": RefList,
-        "RefDict": RefDict,
-        # Reference helpers
-        "ref": ref,
-        "get_att": get_att,
-        "ARN": ARN,
-        # Intrinsic functions (CF intrinsics)
-        "RefIntrinsic": RefIntrinsic,
-        "GetAtt": GetAtt,
-        "Sub": Sub,
-        "Join": Join,
-        "Select": Select,
-        "Split": Split,
-        "If": If,
-        "Equals": Equals,
-        "And": And,
-        "Or": Or,
-        "Not": Not,
-        "Base64": Base64,
-        "GetAZs": GetAZs,
-        "ImportValue": ImportValue,
-        "FindInMap": FindInMap,
-        "Transform": Transform,
-        "Cidr": Cidr,
-        "Condition": ConditionIntrinsic,  # Intrinsic function for referencing conditions
-        # Parameter type constants
-        "STRING": STRING,
-        "NUMBER": NUMBER,
-        "LIST_NUMBER": LIST_NUMBER,
-        "COMMA_DELIMITED_LIST": COMMA_DELIMITED_LIST,
-        "SSM_PARAMETER_STRING": SSM_PARAMETER_STRING,
-        "SSM_PARAMETER_STRING_LIST": SSM_PARAMETER_STRING_LIST,
-        "AVAILABILITY_ZONE": AVAILABILITY_ZONE,
-        "LIST_AVAILABILITY_ZONE": LIST_AVAILABILITY_ZONE,
-        "AMI_ID": AMI_ID,
-        "INSTANCE_ID": INSTANCE_ID,
-        "KEY_PAIR": KEY_PAIR,
-        "SECURITY_GROUP_ID": SECURITY_GROUP_ID,
-        "LIST_SECURITY_GROUP_ID": LIST_SECURITY_GROUP_ID,
-        "SUBNET_ID": SUBNET_ID,
-        "LIST_SUBNET_ID": LIST_SUBNET_ID,
-        "VPC_ID": VPC_ID,
-        "VOLUME_ID": VOLUME_ID,
-        "HOSTED_ZONE_ID": HOSTED_ZONE_ID,
-        # Pseudo-parameters
-        "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID,
-        "AWS_NOTIFICATION_ARNS": AWS_NOTIFICATION_ARNS,
-        "AWS_NO_VALUE": AWS_NO_VALUE,
-        "AWS_PARTITION": AWS_PARTITION,
-        "AWS_REGION": AWS_REGION,
-        "AWS_STACK_ID": AWS_STACK_ID,
-        "AWS_STACK_NAME": AWS_STACK_NAME,
-        "AWS_URL_SUFFIX": AWS_URL_SUFFIX,
-        # Condition operator constants
-        "BOOL": BOOL,
-        "STRING_EQUALS": STRING_EQUALS,
-        "STRING_NOT_EQUALS": STRING_NOT_EQUALS,
-        "STRING_EQUALS_IGNORE_CASE": STRING_EQUALS_IGNORE_CASE,
-        "STRING_NOT_EQUALS_IGNORE_CASE": STRING_NOT_EQUALS_IGNORE_CASE,
-        "STRING_LIKE": STRING_LIKE,
-        "STRING_NOT_LIKE": STRING_NOT_LIKE,
-        "NUMERIC_EQUALS": NUMERIC_EQUALS,
-        "NUMERIC_NOT_EQUALS": NUMERIC_NOT_EQUALS,
-        "NUMERIC_LESS_THAN": NUMERIC_LESS_THAN,
-        "NUMERIC_LESS_THAN_EQUALS": NUMERIC_LESS_THAN_EQUALS,
-        "NUMERIC_GREATER_THAN": NUMERIC_GREATER_THAN,
-        "NUMERIC_GREATER_THAN_EQUALS": NUMERIC_GREATER_THAN_EQUALS,
-        "DATE_EQUALS": DATE_EQUALS,
-        "DATE_NOT_EQUALS": DATE_NOT_EQUALS,
-        "DATE_LESS_THAN": DATE_LESS_THAN,
-        "DATE_LESS_THAN_EQUALS": DATE_LESS_THAN_EQUALS,
-        "DATE_GREATER_THAN": DATE_GREATER_THAN,
-        "DATE_GREATER_THAN_EQUALS": DATE_GREATER_THAN_EQUALS,
-        "IP_ADDRESS": IP_ADDRESS,
-        "NOT_IP_ADDRESS": NOT_IP_ADDRESS,
-        "ARN_EQUALS": ARN_EQUALS,
-        "ARN_NOT_EQUALS": ARN_NOT_EQUALS,
-        "ARN_LIKE": ARN_LIKE,
-        "ARN_NOT_LIKE": ARN_NOT_LIKE,
-        "NULL": NULL,
-    }
+    # Start with base namespace
+    namespace = _get_base_namespace()
+
+    # Add resource-specific items
+    namespace.update(
+        {
+            # Base classes
+            "CloudFormationResource": CloudFormationResource,
+            "PropertyType": PropertyType,
+            "Tag": Tag,
+            # Template
+            "CloudFormationTemplate": CloudFormationTemplate,
+            # Reference types from dataclass-dsl
+            "Ref": Ref,
+            "Attr": Attr,
+            "RefList": RefList,
+            "RefDict": RefDict,
+            # Reference helpers
+            "get_att": get_att,
+            "ARN": ARN,
+            # Additional intrinsic functions (CF intrinsics)
+            "RefIntrinsic": RefIntrinsic,
+            "GetAtt": GetAtt,
+            "Sub": Sub,
+            "Join": Join,
+            "Select": Select,
+            "Split": Split,
+            "Base64": Base64,
+            "GetAZs": GetAZs,
+            "ImportValue": ImportValue,
+            "FindInMap": FindInMap,
+            "Transform": Transform,
+            "Cidr": Cidr,
+            # Additional pseudo-parameters
+            "AWS_NOTIFICATION_ARNS": AWS_NOTIFICATION_ARNS,
+            "AWS_PARTITION": AWS_PARTITION,
+            "AWS_STACK_ID": AWS_STACK_ID,
+            "AWS_URL_SUFFIX": AWS_URL_SUFFIX,
+            # Condition operator constants
+            "BOOL": BOOL,
+            "STRING_EQUALS": STRING_EQUALS,
+            "STRING_NOT_EQUALS": STRING_NOT_EQUALS,
+            "STRING_EQUALS_IGNORE_CASE": STRING_EQUALS_IGNORE_CASE,
+            "STRING_NOT_EQUALS_IGNORE_CASE": STRING_NOT_EQUALS_IGNORE_CASE,
+            "STRING_LIKE": STRING_LIKE,
+            "STRING_NOT_LIKE": STRING_NOT_LIKE,
+            "NUMERIC_EQUALS": NUMERIC_EQUALS,
+            "NUMERIC_NOT_EQUALS": NUMERIC_NOT_EQUALS,
+            "NUMERIC_LESS_THAN": NUMERIC_LESS_THAN,
+            "NUMERIC_LESS_THAN_EQUALS": NUMERIC_LESS_THAN_EQUALS,
+            "NUMERIC_GREATER_THAN": NUMERIC_GREATER_THAN,
+            "NUMERIC_GREATER_THAN_EQUALS": NUMERIC_GREATER_THAN_EQUALS,
+            "DATE_EQUALS": DATE_EQUALS,
+            "DATE_NOT_EQUALS": DATE_NOT_EQUALS,
+            "DATE_LESS_THAN": DATE_LESS_THAN,
+            "DATE_LESS_THAN_EQUALS": DATE_LESS_THAN_EQUALS,
+            "DATE_GREATER_THAN": DATE_GREATER_THAN,
+            "DATE_GREATER_THAN_EQUALS": DATE_GREATER_THAN_EQUALS,
+            "IP_ADDRESS": IP_ADDRESS,
+            "NOT_IP_ADDRESS": NOT_IP_ADDRESS,
+            "ARN_EQUALS": ARN_EQUALS,
+            "ARN_NOT_EQUALS": ARN_NOT_EQUALS,
+            "ARN_LIKE": ARN_LIKE,
+            "ARN_NOT_LIKE": ARN_NOT_LIKE,
+            "NULL": NULL,
+        }
+    )
 
     # Add all service modules from resources package
-    # Use __all__ instead of dir() since resources uses lazy loading
-    import importlib
-
     for module_name in getattr(resources, "__all__", []):
         try:
             module = importlib.import_module(f"wetwire_aws.resources.{module_name}")
@@ -313,102 +342,7 @@ def setup_params(package_globals: dict[str, Any]) -> None:
 
         setup_resources(__file__, __name__, globals())
     """
-    # Import items needed by params.py
-    from wetwire_aws.base import DenyStatement, PolicyDocument, PolicyStatement
-    from wetwire_aws.decorator import wetwire_aws
-    from wetwire_aws.intrinsics import ref
-    from wetwire_aws.intrinsics.functions import (
-        And,
-        Equals,
-        If,
-        Not,
-        Or,
-    )
-    from wetwire_aws.intrinsics.functions import Condition as ConditionIntrinsic
-    from wetwire_aws.intrinsics.pseudo import (
-        AWS_ACCOUNT_ID,
-        AWS_NO_VALUE,
-        AWS_REGION,
-        AWS_STACK_NAME,
-    )
-    from wetwire_aws.params import (
-        AMI_ID,
-        AVAILABILITY_ZONE,
-        COMMA_DELIMITED_LIST,
-        HOSTED_ZONE_ID,
-        INSTANCE_ID,
-        KEY_PAIR,
-        LIST_AVAILABILITY_ZONE,
-        LIST_NUMBER,
-        LIST_SECURITY_GROUP_ID,
-        LIST_SUBNET_ID,
-        NUMBER,
-        SECURITY_GROUP_ID,
-        SSM_PARAMETER_STRING,
-        SSM_PARAMETER_STRING_LIST,
-        STRING,
-        SUBNET_ID,
-        VOLUME_ID,
-        VPC_ID,
-    )
-    from wetwire_aws.template import (
-        Condition as TemplateCondition,
-    )
-    from wetwire_aws.template import (
-        Mapping,
-        Output,
-        Parameter,
-    )
-
-    # Inject into package globals
-    package_globals.update(
-        {
-            # Decorator
-            "wetwire_aws": wetwire_aws,
-            # Template components
-            "Parameter": Parameter,
-            "Output": Output,
-            "Mapping": Mapping,
-            "TemplateCondition": TemplateCondition,
-            # Policy helpers
-            "PolicyStatement": PolicyStatement,
-            "DenyStatement": DenyStatement,
-            "PolicyDocument": PolicyDocument,
-            # Parameter type constants
-            "STRING": STRING,
-            "NUMBER": NUMBER,
-            "LIST_NUMBER": LIST_NUMBER,
-            "COMMA_DELIMITED_LIST": COMMA_DELIMITED_LIST,
-            "SSM_PARAMETER_STRING": SSM_PARAMETER_STRING,
-            "SSM_PARAMETER_STRING_LIST": SSM_PARAMETER_STRING_LIST,
-            "AVAILABILITY_ZONE": AVAILABILITY_ZONE,
-            "LIST_AVAILABILITY_ZONE": LIST_AVAILABILITY_ZONE,
-            "AMI_ID": AMI_ID,
-            "INSTANCE_ID": INSTANCE_ID,
-            "KEY_PAIR": KEY_PAIR,
-            "SECURITY_GROUP_ID": SECURITY_GROUP_ID,
-            "LIST_SECURITY_GROUP_ID": LIST_SECURITY_GROUP_ID,
-            "SUBNET_ID": SUBNET_ID,
-            "LIST_SUBNET_ID": LIST_SUBNET_ID,
-            "VPC_ID": VPC_ID,
-            "VOLUME_ID": VOLUME_ID,
-            "HOSTED_ZONE_ID": HOSTED_ZONE_ID,
-            # Condition intrinsics
-            "Equals": Equals,
-            "Not": Not,
-            "And": And,
-            "Or": Or,
-            "If": If,
-            "Condition": ConditionIntrinsic,
-            # Reference helper for parameter refs in conditions
-            "ref": ref,
-            # Pseudo-parameters
-            "AWS_REGION": AWS_REGION,
-            "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID,
-            "AWS_STACK_NAME": AWS_STACK_NAME,
-            "AWS_NO_VALUE": AWS_NO_VALUE,
-        }
-    )
+    package_globals.update(_get_base_namespace())
 
 
 def _auto_decorate_resources(
