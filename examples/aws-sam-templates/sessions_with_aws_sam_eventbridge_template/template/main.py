@@ -3,6 +3,31 @@
 from . import *  # noqa: F403
 
 
+class EndpointFunctionEnvironment(serverless.Function.Environment):
+    variables = {
+        'EVENT_BUS_NAME': CustomBus,
+    }
+
+
+class EndpointFunction(serverless.Function):
+    handler = 'endpoint.lambdaHandler'
+    policies = [{
+        'EventBridgePutEventsPolicy': {
+            'EventBusName': CustomBus,
+        },
+    }]
+    environment = EndpointFunctionEnvironment
+    events = {
+        'API': {
+            'Type': 'HttpApi',
+            'Properties': {
+                'Path': '/',
+                'Method': 'POST',
+            },
+        },
+    }
+
+
 class TranslateFunctionAllowStatement0(PolicyStatement):
     action = ['translate:TranslateText']
     resource_arn = '*'
@@ -45,31 +70,6 @@ class SentimentFunction(serverless.Function):
                     'source': ['TextEndpoint'],
                     'detail-type': ['sentiment'],
                 },
-            },
-        },
-    }
-
-
-class EndpointFunctionEnvironment(serverless.Function.Environment):
-    variables = {
-        'EVENT_BUS_NAME': CustomBus,
-    }
-
-
-class EndpointFunction(serverless.Function):
-    handler = 'endpoint.lambdaHandler'
-    policies = [{
-        'EventBridgePutEventsPolicy': {
-            'EventBusName': CustomBus,
-        },
-    }]
-    environment = EndpointFunctionEnvironment
-    events = {
-        'API': {
-            'Type': 'HttpApi',
-            'Properties': {
-                'Path': '/',
-                'Method': 'POST',
             },
         },
     }

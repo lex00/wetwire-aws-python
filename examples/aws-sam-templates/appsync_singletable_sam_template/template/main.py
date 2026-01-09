@@ -9,6 +9,24 @@ class AppSyncApi(appsync.GraphQLApi):
     authentication_type = 'API_KEY'
 
 
+class AppSyncApiKey(appsync.ApiKey):
+    api_id = AppSyncApi.ApiId
+
+
+class DDBDataSourceDynamoDBConfig(appsync.DataSource.DynamoDBConfig):
+    table_name = DDBTable
+    aws_region = AWS_REGION
+
+
+class DDBDataSource(appsync.DataSource):
+    name = 'SingleTableDataSource'
+    api_id = AppSyncApi.ApiId
+    description = 'The Single Table AppSync Data Source'
+    type_ = 'AMAZON_DYNAMODB'
+    service_role_arn = DDBRole.Arn
+    dynamo_db_config = DDBDataSourceDynamoDBConfig
+
+
 class AppSyncSchema(appsync.GraphQLSchema):
     api_id = AppSyncApi.ApiId
     definition = """type Parent{
@@ -46,20 +64,6 @@ type Query{
   getParentWithChildren(PK: ID!): Parent
 }
 """
-
-
-class DDBDataSourceDynamoDBConfig(appsync.DataSource.DynamoDBConfig):
-    table_name = DDBTable
-    aws_region = AWS_REGION
-
-
-class DDBDataSource(appsync.DataSource):
-    name = 'SingleTableDataSource'
-    api_id = AppSyncApi.ApiId
-    description = 'The Single Table AppSync Data Source'
-    type_ = 'AMAZON_DYNAMODB'
-    service_role_arn = DDBRole.Arn
-    dynamo_db_config = DDBDataSourceDynamoDBConfig
 
 
 class GetParentAndChildResolver(appsync.Resolver):
@@ -123,10 +127,6 @@ class CreateParentMutationResolver(appsync.Resolver):
 """
     response_mapping_template = '$util.toJson($ctx.result)'
     depends_on = [AppSyncSchema]
-
-
-class AppSyncApiKey(appsync.ApiKey):
-    api_id = AppSyncApi.ApiId
 
 
 class CreateChildMutationResolver(appsync.Resolver):

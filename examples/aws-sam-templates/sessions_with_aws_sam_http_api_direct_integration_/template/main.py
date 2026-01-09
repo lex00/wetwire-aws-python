@@ -3,6 +3,12 @@
 from . import *  # noqa: F403
 
 
+class MyHttpApi(serverless.HttpApi):
+    definition_body = Transform(name='AWS::Include', parameters={
+    'Location': './api.yaml',
+})
+
+
 class MyStream(kinesis.Stream):
     shard_count = 1
 
@@ -39,9 +45,3 @@ class MyTriggeredLambda(serverless.Function):
             },
         },
     }
-
-
-class MyHttpApi(serverless.HttpApi):
-    definition_body = Transform(name='AWS::Include', parameters={
-    'Location': './api.yaml',
-})

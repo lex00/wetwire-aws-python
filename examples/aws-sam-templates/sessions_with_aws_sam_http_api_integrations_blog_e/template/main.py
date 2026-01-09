@@ -3,6 +3,12 @@
 from . import *  # noqa: F403
 
 
+class MyHttpApi(serverless.HttpApi):
+    definition_body = Transform(name='AWS::Include', parameters={
+    'Location': './api.yaml',
+})
+
+
 class MyTriggeredLambda(serverless.Function):
     code_uri = 'src/'
     handler = 'app.lambdaHandler'
@@ -20,9 +26,3 @@ class MyTriggeredLambda(serverless.Function):
             },
         },
     }
-
-
-class MyHttpApi(serverless.HttpApi):
-    definition_body = Transform(name='AWS::Include', parameters={
-    'Location': './api.yaml',
-})

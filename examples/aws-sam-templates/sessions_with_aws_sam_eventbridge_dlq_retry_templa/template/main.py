@@ -3,6 +3,12 @@
 from . import *  # noqa: F403
 
 
+class MyHttpApi(serverless.HttpApi):
+    definition_body = Transform(name='AWS::Include', parameters={
+    'Location': './api.yaml',
+})
+
+
 class TriggeredFunction(serverless.Function):
     handler = 'app.lambdaHandler'
 
@@ -30,9 +36,3 @@ class EBRule(events.Rule):
         'source': ['WebApp'],
         'detail-type': ['MyDetailType'],
     }
-
-
-class MyHttpApi(serverless.HttpApi):
-    definition_body = Transform(name='AWS::Include', parameters={
-    'Location': './api.yaml',
-})

@@ -1,6 +1,55 @@
-"""Network resources: CloudFrontCachePolicyClient, CloudFrontCachePolicyAPI, CloudFrontCachePolicyDefault, CloudFrontLogDistro, CloudFrontDistro."""
+"""Network resources: CloudFrontCachePolicyDefault, CloudFrontLogDistro, CloudFrontCachePolicyClient, CloudFrontCachePolicyAPI, CloudFrontDistro."""
 
 from . import *  # noqa: F403
+
+
+class CloudFrontCachePolicyDefaultCookiesConfig(cloudfront.CachePolicy.CookiesConfig):
+    cookie_behavior = 'none'
+
+
+class CloudFrontCachePolicyDefaultHeadersConfig(cloudfront.CachePolicy.HeadersConfig):
+    header_behavior = 'none'
+
+
+class CloudFrontCachePolicyDefaultQueryStringsConfig(cloudfront.CachePolicy.QueryStringsConfig):
+    query_string_behavior = 'none'
+
+
+class CloudFrontCachePolicyDefaultParametersInCacheKeyAndForwardedToOrigin(cloudfront.CachePolicy.ParametersInCacheKeyAndForwardedToOrigin):
+    cookies_config = CloudFrontCachePolicyDefaultCookiesConfig
+    enable_accept_encoding_brotli = True
+    enable_accept_encoding_gzip = True
+    headers_config = CloudFrontCachePolicyDefaultHeadersConfig
+    query_strings_config = CloudFrontCachePolicyDefaultQueryStringsConfig
+
+
+class CloudFrontCachePolicyDefaultCachePolicyConfig(cloudfront.CachePolicy.CachePolicyConfig):
+    default_ttl = 900
+    min_ttl = 1
+    max_ttl = 10800
+    name = Sub('${AppName}-default')
+    parameters_in_cache_key_and_forwarded_to_origin = CloudFrontCachePolicyDefaultParametersInCacheKeyAndForwardedToOrigin
+
+
+class CloudFrontCachePolicyDefault(cloudfront.CachePolicy):
+    cache_policy_config = CloudFrontCachePolicyDefaultCachePolicyConfig
+
+
+class CloudFrontLogDistroKinesisStreamConfig(cloudfront.RealtimeLogConfig.KinesisStreamConfig):
+    stream_arn = LoggingStream.Arn
+    role_arn = LoggingRole.Arn
+
+
+class CloudFrontLogDistroEndPoint(cloudfront.RealtimeLogConfig.EndPoint):
+    kinesis_stream_config = CloudFrontLogDistroKinesisStreamConfig
+    stream_type = 'Kinesis'
+
+
+class CloudFrontLogDistro(cloudfront.RealtimeLogConfig):
+    end_points = [CloudFrontLogDistroEndPoint]
+    fields = ['timestamp', 'c-ip', 'sc-status', 'cs-uri-stem', 'c-country']
+    name = Sub('LoggingConfig-${AppName}')
+    sampling_rate = 100
 
 
 class CloudFrontCachePolicyClientCookiesConfig(cloudfront.CachePolicy.CookiesConfig):
@@ -66,55 +115,6 @@ class CloudFrontCachePolicyAPICachePolicyConfig(cloudfront.CachePolicy.CachePoli
 
 class CloudFrontCachePolicyAPI(cloudfront.CachePolicy):
     cache_policy_config = CloudFrontCachePolicyAPICachePolicyConfig
-
-
-class CloudFrontCachePolicyDefaultCookiesConfig(cloudfront.CachePolicy.CookiesConfig):
-    cookie_behavior = 'none'
-
-
-class CloudFrontCachePolicyDefaultHeadersConfig(cloudfront.CachePolicy.HeadersConfig):
-    header_behavior = 'none'
-
-
-class CloudFrontCachePolicyDefaultQueryStringsConfig(cloudfront.CachePolicy.QueryStringsConfig):
-    query_string_behavior = 'none'
-
-
-class CloudFrontCachePolicyDefaultParametersInCacheKeyAndForwardedToOrigin(cloudfront.CachePolicy.ParametersInCacheKeyAndForwardedToOrigin):
-    cookies_config = CloudFrontCachePolicyDefaultCookiesConfig
-    enable_accept_encoding_brotli = True
-    enable_accept_encoding_gzip = True
-    headers_config = CloudFrontCachePolicyDefaultHeadersConfig
-    query_strings_config = CloudFrontCachePolicyDefaultQueryStringsConfig
-
-
-class CloudFrontCachePolicyDefaultCachePolicyConfig(cloudfront.CachePolicy.CachePolicyConfig):
-    default_ttl = 900
-    min_ttl = 1
-    max_ttl = 10800
-    name = Sub('${AppName}-default')
-    parameters_in_cache_key_and_forwarded_to_origin = CloudFrontCachePolicyDefaultParametersInCacheKeyAndForwardedToOrigin
-
-
-class CloudFrontCachePolicyDefault(cloudfront.CachePolicy):
-    cache_policy_config = CloudFrontCachePolicyDefaultCachePolicyConfig
-
-
-class CloudFrontLogDistroKinesisStreamConfig(cloudfront.RealtimeLogConfig.KinesisStreamConfig):
-    stream_arn = LoggingStream.Arn
-    role_arn = LoggingRole.Arn
-
-
-class CloudFrontLogDistroEndPoint(cloudfront.RealtimeLogConfig.EndPoint):
-    kinesis_stream_config = CloudFrontLogDistroKinesisStreamConfig
-    stream_type = 'Kinesis'
-
-
-class CloudFrontLogDistro(cloudfront.RealtimeLogConfig):
-    end_points = [CloudFrontLogDistroEndPoint]
-    fields = ['timestamp', 'c-ip', 'sc-status', 'cs-uri-stem', 'c-country']
-    name = Sub('LoggingConfig-${AppName}')
-    sampling_rate = 100
 
 
 class CloudFrontDistroCacheBehavior(cloudfront.Distribution.CacheBehavior):

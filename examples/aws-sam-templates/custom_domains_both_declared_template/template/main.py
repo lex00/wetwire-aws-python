@@ -3,6 +3,12 @@
 from . import *  # noqa: F403
 
 
+class GeneratedCert(certificatemanager.Certificate):
+    domain_name = DomainName
+    validation_method = certificatemanager.ValidationMethod.DNS
+    condition = 'CreateCert'
+
+
 class HttpApiGateway(serverless.HttpApi):
     pass
 
@@ -48,9 +54,3 @@ class RestApiFunction(serverless.Function):
             },
         },
     }
-
-
-class GeneratedCert(certificatemanager.Certificate):
-    domain_name = DomainName
-    validation_method = certificatemanager.ValidationMethod.DNS
-    condition = 'CreateCert'

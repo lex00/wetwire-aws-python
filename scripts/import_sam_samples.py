@@ -83,6 +83,10 @@ SKIP_VALIDATION = [
     "custom_domains_both_implied_template",
     # sam-python-crud-sample - references implicit roles
     "sam_python_crud_sample",
+    # Step Functions connector templates - reference implicit state machine roles
+    "step_func_conn",
+    "step_func_etl",
+    "web_conn",
 ]
 
 # Colors for output

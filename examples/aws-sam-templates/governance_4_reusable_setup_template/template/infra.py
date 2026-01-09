@@ -1,4 +1,4 @@
-"""Infra resources: ConfigRecorder, DeliveryChannel, AggregateCollection, AggragateAccountAuth."""
+"""Infra resources: ConfigRecorder, AggragateAccountAuth, DeliveryChannel, AggregateCollection."""
 
 from . import *  # noqa: F403
 
@@ -12,6 +12,11 @@ class ConfigRecorder(config.ConfigurationRecorder):
     name = Sub('${AWS::Region}-Config-Recorder')
     recording_group = ConfigRecorderRecordingGroup
     role_arn = ConfigRole.Arn
+
+
+class AggragateAccountAuth(config.AggregationAuthorization):
+    authorized_account_id = AggregateAccount
+    authorized_aws_region = MainRegion
 
 
 class DeliveryChannel(config.DeliveryChannel):
@@ -28,8 +33,3 @@ class AggregateCollection(config.ConfigurationAggregator):
     account_aggregation_sources = [AggregateCollectionAccountAggregationSource]
     configuration_aggregator_name = 'ConfigAggregateCollector'
     condition = 'IsAggregateAccount'
-
-
-class AggragateAccountAuth(config.AggregationAuthorization):
-    authorized_account_id = AggregateAccount
-    authorized_aws_region = MainRegion

@@ -3,6 +3,15 @@
 from . import *  # noqa: F403
 
 
+class AppConfigLambdaDeploymentStrategy(appconfig.DeploymentStrategy):
+    name = AppName
+    deployment_duration_in_minutes = 0
+    final_bake_time_in_minutes = 0
+    growth_factor = 100
+    growth_type = 'LINEAR'
+    replicate_to = 'NONE'
+
+
 class AppConfigLambdaApplication(appconfig.Application):
     name = AppName
 
@@ -29,15 +38,6 @@ class AppConfigLambdaConfigurationVersion(appconfig.HostedConfigurationVersion):
     configuration_profile_id = AppConfigLambdaConfigurationProfile
     content = '{ "isEnabled": false, "messageOption": "AppConfig" }'
     content_type = 'application/json'
-
-
-class AppConfigLambdaDeploymentStrategy(appconfig.DeploymentStrategy):
-    name = AppName
-    deployment_duration_in_minutes = 0
-    final_bake_time_in_minutes = 0
-    growth_factor = 100
-    growth_type = 'LINEAR'
-    replicate_to = 'NONE'
 
 
 class AppConfigLambdaDeployment(appconfig.Deployment):

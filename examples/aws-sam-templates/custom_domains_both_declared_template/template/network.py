@@ -1,4 +1,4 @@
-"""Network resources: GeneratedZone, CustomDomainName, RecordSet, HttpApiMapping, RestApiMapping."""
+"""Network resources: GeneratedZone, CustomDomainName, HttpApiMapping, RecordSet, RestApiMapping."""
 
 from . import *  # noqa: F403
 
@@ -18,6 +18,13 @@ class CustomDomainName(apigatewayv2.DomainName):
     domain_name_configurations = [CustomDomainNameDomainNameConfiguration]
 
 
+class HttpApiMapping(apigatewayv2.ApiMapping):
+    api_id = HttpApiGateway
+    api_mapping_key = 'http'
+    domain_name = CustomDomainName
+    stage = HttpApiGatewayApiGatewayDefaultStage  # noqa: WAW019 - SAM implicit resource
+
+
 class RecordSetAliasTarget(route53.RecordSetGroup.AliasTarget):
     dns_name = CustomDomainName.RegionalDomainName
     hosted_zone_id = CustomDomainName.RegionalHostedZoneId
@@ -28,13 +35,6 @@ class RecordSet(route53.RecordSet):
     hosted_zone_id = If("CreateZone", GeneratedZone, ZoneId)
     alias_target = RecordSetAliasTarget
     type_ = 'A'
-
-
-class HttpApiMapping(apigatewayv2.ApiMapping):
-    api_id = HttpApiGateway
-    api_mapping_key = 'http'
-    domain_name = CustomDomainName
-    stage = HttpApiGatewayApiGatewayDefaultStage  # noqa: WAW019 - SAM implicit resource
 
 
 class RestApiMapping(apigatewayv2.ApiMapping):

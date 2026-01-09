@@ -1,6 +1,37 @@
-"""Security resources: UserPool, UserPoolDomain, UserPoolClient, DDBCrudRole, DDBReadRole, LoggingRole."""
+"""Security resources: LoggingRole, UserPool, UserPoolDomain, DDBReadRole, UserPoolClient, DDBCrudRole."""
 
 from . import *  # noqa: F403
+
+
+class LoggingRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': 'cloudfront.amazonaws.com',
+    }
+    action = ['sts:AssumeRole']
+
+
+class LoggingRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [LoggingRoleAllowStatement0]
+
+
+class LoggingRolePolicy(iam.User.Policy):
+    policy_name = 'CloudFrontLogToKinesis'
+    policy_document = {
+        'Version': '2012-10-17',
+        'Statement': {
+            'Action': [
+                'kinesis:Put*',
+                'kinesis:List*',
+            ],
+            'Effect': 'Allow',
+            'Resource': LoggingStream.Arn,
+        },
+    }
+
+
+class LoggingRole(iam.Role):
+    assume_role_policy_document = LoggingRoleAssumeRolePolicyDocument
+    policies = [LoggingRolePolicy]
 
 
 class UserPoolPasswordPolicy(cognito.UserPool.PasswordPolicy):
@@ -28,6 +59,43 @@ class UserPool(cognito.UserPool):
 class UserPoolDomain(cognito.UserPoolDomain):
     domain = Sub('${AppName}-${AWS::AccountId}')
     user_pool_id = UserPool
+
+
+class DDBReadRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': 'apigateway.amazonaws.com',
+    }
+    action = ['sts:AssumeRole']
+
+
+class DDBReadRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [DDBReadRoleAllowStatement0]
+
+
+class DDBReadRolePolicy(iam.User.Policy):
+    policy_name = 'DDBReadPolicy'
+    policy_document = {
+        'Version': '2012-10-17',
+        'Statement': {
+            'Action': [
+                'dynamodb:GetItem',
+                'dynamodb:Scan',
+                'dynamodb:Query',
+            ],
+            'Effect': 'Allow',
+            'Resource': [
+                LinkTable.Arn,
+                Sub('${TableArn}/index/*', {
+    'TableArn': LinkTable.Arn,
+}),
+            ],
+        },
+    }
+
+
+class DDBReadRole(iam.Role):
+    assume_role_policy_document = DDBReadRoleAssumeRolePolicyDocument
+    policies = [DDBReadRolePolicy]
 
 
 class UserPoolClient(cognito.UserPoolClient):
@@ -71,71 +139,3 @@ class DDBCrudRolePolicy(iam.User.Policy):
 class DDBCrudRole(iam.Role):
     assume_role_policy_document = DDBCrudRoleAssumeRolePolicyDocument
     policies = [DDBCrudRolePolicy]
-
-
-class DDBReadRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': 'apigateway.amazonaws.com',
-    }
-    action = ['sts:AssumeRole']
-
-
-class DDBReadRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [DDBReadRoleAllowStatement0]
-
-
-class DDBReadRolePolicy(iam.User.Policy):
-    policy_name = 'DDBReadPolicy'
-    policy_document = {
-        'Version': '2012-10-17',
-        'Statement': {
-            'Action': [
-                'dynamodb:GetItem',
-                'dynamodb:Scan',
-                'dynamodb:Query',
-            ],
-            'Effect': 'Allow',
-            'Resource': [
-                LinkTable.Arn,
-                Sub('${TableArn}/index/*', {
-    'TableArn': LinkTable.Arn,
-}),
-            ],
-        },
-    }
-
-
-class DDBReadRole(iam.Role):
-    assume_role_policy_document = DDBReadRoleAssumeRolePolicyDocument
-    policies = [DDBReadRolePolicy]
-
-
-class LoggingRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': 'cloudfront.amazonaws.com',
-    }
-    action = ['sts:AssumeRole']
-
-
-class LoggingRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [LoggingRoleAllowStatement0]
-
-
-class LoggingRolePolicy(iam.User.Policy):
-    policy_name = 'CloudFrontLogToKinesis'
-    policy_document = {
-        'Version': '2012-10-17',
-        'Statement': {
-            'Action': [
-                'kinesis:Put*',
-                'kinesis:List*',
-            ],
-            'Effect': 'Allow',
-            'Resource': LoggingStream.Arn,
-        },
-    }
-
-
-class LoggingRole(iam.Role):
-    assume_role_policy_document = LoggingRoleAssumeRolePolicyDocument
-    policies = [LoggingRolePolicy]

@@ -3,14 +3,14 @@
 from . import *  # noqa: F403
 
 
-class RestApiGateway(serverless.Api):
-    stage_name = 'Prod'
-
-
 class GeneratedCert(certificatemanager.Certificate):
     domain_name = DomainName
     validation_method = certificatemanager.ValidationMethod.DNS
     condition = 'CreateCert'
+
+
+class RestApiGateway(serverless.Api):
+    stage_name = 'Prod'
 
 
 class HttpApiGateway(serverless.HttpApi):

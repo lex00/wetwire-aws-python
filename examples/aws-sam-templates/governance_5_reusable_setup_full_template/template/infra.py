@@ -1,6 +1,11 @@
-"""Infra resources: AggragateAccountAuth, ConfigRecorder, DeliveryChannel, AggregateCollection."""
+"""Infra resources: DeliveryChannel, AggragateAccountAuth, ConfigRecorder, AggregateCollection."""
 
 from . import *  # noqa: F403
+
+
+class DeliveryChannel(config.DeliveryChannel):
+    s3_bucket_name = DataBucket
+    sns_topic_arn = NotificationTopic
 
 
 class AggragateAccountAuth(config.AggregationAuthorization):
@@ -17,11 +22,6 @@ class ConfigRecorder(config.ConfigurationRecorder):
     name = Sub('${AWS::Region}-Config-Recorder')
     recording_group = ConfigRecorderRecordingGroup
     role_arn = ConfigRole.Arn
-
-
-class DeliveryChannel(config.DeliveryChannel):
-    s3_bucket_name = DataBucket
-    sns_topic_arn = NotificationTopic
 
 
 class AggregateCollectionAccountAggregationSource(config.ConfigurationAggregator.AccountAggregationSource):

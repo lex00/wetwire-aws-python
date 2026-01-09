@@ -10,15 +10,15 @@ class AdminApp(serverless.Application):
     }
 
 
-class ReportingV1App(serverless.Application):
-    location = './reportingv1.yaml'
+class ReportingV2App(serverless.Application):
+    location = './reportingv2.yaml'
     parameters = {
         'DomainName': CustomDomainName,
     }
 
 
-class ReportingV2App(serverless.Application):
-    location = './reportingv2.yaml'
+class ReportingV1App(serverless.Application):
+    location = './reportingv1.yaml'
     parameters = {
         'DomainName': CustomDomainName,
     }

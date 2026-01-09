@@ -3,6 +3,15 @@
 from . import *  # noqa: F403
 
 
+class CatchAllLambdaFunction(serverless.Function):
+    code_uri = 'src/'
+    events = {
+        'RootGet': {
+            'Type': 'HttpApi',
+        },
+    }
+
+
 class HttpApiHttpApiAuth(serverless.HttpApi.HttpApiAuth):
     authorizers = {
         'GeneralAuth': {
@@ -40,16 +49,7 @@ class LambdaFunction(serverless.Function):
     }
 
 
-class CatchAllLambdaFunction(serverless.Function):
-    code_uri = 'src/'
-    events = {
-        'RootGet': {
-            'Type': 'HttpApi',
-        },
-    }
-
-
-class SULambdaFunction(serverless.Function):
+class AdminLambdaFunction(serverless.Function):
     code_uri = 'src/'
     events = {
         'DosGet': {
@@ -57,26 +57,9 @@ class SULambdaFunction(serverless.Function):
             'Properties': {
                 'Auth': {
                     'Authorizer': 'GeneralAuth',
-                    'AuthorizationScopes': [Sub('SU-${Audience}')],
+                    'AuthorizationScopes': [Sub('Admins-${Audience}')],
                 },
-                'Path': '/su',
-                'Method': 'get',
-                'ApiId': HttpApi,
-            },
-        },
-    }
-
-
-class SimpleAuthLambdaFunction(serverless.Function):
-    code_uri = 'src/'
-    events = {
-        'RootGet': {
-            'Type': 'HttpApi',
-            'Properties': {
-                'Auth': {
-                    'Authorizer': 'GeneralAuth',
-                },
-                'Path': '/simple',
+                'Path': '/admin',
                 'Method': 'get',
                 'ApiId': HttpApi,
             },
@@ -105,7 +88,24 @@ class BothLambdaFunction(serverless.Function):
     }
 
 
-class AdminLambdaFunction(serverless.Function):
+class SimpleAuthLambdaFunction(serverless.Function):
+    code_uri = 'src/'
+    events = {
+        'RootGet': {
+            'Type': 'HttpApi',
+            'Properties': {
+                'Auth': {
+                    'Authorizer': 'GeneralAuth',
+                },
+                'Path': '/simple',
+                'Method': 'get',
+                'ApiId': HttpApi,
+            },
+        },
+    }
+
+
+class SULambdaFunction(serverless.Function):
     code_uri = 'src/'
     events = {
         'DosGet': {
@@ -113,9 +113,9 @@ class AdminLambdaFunction(serverless.Function):
             'Properties': {
                 'Auth': {
                     'Authorizer': 'GeneralAuth',
-                    'AuthorizationScopes': [Sub('Admins-${Audience}')],
+                    'AuthorizationScopes': [Sub('SU-${Audience}')],
                 },
-                'Path': '/admin',
+                'Path': '/su',
                 'Method': 'get',
                 'ApiId': HttpApi,
             },

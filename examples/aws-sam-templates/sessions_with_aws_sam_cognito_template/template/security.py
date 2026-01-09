@@ -1,4 +1,4 @@
-"""Security resources: UserPool, UserPoolDomain, AdminUserGroup, AdminUser, AddUserToGroup, UserPoolClient."""
+"""Security resources: UserPool, AdminUser, AdminUserGroup, AddUserToGroup, UserPoolDomain, UserPoolClient."""
 
 from . import *  # noqa: F403
 
@@ -25,18 +25,6 @@ class UserPool(cognito.UserPool):
     schema = [UserPoolSchemaAttribute]
 
 
-class UserPoolDomain(cognito.UserPoolDomain):
-    domain = Sub('${AppName}-${AWS::AccountId}')
-    user_pool_id = UserPool
-
-
-class AdminUserGroup(cognito.UserPoolGroup):
-    group_name = 'Admins'
-    description = 'Admin user group'
-    precedence = 0
-    user_pool_id = UserPool
-
-
 class AdminUserAttributeType(cognito.UserPoolUser.AttributeType):
     name = 'email'
     value = AdminEmail
@@ -50,9 +38,21 @@ class AdminUser(cognito.UserPoolUser):
     user_pool_id = UserPool
 
 
+class AdminUserGroup(cognito.UserPoolGroup):
+    group_name = 'Admins'
+    description = 'Admin user group'
+    precedence = 0
+    user_pool_id = UserPool
+
+
 class AddUserToGroup(cognito.UserPoolUserToGroupAttachment):
     group_name = AdminUserGroup
     username = AdminUser
+    user_pool_id = UserPool
+
+
+class UserPoolDomain(cognito.UserPoolDomain):
+    domain = Sub('${AppName}-${AWS::AccountId}')
     user_pool_id = UserPool
 
 
