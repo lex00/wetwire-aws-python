@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.1] - 2026-01-09
+
+### Fixed
+
+- SAM import coverage improved from 40 to 58 templates (#93)
+  - Templates with cookiecutter only in Description/Metadata fields now import
+  - Jinja control structures (`{%...%}`) are properly excluded
+  - Matches Go implementation's coverage for non-templated SAM examples
+
 ## [1.9.0] - 2026-01-09
 
 ### Added

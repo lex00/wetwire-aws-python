@@ -225,6 +225,7 @@ class TestCookiecutterFiltering:
         """Templates with {{cookiecutter.foo}} should be detected."""
         # Import the function we're testing
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
         from import_sam_samples import has_cookiecutter_syntax
 
@@ -243,6 +244,7 @@ Resources:
     def test_has_cookiecutter_syntax_with_spaces(self, tmp_path):
         """Templates with {{ cookiecutter.foo }} should be detected."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
         from import_sam_samples import has_cookiecutter_syntax
 
@@ -260,6 +262,7 @@ Resources:
     def test_has_cookiecutter_syntax_clean_template(self, tmp_path):
         """Templates without cookiecutter syntax should pass."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
         from import_sam_samples import has_cookiecutter_syntax
 
@@ -277,6 +280,7 @@ Resources:
     def test_cookiecutter_directory_not_excluded(self):
         """Cookiecutter directories should not be excluded by path alone."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
         from import_sam_samples import EXCLUDE_PATTERNS
 
@@ -286,8 +290,112 @@ Resources:
     def test_sam_repos_includes_crud_sample(self):
         """SAM_REPOS should include sam-python-crud-sample."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
         from import_sam_samples import SAM_REPOS
 
         repo_names = [r["name"] for r in SAM_REPOS]
         assert "sam-python-crud-sample" in repo_names
+
+    def test_cookiecutter_only_in_description_allowed(self, tmp_path):
+        """Templates with cookiecutter ONLY in Description should be allowed.
+
+        Many aws-sam-cli-app-templates have {{ cookiecutter.project_name }} only
+        in the Description field. The CloudFormation structure is valid, so these
+        should be importable.
+        """
+        import sys
+
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+        from import_sam_samples import has_cookiecutter_syntax
+
+        template = tmp_path / "template.yaml"
+        template.write_text("""AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  {{ cookiecutter.project_name }}
+
+  Sample SAM Template for {{ cookiecutter.project_name }}
+
+Resources:
+  StockCheckerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      CodeUri: functions/stock_checker/
+""")
+        # Should return False because cookiecutter only in Description
+        assert has_cookiecutter_syntax(template) is False
+
+    def test_cookiecutter_in_resources_excluded(self, tmp_path):
+        """Templates with cookiecutter in Resources should still be excluded."""
+        import sys
+
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+        from import_sam_samples import has_cookiecutter_syntax
+
+        template = tmp_path / "template.yaml"
+        template.write_text("""AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: My template
+
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: {{ cookiecutter.function_name }}
+      Handler: app.handler
+      Runtime: python3.12
+""")
+        assert has_cookiecutter_syntax(template) is True
+
+    def test_jinja_control_structures_excluded(self, tmp_path):
+        """Templates with Jinja control structures should be excluded."""
+        import sys
+
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+        from import_sam_samples import has_cookiecutter_syntax
+
+        template = tmp_path / "template.yaml"
+        template.write_text("""AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: My template
+
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.handler
+      Runtime: python3.12
+      {%- if cookiecutter.architectures.value != [] %}
+      Architectures:
+        - arm64
+      {%- endif %}
+""")
+        assert has_cookiecutter_syntax(template) is True
+
+    def test_cookiecutter_in_metadata_allowed(self, tmp_path):
+        """Templates with cookiecutter only in Metadata should be allowed."""
+        import sys
+
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+        from import_sam_samples import has_cookiecutter_syntax
+
+        template = tmp_path / "template.yaml"
+        template.write_text("""AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: My template
+Metadata:
+  ProjectName: {{ cookiecutter.project_name }}
+
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.handler
+      Runtime: python3.12
+      CodeUri: ./src
+""")
+        # Metadata is non-structural, should be allowed
+        assert has_cookiecutter_syntax(template) is False
