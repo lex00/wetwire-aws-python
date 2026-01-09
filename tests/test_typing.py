@@ -49,7 +49,7 @@ class TestStubFiles:
 
 
 class TestTypingSupport:
-    """Tests for type checking of dynamic attributes."""
+    """Tests for type checking of dynamic attributes using ty."""
 
     def test_resource_arn_attribute_resolves(self):
         """Type checker should resolve .Arn attribute on resources.
@@ -57,7 +57,6 @@ class TestTypingSupport:
         This tests that ResourceMeta.__getattr__ is visible to type checkers,
         enabling patterns like MyBucket.Arn to resolve to AttrRef.
         """
-        # Create a test file that uses the .Arn pattern
         test_code = '''
 from wetwire_aws.base import CloudFormationResource
 
@@ -67,6 +66,7 @@ class MyBucket(CloudFormationResource):
 # This should resolve without type errors
 arn = MyBucket.Arn
 '''
+        project_root = Path(__file__).parent.parent
 
         with tempfile.NamedTemporaryFile(
             mode='w', suffix='.py', delete=False
@@ -75,35 +75,23 @@ arn = MyBucket.Arn
             test_file = f.name
 
         try:
-            # Run pyright on the test file
+            # Run ty on the test file with --project to resolve imports
             result = subprocess.run(
-                [sys.executable, "-m", "pyright", test_file, "--outputjson"],
+                [sys.executable, "-m", "ty", "check", test_file, "--project", str(project_root)],
                 capture_output=True,
                 text=True,
-                cwd=Path(__file__).parent.parent,
             )
 
-            # Check for "Arn" related errors
-            import json
-            try:
-                output = json.loads(result.stdout)
-                diagnostics = output.get("generalDiagnostics", [])
-
-                # Filter for errors about "Arn" attribute
-                arn_errors = [
-                    d for d in diagnostics
-                    if "Arn" in d.get("message", "")
-                ]
-
-                assert len(arn_errors) == 0, (
-                    f"Type checker cannot resolve .Arn attribute: {arn_errors}"
+            # Check for Arn-related errors in output
+            if "Arn" in result.stdout or "Arn" in result.stderr:
+                raise AssertionError(
+                    f"Type checker cannot resolve .Arn attribute:\n{result.stdout}\n{result.stderr}"
                 )
-            except json.JSONDecodeError:
-                # If pyright output isn't JSON, check stderr for errors
-                if "Cannot access attribute \"Arn\"" in result.stdout:
-                    raise AssertionError(
-                        f"Type checker cannot resolve .Arn: {result.stdout}"
-                    )
+
+            # ty exits 0 on success, non-zero on errors
+            assert result.returncode == 0 or "All checks passed" in result.stdout, (
+                f"Type checker failed:\n{result.stdout}\n{result.stderr}"
+            )
         finally:
             Path(test_file).unlink()
 
@@ -122,6 +110,7 @@ class MyBucket(s3.Bucket):
 # This should resolve without type errors
 arn = MyBucket.Arn
 '''
+        project_root = Path(__file__).parent.parent
 
         with tempfile.NamedTemporaryFile(
             mode='w', suffix='.py', delete=False
@@ -131,29 +120,18 @@ arn = MyBucket.Arn
 
         try:
             result = subprocess.run(
-                [sys.executable, "-m", "pyright", test_file, "--outputjson"],
+                [sys.executable, "-m", "ty", "check", test_file, "--project", str(project_root)],
                 capture_output=True,
                 text=True,
-                cwd=Path(__file__).parent.parent,
             )
 
-            import json
-            try:
-                output = json.loads(result.stdout)
-                diagnostics = output.get("generalDiagnostics", [])
-
-                arn_errors = [
-                    d for d in diagnostics
-                    if "Arn" in d.get("message", "")
-                ]
-
-                assert len(arn_errors) == 0, (
-                    f"Type checker cannot resolve .Arn on s3.Bucket subclass: {arn_errors}"
+            if "Arn" in result.stdout or "Arn" in result.stderr:
+                raise AssertionError(
+                    f"Type checker cannot resolve .Arn on s3.Bucket subclass:\n{result.stdout}\n{result.stderr}"
                 )
-            except json.JSONDecodeError:
-                if "Cannot access attribute \"Arn\"" in result.stdout:
-                    raise AssertionError(
-                        f"Type checker cannot resolve .Arn: {result.stdout}"
-                    )
+
+            assert result.returncode == 0 or "All checks passed" in result.stdout, (
+                f"Type checker failed:\n{result.stdout}\n{result.stderr}"
+            )
         finally:
             Path(test_file).unlink()
