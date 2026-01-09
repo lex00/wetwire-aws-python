@@ -32,7 +32,7 @@ wetwire-aws build --module my_infrastructure
 ### How do I declare a resource?
 
 ```python
-from wetwire_aws import *
+from . import *
 
 class MyBucket(s3.Bucket):
     bucket_name = "my-data-bucket"

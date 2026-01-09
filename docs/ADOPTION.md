@@ -215,7 +215,7 @@ That's 90% of what you need.
 Decide these early:
 - **File organization**: By service (network.py, compute.py) or by feature?
 - **Naming**: PascalCase for classes, snake_case for files?
-- **Reference style**: Direct `ref(MyBucket)` or annotation `bucket: Annotated[MyBucket, Ref()]`?
+- **Reference style**: Direct `bucket = MyBucket` or annotation `bucket: Annotated[MyBucket, Ref()]`?
 
 Document in your repo's README.
 

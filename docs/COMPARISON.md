@@ -252,12 +252,12 @@ CDK is more concise here—the L2 construct handles encryption configuration.
 ```python
 from . import *
 
-class LambdaAssumeRoleStatement(iam.PolicyStatement):
+class LambdaAssumeRoleStatement(PolicyStatement):
     effect = "Allow"
     principal = {"Service": "lambda.amazonaws.com"}
     action = "sts:AssumeRole"
 
-class LambdaAssumeRolePolicy(iam.PolicyDocument):
+class LambdaAssumeRolePolicy(PolicyDocument):
     version = "2012-10-17"
     statement = [LambdaAssumeRoleStatement]
 

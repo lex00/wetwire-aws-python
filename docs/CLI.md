@@ -364,9 +364,20 @@ wetwire-aws init myapp
 
 # Create in a specific directory
 wetwire-aws init myapp -o /path/to/output
+
+# Create minimal structure (Python files only)
+wetwire-aws init myapp --no-scaffold
 ```
 
-Creates a minimal project structure with `__init__.py` containing `setup_resources()`.
+Creates a project structure with:
+- `__init__.py` - Package entry with `setup_params()` and `setup_resources()`
+- `params.py` - Parameters, Mappings, and Conditions
+- `outputs.py` - CloudFormation Outputs
+- `README.md` - Build instructions
+- `CLAUDE.md` - AI assistant context
+- `.gitignore` - Python and wetwire-aws patterns
+
+Use `--no-scaffold` to skip README.md, CLAUDE.md, and .gitignore.
 
 ---
 

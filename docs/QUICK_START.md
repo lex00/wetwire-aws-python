@@ -15,13 +15,22 @@ Create a package for your infrastructure:
 ```
 myapp/
 ├── __init__.py
+├── params.py
+├── outputs.py
 └── infra.py
 ```
 
 **myapp/__init__.py:**
 ```python
-from wetwire_aws.loader import setup_resources
+from wetwire_aws.loader import setup_params, setup_resources
+
+setup_params(globals())
+
+from .params import *  # noqa: F403, F401
+
 setup_resources(__file__, __name__, globals())
+
+from .outputs import *  # noqa: F403, F401
 ```
 
 **myapp/infra.py:**
@@ -53,12 +62,12 @@ class DataBucket(s3.Bucket):
     bucket_name = "data"
 
 # Policy statement as wrapper class (flattened)
-class LambdaAssumeRoleStatement(iam.PolicyStatement):
+class LambdaAssumeRoleStatement(PolicyStatement):
     effect = "Allow"
     principal = {"Service": "lambda.amazonaws.com"}
     action = "sts:AssumeRole"
 
-class LambdaAssumeRolePolicy(iam.PolicyDocument):
+class LambdaAssumeRolePolicy(PolicyDocument):
     version = "2012-10-17"
     statement = [LambdaAssumeRoleStatement]
 
@@ -134,8 +143,15 @@ myapp/
 
 **__init__.py** (the key file):
 ```python
-from wetwire_aws.loader import setup_resources
+from wetwire_aws.loader import setup_params, setup_resources
+
+setup_params(globals())
+
+from .params import *  # noqa: F403, F401
+
 setup_resources(__file__, __name__, globals())
+
+from .outputs import *  # noqa: F403, F401
 ```
 
 `setup_resources()` automatically:
@@ -208,7 +224,7 @@ class MyTable(dynamodb.Table):
 `CloudFormationTemplate.from_registry()` collects all registered resources:
 
 ```python
-from myapp import CloudFormationTemplate
+from wetwire_aws.template import CloudFormationTemplate
 
 template = CloudFormationTemplate.from_registry(
     description="My Application Stack",
@@ -267,12 +283,13 @@ class ProcessorFunction(serverless.Function):
 class ItemsApi(serverless.Api):
     stage_name = "prod"
 
+class ItemsPrimaryKey(serverless.SimpleTable.PrimaryKey):
+    name = "id"
+    type_ = "String"
+
 class ItemsTable(serverless.SimpleTable):
     table_name = "items"
-    primary_key = serverless.SimpleTable.PrimaryKey(
-        name="id",
-        type_="String",
-    )
+    primary_key = ItemsPrimaryKey
 ```
 
 **Generate SAM template:**
