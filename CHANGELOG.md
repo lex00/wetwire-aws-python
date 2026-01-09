@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-01-09
+
+### Added
+
+- New `graph` CLI command for dependency visualization (#87)
+  - Generate Graphviz DOT format: `wetwire-aws graph ./infra`
+  - Generate Mermaid format: `wetwire-aws graph ./infra -f mermaid`
+  - Cluster by AWS service: `wetwire-aws graph ./infra -c`
+  - Include parameters: `wetwire-aws graph ./infra -p`
+  - Different edge styles for Ref vs GetAtt references
+- Added `graphviz` package dependency for DOT generation
+
 ## [1.8.8] - 2026-01-08
 
 ### Fixed

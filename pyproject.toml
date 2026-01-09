@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wetwire-aws"
-version = "1.8.8"
+version = "1.9.0"
 description = "AWS CloudFormation synthesis for wetwire"
 readme = "README.md"
 license = "MIT"
@@ -36,6 +36,7 @@ classifiers = [
 ]
 dependencies = [
     "dataclass-dsl>=1.1.1",
+    "graphviz>=0.20",
     "pyyaml>=6.0",
 ]
 

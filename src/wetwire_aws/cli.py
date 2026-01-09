@@ -322,6 +322,56 @@ def test_command(args: argparse.Namespace) -> None:
             print("\nNo package created (test may have failed).")
 
 
+def graph_command(args: argparse.Namespace) -> None:
+    """Generate dependency graph from registered resources."""
+    from wetwire_aws.graph import Graph
+
+    registry = get_aws_registry()
+
+    # Handle path argument (convert to module)
+    if args.path:
+        package_path = Path(args.path).resolve()
+        if not package_path.exists():
+            print(f"Error: Path does not exist: {args.path}", file=sys.stderr)
+            sys.exit(1)
+        if not package_path.is_dir():
+            print(f"Error: Path is not a directory: {args.path}", file=sys.stderr)
+            sys.exit(1)
+        if not (package_path / "__init__.py").exists():
+            print(
+                f"Error: Path is not a Python package (missing __init__.py): {args.path}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        # Add parent directory to sys.path and use directory name as module
+        parent_dir = str(package_path.parent)
+        if parent_dir not in sys.path:
+            sys.path.insert(0, parent_dir)
+        module_name = package_path.name
+    elif args.module:
+        module_name = args.module[0] if isinstance(args.module, list) else args.module
+    else:
+        print("Error: Either path or --module is required", file=sys.stderr)
+        sys.exit(1)
+
+    # Discover resources
+    discover_resources(module_name, registry, args.verbose)
+
+    # Build graph
+    graph = Graph.from_registry(
+        registry,
+        scope_package=args.scope,
+        include_params=args.params,
+    )
+
+    # Output in requested format
+    if args.format == "mermaid":
+        print(graph.to_mermaid())
+    else:
+        print(graph.to_dot(cluster_by_service=args.cluster))
+
+
 def build_command(args: argparse.Namespace) -> None:
     """Generate CloudFormation template from registered resources."""
     registry = get_aws_registry()
@@ -556,6 +606,38 @@ def main() -> None:
     lint_parser.set_defaults(
         func=create_lint_command(lint_file, fix_file, AWS_STUB_CONFIG)
     )
+
+    # Graph command
+    graph_parser = subparsers.add_parser(
+        "graph",
+        help="Generate dependency graph in DOT or Mermaid format",
+    )
+    graph_parser.add_argument(
+        "path",
+        nargs="?",
+        help="Path to package directory (alternative to --module)",
+    )
+    add_common_args(graph_parser)
+    graph_parser.add_argument(
+        "--format",
+        "-f",
+        choices=["dot", "mermaid"],
+        default="dot",
+        help="Output format (default: dot)",
+    )
+    graph_parser.add_argument(
+        "--params",
+        "-p",
+        action="store_true",
+        help="Include parameter nodes in graph",
+    )
+    graph_parser.add_argument(
+        "--cluster",
+        "-c",
+        action="store_true",
+        help="Cluster nodes by AWS service",
+    )
+    graph_parser.set_defaults(func=graph_command)
 
     # Design command (AI-assisted)
     design_parser = subparsers.add_parser(
