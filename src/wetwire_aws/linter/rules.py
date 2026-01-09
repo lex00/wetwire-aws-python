@@ -1656,6 +1656,7 @@ class InlinePropertyType(LintRule):
         "_metadata",
         "_definition",
         "_template",
+        "_encryption",
     )
 
     # Fields to always flag regardless of suffix
