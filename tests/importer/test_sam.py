@@ -212,3 +212,82 @@ class TestSAMImplicitResources:
             "from wetwire_aws.intrinsics import" in code and "GetAtt" in code
         )
         assert has_ref_import or has_getatt_import
+
+
+class TestCookiecutterFiltering:
+    """Tests for cookiecutter template filtering.
+
+    The import script should skip templates containing cookiecutter variables
+    but still import valid templates from cookiecutter project directories.
+    """
+
+    def test_has_cookiecutter_syntax_detects_variables(self, tmp_path):
+        """Templates with {{cookiecutter.foo}} should be detected."""
+        # Import the function we're testing
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+        from import_sam_samples import has_cookiecutter_syntax
+
+        # Create template with cookiecutter syntax
+        template = tmp_path / "template.yaml"
+        template.write_text("""
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: {{cookiecutter.function_name}}
+""")
+        assert has_cookiecutter_syntax(template) is True
+
+    def test_has_cookiecutter_syntax_with_spaces(self, tmp_path):
+        """Templates with {{ cookiecutter.foo }} should be detected."""
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+        from import_sam_samples import has_cookiecutter_syntax
+
+        template = tmp_path / "template.yaml"
+        template.write_text("""
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: {{ cookiecutter.function_name }}
+""")
+        assert has_cookiecutter_syntax(template) is True
+
+    def test_has_cookiecutter_syntax_clean_template(self, tmp_path):
+        """Templates without cookiecutter syntax should pass."""
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+        from import_sam_samples import has_cookiecutter_syntax
+
+        template = tmp_path / "template.yaml"
+        template.write_text("""
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: my-function
+""")
+        assert has_cookiecutter_syntax(template) is False
+
+    def test_cookiecutter_directory_not_excluded(self):
+        """Cookiecutter directories should not be excluded by path alone."""
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+        from import_sam_samples import EXCLUDE_PATTERNS
+
+        # "cookiecutter" should not be in EXCLUDE_PATTERNS
+        assert "cookiecutter" not in EXCLUDE_PATTERNS
+
+    def test_sam_repos_includes_crud_sample(self):
+        """SAM_REPOS should include sam-python-crud-sample."""
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
+        from import_sam_samples import SAM_REPOS
+
+        repo_names = [r["name"] for r in SAM_REPOS]
+        assert "sam-python-crud-sample" in repo_names
