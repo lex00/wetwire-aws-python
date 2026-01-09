@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added "Golden Rules" section at top of prompt
   - Explicit lint-build cycle in Design Workflow
   - Lint reminder in "Continuing Work" section
+- WAW017 now detects `bucket_encryption` as inline property type (#79)
+  - Added `_encryption` suffix to property type detection
 
 ## [1.7.2] - 2026-01-07
 
