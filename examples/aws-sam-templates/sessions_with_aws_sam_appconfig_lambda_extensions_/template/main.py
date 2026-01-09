@@ -3,22 +3,8 @@
 from . import *  # noqa: F403
 
 
-class AppConfigLambdaDeploymentStrategy(appconfig.DeploymentStrategy):
-    name = AppName
-    deployment_duration_in_minutes = 0
-    final_bake_time_in_minutes = 0
-    growth_factor = 100
-    growth_type = 'LINEAR'
-    replicate_to = 'NONE'
-
-
 class AppConfigLambdaApplication(appconfig.Application):
     name = AppName
-
-
-class AppConfigLambdaEnvironment(appconfig.Environment):
-    name = AppName
-    application_id = AppConfigLambdaApplication
 
 
 class AppConfigLambdaConfigurationProfileValidators(appconfig.ConfigurationProfile.Validators):
@@ -31,6 +17,35 @@ class AppConfigLambdaConfigurationProfile(appconfig.ConfigurationProfile):
     application_id = AppConfigLambdaApplication
     location_uri = 'hosted'
     validators = [AppConfigLambdaConfigurationProfileValidators]
+
+
+class AppConfigLambdaEnvironment(appconfig.Environment):
+    name = AppName
+    application_id = AppConfigLambdaApplication
+
+
+class AppConfigLambdaConfigurationVersion(appconfig.HostedConfigurationVersion):
+    application_id = AppConfigLambdaApplication
+    configuration_profile_id = AppConfigLambdaConfigurationProfile
+    content = '{ "isEnabled": false, "messageOption": "AppConfig" }'
+    content_type = 'application/json'
+
+
+class AppConfigLambdaDeploymentStrategy(appconfig.DeploymentStrategy):
+    name = AppName
+    deployment_duration_in_minutes = 0
+    final_bake_time_in_minutes = 0
+    growth_factor = 100
+    growth_type = 'LINEAR'
+    replicate_to = 'NONE'
+
+
+class AppConfigLambdaDeployment(appconfig.Deployment):
+    application_id = AppConfigLambdaApplication
+    configuration_profile_id = AppConfigLambdaConfigurationProfile
+    configuration_version = AppConfigLambdaConfigurationVersion
+    deployment_strategy_id = AppConfigLambdaDeploymentStrategy
+    environment_id = AppConfigLambdaEnvironment
 
 
 class HttpApi(serverless.HttpApi):
@@ -88,18 +103,3 @@ class AppConfigLambdaFunction(serverless.Function):
             },
         },
     }
-
-
-class AppConfigLambdaConfigurationVersion(appconfig.HostedConfigurationVersion):
-    application_id = AppConfigLambdaApplication
-    configuration_profile_id = AppConfigLambdaConfigurationProfile
-    content = '{ "isEnabled": false, "messageOption": "AppConfig" }'
-    content_type = 'application/json'
-
-
-class AppConfigLambdaDeployment(appconfig.Deployment):
-    application_id = AppConfigLambdaApplication
-    configuration_profile_id = AppConfigLambdaConfigurationProfile
-    configuration_version = AppConfigLambdaConfigurationVersion
-    deployment_strategy_id = AppConfigLambdaDeploymentStrategy
-    environment_id = AppConfigLambdaEnvironment

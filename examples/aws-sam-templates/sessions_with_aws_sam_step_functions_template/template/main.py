@@ -18,8 +18,8 @@ class AnalyticsTable(serverless.SimpleTable):
     provisioned_throughput = AnalyticsTableProvisionedThroughput
 
 
-class GatherStackOverflowMetrics(serverless.StateMachine):
-    definition_uri = 'statemachine/stackoverflow.asl.json'
+class GatherTwitchMetrics(serverless.StateMachine):
+    definition_uri = 'statemachine/twitch.asl.json'
     definition_substitutions = {
         'DDBPutItem': Sub('arn:${AWS::Partition}:states:::dynamodb:putItem'),
         'DDBTable': AnalyticsTable,
@@ -32,8 +32,8 @@ class GatherStackOverflowMetrics(serverless.StateMachine):
     }]
 
 
-class GatherTwitchMetrics(serverless.StateMachine):
-    definition_uri = 'statemachine/twitch.asl.json'
+class GatherStackOverflowMetrics(serverless.StateMachine):
+    definition_uri = 'statemachine/stackoverflow.asl.json'
     definition_substitutions = {
         'DDBPutItem': Sub('arn:${AWS::Partition}:states:::dynamodb:putItem'),
         'DDBTable': AnalyticsTable,

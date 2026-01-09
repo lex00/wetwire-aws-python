@@ -31,6 +31,25 @@ class TranslateFunction(serverless.Function):
     }
 
 
+class SentimentFunction(serverless.Function):
+    handler = 'sentiment.lambdaHandler'
+    policies = [{
+        'ComprehendBasicAccessPolicy': {},
+    }]
+    events = {
+        'SentimentFilter': {
+            'Type': 'EventBridgeRule',
+            'Properties': {
+                'EventBusName': CustomBus,
+                'Pattern': {
+                    'source': ['TextEndpoint'],
+                    'detail-type': ['sentiment'],
+                },
+            },
+        },
+    }
+
+
 class EndpointFunctionEnvironment(serverless.Function.Environment):
     variables = {
         'EVENT_BUS_NAME': CustomBus,
@@ -51,25 +70,6 @@ class EndpointFunction(serverless.Function):
             'Properties': {
                 'Path': '/',
                 'Method': 'POST',
-            },
-        },
-    }
-
-
-class SentimentFunction(serverless.Function):
-    handler = 'sentiment.lambdaHandler'
-    policies = [{
-        'ComprehendBasicAccessPolicy': {},
-    }]
-    events = {
-        'SentimentFilter': {
-            'Type': 'EventBridgeRule',
-            'Properties': {
-                'EventBusName': CustomBus,
-                'Pattern': {
-                    'source': ['TextEndpoint'],
-                    'detail-type': ['sentiment'],
-                },
             },
         },
     }

@@ -1,4 +1,4 @@
-"""Security resources: UserPool, LoggingRole, UserPoolDomain, UserPoolClient, DDBCrudRole, DDBReadRole."""
+"""Security resources: UserPool, UserPoolDomain, UserPoolClient, DDBCrudRole, DDBReadRole, LoggingRole."""
 
 from . import *  # noqa: F403
 
@@ -23,37 +23,6 @@ class UserPool(cognito.UserPool):
     auto_verified_attributes = ['email']
     username_attributes = ['email']
     schema = [UserPoolSchemaAttribute]
-
-
-class LoggingRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': 'cloudfront.amazonaws.com',
-    }
-    action = ['sts:AssumeRole']
-
-
-class LoggingRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [LoggingRoleAllowStatement0]
-
-
-class LoggingRolePolicy(iam.User.Policy):
-    policy_name = 'CloudFrontLogToKinesis'
-    policy_document = {
-        'Version': '2012-10-17',
-        'Statement': {
-            'Action': [
-                'kinesis:Put*',
-                'kinesis:List*',
-            ],
-            'Effect': 'Allow',
-            'Resource': LoggingStream.Arn,
-        },
-    }
-
-
-class LoggingRole(iam.Role):
-    assume_role_policy_document = LoggingRoleAssumeRolePolicyDocument
-    policies = [LoggingRolePolicy]
 
 
 class UserPoolDomain(cognito.UserPoolDomain):
@@ -139,3 +108,34 @@ class DDBReadRolePolicy(iam.User.Policy):
 class DDBReadRole(iam.Role):
     assume_role_policy_document = DDBReadRoleAssumeRolePolicyDocument
     policies = [DDBReadRolePolicy]
+
+
+class LoggingRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': 'cloudfront.amazonaws.com',
+    }
+    action = ['sts:AssumeRole']
+
+
+class LoggingRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [LoggingRoleAllowStatement0]
+
+
+class LoggingRolePolicy(iam.User.Policy):
+    policy_name = 'CloudFrontLogToKinesis'
+    policy_document = {
+        'Version': '2012-10-17',
+        'Statement': {
+            'Action': [
+                'kinesis:Put*',
+                'kinesis:List*',
+            ],
+            'Effect': 'Allow',
+            'Resource': LoggingStream.Arn,
+        },
+    }
+
+
+class LoggingRole(iam.Role):
+    assume_role_policy_document = LoggingRoleAssumeRolePolicyDocument
+    policies = [LoggingRolePolicy]

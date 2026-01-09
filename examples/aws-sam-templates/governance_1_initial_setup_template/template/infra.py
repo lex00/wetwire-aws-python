@@ -1,11 +1,6 @@
-"""Infra resources: DeliveryChannel, ConfigRecorder."""
+"""Infra resources: ConfigRecorder, DeliveryChannel."""
 
 from . import *  # noqa: F403
-
-
-class DeliveryChannel(config.DeliveryChannel):
-    s3_bucket_name = DataBucket
-    sns_topic_arn = NotificationTopic
 
 
 class ConfigRecorderRecordingGroup(config.ConfigurationRecorder.RecordingGroup):
@@ -17,3 +12,8 @@ class ConfigRecorder(config.ConfigurationRecorder):
     name = Sub('${AWS::Region}-Config-Recorder')
     recording_group = ConfigRecorderRecordingGroup
     role_arn = ConfigRole.Arn
+
+
+class DeliveryChannel(config.DeliveryChannel):
+    s3_bucket_name = DataBucket
+    sns_topic_arn = NotificationTopic

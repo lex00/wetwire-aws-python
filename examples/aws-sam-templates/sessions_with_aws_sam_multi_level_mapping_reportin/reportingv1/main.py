@@ -8,20 +8,6 @@ class ReportingAPIV1(serverless.HttpApi):
     disable_execute_api_endpoint = True
 
 
-class RegionalReporting(serverless.Function):
-    code_uri = 'src/regional-reporting'
-    events = {
-        'RegionalReporting': {
-            'Type': 'HttpApi',
-            'Properties': {
-                'ApiId': ReportingAPIV1,
-                'Method': 'GET',
-                'Path': '/regional',
-            },
-        },
-    }
-
-
 class GlobalReportingV1(serverless.Function):
     code_uri = 'src/global-reportingv1'
     events = {
@@ -31,6 +17,20 @@ class GlobalReportingV1(serverless.Function):
                 'ApiId': ReportingAPIV1,
                 'Method': 'GET',
                 'Path': '/global',
+            },
+        },
+    }
+
+
+class RegionalReporting(serverless.Function):
+    code_uri = 'src/regional-reporting'
+    events = {
+        'RegionalReporting': {
+            'Type': 'HttpApi',
+            'Properties': {
+                'ApiId': ReportingAPIV1,
+                'Method': 'GET',
+                'Path': '/regional',
             },
         },
     }

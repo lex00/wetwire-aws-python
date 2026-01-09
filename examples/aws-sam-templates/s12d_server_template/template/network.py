@@ -1,6 +1,38 @@
-"""Network resources: CloudFrontCachePolicyAPI, CloudFrontCachePolicyDefault, CloudFrontLogDistro, CloudFrontCachePolicyClient, CloudFrontDistro."""
+"""Network resources: CloudFrontCachePolicyClient, CloudFrontCachePolicyAPI, CloudFrontCachePolicyDefault, CloudFrontLogDistro, CloudFrontDistro."""
 
 from . import *  # noqa: F403
+
+
+class CloudFrontCachePolicyClientCookiesConfig(cloudfront.CachePolicy.CookiesConfig):
+    cookie_behavior = 'none'
+
+
+class CloudFrontCachePolicyClientHeadersConfig(cloudfront.CachePolicy.HeadersConfig):
+    header_behavior = 'none'
+
+
+class CloudFrontCachePolicyClientQueryStringsConfig(cloudfront.CachePolicy.QueryStringsConfig):
+    query_string_behavior = 'all'
+
+
+class CloudFrontCachePolicyClientParametersInCacheKeyAndForwardedToOrigin(cloudfront.CachePolicy.ParametersInCacheKeyAndForwardedToOrigin):
+    cookies_config = CloudFrontCachePolicyClientCookiesConfig
+    enable_accept_encoding_brotli = True
+    enable_accept_encoding_gzip = True
+    headers_config = CloudFrontCachePolicyClientHeadersConfig
+    query_strings_config = CloudFrontCachePolicyClientQueryStringsConfig
+
+
+class CloudFrontCachePolicyClientCachePolicyConfig(cloudfront.CachePolicy.CachePolicyConfig):
+    default_ttl = 3600
+    min_ttl = 1
+    max_ttl = 31536000
+    name = Sub('${AppName}-client')
+    parameters_in_cache_key_and_forwarded_to_origin = CloudFrontCachePolicyClientParametersInCacheKeyAndForwardedToOrigin
+
+
+class CloudFrontCachePolicyClient(cloudfront.CachePolicy):
+    cache_policy_config = CloudFrontCachePolicyClientCachePolicyConfig
 
 
 class CloudFrontCachePolicyAPICookiesConfig(cloudfront.CachePolicy.CookiesConfig):
@@ -83,38 +115,6 @@ class CloudFrontLogDistro(cloudfront.RealtimeLogConfig):
     fields = ['timestamp', 'c-ip', 'sc-status', 'cs-uri-stem', 'c-country']
     name = Sub('LoggingConfig-${AppName}')
     sampling_rate = 100
-
-
-class CloudFrontCachePolicyClientCookiesConfig(cloudfront.CachePolicy.CookiesConfig):
-    cookie_behavior = 'none'
-
-
-class CloudFrontCachePolicyClientHeadersConfig(cloudfront.CachePolicy.HeadersConfig):
-    header_behavior = 'none'
-
-
-class CloudFrontCachePolicyClientQueryStringsConfig(cloudfront.CachePolicy.QueryStringsConfig):
-    query_string_behavior = 'all'
-
-
-class CloudFrontCachePolicyClientParametersInCacheKeyAndForwardedToOrigin(cloudfront.CachePolicy.ParametersInCacheKeyAndForwardedToOrigin):
-    cookies_config = CloudFrontCachePolicyClientCookiesConfig
-    enable_accept_encoding_brotli = True
-    enable_accept_encoding_gzip = True
-    headers_config = CloudFrontCachePolicyClientHeadersConfig
-    query_strings_config = CloudFrontCachePolicyClientQueryStringsConfig
-
-
-class CloudFrontCachePolicyClientCachePolicyConfig(cloudfront.CachePolicy.CachePolicyConfig):
-    default_ttl = 3600
-    min_ttl = 1
-    max_ttl = 31536000
-    name = Sub('${AppName}-client')
-    parameters_in_cache_key_and_forwarded_to_origin = CloudFrontCachePolicyClientParametersInCacheKeyAndForwardedToOrigin
-
-
-class CloudFrontCachePolicyClient(cloudfront.CachePolicy):
-    cache_policy_config = CloudFrontCachePolicyClientCachePolicyConfig
 
 
 class CloudFrontDistroCacheBehavior(cloudfront.Distribution.CacheBehavior):

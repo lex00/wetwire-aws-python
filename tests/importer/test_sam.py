@@ -164,3 +164,51 @@ class TestSAMTransformHeader:
         template_path = TEMPLATES_DIR / "sam_table.yaml"
         content = template_path.read_text()
         assert "Transform: AWS::Serverless-2016-10-31" in content
+
+
+class TestSAMImplicitResources:
+    """Tests for handling SAM implicit resources (auto-created by SAM transform).
+
+    SAM automatically creates resources like roles, API stages, and deployments.
+    Templates may reference these implicit resources, so the importer should
+    handle them gracefully instead of raising errors.
+    """
+
+    @pytest.fixture
+    def code(self):
+        template = parse_template(TEMPLATES_DIR / "sam_implicit_resources.yaml")
+        return generate_code(template)
+
+    def test_generates_valid_python(self, code):
+        """Template with implicit resource refs should still produce valid Python."""
+        compile(code, "<test>", "exec")
+
+    def test_has_explicit_function(self, code):
+        """Explicitly defined resources should be generated normally."""
+        assert "class MyFunction(serverless.Function):" in code
+
+    def test_has_bucket_with_depends_on(self, code):
+        """Bucket should be generated with depends_on referencing implicit role."""
+        assert "class MyBucket(s3.Bucket):" in code
+        # The depends_on should use explicit Ref for the implicit resource
+        assert "depends_on" in code
+
+    def test_output_with_implicit_getatt(self, code):
+        """Output referencing implicit resource should use GetAtt intrinsic."""
+        # Should have GetAtt for the implicit MyFunctionRole with noqa comment
+        assert 'GetAtt("MyFunctionRole", "Arn")' in code
+        assert "noqa: WAW020" in code
+
+    def test_output_with_explicit_resource(self, code):
+        """Output referencing explicit resource should use no-parens pattern."""
+        # MyFunction.Arn should use the normal no-parens pattern
+        assert "MyFunction.Arn" in code
+
+    def test_imports_ref_or_getatt_if_needed(self, code):
+        """Should import Ref/GetAtt when used for implicit resources."""
+        # Either Ref or GetAtt should be imported
+        has_ref_import = "from wetwire_aws.intrinsics import" in code and "Ref" in code
+        has_getatt_import = (
+            "from wetwire_aws.intrinsics import" in code and "GetAtt" in code
+        )
+        assert has_ref_import or has_getatt_import

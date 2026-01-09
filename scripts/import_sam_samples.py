@@ -59,22 +59,23 @@ EXCLUDE_PATTERNS = [
     ".aws-sam",
     "dist/",
     "build/",
-    # Templates referencing implicit SAM resources (auto-generated roles, stages)
-    "sam-containers-demo-app",
-    "api-enhanced-observability-variables",
-    "go-al2",
-    "safe-deploy",
-    "lambda-layers/demo-app",
-    "custom-domains/both-implied",
-    "custom-domains/both-declared",
 ]
 
 # Templates with known defects that should be skipped during validation
+# These import successfully but fail Python execution because they reference
+# SAM implicit resources that don't exist at Python import time
 SKIP_VALIDATION = [
-    # Templates referencing implicit API stages in depends_on
+    # Templates with implicit API stage references
     "sessions_with_aws_sam_multi_level_mapping_admin",
     "sessions_with_aws_sam_multi_level_mapping_reportin",
     "sessions_with_aws_sam_multi_level_mapping_dadjokes",
+    # Templates with implicit role/stage references
+    "sessions_with_aws_sam_go_al2_template",
+    "lambda_layers_demo_app_template",
+    "sessions_with_aws_sam_api_enhanced_observability_v",
+    "custom_domains_both_declared_template",
+    "sessions_with_aws_sam_sam_containers_demo_app_temp",
+    "custom_domains_both_implied_template",
 ]
 
 # Colors for output

@@ -7,11 +7,11 @@ class SampleTable(serverless.SimpleTable):
     pass
 
 
-class putItemFunction(serverless.Function):
-    handler = 'src/put-item.putItemHandler'
-    description = 'put item in ddb table'
+class getAllItemsFunction(serverless.Function):
+    handler = 'src/get-all-items.getAllItemsHandler'
+    description = 'get all items'
     policies = [{
-        'DynamoDBCrudPolicy': {
+        'DynamoDBReadPolicy': {
             'TableName': SampleTable,
         },
     }]
@@ -20,7 +20,7 @@ class putItemFunction(serverless.Function):
             'Type': 'HttpApi',
             'Properties': {
                 'Path': '/',
-                'Method': 'POST',
+                'Method': 'GET',
             },
         },
     }
@@ -45,11 +45,11 @@ class getByIdFunction(serverless.Function):
     }
 
 
-class getAllItemsFunction(serverless.Function):
-    handler = 'src/get-all-items.getAllItemsHandler'
-    description = 'get all items'
+class putItemFunction(serverless.Function):
+    handler = 'src/put-item.putItemHandler'
+    description = 'put item in ddb table'
     policies = [{
-        'DynamoDBReadPolicy': {
+        'DynamoDBCrudPolicy': {
             'TableName': SampleTable,
         },
     }]
@@ -58,7 +58,7 @@ class getAllItemsFunction(serverless.Function):
             'Type': 'HttpApi',
             'Properties': {
                 'Path': '/',
-                'Method': 'GET',
+                'Method': 'POST',
             },
         },
     }

@@ -8,4 +8,4 @@ class ReportingV2Mapping(apigatewayv2.ApiMapping):
     api_mapping_key = 'sales/reporting/v2'
     domain_name = DomainName
     stage = '$default'
-    depends_on = [ReportingAPIV2ApiGatewayDefaultStage]
+    depends_on = ["ReportingAPIV2ApiGatewayDefaultStage"]  # SAM implicit resource

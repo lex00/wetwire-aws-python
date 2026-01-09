@@ -8,4 +8,4 @@ class AdminMapping(apigatewayv2.ApiMapping):
     api_mapping_key = 'corp/admin'
     domain_name = DomainName
     stage = 'Prod'
-    depends_on = [AdminAPIProdStage]
+    depends_on = ["AdminAPIProdStage"]  # SAM implicit resource

@@ -178,7 +178,11 @@ def intrinsic_to_python(
         if target in ctx.template.resources:
             # Resources use bare class name - setup_resources() handles forward refs
             return _format_ref_target(target)
-        raise ValueError(f"Unknown Ref target: {target}")
+        # Unknown target - likely a SAM implicit resource (auto-created by transform)
+        # Generate explicit Ref() so the code is valid, though manual adjustment may be needed
+        # noqa:WAW019 prevents the linter from converting this to a bare reference
+        ctx.add_intrinsic_import("Ref")
+        return f'Ref("{target}")  # noqa: WAW019 - SAM implicit resource'
 
     if intrinsic.type == IntrinsicType.GET_ATT:
         logical_id, attr = intrinsic.args
@@ -188,7 +192,11 @@ def intrinsic_to_python(
             # which returns a PropertyTypeProxy for chained attribute access.
             # setup_resources() handles forward refs via placeholders
             return f"{_format_ref_target(logical_id)}.{attr}"
-        raise ValueError(f"Unknown GetAtt target: {logical_id}")
+        # Unknown target - likely a SAM implicit resource (auto-created by transform)
+        # Generate explicit GetAtt() so the code is valid, though manual adjustment may be needed
+        # noqa:WAW020 prevents the linter from converting this to Resource.Attr pattern
+        ctx.add_intrinsic_import("GetAtt")
+        return f'GetAtt("{logical_id}", "{attr}")  # noqa: WAW020 - SAM implicit resource'
 
     if intrinsic.type == IntrinsicType.SUB:
         if isinstance(intrinsic.args, str):
