@@ -88,8 +88,10 @@ class DictShouldBeIntrinsic(LintRule):
                                         ast.get_source_segment(context.source, elt)
                                         for elt in value_node.elts
                                     ]
-                                    if all(args):
-                                        suggestion = f"{func_name}({', '.join(args)})"
+                                    # Filter out None values for type safety
+                                    valid_args = [a for a in args if a is not None]
+                                    if len(valid_args) == len(args):
+                                        suggestion = f"{func_name}({', '.join(valid_args)})"
                                     else:
                                         suggestion = f"{func_name}({value_source})"
                                 else:
@@ -118,7 +120,7 @@ class DictShouldBeIntrinsic(LintRule):
 
         return issues
 
-    def _has_star_import(self, tree: ast.Module) -> bool:
+    def _has_star_import(self, tree: ast.AST) -> bool:
         """Check if the module has a star import pattern."""
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom):
