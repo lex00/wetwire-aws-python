@@ -142,10 +142,18 @@ def generate_resource_class(resource: IRResource, ctx: CodegenContext) -> str:
 
     # Resource-level attributes
     if resource.depends_on:
-        # No-parens pattern: always use bare class names for depends_on
-        # setup_resources() handles forward refs via placeholders
-        dep_strs = [sanitize_class_name(d) for d in resource.depends_on]
-        lines.append(f"    depends_on = [{', '.join(dep_strs)}]")
+        dep_strs = []
+        has_implicit = False
+        for dep in resource.depends_on:
+            if dep in ctx.template.resources:
+                # Known resource - use bare class name
+                dep_strs.append(sanitize_class_name(dep))
+            else:
+                # Unknown resource - likely SAM implicit, use string
+                dep_strs.append(f'"{dep}"')
+                has_implicit = True
+        comment = "  # SAM implicit resource" if has_implicit else ""
+        lines.append(f"    depends_on = [{', '.join(dep_strs)}]{comment}")
     if resource.condition:
         lines.append(f"    condition = {escape_string(resource.condition)}")
     if resource.deletion_policy:

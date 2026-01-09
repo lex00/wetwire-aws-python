@@ -9,20 +9,6 @@ class AppSyncApi(appsync.GraphQLApi):
     authentication_type = 'API_KEY'
 
 
-class DDBDataSourceDynamoDBConfig(appsync.DataSource.DynamoDBConfig):
-    table_name = DDBTable
-    aws_region = AWS_REGION
-
-
-class DDBDataSource(appsync.DataSource):
-    name = 'SingleTableDataSource'
-    api_id = AppSyncApi.ApiId
-    description = 'The Single Table AppSync Data Source'
-    type_ = 'AMAZON_DYNAMODB'
-    service_role_arn = DDBRole.Arn
-    dynamo_db_config = DDBDataSourceDynamoDBConfig
-
-
 class AppSyncSchema(appsync.GraphQLSchema):
     api_id = AppSyncApi.ApiId
     definition = """type Parent{
@@ -62,30 +48,18 @@ type Query{
 """
 
 
-class CreateParentMutationResolver(appsync.Resolver):
-    api_id = AppSyncApi.ApiId
-    type_name = 'Mutation'
-    field_name = 'createParentItem'
-    data_source_name = DDBDataSource.Name
-    request_mapping_template = """{
-  "version": "2018-05-29",
-  "operation": "PutItem",
-  "key": {
-    "PK": $util.dynamodb.toDynamoDBJson($ctx.args.PK),
-    "SK": $util.dynamodb.toDynamoDBJson($ctx.args.SK)
-  },
-  "attributeValues": {
-    "data": $util.dynamodb.toDynamoDBJson($ctx.args.data),
-    "type": $util.dynamodb.toDynamoDBJson($ctx.args.type)
-  }
-}
-"""
-    response_mapping_template = '$util.toJson($ctx.result)'
-    depends_on = [AppSyncSchema]
+class DDBDataSourceDynamoDBConfig(appsync.DataSource.DynamoDBConfig):
+    table_name = DDBTable
+    aws_region = AWS_REGION
 
 
-class AppSyncApiKey(appsync.ApiKey):
+class DDBDataSource(appsync.DataSource):
+    name = 'SingleTableDataSource'
     api_id = AppSyncApi.ApiId
+    description = 'The Single Table AppSync Data Source'
+    type_ = 'AMAZON_DYNAMODB'
+    service_role_arn = DDBRole.Arn
+    dynamo_db_config = DDBDataSourceDynamoDBConfig
 
 
 class GetParentAndChildResolver(appsync.Resolver):
@@ -127,6 +101,32 @@ class GetParentAndChildResolver(appsync.Resolver):
 }
 """
     depends_on = [AppSyncSchema]
+
+
+class CreateParentMutationResolver(appsync.Resolver):
+    api_id = AppSyncApi.ApiId
+    type_name = 'Mutation'
+    field_name = 'createParentItem'
+    data_source_name = DDBDataSource.Name
+    request_mapping_template = """{
+  "version": "2018-05-29",
+  "operation": "PutItem",
+  "key": {
+    "PK": $util.dynamodb.toDynamoDBJson($ctx.args.PK),
+    "SK": $util.dynamodb.toDynamoDBJson($ctx.args.SK)
+  },
+  "attributeValues": {
+    "data": $util.dynamodb.toDynamoDBJson($ctx.args.data),
+    "type": $util.dynamodb.toDynamoDBJson($ctx.args.type)
+  }
+}
+"""
+    response_mapping_template = '$util.toJson($ctx.result)'
+    depends_on = [AppSyncSchema]
+
+
+class AppSyncApiKey(appsync.ApiKey):
+    api_id = AppSyncApi.ApiId
 
 
 class CreateChildMutationResolver(appsync.Resolver):

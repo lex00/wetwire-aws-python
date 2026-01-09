@@ -17,6 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Different edge styles for Ref vs GetAtt references
 - Added `graphviz` package dependency for DOT generation
 
+### Fixed
+
+- Importer now handles SAM implicit resources gracefully (#88)
+  - Templates referencing auto-created SAM resources now import successfully
+  - Generates explicit `GetAtt()` / `Ref()` for implicit resources with noqa comments
+  - `depends_on` uses string literals for implicit resources
+  - SAM import script now imports 39 templates (up from 32)
+
 ## [1.8.8] - 2026-01-08
 
 ### Fixed

@@ -342,18 +342,18 @@ from wetwire_aws.resources import (
 
 from wetwire_aws.loader import setup_params, setup_resources
 
-from .main import EBRuleRole as EBRuleRole
-from .main import EBRuleRoleAllowStatement0 as EBRuleRoleAllowStatement0
-from .main import EBRuleRoleAssumeRolePolicyDocument as EBRuleRoleAssumeRolePolicyDocument
-from .main import EBRuleRolePolicy as EBRuleRolePolicy
-from .main import EBRuleRolePolicy1 as EBRuleRolePolicy1
+from .main import EBRule as EBRule
+from .main import EBRuleDeadLetterConfig as EBRuleDeadLetterConfig
+from .main import EBRuleRetryPolicy as EBRuleRetryPolicy
+from .main import EBRuleTarget as EBRuleTarget
 from .main import MyHttpApi as MyHttpApi
 from .main import TriggeredFunction as TriggeredFunction
 from .messaging import DLQueue as DLQueue
-from .messaging import EBRule as EBRule
-from .messaging import EBRuleDeadLetterConfig as EBRuleDeadLetterConfig
-from .messaging import EBRuleRetryPolicy as EBRuleRetryPolicy
-from .messaging import EBRuleTarget as EBRuleTarget
+from .security import EBRuleRole as EBRuleRole
+from .security import EBRuleRoleAllowStatement0 as EBRuleRoleAllowStatement0
+from .security import EBRuleRoleAssumeRolePolicyDocument as EBRuleRoleAssumeRolePolicyDocument
+from .security import EBRuleRolePolicy as EBRuleRolePolicy
+from .security import EBRuleRolePolicy1 as EBRuleRolePolicy1
 from .security import MyHttpApiRole as MyHttpApiRole
 from .security import MyHttpApiRoleAllowStatement0 as MyHttpApiRoleAllowStatement0
 from .security import MyHttpApiRoleAssumeRolePolicyDocument as MyHttpApiRoleAssumeRolePolicyDocument

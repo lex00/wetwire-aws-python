@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM template with references to implicit resources
+
+Resources:
+  # This function auto-creates a role called MyFunctionRole
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: my-function
+      Runtime: python3.12
+      Handler: app.handler
+      CodeUri: ./src
+
+  # This bucket references the auto-created role
+  MyBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-bucket
+    DependsOn: MyFunctionRole  # References implicit SAM-created role
+
+Outputs:
+  # Output referencing the implicit role's ARN
+  RoleArn:
+    Description: ARN of the auto-created role
+    Value: !GetAtt MyFunctionRole.Arn
+
+  # Output referencing the function
+  FunctionArn:
+    Description: ARN of the function
+    Value: !GetAtt MyFunction.Arn

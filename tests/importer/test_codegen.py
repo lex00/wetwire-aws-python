@@ -298,17 +298,21 @@ class TestIntrinsicSimplifications:
         result = intrinsic_to_python(intrinsic, ctx)
         assert result.startswith("Sub(")
 
-    def test_unknown_ref_raises_error(self, ctx):
-        """Ref to unknown target should raise ValueError."""
+    def test_unknown_ref_generates_explicit_ref(self, ctx):
+        """Ref to unknown target generates explicit Ref() for SAM implicit resources."""
         intrinsic = IRIntrinsic(IntrinsicType.REF, "UnknownThing")
-        with pytest.raises(ValueError, match="Unknown Ref target"):
-            intrinsic_to_python(intrinsic, ctx)
+        result = intrinsic_to_python(intrinsic, ctx)
+        assert 'Ref("UnknownThing")' in result
+        assert "SAM implicit resource" in result
+        assert "noqa: WAW019" in result
 
-    def test_unknown_getatt_raises_error(self, ctx):
-        """GetAtt to unknown resource should raise ValueError."""
+    def test_unknown_getatt_generates_explicit_getatt(self, ctx):
+        """GetAtt to unknown resource generates explicit GetAtt() for SAM implicit resources."""
         intrinsic = IRIntrinsic(IntrinsicType.GET_ATT, ("UnknownResource", "Arn"))
-        with pytest.raises(ValueError, match="Unknown GetAtt target"):
-            intrinsic_to_python(intrinsic, ctx)
+        result = intrinsic_to_python(intrinsic, ctx)
+        assert 'GetAtt("UnknownResource", "Arn")' in result
+        assert "SAM implicit resource" in result
+        assert "noqa: WAW020" in result
 
     def test_simple_getatt_uses_no_parens(self, ctx):
         """Simple GetAtt like Resource.Arn uses no-parens pattern."""

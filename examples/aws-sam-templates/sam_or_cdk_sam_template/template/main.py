@@ -3,19 +3,19 @@
 from . import *  # noqa: F403
 
 
-class downloadSignerLambda(serverless.Function):
-    code_uri = 'lambda/downloadSigner/'
+class uploadSignerLambda(serverless.Function):
+    code_uri = 'lambda/uploadSigner/'
     policies = [{
-        'S3ReadPolicy': {
+        'S3WritePolicy': {
             'BucketName': storageBucket,
         },
     }]
 
 
-class uploadSignerLambda(serverless.Function):
-    code_uri = 'lambda/uploadSigner/'
+class downloadSignerLambda(serverless.Function):
+    code_uri = 'lambda/downloadSigner/'
     policies = [{
-        'S3WritePolicy': {
+        'S3ReadPolicy': {
             'BucketName': storageBucket,
         },
     }]

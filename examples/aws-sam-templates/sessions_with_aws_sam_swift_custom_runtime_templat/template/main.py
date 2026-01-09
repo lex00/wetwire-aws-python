@@ -3,6 +3,10 @@
 from . import *  # noqa: F403
 
 
+class Squared(serverless.Function):
+    pass
+
+
 class SwiftApi(serverless.Function):
     events = {
         'ApiTrigger': {
@@ -13,7 +17,3 @@ class SwiftApi(serverless.Function):
             },
         },
     }
-
-
-class Squared(serverless.Function):
-    pass

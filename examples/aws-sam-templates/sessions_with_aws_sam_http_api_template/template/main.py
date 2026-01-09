@@ -26,6 +26,47 @@ class HttpApi(serverless.HttpApi):
     cors_configuration = HttpApiCorsConfiguration
 
 
+class LambdaFunction(serverless.Function):
+    code_uri = 'src/'
+    events = {
+        'RootGet': {
+            'Type': 'HttpApi',
+            'Properties': {
+                'Path': '/',
+                'Method': 'get',
+                'ApiId': HttpApi,
+            },
+        },
+    }
+
+
+class CatchAllLambdaFunction(serverless.Function):
+    code_uri = 'src/'
+    events = {
+        'RootGet': {
+            'Type': 'HttpApi',
+        },
+    }
+
+
+class SULambdaFunction(serverless.Function):
+    code_uri = 'src/'
+    events = {
+        'DosGet': {
+            'Type': 'HttpApi',
+            'Properties': {
+                'Auth': {
+                    'Authorizer': 'GeneralAuth',
+                    'AuthorizationScopes': [Sub('SU-${Audience}')],
+                },
+                'Path': '/su',
+                'Method': 'get',
+                'ApiId': HttpApi,
+            },
+        },
+    }
+
+
 class SimpleAuthLambdaFunction(serverless.Function):
     code_uri = 'src/'
     events = {
@@ -64,33 +105,6 @@ class BothLambdaFunction(serverless.Function):
     }
 
 
-class SULambdaFunction(serverless.Function):
-    code_uri = 'src/'
-    events = {
-        'DosGet': {
-            'Type': 'HttpApi',
-            'Properties': {
-                'Auth': {
-                    'Authorizer': 'GeneralAuth',
-                    'AuthorizationScopes': [Sub('SU-${Audience}')],
-                },
-                'Path': '/su',
-                'Method': 'get',
-                'ApiId': HttpApi,
-            },
-        },
-    }
-
-
-class CatchAllLambdaFunction(serverless.Function):
-    code_uri = 'src/'
-    events = {
-        'RootGet': {
-            'Type': 'HttpApi',
-        },
-    }
-
-
 class AdminLambdaFunction(serverless.Function):
     code_uri = 'src/'
     events = {
@@ -102,20 +116,6 @@ class AdminLambdaFunction(serverless.Function):
                     'AuthorizationScopes': [Sub('Admins-${Audience}')],
                 },
                 'Path': '/admin',
-                'Method': 'get',
-                'ApiId': HttpApi,
-            },
-        },
-    }
-
-
-class LambdaFunction(serverless.Function):
-    code_uri = 'src/'
-    events = {
-        'RootGet': {
-            'Type': 'HttpApi',
-            'Properties': {
-                'Path': '/',
                 'Method': 'get',
                 'ApiId': HttpApi,
             },

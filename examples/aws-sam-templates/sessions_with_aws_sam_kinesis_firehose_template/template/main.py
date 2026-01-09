@@ -3,25 +3,6 @@
 from . import *  # noqa: F403
 
 
-class ProcessFunctionEnvironment(serverless.Function.Environment):
-    variables = {
-        'TABLE_NAME': ProcessedDataTable,
-    }
-
-
-class ProcessFunction(serverless.Function):
-    timeout = 180
-    code_uri = 'src/'
-    handler = 'process.handler'
-    runtime = 'nodejs16.x'
-    policies = [{
-        'DynamoDBCrudPolicy': {
-            'TableName': ProcessedDataTable,
-        },
-    }]
-    environment = ProcessFunctionEnvironment
-
-
 class CountTable(serverless.SimpleTable):
     pass
 
@@ -43,6 +24,25 @@ class CountFunction(serverless.Function):
         },
     }]
     environment = CountFunctionEnvironment
+
+
+class ProcessFunctionEnvironment(serverless.Function.Environment):
+    variables = {
+        'TABLE_NAME': ProcessedDataTable,
+    }
+
+
+class ProcessFunction(serverless.Function):
+    timeout = 180
+    code_uri = 'src/'
+    handler = 'process.handler'
+    runtime = 'nodejs16.x'
+    policies = [{
+        'DynamoDBCrudPolicy': {
+            'TableName': ProcessedDataTable,
+        },
+    }]
+    environment = ProcessFunctionEnvironment
 
 
 class FirehoseProcessorParameter(kinesisfirehose.DeliveryStream.ProcessorParameter):

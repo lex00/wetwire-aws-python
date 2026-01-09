@@ -1,4 +1,4 @@
-"""Infra resources: S3NoPublicReadRule, S3NoPublicWriteRule, ApiGWLoggingRule."""
+"""Infra resources: S3NoPublicReadRule, ApiGWLoggingRule, S3NoPublicWriteRule."""
 
 from . import *  # noqa: F403
 
@@ -18,21 +18,6 @@ class S3NoPublicReadRule(config.ConfigRule):
     source = S3NoPublicReadRuleSource
 
 
-class S3NoPublicWriteRuleScope(config.ConfigRule.Scope):
-    compliance_resource_types = ['AWS::S3::Bucket']
-
-
-class S3NoPublicWriteRuleSource(config.ConfigRule.Source):
-    owner = 'AWS'
-    source_identifier = 'S3_BUCKET_PUBLIC_WRITE_PROHIBITED'
-
-
-class S3NoPublicWriteRule(config.ConfigRule):
-    description = 'S3 block public write'
-    scope = S3NoPublicWriteRuleScope
-    source = S3NoPublicWriteRuleSource
-
-
 class ApiGWLoggingRuleScope(config.ConfigRule.Scope):
     compliance_resource_types = ['AWS::ApiGateway::Stage', 'AWS::ApiGatewayV2::Stage']
 
@@ -46,3 +31,18 @@ class ApiGWLoggingRule(config.ConfigRule):
     description = 'Require API GW Logging'
     scope = ApiGWLoggingRuleScope
     source = ApiGWLoggingRuleSource
+
+
+class S3NoPublicWriteRuleScope(config.ConfigRule.Scope):
+    compliance_resource_types = ['AWS::S3::Bucket']
+
+
+class S3NoPublicWriteRuleSource(config.ConfigRule.Source):
+    owner = 'AWS'
+    source_identifier = 'S3_BUCKET_PUBLIC_WRITE_PROHIBITED'
+
+
+class S3NoPublicWriteRule(config.ConfigRule):
+    description = 'S3 block public write'
+    scope = S3NoPublicWriteRuleScope
+    source = S3NoPublicWriteRuleSource
