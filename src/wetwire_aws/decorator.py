@@ -60,7 +60,17 @@ def _get_property_type_class(cls: type[Any]) -> type[Any] | None:
 
 
 def _get_resource_type(cls: type[Any]) -> type[Any] | str | None:
-    """Extract CF resource type from base class inheritance."""
+    """Extract CloudFormation resource type from base class inheritance.
+
+    Looks up the _resource_type attribute on the CloudFormationResource base
+    class to determine the AWS resource type (e.g., "AWS::S3::Bucket").
+
+    Args:
+        cls: The wrapper class to inspect.
+
+    Returns:
+        The CloudFormation resource type string, or None if not found.
+    """
     resource_class = _get_resource_class(cls)
     if resource_class is not None:
         return getattr(resource_class, "_resource_type", None)
@@ -92,7 +102,14 @@ def get_aws_registry() -> ResourceRegistry:
 
 
 def _is_parameter_subclass(cls: type[Any]) -> bool:
-    """Check if cls inherits from Parameter (but is not Parameter itself)."""
+    """Check if cls inherits from Parameter (but is not Parameter itself).
+
+    Args:
+        cls: The class to check.
+
+    Returns:
+        True if cls is a user-defined Parameter subclass.
+    """
     # Import here to avoid circular imports
     from wetwire_aws.template import Parameter
 
@@ -100,21 +117,42 @@ def _is_parameter_subclass(cls: type[Any]) -> bool:
 
 
 def _is_output_subclass(cls: type[Any]) -> bool:
-    """Check if cls inherits from Output (but is not Output itself)."""
+    """Check if cls inherits from Output (but is not Output itself).
+
+    Args:
+        cls: The class to check.
+
+    Returns:
+        True if cls is a user-defined Output subclass.
+    """
     from wetwire_aws.template import Output
 
     return isinstance(cls, type) and issubclass(cls, Output) and cls is not Output
 
 
 def _is_mapping_subclass(cls: type[Any]) -> bool:
-    """Check if cls inherits from Mapping (but is not Mapping itself)."""
+    """Check if cls inherits from Mapping (but is not Mapping itself).
+
+    Args:
+        cls: The class to check.
+
+    Returns:
+        True if cls is a user-defined Mapping subclass.
+    """
     from wetwire_aws.template import Mapping
 
     return isinstance(cls, type) and issubclass(cls, Mapping) and cls is not Mapping
 
 
 def _is_condition_subclass(cls: type[Any]) -> bool:
-    """Check if cls inherits from TemplateCondition (but is not itself)."""
+    """Check if cls inherits from TemplateCondition (but is not itself).
+
+    Args:
+        cls: The class to check.
+
+    Returns:
+        True if cls is a user-defined TemplateCondition subclass.
+    """
     from wetwire_aws.template import TemplateCondition
 
     return (
@@ -125,24 +163,52 @@ def _is_condition_subclass(cls: type[Any]) -> bool:
 
 
 def register_parameter(cls: type[Any]) -> type[Any]:
-    """Register a Parameter subclass in the param_registry."""
+    """Register a Parameter subclass in the param_registry.
+
+    Args:
+        cls: The Parameter subclass to register.
+
+    Returns:
+        The class unchanged (allows use as a decorator).
+    """
     param_registry.register(cls, "Parameter")
     return cls
 
 
 def register_output(cls: type[Any]) -> type[Any]:
-    """Register an Output subclass in the output_registry."""
+    """Register an Output subclass in the output_registry.
+
+    Args:
+        cls: The Output subclass to register.
+
+    Returns:
+        The class unchanged (allows use as a decorator).
+    """
     output_registry.register(cls, "Output")
     return cls
 
 
 def register_mapping(cls: type[Any]) -> type[Any]:
-    """Register a Mapping subclass in the mapping_registry."""
+    """Register a Mapping subclass in the mapping_registry.
+
+    Args:
+        cls: The Mapping subclass to register.
+
+    Returns:
+        The class unchanged (allows use as a decorator).
+    """
     mapping_registry.register(cls, "Mapping")
     return cls
 
 
 def register_condition(cls: type[Any]) -> type[Any]:
-    """Register a Condition subclass in the condition_registry."""
+    """Register a Condition subclass in the condition_registry.
+
+    Args:
+        cls: The Condition subclass to register.
+
+    Returns:
+        The class unchanged (allows use as a decorator).
+    """
     condition_registry.register(cls, "Condition")
     return cls

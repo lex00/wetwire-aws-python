@@ -40,6 +40,9 @@ from wetwire_aws.cli_utils import (
     create_list_command,
     create_validate_command,
     discover_resources,
+    error_exit,
+    resolve_output_dir,
+    validate_package_path,
 )
 from wetwire_aws.decorator import get_aws_registry
 from wetwire_aws.linter import fix_file as _fix_file
@@ -80,23 +83,20 @@ def get_cf_resource_type(cls: type) -> str:
 
 def init_command(args: argparse.Namespace) -> None:
     """Initialize a new wetwire-aws package."""
-    output_dir = Path(args.output) if args.output else Path.cwd()
+    output_dir = resolve_output_dir(args)
     package_name = args.name
 
     # Validate package name
     if not package_name.replace("_", "").isalnum():
-        print(
-            f"Error: Invalid package name '{package_name}'. Use snake_case.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+        error_exit(f"Invalid package name '{package_name}'. Use snake_case.")
 
     package_dir = output_dir / package_name
 
     if package_dir.exists() and not args.force:
-        print(f"Error: Directory already exists: {package_dir}", file=sys.stderr)
-        print("Use --force to overwrite.", file=sys.stderr)
-        sys.exit(1)
+        error_exit(
+            f"Directory already exists: {package_dir}",
+            hint="Use --force to overwrite.",
+        )
 
     # Create package directory
     package_dir.mkdir(parents=True, exist_ok=True)
@@ -143,14 +143,10 @@ def import_command(args: argparse.Namespace) -> None:
 
     source = Path(args.template)
     if not source.exists():
-        print(f"Error: Template file not found: {source}", file=sys.stderr)
-        sys.exit(1)
+        error_exit(f"Template file not found: {source}")
 
     # Determine output directory
-    if args.output:
-        output_dir = Path(args.output)
-    else:
-        output_dir = Path.cwd()
+    output_dir = resolve_output_dir(args)
 
     # Determine package name
     if args.name:
@@ -166,8 +162,7 @@ def import_command(args: argparse.Namespace) -> None:
             single_file=args.single_file,
         )
     except ValueError as e:
-        print(f"Error: {e}", file=sys.stderr)
-        sys.exit(1)
+        error_exit(str(e))
 
     # Write files
     for filepath, content in files.items():
@@ -189,7 +184,7 @@ def import_command(args: argparse.Namespace) -> None:
 def design_command(args: argparse.Namespace) -> None:
     """Run AI-assisted infrastructure design."""
     provider = getattr(args, "provider", "anthropic")
-    output_dir = Path(args.output) if args.output else Path.cwd()
+    output_dir = resolve_output_dir(args)
     prompt = args.prompt if args.prompt else None
 
     if provider == "kiro":
@@ -197,12 +192,10 @@ def design_command(args: argparse.Namespace) -> None:
         try:
             from wetwire_aws.kiro import launch_kiro
         except ImportError:
-            print(
-                "Error: Kiro integration requires mcp package. "
-                "Install with: pip install wetwire-aws[kiro]",
-                file=sys.stderr,
+            error_exit(
+                "Kiro integration requires mcp package.",
+                hint="Install with: pip install wetwire-aws[kiro]",
             )
-            sys.exit(1)
 
         exit_code = launch_kiro(prompt=prompt, project_dir=output_dir)
         sys.exit(exit_code)
@@ -211,12 +204,10 @@ def design_command(args: argparse.Namespace) -> None:
         try:
             from wetwire_core.agents import run_interactive_design
         except ImportError:
-            print(
-                "Error: wetwire-core required for design mode. "
-                "Install with: pip install wetwire-core",
-                file=sys.stderr,
+            error_exit(
+                "wetwire-core required for design mode.",
+                hint="Install with: pip install wetwire-core",
             )
-            sys.exit(1)
 
         package_path, messages = run_interactive_design(
             initial_prompt=prompt,
@@ -232,19 +223,17 @@ def design_command(args: argparse.Namespace) -> None:
 def test_command(args: argparse.Namespace) -> None:
     """Run automated persona-based testing."""
     provider = getattr(args, "provider", "anthropic")
-    output_dir = Path(args.output) if args.output else Path.cwd()
+    output_dir = resolve_output_dir(args)
 
     if provider == "kiro":
         # Use Kiro CLI provider
         try:
             from wetwire_aws.kiro import run_kiro_scenario
         except ImportError:
-            print(
-                "Error: Kiro integration requires mcp package. "
-                "Install with: pip install wetwire-aws[kiro]",
-                file=sys.stderr,
+            error_exit(
+                "Kiro integration requires mcp package.",
+                hint="Install with: pip install wetwire-aws[kiro]",
             )
-            sys.exit(1)
 
         print(f"Running Kiro scenario: {args.prompt}")
         print()
@@ -276,12 +265,10 @@ def test_command(args: argparse.Namespace) -> None:
         try:
             from wetwire_core.agents import run_ai_scenario
         except ImportError:
-            print(
-                "Error: wetwire-core required for test mode. "
-                "Install with: pip install wetwire-core",
-                file=sys.stderr,
+            error_exit(
+                "wetwire-core required for test mode.",
+                hint="Install with: pip install wetwire-core",
             )
-            sys.exit(1)
 
         # Persona definitions
         personas = {
@@ -294,9 +281,10 @@ def test_command(args: argparse.Namespace) -> None:
 
         persona_name = args.persona
         if persona_name not in personas:
-            print(f"Error: Unknown persona '{persona_name}'", file=sys.stderr)
-            print(f"Available: {', '.join(personas.keys())}", file=sys.stderr)
-            sys.exit(1)
+            error_exit(
+                f"Unknown persona '{persona_name}'",
+                hint=f"Available: {', '.join(personas.keys())}",
+            )
 
         print(f"Running test with persona: {persona_name}")
         print(f"Prompt: {args.prompt}")
@@ -330,30 +318,11 @@ def graph_command(args: argparse.Namespace) -> None:
 
     # Handle path argument (convert to module)
     if args.path:
-        package_path = Path(args.path).resolve()
-        if not package_path.exists():
-            print(f"Error: Path does not exist: {args.path}", file=sys.stderr)
-            sys.exit(1)
-        if not package_path.is_dir():
-            print(f"Error: Path is not a directory: {args.path}", file=sys.stderr)
-            sys.exit(1)
-        if not (package_path / "__init__.py").exists():
-            print(
-                f"Error: Path is not a Python package (missing __init__.py): {args.path}",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-
-        # Add parent directory to sys.path and use directory name as module
-        parent_dir = str(package_path.parent)
-        if parent_dir not in sys.path:
-            sys.path.insert(0, parent_dir)
-        module_name = package_path.name
+        _, module_name = validate_package_path(args.path)
     elif args.module:
         module_name = args.module[0] if isinstance(args.module, list) else args.module
     else:
-        print("Error: Either path or --module is required", file=sys.stderr)
-        sys.exit(1)
+        error_exit("Either path or --module is required")
 
     # Discover resources
     discover_resources(module_name, registry, args.verbose)
@@ -378,25 +347,7 @@ def build_command(args: argparse.Namespace) -> None:
 
     # Handle path argument (convert to module)
     if args.path:
-        package_path = Path(args.path).resolve()
-        if not package_path.exists():
-            print(f"Error: Path does not exist: {args.path}", file=sys.stderr)
-            sys.exit(1)
-        if not package_path.is_dir():
-            print(f"Error: Path is not a directory: {args.path}", file=sys.stderr)
-            sys.exit(1)
-        if not (package_path / "__init__.py").exists():
-            print(
-                f"Error: Path is not a Python package (missing __init__.py): {args.path}",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-
-        # Add parent directory to sys.path and use directory name as module
-        parent_dir = str(package_path.parent)
-        if parent_dir not in sys.path:
-            sys.path.insert(0, parent_dir)
-        module_name = package_path.name
+        _, module_name = validate_package_path(args.path)
         discover_resources(module_name, registry, args.verbose)
     # Import modules to discover resources
     elif args.modules:
@@ -407,15 +358,12 @@ def build_command(args: argparse.Namespace) -> None:
     resources = list(registry.get_all(args.scope))
     if not resources:
         if args.scope:
-            print(f"Error: No resources found in scope '{args.scope}'", file=sys.stderr)
+            error_exit(f"No resources found in scope '{args.scope}'")
         else:
-            print("Error: No resources registered.", file=sys.stderr)
-            print(
-                "Hint: Import your resource modules with --module, e.g.:",
-                file=sys.stderr,
+            error_exit(
+                "No resources registered.",
+                hint="Import your resource modules with --module, e.g.: wetwire-aws build --module myapp.infra",
             )
-            print("  wetwire-aws build --module myapp.infra", file=sys.stderr)
-        sys.exit(1)
 
     # Generate template
     template = CloudFormationTemplate.from_registry(
@@ -428,12 +376,10 @@ def build_command(args: argparse.Namespace) -> None:
         try:
             output = template.to_yaml()
         except ImportError:
-            print(
-                "Error: PyYAML required for YAML output. "
-                "Install with: pip install pyyaml",
-                file=sys.stderr,
+            error_exit(
+                "PyYAML required for YAML output.",
+                hint="Install with: pip install pyyaml",
             )
-            sys.exit(1)
     else:
         output = template.to_json(indent=args.indent)
 
