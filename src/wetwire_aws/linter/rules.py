@@ -1641,6 +1641,7 @@ class InlinePropertyType(LintRule):
     # Suffixes that indicate a property type field
     PROPERTY_TYPE_SUFFIXES = (
         "_configuration",
+        "_configurations",
         "_config",
         "_settings",
         "_options",
@@ -1657,6 +1658,29 @@ class InlinePropertyType(LintRule):
         "_definition",
         "_template",
         "_encryption",
+        "_rules",
+        "_rule",
+        "_filter",
+        "_filters",
+        "_expiration",
+        "_transition",
+        "_transitions",
+        "_time",
+        "_modifications",
+        "_analysis",
+        "_criteria",
+        "_condition",
+        "_export",
+        "_format",
+        "_types",
+        "_retention",
+        "_replication",
+        "_translation",
+        "_destination",
+        "_threshold",
+        "_prefix",
+        "_objects",
+        "_tierings",
     )
 
     # Fields to always flag regardless of suffix
@@ -1664,6 +1688,13 @@ class InlinePropertyType(LintRule):
         "placement",
         "monitoring",
         "tags",
+        "filter",
+        "destination",
+        "rule",
+        "rules",
+        "transition",
+        "transitions",
+        "tierings",
     }
 
     # Fields to never flag (simple dicts that are fine inline)
