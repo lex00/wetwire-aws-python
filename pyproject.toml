@@ -9,7 +9,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wetwire-aws"
-version = "1.10.0"
+version = "1.10.1"
 description = "AWS CloudFormation synthesis for wetwire"
 readme = "README.md"
 license = "MIT"
