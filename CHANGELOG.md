@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.6] - 2026-01-08
+
+### Fixed
+
+- Kiro agent now follows explicit lint-fix-relint loop
+  - Added visual flowchart showing mandatory loop
+  - Clear rules: never build until lint passes with zero errors
+  - Reinforced "Fix → Lint → Fix → Lint → ... → Build" pattern
+
 ## [1.8.5] - 2026-01-08
 
 ### Added
