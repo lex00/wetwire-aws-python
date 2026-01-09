@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tests now use project's standard type checker
   - Simplified error checking logic
 
+### Fixed
+
+- Kiro agent prompt now reinforces lint-before-build workflow (#78)
+  - Added "Golden Rules" section at top of prompt
+  - Explicit lint-build cycle in Design Workflow
+  - Lint reminder in "Continuing Work" section
+
 ## [1.7.2] - 2026-01-07
 
 ### Fixed
