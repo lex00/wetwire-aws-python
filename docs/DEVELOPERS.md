@@ -94,117 +94,18 @@ uv run pytest tests/test_template.py::test_from_registry -v
 
 ## Code Generation
 
-The generator produces Python modules for each AWS service by combining two data sources:
+See [CODEGEN.md](CODEGEN.md) for comprehensive code generation documentation.
 
-1. **CloudFormation Resource Specification** - Defines resource types, properties, and structure
-2. **Botocore Service Models** - Provides enum values for type-safe constants
-
-### Pipeline Stages
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Code Generation Pipeline                  │
-│                                                               │
-│  ┌─────────┐    ┌─────────┐    ┌──────────┐    ┌──────────┐  │
-│  │  FETCH  │ ─▶ │  PARSE  │ ─▶ │ GENERATE │ ─▶ │  OUTPUT  │  │
-│  └─────────┘    └─────────┘    └──────────┘    └──────────┘  │
-│                                                               │
-│  Download       Parse into     Generate        Write Python  │
-│  CF spec &      intermediate   Python code    to resources/  │
-│  botocore       format                                        │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Running the Pipeline
+**Quick commands:**
 
 ```bash
-# Full regeneration (from package root)
+# Full regeneration
 ./scripts/regenerate.sh
 
-# Or run stages individually (from package root)
+# Individual stages
 uv run python -m codegen.fetch
 uv run python -m codegen.parse
 uv run python -m codegen.generate
-
-# Regenerate specific service
-python -m codegen.generate --service s3
-```
-
-### CloudFormation Spec
-
-**Source URL:** `https://d1uauaxba7bl26.cloudfront.net/latest/gzip/CloudFormationResourceSpecification.json`
-
-The spec defines:
-- **Resource Types**: `AWS::S3::Bucket`, `AWS::Lambda::Function`, etc.
-- **Property Types**: Nested structures like `BucketEncryption`, `KeySchema`
-- **Attributes**: Values retrievable via `!GetAtt` (e.g., `Arn`, `DomainName`)
-
-### Botocore Enums
-
-**Source:** Installed `botocore` package
-
-The generator extracts enum values from botocore service models:
-
-```python
-# From botocore dynamodb model
-class KeyType:
-    HASH = "HASH"
-    RANGE = "RANGE"
-
-class AttributeType:
-    S = "S"
-    N = "N"
-    B = "B"
-```
-
-This provides type-safe constants instead of magic strings.
-
-### Generated Output
-
-For each service, the generator produces a package with:
-- `__init__.py` - Resources and enum constants
-- `{resource}.py` - PropertyTypes for each resource
-
-**s3/__init__.py** (resources and enums):
-```python
-"""AWS S3 CloudFormation resources."""
-
-from wetwire_aws.base import CloudFormationResource, PropertyType, Tag
-from . import bucket as _bucket  # Submodule alias
-
-# Enum classes from botocore
-class ServerSideEncryption:
-    AES256 = "AES256"
-    AWS_KMS = "aws:kms"
-
-# Resources reference PropertyTypes via submodule
-@dataclass
-class Bucket(CloudFormationResource):
-    _resource_type: ClassVar[str] = "AWS::S3::Bucket"
-
-    bucket_name: str | None = None
-    bucket_encryption: _bucket.BucketEncryption | None = None
-```
-
-**s3/bucket.py** (PropertyTypes):
-```python
-"""PropertyTypes for AWS::S3::Bucket."""
-
-from wetwire_aws.base import PropertyType
-
-@dataclass
-class BucketEncryption(PropertyType):
-    server_side_encryption_configuration: list[ServerSideEncryptionRule] = field(default_factory=list)
-
-@dataclass
-class ServerSideEncryptionRule(PropertyType):
-    server_side_encryption_by_default: ServerSideEncryptionByDefault | None = None
-```
-
-**Usage:**
-```python
-from wetwire_aws.resources.s3 import Bucket
-from wetwire_aws.resources.s3.bucket import BucketEncryption, ServerSideEncryptionRule
 ```
 
 ---
