@@ -85,6 +85,7 @@ def init_command(args: argparse.Namespace) -> None:
     """Initialize a new wetwire-aws package."""
     output_dir = resolve_output_dir(args)
     package_name = args.name
+    no_scaffold = getattr(args, "no_scaffold", False)
 
     # Validate package name
     if not package_name.replace("_", "").isalnum():
@@ -115,10 +116,12 @@ setup_params(globals())
 from .params import *  # noqa: F403, F401
 
 setup_resources(__file__, __name__, globals())
+
+from .outputs import *  # noqa: F403, F401
 '''
     (package_dir / "__init__.py").write_text(init_content)
 
-    # Create empty params.py
+    # Create params.py
     params_content = '''"""Parameters, Mappings, and Conditions."""
 
 from . import *  # noqa: F403
@@ -131,10 +134,103 @@ from . import *  # noqa: F403
 '''
     (package_dir / "params.py").write_text(params_content)
 
+    # Create outputs.py
+    outputs_content = '''"""CloudFormation Outputs."""
+
+from . import *  # noqa: F403
+
+# Define outputs here, e.g.:
+# class BucketArn(Output):
+#     value = MyBucket.Arn
+#     description = "ARN of the S3 bucket"
+#     export_name = "my-bucket-arn"
+'''
+    (package_dir / "outputs.py").write_text(outputs_content)
+
+    created_files = [
+        f"{package_dir}/__init__.py",
+        f"{package_dir}/params.py",
+        f"{package_dir}/outputs.py",
+    ]
+
+    # Create scaffold files unless --no-scaffold
+    if not no_scaffold:
+        # Create README.md
+        readme_content = f'''# {package_name}
+
+AWS infrastructure defined with [wetwire-aws](https://github.com/lex00/wetwire-aws-python).
+
+## Build
+
+```bash
+wetwire-aws build --module {package_name} > template.yaml
+```
+
+## Validate
+
+```bash
+wetwire-aws validate --module {package_name}
+```
+
+## Lint
+
+```bash
+wetwire-aws lint {package_name}/
+```
+'''
+        (package_dir / "README.md").write_text(readme_content)
+        created_files.append(f"{package_dir}/README.md")
+
+        # Create CLAUDE.md
+        claude_content = f'''# {package_name}
+
+AWS CloudFormation infrastructure using wetwire-aws declarative Python syntax.
+
+## Syntax
+
+- Resources inherit from generated types: `class MyBucket(s3.Bucket):`
+- Reference other resources directly: `bucket = MyBucket`
+- Access attributes: `role = MyRole.Arn`
+- Use typed constants: `runtime = lambda_.Runtime.PYTHON3_12`
+
+## Build
+
+```bash
+wetwire-aws build --module {package_name}
+```
+'''
+        (package_dir / "CLAUDE.md").write_text(claude_content)
+        created_files.append(f"{package_dir}/CLAUDE.md")
+
+        # Create .gitignore
+        gitignore_content = '''# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+
+# wetwire-aws generated stubs
+*.pyi
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build outputs
+*.yaml
+*.json
+!pyproject.toml
+'''
+        (package_dir / ".gitignore").write_text(gitignore_content)
+        created_files.append(f"{package_dir}/.gitignore")
+
     print(f"Created package: {package_dir}")
     if args.verbose:
-        print(f"  {package_dir}/__init__.py")
-        print(f"  {package_dir}/params.py")
+        for f in created_files:
+            print(f"  {f}")
 
 
 def import_command(args: argparse.Namespace) -> None:
@@ -440,6 +536,11 @@ def main() -> None:
         "-v",
         action="store_true",
         help="Verbose output",
+    )
+    init_parser.add_argument(
+        "--no-scaffold",
+        action="store_true",
+        help="Skip README.md, CLAUDE.md, and .gitignore",
     )
     init_parser.set_defaults(func=init_command)
 
