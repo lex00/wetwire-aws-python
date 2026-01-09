@@ -17,7 +17,11 @@ from wetwire_aws.linter import (
     fix_code,
     lint_code,
 )
-from wetwire_aws.linter.rules import ExplicitGetAttIntrinsic, ExplicitRefIntrinsic
+from wetwire_aws.linter.rules import (
+    ExplicitGetAttIntrinsic,
+    ExplicitRefIntrinsic,
+    InlinePropertyType,
+)
 
 
 # Fixture to mock enum availability for WAW003 tests
@@ -1034,3 +1038,53 @@ role_arn = GetAtt(role_resource, "Arn")
         fixed = fix_code(code, rules=[ExplicitGetAttIntrinsic()], add_imports=False)
         assert "MyRole.Arn" in fixed
         assert 'GetAtt("MyRole"' not in fixed
+
+
+class TestInlinePropertyType:
+    """Tests for WAW017: inline property type dicts."""
+
+    def test_detects_bucket_encryption_inline_dict(self):
+        """Should detect bucket_encryption = {...} as inline dict.
+
+        Note: Rule only flags dicts with >1 key to avoid simple key-value pairs.
+        """
+        code = """
+bucket_encryption = {"Rules": [], "Enabled": True}
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 1
+        assert issues[0].rule_id == "WAW017"
+        assert "bucket_encryption" in issues[0].message
+
+    def test_detects_versioning_configuration_inline_dict(self):
+        """Should detect versioning_configuration = {...} as inline dict."""
+        code = """
+versioning_configuration = {"Status": "Enabled", "MFADelete": "Disabled"}
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 1
+        assert issues[0].rule_id == "WAW017"
+
+    def test_ignores_simple_dicts(self):
+        """Should not flag simple dicts without property type suffixes."""
+        code = """
+my_stuff = {"key": "value", "another": "thing"}
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 0
+
+    def test_ignores_single_key_dicts(self):
+        """Should not flag single-key dicts (simple assignments)."""
+        code = """
+bucket_encryption = {"Rules": []}
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 0
+
+    def test_ignores_class_references(self):
+        """Should not flag when value is a class reference, not dict."""
+        code = """
+bucket_encryption = MyEncryptionClass
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 0
