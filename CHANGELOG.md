@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Declares `ResourceMeta.__getattr__` returning `AttrRef` for type checkers
   - Enables IDE resolution of patterns like `MyBucket.Arn`
 
+### Changed
+
+- Replaced pyright with ty in typing tests (#77)
+  - Tests now use project's standard type checker
+  - Simplified error checking logic
+
 ## [1.7.2] - 2026-01-07
 
 ### Fixed
