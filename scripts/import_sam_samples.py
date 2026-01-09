@@ -138,15 +138,64 @@ def is_sam_template(template_path: Path) -> bool:
 
 
 def has_cookiecutter_syntax(template_path: Path) -> bool:
-    """Check if template contains cookiecutter variables.
+    """Check if template contains cookiecutter variables in structural fields.
 
-    Returns True if the file contains {{cookiecutter... syntax,
-    which means it needs cookiecutter preprocessing before use.
+    Returns True if the template needs cookiecutter preprocessing before use.
+
+    Templates with cookiecutter variables ONLY in non-structural fields
+    (Description, Metadata) are considered valid and return False, since
+    the CloudFormation structure is complete.
+
+    Jinja control structures ({%...%}) always return True since they
+    modify the template structure.
     """
     try:
         content = template_path.read_text()
-        # Check for cookiecutter variable syntax (with or without spaces)
-        return "{{cookiecutter" in content or "{{ cookiecutter" in content
+
+        # Jinja control structures always need preprocessing
+        if "{%" in content:
+            return True
+
+        # Check for cookiecutter variable syntax
+        if "{{cookiecutter" not in content and "{{ cookiecutter" not in content:
+            return False  # No cookiecutter syntax at all
+
+        # Cookiecutter syntax found - check if it's only in non-structural fields
+        # Parse line by line to determine if cookiecutter is only in Description/Metadata
+        lines = content.split("\n")
+        in_description = False
+        in_metadata = False
+        description_indent = 0
+        metadata_indent = 0
+
+        for line in lines:
+            stripped = line.lstrip()
+            indent = len(line) - len(stripped)
+
+            # Track section transitions
+            if stripped.startswith("Description:"):
+                in_description = True
+                in_metadata = False
+                description_indent = indent
+            elif stripped.startswith("Metadata:"):
+                in_metadata = True
+                in_description = False
+                metadata_indent = indent
+            elif stripped and not stripped.startswith("#"):
+                # Check if we're exiting a section (new top-level key)
+                if in_description and indent <= description_indent and ":" in stripped:
+                    in_description = False
+                if in_metadata and indent <= metadata_indent and ":" in stripped:
+                    in_metadata = False
+
+            # Check for cookiecutter in this line
+            if "{{cookiecutter" in line or "{{ cookiecutter" in line:
+                # If we're not in a non-structural section, it's structural
+                if not in_description and not in_metadata:
+                    return True
+
+        # All cookiecutter occurrences were in non-structural fields
+        return False
     except Exception:
         return True  # Skip unreadable files
 
