@@ -42,12 +42,17 @@ SAM_REPOS = [
         "url": "https://github.com/aws-samples/sessions-with-aws-sam.git",
         "description": "Real-world SAM examples from Twitch series",
     },
+    {
+        "name": "sam-python-crud-sample",
+        "url": "https://github.com/aws-samples/sam-python-crud-sample.git",
+        "description": "Python CRUD SAM sample",
+    },
 ]
 
 # Templates to exclude from import (non-standard, macros, etc.)
+# Note: "cookiecutter" directories are NOT excluded - we check file content instead
 EXCLUDE_PATTERNS = [
     # Jinja templates (need preprocessing)
-    "cookiecutter",
     ".jinja",
     ".j2",
     # Node modules
@@ -76,6 +81,8 @@ SKIP_VALIDATION = [
     "custom_domains_both_declared_template",
     "sessions_with_aws_sam_sam_containers_demo_app_temp",
     "custom_domains_both_implied_template",
+    # sam-python-crud-sample - references implicit roles
+    "sam_python_crud_sample",
 ]
 
 # Colors for output
@@ -130,12 +137,29 @@ def is_sam_template(template_path: Path) -> bool:
         return False
 
 
+def has_cookiecutter_syntax(template_path: Path) -> bool:
+    """Check if template contains cookiecutter variables.
+
+    Returns True if the file contains {{cookiecutter... syntax,
+    which means it needs cookiecutter preprocessing before use.
+    """
+    try:
+        content = template_path.read_text()
+        # Check for cookiecutter variable syntax (with or without spaces)
+        return "{{cookiecutter" in content or "{{ cookiecutter" in content
+    except Exception:
+        return True  # Skip unreadable files
+
+
 def should_exclude(template_path: Path) -> bool:
     """Check if a template should be excluded."""
     path_str = str(template_path).lower()
     for pattern in EXCLUDE_PATTERNS:
         if pattern.lower() in path_str:
             return True
+    # Check file content for cookiecutter variables
+    if has_cookiecutter_syntax(template_path):
+        return True
     return False
 
 
@@ -412,10 +436,11 @@ def main() -> int:
                 validation_errors = []
                 project_src = project_root / "src"
 
-                # Filter out packages in SKIP_VALIDATION
+                # Filter out packages in SKIP_VALIDATION (substring match)
                 packages_to_validate = []
                 for pkg_dir in package_dirs:
-                    if pkg_dir.name in SKIP_VALIDATION:
+                    skip = any(pattern in pkg_dir.name for pattern in SKIP_VALIDATION)
+                    if skip:
                         warn(f"{pkg_dir.name} (skipped - known implicit resource refs)")
                     else:
                         packages_to_validate.append(pkg_dir)

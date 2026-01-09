@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Include parameters: `wetwire-aws graph ./infra -p`
   - Different edge styles for Ref vs GetAtt references
 - Added `graphviz` package dependency for DOT generation
+- Added `sam-python-crud-sample` repo to SAM import sources (#91)
 
 ### Fixed
 
@@ -23,7 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Templates referencing auto-created SAM resources now import successfully
   - Generates explicit `GetAtt()` / `Ref()` for implicit resources with noqa comments
   - `depends_on` uses string literals for implicit resources
-  - SAM import script now imports 39 templates (up from 32)
+- SAM import coverage improved from 39 to 40 templates (#91)
+  - Changed from directory-based to content-based cookiecutter filtering
+  - Templates in cookiecutter directories without `{{cookiecutter` syntax now import
+  - Added third SAM template repository
 
 ## [1.8.8] - 2026-01-08
 

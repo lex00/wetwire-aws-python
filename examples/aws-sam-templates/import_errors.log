@@ -1,0 +1,11 @@
+=== /var/folders/jz/jz_28g4x5r7_8qgbd7k3p2740000gn/T/tmp_p8opn1o/aws-sam-cli-app-templates/dotnet8/cw-event/{{cookiecutter.project_name}}/template.yaml ===
+Error: Failed to parse template: Expecting value: line 1 column 1 (char 0)
+
+
+=== /var/folders/jz/jz_28g4x5r7_8qgbd7k3p2740000gn/T/tmp_p8opn1o/aws-sam-cli-app-templates/dotnet10/cw-event/{{cookiecutter.project_name}}/template.yaml ===
+Error: Failed to parse template: Expecting value: line 1 column 1 (char 0)
+
+
+=== /var/folders/jz/jz_28g4x5r7_8qgbd7k3p2740000gn/T/tmp_p8opn1o/aws-sam-cli-app-templates/dotnet6/cw-event/{{cookiecutter.project_name}}/template.yaml ===
+Error: Failed to parse template: Expecting value: line 1 column 1 (char 0)
+
