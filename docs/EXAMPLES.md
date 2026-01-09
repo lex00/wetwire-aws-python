@@ -31,14 +31,23 @@ Imported from [aws-cloudformation-templates](https://github.com/awslabs/aws-clou
 
 ### By AWS Service
 
-| Category | Count | Examples |
-|----------|-------|----------|
-| EC2/Compute | ~50 | `amazon_linux`, `ubuntu`, `windows`, `autoscaling*` |
-| VPC/Network | ~30 | `public_vpc`, `private_vpc`, `vpcpeering*` |
-| ECS/Containers | ~15 | `ecs_*`, `fargate_*` |
-| Lambda | ~10 | `lambda_*`, `apigateway_lambda*` |
-| CloudFormation | ~15 | `macro_*`, `stackset_*`, `nested_*` |
-| Other | ~40 | Various services |
+| Category | Examples |
+|----------|----------|
+| **EC2** | `amazon_linux`, `centos`, `ubuntu`, `windows`, `ec2_instance_with_securitygroup_and_role` |
+| **VPC** | `vpc_single_instance_in_subnet`, `vpc_with_publicsubnet`, `multi_az_vpc`, `vpcpeering_requester_setup` |
+| **S3** | `compliant_bucket`, `compliant_static_website`, `static_website` |
+| **Lambda** | `lambda_1`, `lambda_with_dynamodb`, `lambda_zip_from_s3` |
+| **API Gateway** | `apigateway_lambda_integration`, `cloudfront_api_gateway` |
+| **DynamoDB** | `dynamodb_1`, `dynamodb_with_autoscaling` |
+| **ECS** | `ecs_cluster_with_alb`, `fargate_service` |
+| **RDS** | `rds_aurora_mysql`, `rds_postgres`, `rds_with_dbparametergroup` |
+| **CloudFront** | `cloudfront`, `cloudfront_nocache`, `cloudfront_s3_origin` |
+| **Auto Scaling** | `autoscalingmultiazwithnotifications`, `autoscalingrollingupdates` |
+| **Step Functions** | `stepfunction`, `stepfunction_with_lambda` |
+| **CloudWatch** | `cloudwatch_dashboard_clientvpn`, `cloudwatch_dashboard_nat_flowlogs` |
+| **IAM** | `iam_role`, `iam_policy`, `iam_instance_profile` |
+| **Config** | `config`, `config_rules` |
+| **CloudFormation** | `macro_*`, `stackset_*`, `nested_*` |
 
 ### Notable Examples
 
@@ -132,8 +141,15 @@ To re-import all examples (after updating the importer):
 ./scripts/import_sam_samples.sh
 ```
 
+## Notes
+
+- Examples are auto-generated and may need manual cleanup for production use
+- Some examples use explicit `Ref()` and `GetAtt()` (flagged by linter rules WAW019/WAW020) due to import limitations
+- Run `wetwire-aws lint --fix <path>` to apply automatic style fixes
+
 ## See Also
 
 - [IMPORT_WORKFLOW.md](IMPORT_WORKFLOW.md) - Import testing documentation
 - [SAM.md](SAM.md) - SAM resource guide
+- [LINT_RULES.md](LINT_RULES.md) - Lint rules reference
 - [Quick Start](QUICK_START.md) - Getting started
