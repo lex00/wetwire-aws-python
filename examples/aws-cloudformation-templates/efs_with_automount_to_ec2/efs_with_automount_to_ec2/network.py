@@ -1,4 +1,4 @@
-"""Network resources: ELBSecurityGroup, ElasticLoadBalancer, InstanceSecurityGroup, EFSSecurityGroup."""
+"""Network resources: ELBSecurityGroup, InstanceSecurityGroup, EFSSecurityGroup, ElasticLoadBalancer."""
 
 from . import *  # noqa: F403
 
@@ -21,32 +21,6 @@ class ELBSecurityGroup(ec2.SecurityGroup):
     group_description = 'Enable public access HTTP and HTTPS'
     security_group_ingress = [ELBSecurityGroupEgress, ELBSecurityGroupEgress1]
     vpc_id = VPC
-
-
-class ElasticLoadBalancerHealthCheck(elasticloadbalancing.LoadBalancer.HealthCheck):
-    healthy_threshold = '3'
-    interval = '30'
-    target = Join('', [
-    'HTTP:',
-    '80',
-    '/',
-])
-    timeout = '5'
-    unhealthy_threshold = '5'
-
-
-class ElasticLoadBalancerListeners(elasticloadbalancing.LoadBalancer.Listeners):
-    instance_port = '80'
-    load_balancer_port = '80'
-    protocol = 'HTTP'
-
-
-class ElasticLoadBalancer(elasticloadbalancing.LoadBalancer):
-    security_groups = [ELBSecurityGroup]
-    subnets = Subnets
-    cross_zone = 'true'
-    health_check = ElasticLoadBalancerHealthCheck
-    listeners = [ElasticLoadBalancerListeners]
 
 
 class InstanceSecurityGroupEgress(ec2.SecurityGroup.Egress):
@@ -80,3 +54,29 @@ class EFSSecurityGroup(ec2.SecurityGroup):
     group_description = 'Enable NFS access from EC2'
     security_group_ingress = [EFSSecurityGroupIngress]
     vpc_id = VPC
+
+
+class ElasticLoadBalancerHealthCheck(elasticloadbalancing.LoadBalancer.HealthCheck):
+    healthy_threshold = '3'
+    interval = '30'
+    target = Join('', [
+    'HTTP:',
+    '80',
+    '/',
+])
+    timeout = '5'
+    unhealthy_threshold = '5'
+
+
+class ElasticLoadBalancerListeners(elasticloadbalancing.LoadBalancer.Listeners):
+    instance_port = '80'
+    load_balancer_port = '80'
+    protocol = 'HTTP'
+
+
+class ElasticLoadBalancer(elasticloadbalancing.LoadBalancer):
+    security_groups = [ELBSecurityGroup]
+    subnets = Subnets
+    cross_zone = 'true'
+    health_check = ElasticLoadBalancerHealthCheck
+    listeners = [ElasticLoadBalancerListeners]

@@ -1,11 +1,6 @@
-"""Cicd resources: CodeCommitRepo, AppBuild, AppDeploy."""
+"""Cicd resources: AppBuild, AppDeploy, CodeCommitRepo."""
 
 from . import *  # noqa: F403
-
-
-class CodeCommitRepo(codecommit.Repository):
-    repository_name = Sub('${AWS::StackName}-repo')
-    repository_description = Sub('This is a repository for the ${AWS::StackName} project.')
 
 
 class AppBuildArtifacts(codebuild.Project.Artifacts):
@@ -68,3 +63,8 @@ class AppDeploy(codebuild.Project):
     environment = AppDeployEnvironment
     service_role = CodeBuildRole
     source = AppDeploySource
+
+
+class CodeCommitRepo(codecommit.Repository):
+    repository_name = Sub('${AWS::StackName}-repo')
+    repository_description = Sub('This is a repository for the ${AWS::StackName} project.')

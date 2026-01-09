@@ -1,13 +1,34 @@
-"""Network resources: EIP2, EIP1, loadBalancer, TargetGroup, Listener, FirstEIP, SecondEIP."""
+"""Network resources: EIP1, EIP2, TargetGroup, SecondEIP, FirstEIP, loadBalancer, Listener."""
 
 from . import *  # noqa: F403
+
+
+class EIP1(ec2.EIP):
+    domain = 'vpc'
 
 
 class EIP2(ec2.EIP):
     domain = 'vpc'
 
 
-class EIP1(ec2.EIP):
+class TargetGroupTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
+    key = 'deregistration_delay.timeout_seconds'
+    value = '20'
+
+
+class TargetGroup(elasticloadbalancingv2.TargetGroup):
+    name = 'MyTargets'
+    port = 10
+    protocol = elasticloadbalancingv2.ProtocolEnum.TCP
+    target_group_attributes = [TargetGroupTargetGroupAttribute]
+    vpc_id = Select(0, VPC)
+
+
+class SecondEIP(ec2.EIP):
+    domain = 'vpc'
+
+
+class FirstEIP(ec2.EIP):
     domain = 'vpc'
 
 
@@ -28,19 +49,6 @@ class loadBalancer(elasticloadbalancingv2.LoadBalancer):
     depends_on = [EIP2, EIP1]
 
 
-class TargetGroupTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
-    key = 'deregistration_delay.timeout_seconds'
-    value = '20'
-
-
-class TargetGroup(elasticloadbalancingv2.TargetGroup):
-    name = 'MyTargets'
-    port = 10
-    protocol = elasticloadbalancingv2.ProtocolEnum.TCP
-    target_group_attributes = [TargetGroupTargetGroupAttribute]
-    vpc_id = Select(0, VPC)
-
-
 class ListenerAction(elasticloadbalancingv2.ListenerRule.Action):
     type_ = 'forward'
     target_group_arn = TargetGroup
@@ -51,11 +59,3 @@ class Listener(elasticloadbalancingv2.Listener):
     load_balancer_arn = loadBalancer
     port = '80'
     protocol = elasticloadbalancingv2.ProtocolEnum.TCP
-
-
-class FirstEIP(ec2.EIP):
-    domain = 'vpc'
-
-
-class SecondEIP(ec2.EIP):
-    domain = 'vpc'

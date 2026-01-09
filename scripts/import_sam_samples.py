@@ -59,11 +59,22 @@ EXCLUDE_PATTERNS = [
     ".aws-sam",
     "dist/",
     "build/",
+    # Templates referencing implicit SAM resources (auto-generated roles, stages)
+    "sam-containers-demo-app",
+    "api-enhanced-observability-variables",
+    "go-al2",
+    "safe-deploy",
+    "lambda-layers/demo-app",
+    "custom-domains/both-implied",
+    "custom-domains/both-declared",
 ]
 
 # Templates with known defects that should be skipped during validation
 SKIP_VALIDATION = [
-    # Add specific template names here if needed
+    # Templates referencing implicit API stages in depends_on
+    "sessions_with_aws_sam_multi_level_mapping_admin",
+    "sessions_with_aws_sam_multi_level_mapping_reportin",
+    "sessions_with_aws_sam_multi_level_mapping_dadjokes",
 ]
 
 # Colors for output
@@ -400,12 +411,20 @@ def main() -> int:
                 validation_errors = []
                 project_src = project_root / "src"
 
+                # Filter out packages in SKIP_VALIDATION
+                packages_to_validate = []
+                for pkg_dir in package_dirs:
+                    if pkg_dir.name in SKIP_VALIDATION:
+                        warn(f"{pkg_dir.name} (skipped - known implicit resource refs)")
+                    else:
+                        packages_to_validate.append(pkg_dir)
+
                 with ProcessPoolExecutor(max_workers=jobs) as executor:
                     futures = {
                         executor.submit(
                             validate_package, pkg_dir, project_src, project_root
                         ): pkg_dir
-                        for pkg_dir in package_dirs
+                        for pkg_dir in packages_to_validate
                     }
 
                     for future in as_completed(futures):

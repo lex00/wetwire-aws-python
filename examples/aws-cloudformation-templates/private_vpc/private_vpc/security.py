@@ -1,6 +1,43 @@
-"""Security resources: EC2Role, EC2InstanceProfile, AutoscalingRole, ECSRole."""
+"""Security resources: AutoscalingRole, EC2Role, EC2InstanceProfile, ECSRole."""
 
 from . import *  # noqa: F403
+
+
+class AutoscalingRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['application-autoscaling.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class AutoscalingRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [AutoscalingRoleAllowStatement0]
+
+
+class AutoscalingRoleAllowStatement0_1(PolicyStatement):
+    action = [
+        'application-autoscaling:*',
+        'cloudwatch:DescribeAlarms',
+        'cloudwatch:PutMetricAlarm',
+        'ecs:DescribeServices',
+        'ecs:UpdateService',
+    ]
+    resource_arn = '*'
+
+
+class AutoscalingRolePolicies0PolicyDocument(PolicyDocument):
+    statement = [AutoscalingRoleAllowStatement0_1]
+
+
+class AutoscalingRolePolicy(iam.User.Policy):
+    policy_name = 'service-autoscaling'
+    policy_document = AutoscalingRolePolicies0PolicyDocument
+
+
+class AutoscalingRole(iam.Role):
+    assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
+    path = '/'
+    policies = [AutoscalingRolePolicy]
 
 
 class EC2RoleAllowStatement0(PolicyStatement):
@@ -50,43 +87,6 @@ class EC2Role(iam.Role):
 class EC2InstanceProfile(iam.InstanceProfile):
     path = '/'
     roles = [EC2Role]
-
-
-class AutoscalingRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['application-autoscaling.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class AutoscalingRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [AutoscalingRoleAllowStatement0]
-
-
-class AutoscalingRoleAllowStatement0_1(PolicyStatement):
-    action = [
-        'application-autoscaling:*',
-        'cloudwatch:DescribeAlarms',
-        'cloudwatch:PutMetricAlarm',
-        'ecs:DescribeServices',
-        'ecs:UpdateService',
-    ]
-    resource_arn = '*'
-
-
-class AutoscalingRolePolicies0PolicyDocument(PolicyDocument):
-    statement = [AutoscalingRoleAllowStatement0_1]
-
-
-class AutoscalingRolePolicy(iam.User.Policy):
-    policy_name = 'service-autoscaling'
-    policy_document = AutoscalingRolePolicies0PolicyDocument
-
-
-class AutoscalingRole(iam.Role):
-    assume_role_policy_document = AutoscalingRoleAssumeRolePolicyDocument
-    path = '/'
-    policies = [AutoscalingRolePolicy]
 
 
 class ECSRoleAllowStatement0(PolicyStatement):

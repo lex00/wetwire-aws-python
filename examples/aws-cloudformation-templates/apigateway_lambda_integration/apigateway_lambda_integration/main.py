@@ -13,6 +13,12 @@ class RestApi(apigateway.RestApi):
     endpoint_configuration = RestApiEndpointConfiguration
 
 
+class ApiResource(apigateway.Resource):
+    parent_id = RestApi.RootResourceId
+    rest_api_id = RestApi
+    path_part = '{city}'
+
+
 class RequestModel(apigateway.Model):
     content_type = 'application/json'
     name = 'MyModel'
@@ -27,12 +33,6 @@ class RequestModel(apigateway.Model):
             },
         },
     }
-
-
-class ApiResource(apigateway.Resource):
-    parent_id = RestApi.RootResourceId
-    rest_api_id = RestApi
-    path_part = '{city}'
 
 
 class ApiMethodMethodResponse(apigateway.Method.MethodResponse):

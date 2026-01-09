@@ -3,15 +3,6 @@
 from . import *  # noqa: F403
 
 
-class IoTThing(iot.Thing):
-    thing_name = AWS_STACK_NAME
-
-
-class IoTThingPrincipalAttachment(iot.ThingPrincipalAttachment):
-    principal = CertificateARN
-    thing_name = IoTThing
-
-
 class IoTPolicyAllowStatement0(PolicyStatement):
     action = 'iot:Connect'
     resource_arn = [Sub('arn:${AWS::Partition}:iot:${AWS::Region}:${AWS::AccountId}:client/*')]
@@ -40,6 +31,33 @@ class IoTPolicy(iot.Policy):
     policy_document = IoTPolicyPolicyDocument
 
 
+class IoTPolicyPrincipalAttachment(iot.PolicyPrincipalAttachment):
+    policy_name = IoTPolicy
+    principal = CertificateARN
+
+
+class IoTThing(iot.Thing):
+    thing_name = AWS_STACK_NAME
+
+
+class IoTThingPrincipalAttachment(iot.ThingPrincipalAttachment):
+    principal = CertificateARN
+    thing_name = IoTThing
+
+
+class OpenIoTStarPolicyAllowStatement0(PolicyStatement):
+    action = 'iot:*'
+    resource_arn = '*'
+
+
+class OpenIoTStarPolicyPolicyDocument(PolicyDocument):
+    statement = [OpenIoTStarPolicyAllowStatement0]
+
+
+class OpenIoTStarPolicy(iot.Policy):
+    policy_document = OpenIoTStarPolicyPolicyDocument
+
+
 class IoTTopicRuleLambdaAction(iot.TopicRule.LambdaAction):
     function_arn = MyLambda.Arn
 
@@ -58,21 +76,3 @@ class IoTTopicRuleTopicRulePayload(iot.TopicRule.TopicRulePayload):
 class IoTTopicRule(iot.TopicRule):
     rule_name = AWS_STACK_NAME
     topic_rule_payload = IoTTopicRuleTopicRulePayload
-
-
-class IoTPolicyPrincipalAttachment(iot.PolicyPrincipalAttachment):
-    policy_name = IoTPolicy
-    principal = CertificateARN
-
-
-class OpenIoTStarPolicyAllowStatement0(PolicyStatement):
-    action = 'iot:*'
-    resource_arn = '*'
-
-
-class OpenIoTStarPolicyPolicyDocument(PolicyDocument):
-    statement = [OpenIoTStarPolicyAllowStatement0]
-
-
-class OpenIoTStarPolicy(iot.Policy):
-    policy_document = OpenIoTStarPolicyPolicyDocument

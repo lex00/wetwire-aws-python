@@ -70,21 +70,6 @@ class TaskDefinition(ecs.TaskDefinition):
     volumes = [TaskDefinitionKeyValuePair]
 
 
-class ServiceLoadBalancer(ecs.TaskSet.LoadBalancer):
-    container_name = 'simple-app'
-    container_port = '80'
-    target_group_arn = ECSTG
-
-
-class Service(ecs.Service):
-    cluster = ECSCluster
-    desired_count = '1'
-    load_balancers = [ServiceLoadBalancer]
-    role = ECSServiceRole
-    task_definition = TaskDefinition
-    depends_on = [ALBListener]
-
-
 class ServiceScalingTarget(applicationautoscaling.ScalableTarget):
     max_capacity = 2
     min_capacity = 1

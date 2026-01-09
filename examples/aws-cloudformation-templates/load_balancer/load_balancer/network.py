@@ -1,4 +1,4 @@
-"""Network resources: LoadBalancerSecurityGroup, LoadBalancer, TargetGroup, LoadBalancerListener, LoadBalancerEgress."""
+"""Network resources: LoadBalancerSecurityGroup, LoadBalancer, TargetGroup, LoadBalancerEgress, LoadBalancerListener."""
 
 from . import *  # noqa: F403
 
@@ -53,6 +53,15 @@ class TargetGroup(elasticloadbalancingv2.TargetGroup):
     vpc_id = VPCId
 
 
+class LoadBalancerEgress(ec2.SecurityGroupEgress):
+    description = 'Load balancer to target'
+    destination_security_group_id = DestinationSecurityGroupId
+    from_port = 80
+    group_id = LoadBalancerSecurityGroup.GroupId
+    ip_protocol = 'tcp'
+    to_port = 80
+
+
 class LoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):
     target_group_arn = TargetGroup
     type_ = 'forward'
@@ -69,12 +78,3 @@ class LoadBalancerListener(elasticloadbalancingv2.Listener):
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTPS
     certificates = [LoadBalancerListenerCertificate]
     ssl_policy = 'ELBSecurityPolicy-TLS13-1-2-2021-06'
-
-
-class LoadBalancerEgress(ec2.SecurityGroupEgress):
-    description = 'Load balancer to target'
-    destination_security_group_id = DestinationSecurityGroupId
-    from_port = 80
-    group_id = LoadBalancerSecurityGroup.GroupId
-    ip_protocol = 'tcp'
-    to_port = 80

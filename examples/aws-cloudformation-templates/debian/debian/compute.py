@@ -13,6 +13,7 @@ class EC2Instance(ec2.Instance):
     user_data = Base64(Sub("""#!/bin/bash
 wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb -O /tmp/amazon-cloudwatch-agent.deb
 sudo dpkg -i /tmp/amazon-cloudwatch-agent.deb
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c ssm:${ssmkey} -s
 wget https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz -O /tmp/aws-cfn-bootstrap-py3-latest.tar.gz
 sudo apt-get update -y
 sudo apt-get install -y python3-pip python3-venv
@@ -31,4 +32,6 @@ sudo ln -s /opt/aws/virtualenv/bin/cfn-* /opt/aws/bin/
 # Run cfn-init
 /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource EC2Instance --region ${AWS::Region} --configsets default
 /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource EC2Instance --region ${AWS::Region}
-"""))
+""", {
+    'ssmkey': SSMKey,
+}))

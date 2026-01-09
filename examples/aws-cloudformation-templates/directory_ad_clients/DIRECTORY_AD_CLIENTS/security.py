@@ -1,35 +1,6 @@
-"""Security resources: JoinDomainAssociationTags, JoinDomainAssociationInstances."""
+"""Security resources: JoinDomainAssociationInstances, JoinDomainAssociationTags."""
 
 from . import *  # noqa: F403
-
-
-class JoinDomainAssociationTagsInstanceAssociationOutputLocation(ssm.Association.InstanceAssociationOutputLocation):
-    s3_location = If("SSMLogsBucketCondition", {
-    'OutputS3BucketName': SSMLogsBucketName,
-    'OutputS3KeyPrefix': Sub('ssm-association-logs/AWSLogs/${AWS::AccountId}/*'),
-}, AWS_NO_VALUE)
-
-
-class JoinDomainAssociationTagsTargets(ssm.MaintenanceWindowTarget.Targets):
-    key = 'tag:DomainJoin'
-    values = [DirectoryName]
-
-
-class JoinDomainAssociationTags(ssm.Association):
-    association_name = Sub('JoinDomain-Association-viaTags-${AWS::StackName}')
-    name = 'AWS-JoinDirectoryServiceDomain'
-    output_location = JoinDomainAssociationTagsInstanceAssociationOutputLocation
-    targets = [JoinDomainAssociationTagsTargets]
-    parameters = {
-        'directoryId': [DirectoryID],
-        'directoryName': [DirectoryName],
-        'dnsIpAddresses': If("DomainDNSServersCondition", [
-    If("DomainDNSServer1Condition", DomainDNSServer1, AWS_NO_VALUE),
-    If("DomainDNSServer2Condition", DomainDNSServer2, AWS_NO_VALUE),
-    If("DomainDNSServer3Condition", DomainDNSServer3, AWS_NO_VALUE),
-    If("DomainDNSServer4Condition", DomainDNSServer4, AWS_NO_VALUE),
-], AWS_NO_VALUE),
-    }
 
 
 class JoinDomainAssociationInstancesInstanceAssociationOutputLocation(ssm.Association.InstanceAssociationOutputLocation):
@@ -49,6 +20,35 @@ class JoinDomainAssociationInstances(ssm.Association):
     name = 'AWS-JoinDirectoryServiceDomain'
     output_location = JoinDomainAssociationInstancesInstanceAssociationOutputLocation
     targets = [JoinDomainAssociationInstancesTargets]
+    parameters = {
+        'directoryId': [DirectoryID],
+        'directoryName': [DirectoryName],
+        'dnsIpAddresses': If("DomainDNSServersCondition", [
+    If("DomainDNSServer1Condition", DomainDNSServer1, AWS_NO_VALUE),
+    If("DomainDNSServer2Condition", DomainDNSServer2, AWS_NO_VALUE),
+    If("DomainDNSServer3Condition", DomainDNSServer3, AWS_NO_VALUE),
+    If("DomainDNSServer4Condition", DomainDNSServer4, AWS_NO_VALUE),
+], AWS_NO_VALUE),
+    }
+
+
+class JoinDomainAssociationTagsInstanceAssociationOutputLocation(ssm.Association.InstanceAssociationOutputLocation):
+    s3_location = If("SSMLogsBucketCondition", {
+    'OutputS3BucketName': SSMLogsBucketName,
+    'OutputS3KeyPrefix': Sub('ssm-association-logs/AWSLogs/${AWS::AccountId}/*'),
+}, AWS_NO_VALUE)
+
+
+class JoinDomainAssociationTagsTargets(ssm.MaintenanceWindowTarget.Targets):
+    key = 'tag:DomainJoin'
+    values = [DirectoryName]
+
+
+class JoinDomainAssociationTags(ssm.Association):
+    association_name = Sub('JoinDomain-Association-viaTags-${AWS::StackName}')
+    name = 'AWS-JoinDirectoryServiceDomain'
+    output_location = JoinDomainAssociationTagsInstanceAssociationOutputLocation
+    targets = [JoinDomainAssociationTagsTargets]
     parameters = {
         'directoryId': [DirectoryID],
         'directoryName': [DirectoryName],

@@ -1,4 +1,4 @@
-"""Network resources: EcsSecurityGroup, EcsSecurityGroupALBports, ECSALB, ECSTG, EcsSecurityGroupSSHinbound, ALBListener, ECSALBListenerRule, EcsSecurityGroupHTTPinbound."""
+"""Network resources: EcsSecurityGroup, ECSALB, ECSTG, ALBListener, EcsSecurityGroupSSHinbound, ECSALBListenerRule, EcsSecurityGroupHTTPinbound, EcsSecurityGroupALBports."""
 
 from . import *  # noqa: F403
 
@@ -6,14 +6,6 @@ from . import *  # noqa: F403
 class EcsSecurityGroup(ec2.SecurityGroup):
     group_description = 'ECS Security Group'
     vpc_id = VpcId
-
-
-class EcsSecurityGroupALBports(ec2.SecurityGroupIngress):
-    group_id = EcsSecurityGroup
-    ip_protocol = 'tcp'
-    from_port = '31000'
-    to_port = '61000'
-    source_security_group_id = EcsSecurityGroup
 
 
 class ECSALBTargetGroupAttribute(elasticloadbalancingv2.TargetGroup.TargetGroupAttribute):
@@ -43,14 +35,6 @@ class ECSTG(elasticloadbalancingv2.TargetGroup):
     depends_on = [ECSALB]
 
 
-class EcsSecurityGroupSSHinbound(ec2.SecurityGroupIngress):
-    group_id = EcsSecurityGroup
-    ip_protocol = 'tcp'
-    from_port = '22'
-    to_port = '22'
-    cidr_ip = '192.168.1.0/0'
-
-
 class ALBListenerAction(elasticloadbalancingv2.ListenerRule.Action):
     type_ = 'forward'
     target_group_arn = ECSTG
@@ -62,6 +46,14 @@ class ALBListener(elasticloadbalancingv2.Listener):
     port = '80'
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
     depends_on = [ECSServiceRole]
+
+
+class EcsSecurityGroupSSHinbound(ec2.SecurityGroupIngress):
+    group_id = EcsSecurityGroup
+    ip_protocol = 'tcp'
+    from_port = '22'
+    to_port = '22'
+    cidr_ip = '192.168.1.0/0'
 
 
 class ECSALBListenerRuleAction(elasticloadbalancingv2.ListenerRule.Action):
@@ -88,3 +80,11 @@ class EcsSecurityGroupHTTPinbound(ec2.SecurityGroupIngress):
     from_port = '80'
     to_port = '80'
     cidr_ip = '0.0.0.0/0'
+
+
+class EcsSecurityGroupALBports(ec2.SecurityGroupIngress):
+    group_id = EcsSecurityGroup
+    ip_protocol = 'tcp'
+    from_port = '31000'
+    to_port = '61000'
+    source_security_group_id = EcsSecurityGroup

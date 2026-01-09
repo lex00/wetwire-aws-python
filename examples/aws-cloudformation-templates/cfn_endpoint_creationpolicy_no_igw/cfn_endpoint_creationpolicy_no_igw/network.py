@@ -1,4 +1,4 @@
-"""Network resources: VPC, EndpointSG, PrivateSubnet1, PrivateSubnet2, CfnEndpoint, PrivateSG, PrivateRouteTable1, PrivateSubnet1RouteTableAssociation, PrivateRouteTable2, PrivateSubnet2RouteTableAssociation."""
+"""Network resources: VPC, PrivateRouteTable1, PrivateSubnet1, PrivateSubnet1RouteTableAssociation, PrivateSG, PrivateSubnet2, PrivateRouteTable2, PrivateSubnet2RouteTableAssociation, EndpointSG, CfnEndpoint."""
 
 from . import *  # noqa: F403
 
@@ -15,23 +15,14 @@ class VPC(ec2.VPC):
     tags = [VPCAssociationParameter]
 
 
-class EndpointSGEgress(ec2.SecurityGroup.Egress):
-    ip_protocol = 'tcp'
-    from_port = 443
-    to_port = 443
-    cidr_ip = '0.0.0.0/0'
-
-
-class EndpointSGAssociationParameter(ec2.Instance.AssociationParameter):
+class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = 'EndpointSG'
+    value = Sub('${EnvironmentName} Private Routes (AZ1)')
 
 
-class EndpointSG(ec2.SecurityGroup):
-    group_description = 'Traffic into CloudFormation Endpoint'
-    security_group_ingress = [EndpointSGEgress]
+class PrivateRouteTable1(ec2.RouteTable):
     vpc_id = VPC
-    tags = [EndpointSGAssociationParameter]
+    tags = [PrivateRouteTable1AssociationParameter]
 
 
 class PrivateSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
@@ -47,26 +38,9 @@ class PrivateSubnet1(ec2.Subnet):
     tags = [PrivateSubnet1AssociationParameter]
 
 
-class PrivateSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Name'
-    value = Sub('${EnvironmentName} Private Subnet (AZ2)')
-
-
-class PrivateSubnet2(ec2.Subnet):
-    vpc_id = VPC
-    availability_zone = Select(1, GetAZs())
-    cidr_block = PrivateSubnet2CIDR
-    map_public_ip_on_launch = False
-    tags = [PrivateSubnet2AssociationParameter]
-
-
-class CfnEndpoint(ec2.VPCEndpoint):
-    vpc_id = VPC
-    service_name = Sub('com.amazonaws.${AWS::Region}.cloudformation')
-    vpc_endpoint_type = 'Interface'
-    private_dns_enabled = True
-    subnet_ids = [PrivateSubnet1, PrivateSubnet2]
-    security_group_ids = [EndpointSG]
+class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
+    route_table_id = PrivateRouteTable1
+    subnet_id = PrivateSubnet1
 
 
 class PrivateSGEgress(ec2.SecurityGroup.Egress):
@@ -88,19 +62,17 @@ class PrivateSG(ec2.SecurityGroup):
     tags = [PrivateSGAssociationParameter]
 
 
-class PrivateRouteTable1AssociationParameter(ec2.Instance.AssociationParameter):
+class PrivateSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
     key = 'Name'
-    value = Sub('${EnvironmentName} Private Routes (AZ1)')
+    value = Sub('${EnvironmentName} Private Subnet (AZ2)')
 
 
-class PrivateRouteTable1(ec2.RouteTable):
+class PrivateSubnet2(ec2.Subnet):
     vpc_id = VPC
-    tags = [PrivateRouteTable1AssociationParameter]
-
-
-class PrivateSubnet1RouteTableAssociation(ec2.SubnetRouteTableAssociation):
-    route_table_id = PrivateRouteTable1
-    subnet_id = PrivateSubnet1
+    availability_zone = Select(1, GetAZs())
+    cidr_block = PrivateSubnet2CIDR
+    map_public_ip_on_launch = False
+    tags = [PrivateSubnet2AssociationParameter]
 
 
 class PrivateRouteTable2AssociationParameter(ec2.Instance.AssociationParameter):
@@ -116,3 +88,31 @@ class PrivateRouteTable2(ec2.RouteTable):
 class PrivateSubnet2RouteTableAssociation(ec2.SubnetRouteTableAssociation):
     route_table_id = PrivateRouteTable2
     subnet_id = PrivateSubnet2
+
+
+class EndpointSGEgress(ec2.SecurityGroup.Egress):
+    ip_protocol = 'tcp'
+    from_port = 443
+    to_port = 443
+    cidr_ip = '0.0.0.0/0'
+
+
+class EndpointSGAssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Name'
+    value = 'EndpointSG'
+
+
+class EndpointSG(ec2.SecurityGroup):
+    group_description = 'Traffic into CloudFormation Endpoint'
+    security_group_ingress = [EndpointSGEgress]
+    vpc_id = VPC
+    tags = [EndpointSGAssociationParameter]
+
+
+class CfnEndpoint(ec2.VPCEndpoint):
+    vpc_id = VPC
+    service_name = Sub('com.amazonaws.${AWS::Region}.cloudformation')
+    vpc_endpoint_type = 'Interface'
+    private_dns_enabled = True
+    subnet_ids = [PrivateSubnet1, PrivateSubnet2]
+    security_group_ids = [EndpointSG]

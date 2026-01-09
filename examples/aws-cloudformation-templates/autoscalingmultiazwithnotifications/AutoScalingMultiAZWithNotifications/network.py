@@ -1,4 +1,4 @@
-"""Network resources: LoadBalancerSecurityGroup, InstanceSecurityGroup, ElasticLoadBalancer, TargetGroup, LoadBalancerListener."""
+"""Network resources: LoadBalancerSecurityGroup, InstanceSecurityGroup, TargetGroup, ElasticLoadBalancer, LoadBalancerListener."""
 
 from . import *  # noqa: F403
 
@@ -35,13 +35,6 @@ class InstanceSecurityGroup(ec2.SecurityGroup):
     security_group_ingress = [InstanceSecurityGroupEgress, InstanceSecurityGroupIngress]
 
 
-class ElasticLoadBalancer(elasticloadbalancingv2.LoadBalancer):
-    scheme = 'internet-facing'
-    security_groups = [LoadBalancerSecurityGroup]
-    subnets = Subnets
-    type_ = 'application'
-
-
 class TargetGroup(elasticloadbalancingv2.TargetGroup):
     health_check_path = '/'
     name = 'MyTargetGroup'
@@ -49,6 +42,13 @@ class TargetGroup(elasticloadbalancingv2.TargetGroup):
     protocol = elasticloadbalancingv2.ProtocolEnum.HTTP
     target_type = elasticloadbalancingv2.TargetTypeEnum.INSTANCE
     vpc_id = VPC
+
+
+class ElasticLoadBalancer(elasticloadbalancingv2.LoadBalancer):
+    scheme = 'internet-facing'
+    security_groups = [LoadBalancerSecurityGroup]
+    subnets = Subnets
+    type_ = 'application'
 
 
 class LoadBalancerListenerAction(elasticloadbalancingv2.ListenerRule.Action):

@@ -3,14 +3,6 @@
 from . import *  # noqa: F403
 
 
-class Channel(iotanalytics.Channel):
-    channel_name = Sub('${ProjectName}_channel')
-    tags = [{
-        'Key': 'Project',
-        'Value': ProjectName,
-    }]
-
-
 class Datastore(iotanalytics.Datastore):
     datastore_name = Sub('${ProjectName}_datastore')
     tags = [{
@@ -51,6 +43,14 @@ class SqlDataset(iotanalytics.Dataset):
         'Value': ProjectName,
     }]
     depends_on = [Datastore]
+
+
+class Channel(iotanalytics.Channel):
+    channel_name = Sub('${ProjectName}_channel')
+    tags = [{
+        'Key': 'Project',
+        'Value': ProjectName,
+    }]
 
 
 class PipelineChannel(iotanalytics.Pipeline.Channel):

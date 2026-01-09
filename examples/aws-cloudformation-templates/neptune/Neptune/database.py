@@ -1,4 +1,4 @@
-"""Database resources: NeptuneDBSubnetGroup, NeptuneDBParameterGroup, NeptuneDBClusterParameterGroup, NeptuneDBCluster, NeptuneDBInstance."""
+"""Database resources: NeptuneDBSubnetGroup, NeptuneDBClusterParameterGroup, NeptuneDBCluster, NeptuneDBParameterGroup, NeptuneDBInstance."""
 
 from . import *  # noqa: F403
 
@@ -10,43 +10,6 @@ class NeptuneDBSubnetGroup(neptune.DBSubnetGroup):
     tags = [{
         'Key': 'Name',
         'Value': Sub('${Env}-${AppName}-subnet-group'),
-    }, {
-        'Key': 'App',
-        'Value': AppName,
-    }, {
-        'Key': 'Compliance',
-        'Value': 'Compliance',
-    }, {
-        'Key': 'Env',
-        'Value': Env,
-    }, {
-        'Key': 'User',
-        'Value': User,
-    }, {
-        'Key': 'Owner',
-        'Value': Owner,
-    }, {
-        'Key': 'Tier',
-        'Value': Tier,
-    }, {
-        'Key': 'Version',
-        'Value': Version,
-    }, {
-        'Key': 'Storage',
-        'Value': Storage,
-    }]
-
-
-class NeptuneDBParameterGroup(neptune.DBParameterGroup):
-    description = Sub('CloudFormation managed Neptune DB Parameter Group - ${Env}-${AppName}-parameter-group')
-    parameters = {
-        'neptune_query_timeout': NeptuneQueryTimeout,
-    }
-    family = 'neptune1'
-    name = Sub('${Env}-${AppName}-parameter-group')
-    tags = [{
-        'Key': 'Name',
-        'Value': Sub('${Env}-${AppName}-parameter-group'),
     }, {
         'Key': 'App',
         'Value': AppName,
@@ -151,6 +114,43 @@ class NeptuneDBCluster(neptune.DBCluster):
         'Value': Storage,
     }]
     depends_on = [NeptuneDBSG]
+
+
+class NeptuneDBParameterGroup(neptune.DBParameterGroup):
+    description = Sub('CloudFormation managed Neptune DB Parameter Group - ${Env}-${AppName}-parameter-group')
+    parameters = {
+        'neptune_query_timeout': NeptuneQueryTimeout,
+    }
+    family = 'neptune1'
+    name = Sub('${Env}-${AppName}-parameter-group')
+    tags = [{
+        'Key': 'Name',
+        'Value': Sub('${Env}-${AppName}-parameter-group'),
+    }, {
+        'Key': 'App',
+        'Value': AppName,
+    }, {
+        'Key': 'Compliance',
+        'Value': 'Compliance',
+    }, {
+        'Key': 'Env',
+        'Value': Env,
+    }, {
+        'Key': 'User',
+        'Value': User,
+    }, {
+        'Key': 'Owner',
+        'Value': Owner,
+    }, {
+        'Key': 'Tier',
+        'Value': Tier,
+    }, {
+        'Key': 'Version',
+        'Value': Version,
+    }, {
+        'Key': 'Storage',
+        'Value': Storage,
+    }]
 
 
 class NeptuneDBInstance(neptune.DBInstance):

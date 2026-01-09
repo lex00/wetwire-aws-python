@@ -1,4 +1,4 @@
-"""Compute resources: JwtResourceHandler, TestResourceHandler, JwtResourceRootPermission, TestResourceRootPermission, JwtResourcePermission, TestResourcePermission."""
+"""Compute resources: JwtResourceHandler, JwtResourceRootPermission, TestResourceHandler, TestResourceRootPermission, JwtResourcePermission, TestResourcePermission."""
 
 from . import *  # noqa: F403
 
@@ -27,6 +27,13 @@ class JwtResourceHandler(lambda_.Function):
     environment = JwtResourceHandlerEnvironment
 
 
+class JwtResourceRootPermission(lambda_.Permission):
+    action = 'lambda:InvokeFunction'
+    function_name = JwtResourceHandler.Arn
+    principal = 'apigateway.amazonaws.com'
+    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/')
+
+
 class TestResourceHandlerContent(lambda_.LayerVersion.Content):
     s3_bucket = LambdaCodeS3Bucket
     s3_key = LambdaCodeS3Key
@@ -45,13 +52,6 @@ class TestResourceHandler(lambda_.Function):
     code = TestResourceHandlerContent
     role = TestResourceHandlerRole.Arn
     environment = TestResourceHandlerEnvironment
-
-
-class JwtResourceRootPermission(lambda_.Permission):
-    action = 'lambda:InvokeFunction'
-    function_name = JwtResourceHandler.Arn
-    principal = 'apigateway.amazonaws.com'
-    source_arn = Sub('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/')
 
 
 class TestResourceRootPermission(lambda_.Permission):

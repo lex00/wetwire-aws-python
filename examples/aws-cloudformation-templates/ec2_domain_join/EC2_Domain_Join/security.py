@@ -1,28 +1,6 @@
-"""Security resources: myInstanceProfile, myEC2SSMRole, myssmdocument."""
+"""Security resources: myssmdocument, myInstanceProfile, myEC2SSMRole."""
 
 from . import *  # noqa: F403
-
-
-class myInstanceProfile(iam.InstanceProfile):
-    roles = ['DemoEC2SSMRole']
-    instance_profile_name = 'myEC2SSMRole'
-
-
-class myEC2SSMRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['ec2.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class myEC2SSMRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [myEC2SSMRoleAllowStatement0]
-
-
-class myEC2SSMRole(iam.Role):
-    assume_role_policy_document = myEC2SSMRoleAssumeRolePolicyDocument
-    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM']
-    role_name = 'DemoEC2SSMRole'
 
 
 class myssmdocument(ssm.Document):
@@ -55,3 +33,25 @@ class myssmdocument(ssm.Document):
             },
         },
     }
+
+
+class myInstanceProfile(iam.InstanceProfile):
+    roles = ['DemoEC2SSMRole']
+    instance_profile_name = 'myEC2SSMRole'
+
+
+class myEC2SSMRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['ec2.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class myEC2SSMRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [myEC2SSMRoleAllowStatement0]
+
+
+class myEC2SSMRole(iam.Role):
+    assume_role_policy_document = myEC2SSMRoleAssumeRolePolicyDocument
+    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM']
+    role_name = 'DemoEC2SSMRole'

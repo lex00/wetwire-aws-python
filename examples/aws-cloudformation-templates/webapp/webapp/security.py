@@ -1,6 +1,22 @@
-"""Security resources: SiteContentReplicationRole, SiteWebACL, SiteCloudFrontLogsReplicationRole, CognitoUserPool, JwtResourceHandlerRole, CognitoClient, TestResourceHandlerRole, TestResourceHandlerPolicy, CognitoDomain, SiteCloudFrontLogsReplicationPolicy, SiteContentReplicationPolicy."""
+"""Security resources: JwtResourceHandlerRole, SiteContentReplicationRole, SiteWebACL, SiteCloudFrontLogsReplicationRole, TestResourceHandlerRole, TestResourceHandlerPolicy, SiteCloudFrontLogsReplicationPolicy, SiteContentReplicationPolicy."""
 
 from . import *  # noqa: F403
+
+
+class JwtResourceHandlerRoleAllowStatement0(PolicyStatement):
+    principal = {
+        'Service': ['lambda.amazonaws.com'],
+    }
+    action = ['sts:AssumeRole']
+
+
+class JwtResourceHandlerRoleAssumeRolePolicyDocument(PolicyDocument):
+    statement = [JwtResourceHandlerRoleAllowStatement0]
+
+
+class JwtResourceHandlerRole(iam.Role):
+    assume_role_policy_document = JwtResourceHandlerRoleAssumeRolePolicyDocument
+    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole']
 
 
 class SiteContentReplicationRoleAllowStatement0(PolicyStatement):
@@ -90,60 +106,6 @@ class SiteCloudFrontLogsReplicationRole(iam.Role):
     path = '/'
 
 
-class CognitoUserPoolAdminCreateUserConfig(cognito.UserPool.AdminCreateUserConfig):
-    allow_admin_create_user_only = True
-
-
-class CognitoUserPoolSchemaAttribute(cognito.UserPool.SchemaAttribute):
-    name = 'email'
-    required = True
-
-
-class CognitoUserPoolSchemaAttribute1(cognito.UserPool.SchemaAttribute):
-    name = 'given_name'
-    required = True
-
-
-class CognitoUserPoolSchemaAttribute2(cognito.UserPool.SchemaAttribute):
-    name = 'family_name'
-    required = True
-
-
-class CognitoUserPool(cognito.UserPool):
-    user_pool_name = AppName
-    admin_create_user_config = CognitoUserPoolAdminCreateUserConfig
-    auto_verified_attributes = ['email']
-    schema = [CognitoUserPoolSchemaAttribute, CognitoUserPoolSchemaAttribute1, CognitoUserPoolSchemaAttribute2]
-    depends_on = [SiteDistribution]
-
-
-class JwtResourceHandlerRoleAllowStatement0(PolicyStatement):
-    principal = {
-        'Service': ['lambda.amazonaws.com'],
-    }
-    action = ['sts:AssumeRole']
-
-
-class JwtResourceHandlerRoleAssumeRolePolicyDocument(PolicyDocument):
-    statement = [JwtResourceHandlerRoleAllowStatement0]
-
-
-class JwtResourceHandlerRole(iam.Role):
-    assume_role_policy_document = JwtResourceHandlerRoleAssumeRolePolicyDocument
-    managed_policy_arns = ['arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole']
-
-
-class CognitoClient(cognito.UserPoolClient):
-    client_name = AppName
-    generate_secret = False
-    user_pool_id = CognitoUserPool
-    callback_ur_ls = [Sub('https://${SiteDistribution.DomainName}/index.html')]
-    allowed_o_auth_flows = ['code']
-    allowed_o_auth_flows_user_pool_client = True
-    allowed_o_auth_scopes = ['phone', 'email', 'openid']
-    supported_identity_providers = ['COGNITO']
-
-
 class TestResourceHandlerRoleAllowStatement0(PolicyStatement):
     principal = {
         'Service': ['lambda.amazonaws.com'],
@@ -181,11 +143,6 @@ class TestResourceHandlerPolicy(iam.RolePolicy):
     policy_document = TestResourceHandlerPolicyPolicyDocument
     policy_name = 'handler-policy'
     role_name = TestResourceHandlerRole
-
-
-class CognitoDomain(cognito.UserPoolDomain):
-    domain = AppName
-    user_pool_id = CognitoUserPool
 
 
 class SiteCloudFrontLogsReplicationPolicyAllowStatement0(PolicyStatement):

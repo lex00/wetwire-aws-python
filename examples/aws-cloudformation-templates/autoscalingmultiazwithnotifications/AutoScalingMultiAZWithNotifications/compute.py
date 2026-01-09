@@ -1,4 +1,4 @@
-"""Compute resources: LaunchTemplate, WebServerGroup, WebServerScaleDownPolicy, WebServerScaleUpPolicy."""
+"""Compute resources: LaunchTemplate, WebServerGroup, WebServerScaleUpPolicy, WebServerScaleDownPolicy."""
 
 from . import *  # noqa: F403
 
@@ -59,15 +59,15 @@ class WebServerGroup(autoscaling.AutoScalingGroup):
     vpc_zone_identifier = Subnets
 
 
-class WebServerScaleDownPolicy(autoscaling.ScalingPolicy):
-    adjustment_type = 'ChangeInCapacity'
-    auto_scaling_group_name = WebServerGroup
-    cooldown = '60'
-    scaling_adjustment = -1
-
-
 class WebServerScaleUpPolicy(autoscaling.ScalingPolicy):
     adjustment_type = 'ChangeInCapacity'
     auto_scaling_group_name = WebServerGroup
     cooldown = '60'
     scaling_adjustment = 1
+
+
+class WebServerScaleDownPolicy(autoscaling.ScalingPolicy):
+    adjustment_type = 'ChangeInCapacity'
+    auto_scaling_group_name = WebServerGroup
+    cooldown = '60'
+    scaling_adjustment = -1

@@ -1,4 +1,4 @@
-"""Network resources: VPC, AuroraSecurityGroup, DBSubnet1, DBSubnet2, DMSSecurityGroup, InternetGateway, AttachGateway, RouteTable, Route, SubnetRouteTableAssociation1, SubnetRouteTableAssociation."""
+"""Network resources: VPC, DMSSecurityGroup, InternetGateway, AttachGateway, RouteTable, Route, DBSubnet2, DBSubnet1, AuroraSecurityGroup, SubnetRouteTableAssociation1, SubnetRouteTableAssociation."""
 
 from . import *  # noqa: F403
 
@@ -18,51 +18,6 @@ class VPC(ec2.VPC):
     enable_dns_support = 'true'
     enable_dns_hostnames = 'true'
     tags = [VPCAssociationParameter, VPCAssociationParameter1]
-
-
-class AuroraSecurityGroupEgress(ec2.SecurityGroup.Egress):
-    ip_protocol = 'tcp'
-    from_port = '3306'
-    to_port = '3306'
-    cidr_ip = ClientIP
-
-
-class AuroraSecurityGroupEgress1(ec2.SecurityGroup.Egress):
-    ip_protocol = 'tcp'
-    from_port = '3306'
-    to_port = '3306'
-    cidr_ip = '10.0.0.0/24'
-
-
-class AuroraSecurityGroup(ec2.SecurityGroup):
-    group_description = 'Security group for Aurora SampleDB DB Instance'
-    group_name = 'Aurora SampleDB Security Group'
-    vpc_id = VPC
-    security_group_ingress = [AuroraSecurityGroupEgress, AuroraSecurityGroupEgress1]
-
-
-class DBSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Application'
-    value = AWS_STACK_ID
-
-
-class DBSubnet1(ec2.Subnet):
-    vpc_id = VPC
-    cidr_block = '10.0.0.0/26'
-    availability_zone = Select(0, GetAZs())
-    tags = [DBSubnet1AssociationParameter]
-
-
-class DBSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
-    key = 'Application'
-    value = AWS_STACK_ID
-
-
-class DBSubnet2(ec2.Subnet):
-    vpc_id = VPC
-    cidr_block = '10.0.0.64/26'
-    availability_zone = Select(1, GetAZs())
-    tags = [DBSubnet2AssociationParameter]
 
 
 class DMSSecurityGroup(ec2.SecurityGroup):
@@ -100,6 +55,51 @@ class Route(ec2.Route):
     destination_cidr_block = '0.0.0.0/0'
     gateway_id = InternetGateway
     depends_on = [AttachGateway]
+
+
+class DBSubnet2AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_ID
+
+
+class DBSubnet2(ec2.Subnet):
+    vpc_id = VPC
+    cidr_block = '10.0.0.64/26'
+    availability_zone = Select(1, GetAZs())
+    tags = [DBSubnet2AssociationParameter]
+
+
+class DBSubnet1AssociationParameter(ec2.Instance.AssociationParameter):
+    key = 'Application'
+    value = AWS_STACK_ID
+
+
+class DBSubnet1(ec2.Subnet):
+    vpc_id = VPC
+    cidr_block = '10.0.0.0/26'
+    availability_zone = Select(0, GetAZs())
+    tags = [DBSubnet1AssociationParameter]
+
+
+class AuroraSecurityGroupEgress(ec2.SecurityGroup.Egress):
+    ip_protocol = 'tcp'
+    from_port = '3306'
+    to_port = '3306'
+    cidr_ip = ClientIP
+
+
+class AuroraSecurityGroupEgress1(ec2.SecurityGroup.Egress):
+    ip_protocol = 'tcp'
+    from_port = '3306'
+    to_port = '3306'
+    cidr_ip = '10.0.0.0/24'
+
+
+class AuroraSecurityGroup(ec2.SecurityGroup):
+    group_description = 'Security group for Aurora SampleDB DB Instance'
+    group_name = 'Aurora SampleDB Security Group'
+    vpc_id = VPC
+    security_group_ingress = [AuroraSecurityGroupEgress, AuroraSecurityGroupEgress1]
 
 
 class SubnetRouteTableAssociation1(ec2.SubnetRouteTableAssociation):

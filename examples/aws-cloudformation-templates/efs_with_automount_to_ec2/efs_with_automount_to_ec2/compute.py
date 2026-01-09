@@ -1,4 +1,4 @@
-"""Compute resources: LaunchConfig, AutoScalingGroup, ScaleUpPolicy, ScaleDownPolicy."""
+"""Compute resources: LaunchConfig, AutoScalingGroup, ScaleDownPolicy, ScaleUpPolicy."""
 
 from . import *  # noqa: F403
 
@@ -30,15 +30,15 @@ class AutoScalingGroup(autoscaling.AutoScalingGroup):
     vpc_zone_identifier = Subnets
 
 
-class ScaleUpPolicy(autoscaling.ScalingPolicy):
-    adjustment_type = 'ChangeInCapacity'
-    auto_scaling_group_name = AutoScalingGroup
-    cooldown = '60'
-    scaling_adjustment = '1'
-
-
 class ScaleDownPolicy(autoscaling.ScalingPolicy):
     adjustment_type = 'ChangeInCapacity'
     auto_scaling_group_name = AutoScalingGroup
     cooldown = '60'
     scaling_adjustment = '-1'
+
+
+class ScaleUpPolicy(autoscaling.ScalingPolicy):
+    adjustment_type = 'ChangeInCapacity'
+    auto_scaling_group_name = AutoScalingGroup
+    cooldown = '60'
+    scaling_adjustment = '1'
