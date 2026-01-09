@@ -1074,12 +1074,21 @@ my_stuff = {"key": "value", "another": "thing"}
         assert len(issues) == 0
 
     def test_ignores_single_key_dicts(self):
-        """Should not flag single-key dicts (simple assignments)."""
+        """Should not flag single-key dicts with empty values."""
         code = """
 bucket_encryption = {"Rules": []}
 """
         issues = lint_code(code, rules=[InlinePropertyType()])
         assert len(issues) == 0
+
+    def test_detects_single_key_dicts_with_complex_values(self):
+        """Should flag single-key dicts with complex nested values."""
+        code = """
+bucket_encryption = {"ServerSideEncryptionConfiguration": [{"SSEAlgorithm": "AES256"}]}
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 1
+        assert issues[0].rule_id == "WAW017"
 
     def test_ignores_class_references(self):
         """Should not flag when value is a class reference, not dict."""

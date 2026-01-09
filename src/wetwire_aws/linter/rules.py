@@ -1715,8 +1715,8 @@ class InlinePropertyType(LintRule):
                         field_name = target.id
                         if self._should_flag(field_name):
                             if isinstance(node.value, ast.Dict):
-                                # Skip simple dicts (1 key or less)
-                                if len(node.value.keys) <= 1:
+                                # Skip simple dicts (1 key with simple value)
+                                if len(node.value.keys) <= 1 and not self._has_complex_value(node.value):
                                     continue
                                 original = ast.get_source_segment(
                                     context.source, node.value
@@ -1766,6 +1766,15 @@ class InlinePropertyType(LintRule):
         if field_name in self.ALWAYS_FLAG:
             return True
         return field_name.endswith(self.PROPERTY_TYPE_SUFFIXES)
+
+    def _has_complex_value(self, dict_node: ast.Dict) -> bool:
+        """Check if a dict contains complex nested values (non-empty dicts or lists)."""
+        for value in dict_node.values:
+            if isinstance(value, ast.Dict) and len(value.keys) > 0:
+                return True
+            if isinstance(value, ast.List) and len(value.elts) > 0:
+                return True
+        return False
 
 
 class InlinePolicyStatement(LintRule):
