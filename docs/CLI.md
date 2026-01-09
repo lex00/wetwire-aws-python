@@ -7,6 +7,7 @@ The `wetwire-aws` command provides tools for generating and validating CloudForm
 | Command | Description |
 |---------|-------------|
 | `wetwire-aws build` | Generate CloudFormation template from registered resources |
+| `wetwire-aws graph` | Generate dependency graph in DOT or Mermaid format |
 | `wetwire-aws validate` | Validate resources and references |
 | `wetwire-aws list` | List registered resources |
 | `wetwire-aws lint` | Lint code for issues and auto-fix |
@@ -94,6 +95,72 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: my-data
+```
+
+---
+
+## graph
+
+Generate a dependency graph of your resources in DOT (Graphviz) or Mermaid format.
+
+```bash
+# Generate DOT format to stdout
+wetwire-aws graph ./myapp/infra > deps.dot
+
+# Render to PNG (requires graphviz installed)
+wetwire-aws graph ./myapp/infra | dot -Tpng -o deps.png
+
+# Generate Mermaid format (for GitHub markdown)
+wetwire-aws graph ./myapp/infra -f mermaid
+
+# Cluster nodes by AWS service
+wetwire-aws graph ./myapp/infra -c
+
+# Include parameter nodes
+wetwire-aws graph ./myapp/infra -p
+
+# Using module path
+wetwire-aws graph --module myapp.infra
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `-m, --module` | Module path(s) to load resources from |
+| `-f, --format` | Output format: `dot` (default) or `mermaid` |
+| `-c, --cluster` | Cluster nodes by AWS service |
+| `-p, --params` | Include parameter nodes in graph |
+| `--scope` | Filter resources by package scope |
+| `-v, --verbose` | Verbose output |
+
+### Edge Styles
+
+- **Black edges**: `Ref` references (e.g., `vpc = MyVPC`)
+- **Blue edges**: `GetAtt` references (e.g., `role = MyRole.Arn`)
+
+### Example Output (DOT)
+
+```dot
+digraph {
+  rankdir=TB
+  MyBucket [shape=box label="MyBucket\nAWS::S3::Bucket"]
+  MyFunction [shape=box label="MyFunction\nAWS::Lambda::Function"]
+  MyRole [shape=box label="MyRole\nAWS::IAM::Role"]
+  MyFunction -> MyRole [color=blue]
+  MyFunction -> MyBucket
+}
+```
+
+### Example Output (Mermaid)
+
+```mermaid
+graph TD
+  MyBucket["MyBucket<br/>AWS:S3:Bucket"]
+  MyFunction["MyFunction<br/>AWS:Lambda:Function"]
+  MyRole["MyRole<br/>AWS:IAM:Role"]
+  MyFunction -->|GetAtt| MyRole
+  MyFunction --> MyBucket
 ```
 
 ---
