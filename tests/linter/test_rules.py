@@ -1088,3 +1088,39 @@ bucket_encryption = MyEncryptionClass
 """
         issues = lint_code(code, rules=[InlinePropertyType()])
         assert len(issues) == 0
+
+    def test_detects_cors_rules_inline_dict(self):
+        """Should detect cors_rules = [...] with inline dicts."""
+        code = """
+cors_rules = [{"AllowedMethods": ["GET"], "AllowedOrigins": ["*"]}]
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 1
+        assert issues[0].rule_id == "WAW017"
+
+    def test_detects_server_side_encryption_configuration(self):
+        """Should detect server_side_encryption_configuration inline dict."""
+        code = """
+server_side_encryption_configuration = [{"Rule": {}, "Another": "key"}]
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 1
+        assert issues[0].rule_id == "WAW017"
+
+    def test_detects_always_flag_fields(self):
+        """Should detect fields in ALWAYS_FLAG set regardless of suffix."""
+        code = """
+filter = {"Prefix": "logs/", "Tags": []}
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 1
+        assert "filter" in issues[0].message
+
+    def test_detects_transition_field(self):
+        """Should detect transition field in ALWAYS_FLAG."""
+        code = """
+transition = {"StorageClass": "GLACIER", "Days": 30}
+"""
+        issues = lint_code(code, rules=[InlinePropertyType()])
+        assert len(issues) == 1
+        assert issues[0].rule_id == "WAW017"
