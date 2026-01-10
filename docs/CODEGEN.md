@@ -4,8 +4,7 @@
 **Status:** Draft
 **Last Updated:** 2024-12-26
 
-> **This document extends the language-agnostic specification.**
-> See: [docs/architecture/CODEGEN_WORKFLOW.md](../../docs/architecture/CODEGEN_WORKFLOW.md)
+> **This document describes the Python-specific code generation implementation.**
 
 ## Overview
 
@@ -469,4 +468,5 @@ jobs:
 
 ## Related Documents
 
-- [CODEGEN_WORKFLOW.md](../../../../docs/architecture/CODEGEN_WORKFLOW.md) — Language-agnostic specification
+- [DEVELOPERS.md](DEVELOPERS.md) — Development setup
+- [INTERNALS.md](INTERNALS.md) — Architecture overview

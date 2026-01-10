@@ -229,4 +229,5 @@ Document in your repo's README.
 
 ## See Also
 
-- [Comparison](COMPARISON.md) - vs CDK, Terraform, raw CloudFormation
+- [Quick Start](QUICK_START.md) - Getting started guide
+- [CLI Reference](CLI.md) - All commands

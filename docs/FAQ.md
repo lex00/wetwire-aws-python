@@ -169,4 +169,3 @@ vpc_id = MyVPC
 - [Wetwire Specification](https://github.com/lex00/wetwire/blob/main/docs/WETWIRE_SPEC.md)
 - [CLI Documentation](CLI.md)
 - [Quick Start](QUICK_START.md)
-- [Comparison with Other Tools](COMPARISON.md)

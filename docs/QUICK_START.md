@@ -339,5 +339,4 @@ serverless.PackageType.IMAGE
 
 - See the full [CLI Reference](CLI.md)
 - Learn about [migration strategies](ADOPTION.md)
-- Understand [how it compares](COMPARISON.md) to CDK and Terraform
 - Explore [internals](INTERNALS.md) for how auto-registration works
