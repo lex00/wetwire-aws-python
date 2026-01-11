@@ -297,3 +297,75 @@ class TestCLIDesignProvider:
         )
         # Should fail because kiro-cli is not installed
         assert result.returncode != 0
+
+
+class TestCLITestProvider:
+    """Test CLI test command with --provider flag."""
+
+    def test_test_help_shows_provider(self):
+        """Test help shows --provider option."""
+        import subprocess
+
+        result = subprocess.run(
+            [sys.executable, "-m", "wetwire_aws.cli", "test", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
+        assert "--provider" in result.stdout
+        assert "anthropic" in result.stdout
+        assert "kiro" in result.stdout
+
+    def test_test_kiro_without_kiro_cli(self):
+        """Test with kiro provider fails gracefully without kiro-cli."""
+        import os
+        import subprocess
+
+        # Remove PATH to ensure kiro-cli not found
+        env = os.environ.copy()
+        env["PATH"] = ""
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "wetwire_aws.cli",
+                "test",
+                "--provider",
+                "kiro",
+                "test prompt",
+            ],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        # Should fail because kiro-cli is not installed
+        assert result.returncode != 0
+
+    def test_test_provider_default_is_anthropic(self):
+        """Test command defaults to anthropic provider."""
+        import os
+        import subprocess
+
+        # Clear API key to avoid actual API calls
+        env = os.environ.copy()
+        env.pop("ANTHROPIC_API_KEY", None)
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "wetwire_aws.cli",
+                "test",
+                "--persona",
+                "beginner",
+                "test prompt",
+            ],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        # Without API key, anthropic provider should fail with auth error
+        assert result.returncode != 0
+        # Error should mention wetwire-core or API key, not kiro
+        assert "kiro" not in result.stderr.lower() or "kiro-cli" not in result.stderr.lower()
