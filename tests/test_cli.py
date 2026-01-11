@@ -4,6 +4,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 # Get the project root directory
 PROJECT_ROOT = Path(__file__).parent.parent
 
@@ -111,6 +113,24 @@ class TestCLI:
             "Unknown persona" in result.stderr
             or "wetwire-core required" in result.stderr
         )
+
+    def test_test_uses_wetwire_core_personas(self):
+        """Test command uses personas from wetwire-core."""
+        try:
+            from wetwire_core.agent.personas import PERSONAS
+
+            # Verify all 5 standard personas are available
+            expected_personas = {"beginner", "intermediate", "expert", "terse", "verbose"}
+            assert set(PERSONAS.keys()) == expected_personas
+
+            # Verify each persona has required fields
+            for name, persona in PERSONAS.items():
+                assert hasattr(persona, "name")
+                assert hasattr(persona, "system_prompt")
+                assert persona.name == name
+                assert len(persona.system_prompt) > 0
+        except ImportError:
+            pytest.skip("wetwire-core not installed")
 
 
 class TestBuildWithPath:
