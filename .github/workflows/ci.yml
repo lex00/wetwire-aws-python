@@ -30,6 +30,13 @@ jobs:
       - name: Run tests with coverage
         run: uv run pytest --cov=wetwire_aws --cov-report=term-missing --cov-report=xml --cov-fail-under=67
 
+      - name: Upload coverage report
+        if: matrix.python-version == '3.12'
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false
+
       - name: Run linter
         run: uv run ruff check
 
