@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `testing.semantic_compare` module for round-trip testing (#104)
+  - `semantic_equal()`: Check if two structures are semantically equal
+  - `semantic_compare()`: Get list of differences with full paths
+  - `SemanticDiff`: Dataclass describing each difference
+  - Ignores key ordering in dicts, preserves order in lists
 - `diff` and `watch` CLI commands per spec 4.0 (#105)
   - `diff PATH --output FILE`: Compare generated output vs existing template
   - `diff PATH --output FILE --semantic`: Ignore formatting, compare structure
