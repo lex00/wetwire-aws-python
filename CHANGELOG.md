@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `diff` and `watch` CLI commands per spec 4.0 (#105)
+  - `diff PATH --output FILE`: Compare generated output vs existing template
+  - `diff PATH --output FILE --semantic`: Ignore formatting, compare structure
+  - `watch PATH`: Auto-rebuild on file changes with debouncing
+  - `watch PATH --lint-only`: Only run lint, skip rebuild
 - Attribution README for imported AWS example templates (#106)
   - Documents source repositories for CloudFormation and SAM templates
   - Includes license information (Apache 2.0)
