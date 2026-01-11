@@ -367,6 +367,7 @@ def test_command(args: argparse.Namespace) -> None:
     else:
         # Use Anthropic API via wetwire-core
         try:
+            from wetwire_core.agent.personas import PERSONAS
             from wetwire_core.agents import run_ai_scenario
         except ImportError:
             error_exit(
@@ -374,21 +375,14 @@ def test_command(args: argparse.Namespace) -> None:
                 hint="Install with: pip install wetwire-core",
             )
 
-        # Persona definitions
-        personas = {
-            "beginner": "You are new to AWS. Ask clarifying questions about basic concepts.",
-            "intermediate": "You have moderate AWS experience. Ask about best practices.",
-            "expert": "You are an AWS expert. Ask about advanced configurations and edge cases.",
-            "terse": "Give minimal, short responses. Just answer what's asked.",
-            "verbose": "Provide detailed context and requirements in your responses.",
-        }
-
+        # Use centralized personas from wetwire-core
         persona_name = args.persona
-        if persona_name not in personas:
+        if persona_name not in PERSONAS:
             error_exit(
                 f"Unknown persona '{persona_name}'",
-                hint=f"Available: {', '.join(personas.keys())}",
+                hint=f"Available: {', '.join(PERSONAS.keys())}",
             )
+        persona = PERSONAS[persona_name]
 
         print(f"Running test with persona: {persona_name}")
         print(f"Prompt: {args.prompt}")
@@ -397,7 +391,7 @@ def test_command(args: argparse.Namespace) -> None:
         package_path, messages = run_ai_scenario(
             prompt=args.prompt,
             persona_name=persona_name,
-            persona_instructions=personas[persona_name],
+            persona_instructions=persona.system_prompt,
             output_dir=output_dir,
         )
 
