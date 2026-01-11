@@ -48,6 +48,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Import PERSONAS from wetwire_core.agent.personas
   - Use persona.system_prompt for instructions
   - Add test to verify wetwire-core personas are used
+- Migrate MCP server to wetwire-core utilities (#116)
+  - Use create_server(), register_tool(), run_server() from wetwire_core.mcp
+  - Remove local MCP boilerplate code
+  - Update wetwire-core dependency to >=1.1.0
 - CI now explicitly reports test coverage with XML output (#107)
   - Added `--cov-report=xml` for future coverage service integration
   - Added `--cov-fail-under=70` to enforce minimum coverage threshold
