@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Attribution README for imported AWS example templates (#106)
+  - Documents source repositories for CloudFormation and SAM templates
+  - Includes license information (Apache 2.0)
+  - Lists import scripts for regenerating examples
+
 ### Changed
 
 - CI now explicitly reports test coverage with XML output (#107)
