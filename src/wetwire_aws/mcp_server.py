@@ -24,21 +24,12 @@ Usage:
 
 from __future__ import annotations
 
-import json
 import sys
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-try:
-    from mcp.server import Server
-    from mcp.server.stdio import stdio_server
-    from mcp.types import TextContent, Tool
-except ImportError:
-    Server = None  # type: ignore[misc, assignment]
-    stdio_server = None  # type: ignore[misc, assignment]
-    TextContent = None  # type: ignore[misc, assignment]
-    Tool = None  # type: ignore[misc, assignment]
+from wetwire_core.mcp import create_server, register_tool, run_server
 
 
 def _create_package(path: str, module_name: str) -> dict[str, Any]:
@@ -244,128 +235,111 @@ def _build_template(path: str, output_format: str = "json") -> dict[str, Any]:
     }
 
 
-def create_server() -> Server:
-    """Create and configure the MCP server."""
-    if Server is None:
-        raise ImportError(
-            "MCP package required. Install with: pip install wetwire-aws[kiro]"
-        )
-
-    server = Server("wetwire-aws-mcp")
-
-    @server.list_tools()
-    async def list_tools() -> list[Tool]:
-        """List available wetwire-aws tools."""
-        return [
-            Tool(
-                name="wetwire_init",
-                description="Initialize a new wetwire-aws infrastructure package",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "path": {
-                            "type": "string",
-                            "description": "Directory where the package should be created",
-                        },
-                        "module_name": {
-                            "type": "string",
-                            "description": "Name of the package (snake_case, e.g., 'my_app')",
-                        },
-                    },
-                    "required": ["path", "module_name"],
-                },
-            ),
-            Tool(
-                name="wetwire_lint",
-                description="Lint Python code for wetwire-aws issues (WAW001-WAW020)",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "path": {
-                            "type": "string",
-                            "description": "Path to Python file or directory to lint",
-                        },
-                        "fix": {
-                            "type": "boolean",
-                            "description": "Auto-fix detected issues (default: false)",
-                            "default": False,
-                        },
-                    },
-                    "required": ["path"],
-                },
-            ),
-            Tool(
-                name="wetwire_build",
-                description="Generate CloudFormation template from a wetwire-aws package",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "path": {
-                            "type": "string",
-                            "description": "Path to the wetwire-aws package directory",
-                        },
-                        "format": {
-                            "type": "string",
-                            "enum": ["json", "yaml"],
-                            "description": "Output format (default: json)",
-                            "default": "json",
-                        },
-                    },
-                    "required": ["path"],
-                },
-            ),
-        ]
-
-    @server.call_tool()
-    async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
-        """Handle tool calls."""
-        if name == "wetwire_init":
-            result = _create_package(
-                path=arguments["path"],
-                module_name=arguments["module_name"],
-            )
-        elif name == "wetwire_lint":
-            result = _lint_path(
-                path=arguments["path"],
-                fix=arguments.get("fix", False),
-            )
-        elif name == "wetwire_build":
-            result = _build_template(
-                path=arguments["path"],
-                output_format=arguments.get("format", "json"),
-            )
-        else:
-            result = {"success": False, "error": f"Unknown tool: {name}"}
-
-        return [TextContent(type="text", text=json.dumps(result, indent=2))]
-
-    return server
+# Tool handlers for wetwire-core MCP registration
+def _handle_init(arguments: dict[str, Any]) -> dict[str, Any]:
+    """Handle wetwire_init tool call."""
+    return _create_package(
+        path=arguments["path"],
+        module_name=arguments["module_name"],
+    )
 
 
-async def run_server() -> None:
-    """Run the MCP server with stdio transport."""
-    if stdio_server is None:
-        raise ImportError(
-            "MCP package required. Install with: pip install wetwire-aws[kiro]"
-        )
+def _handle_lint(arguments: dict[str, Any]) -> dict[str, Any]:
+    """Handle wetwire_lint tool call."""
+    return _lint_path(
+        path=arguments["path"],
+        fix=arguments.get("fix", False),
+    )
 
-    server = create_server()
 
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(read_stream, write_stream, server.create_initialization_options())
+def _handle_build(arguments: dict[str, Any]) -> dict[str, Any]:
+    """Handle wetwire_build tool call."""
+    return _build_template(
+        path=arguments["path"],
+        output_format=arguments.get("format", "json"),
+    )
+
+
+# Tool schemas
+INIT_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "path": {
+            "type": "string",
+            "description": "Directory where the package should be created",
+        },
+        "module_name": {
+            "type": "string",
+            "description": "Name of the package (snake_case, e.g., 'my_app')",
+        },
+    },
+    "required": ["path", "module_name"],
+}
+
+LINT_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "path": {
+            "type": "string",
+            "description": "Path to Python file or directory to lint",
+        },
+        "fix": {
+            "type": "boolean",
+            "description": "Auto-fix detected issues (default: false)",
+            "default": False,
+        },
+    },
+    "required": ["path"],
+}
+
+BUILD_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "path": {
+            "type": "string",
+            "description": "Path to the wetwire-aws package directory",
+        },
+        "format": {
+            "type": "string",
+            "enum": ["json", "yaml"],
+            "description": "Output format (default: json)",
+            "default": "json",
+        },
+    },
+    "required": ["path"],
+}
 
 
 def main() -> None:
     """Main entry point for the MCP server."""
-    import asyncio
+    # Create server using wetwire-core abstraction
+    server = create_server("wetwire-aws-mcp")
 
-    try:
-        asyncio.run(run_server())
-    except ImportError as e:
-        print(f"Error: {e}", file=sys.stderr)
-        sys.exit(1)
-    except KeyboardInterrupt:
-        pass
+    # Register tools
+    register_tool(
+        server,
+        "wetwire_init",
+        _handle_init,
+        INIT_SCHEMA,
+        description="Initialize a new wetwire-aws infrastructure package",
+    )
+    register_tool(
+        server,
+        "wetwire_lint",
+        _handle_lint,
+        LINT_SCHEMA,
+        description="Lint Python code for wetwire-aws issues (WAW001-WAW022)",
+    )
+    register_tool(
+        server,
+        "wetwire_build",
+        _handle_build,
+        BUILD_SCHEMA,
+        description="Generate CloudFormation template from a wetwire-aws package",
+    )
+
+    # Run the server
+    run_server(server)
 
 
 if __name__ == "__main__":

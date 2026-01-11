@@ -369,3 +369,66 @@ class TestCLITestProvider:
         assert result.returncode != 0
         # Error should mention wetwire-core or API key, not kiro
         assert "kiro" not in result.stderr.lower() or "kiro-cli" not in result.stderr.lower()
+
+
+class TestWetwireCoreIntegration:
+    """Test wetwire-core MCP and CLI module integration."""
+
+    def test_wetwire_core_mcp_available(self):
+        """wetwire-core MCP module is available with expected functions."""
+        from wetwire_core import mcp
+
+        # Verify expected functions are available
+        assert hasattr(mcp, "create_server")
+        assert hasattr(mcp, "register_tool")
+        assert hasattr(mcp, "run_server")
+        assert hasattr(mcp, "get_install_instructions")
+
+        # Verify they are callable
+        assert callable(mcp.create_server)
+        assert callable(mcp.register_tool)
+        assert callable(mcp.run_server)
+        assert callable(mcp.get_install_instructions)
+
+    def test_wetwire_core_cli_available(self):
+        """wetwire-core CLI module is available with expected functions."""
+        from wetwire_core import cli
+
+        # Verify expected functions are available
+        assert hasattr(cli, "error_exit")
+        assert hasattr(cli, "validate_package_path")
+        assert hasattr(cli, "resolve_output_dir")
+        assert hasattr(cli, "require_optional_dependency")
+
+        # Verify they are callable
+        assert callable(cli.error_exit)
+        assert callable(cli.validate_package_path)
+        assert callable(cli.resolve_output_dir)
+        assert callable(cli.require_optional_dependency)
+
+    def test_wetwire_core_mcp_create_server(self):
+        """wetwire-core create_server returns a server or None."""
+        from wetwire_core.mcp import MCP_AVAILABLE, create_server
+
+        server = create_server("test-server")
+
+        # If MCP is available, we get a server; otherwise None
+        if MCP_AVAILABLE:
+            assert server is not None
+        else:
+            assert server is None
+
+    def test_wetwire_core_cli_resolve_output_dir(self):
+        """wetwire-core resolve_output_dir works correctly."""
+        import tempfile
+
+        from wetwire_core.cli import resolve_output_dir
+
+        # Test with None (should return cwd)
+        result = resolve_output_dir(None)
+        assert result.is_absolute()
+
+        # Test with a specific path
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = resolve_output_dir(Path(tmpdir))
+            assert result == Path(tmpdir).resolve()
