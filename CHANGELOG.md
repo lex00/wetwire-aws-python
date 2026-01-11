@@ -44,6 +44,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Use wetwire-core personas instead of local definitions (#115)
+  - Import PERSONAS from wetwire_core.agent.personas
+  - Use persona.system_prompt for instructions
+  - Add test to verify wetwire-core personas are used
 - CI now explicitly reports test coverage with XML output (#107)
   - Added `--cov-report=xml` for future coverage service integration
   - Added `--cov-fail-under=70` to enforce minimum coverage threshold
