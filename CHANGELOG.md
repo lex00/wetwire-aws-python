@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- WAW021: Secret pattern detection lint rule (#101)
+  - Detects AWS access keys and secret keys
+  - Detects private key headers
+  - Detects API tokens (GitHub, Slack, OpenAI, Anthropic)
+  - Detects passwords and credentials by variable name
+  - Ignores placeholder values
 - `testing.semantic_compare` module for round-trip testing (#104)
   - `semantic_equal()`: Check if two structures are semantically equal
   - `semantic_compare()`: Get list of differences with full paths

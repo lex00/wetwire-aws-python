@@ -1,6 +1,6 @@
 """Lint rules for wetwire-aws.
 
-This module provides 19 lint rules (WAW001-WAW020, no WAW009) for detecting
+This module provides 20 lint rules (WAW001-WAW021, no WAW009) for detecting
 anti-patterns in wetwire-aws code and suggesting improvements.
 
 Rules are organized by category:
@@ -12,6 +12,7 @@ Rules are organized by category:
 - import_rules: WAW007, WAW008, WAW018 (imports)
 - file_rules: WAW010, WAW012 (file-level)
 - style_rules: WAW011, WAW013-WAW017 (declarative style)
+- security_rules: WAW021 (hardcoded secrets)
 """
 
 from wetwire_aws.linter.rules.base import LintContext, LintIssue, LintRule
@@ -31,6 +32,7 @@ from wetwire_aws.linter.rules.intrinsic_rules import (
 from wetwire_aws.linter.rules.parameter_rules import StringShouldBeParameterType
 from wetwire_aws.linter.rules.pseudo_rules import RefShouldBePseudoParameter
 from wetwire_aws.linter.rules.reference_rules import RefShouldBeNoParens
+from wetwire_aws.linter.rules.security_rules import HardcodedSecret
 from wetwire_aws.linter.rules.style_rules import (
     InlineConstructor,
     InlinePolicyDocument,
@@ -62,6 +64,7 @@ ALL_RULES: list[type[LintRule]] = [
     RedundantRelativeImport,  # WAW018
     ExplicitRefIntrinsic,  # WAW019
     ExplicitGetAttIntrinsic,  # WAW020
+    HardcodedSecret,  # WAW021
 ]
 
 
@@ -99,6 +102,7 @@ __all__ = [
     "RedundantRelativeImport",
     "ExplicitRefIntrinsic",
     "ExplicitGetAttIntrinsic",
+    "HardcodedSecret",
     # Aggregates
     "ALL_RULES",
     "get_all_rules",
