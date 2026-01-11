@@ -6,6 +6,8 @@ Usage:
     wetwire-aws validate [OPTIONS]
     wetwire-aws list [OPTIONS]
     wetwire-aws import TEMPLATE [-o OUTPUT]
+    wetwire-aws diff PATH --output FILE
+    wetwire-aws watch PATH
     wetwire-aws --help
 
 Examples:
@@ -26,6 +28,12 @@ Examples:
 
     # Import a CloudFormation template to Python
     wetwire-aws import template.yaml -o my_stack/
+
+    # Compare generated output vs existing template
+    wetwire-aws diff ./infra --output template.json
+
+    # Watch for changes and rebuild
+    wetwire-aws watch ./infra
 """
 
 import argparse
@@ -437,6 +445,178 @@ def graph_command(args: argparse.Namespace) -> None:
         print(graph.to_dot(cluster_by_service=args.cluster))
 
 
+def diff_command(args: argparse.Namespace) -> None:
+    """Compare generated output vs existing template."""
+    import difflib
+    import json
+
+    registry = get_aws_registry()
+
+    # Validate path
+    if not Path(args.path).exists():
+        error_exit(f"Path not found: {args.path}")
+
+    _, module_name = validate_package_path(args.path)
+    discover_resources(module_name, registry, args.verbose)
+
+    # Check if any resources are registered
+    resources = list(registry.get_all(None))
+    if not resources:
+        error_exit("No resources registered.")
+
+    # Generate new template
+    template = CloudFormationTemplate.from_registry(
+        scope_package=None,
+        description="",
+    )
+    new_output = template.to_json(indent=2)
+
+    # Read existing template
+    output_path = Path(args.output)
+    if not output_path.exists():
+        error_exit(f"Output file not found: {output_path}")
+
+    existing_output = output_path.read_text()
+
+    # Normalize trailing newlines
+    new_output = new_output.rstrip() + "\n"
+    existing_output = existing_output.rstrip() + "\n"
+
+    # Semantic comparison: compare parsed JSON
+    if args.semantic:
+        try:
+            new_json = json.loads(new_output)
+            existing_json = json.loads(existing_output)
+            if new_json == existing_json:
+                print("No semantic differences.")
+                return
+            else:
+                # Show structural differences
+                print("Semantic differences detected.")
+                # Pretty-print both and diff
+                new_pretty = json.dumps(new_json, indent=2, sort_keys=True)
+                existing_pretty = json.dumps(existing_json, indent=2, sort_keys=True)
+                diff = difflib.unified_diff(
+                    existing_pretty.splitlines(keepends=True),
+                    new_pretty.splitlines(keepends=True),
+                    fromfile=str(output_path),
+                    tofile="(generated)",
+                )
+                sys.stdout.writelines(diff)
+        except json.JSONDecodeError as e:
+            error_exit(f"Invalid JSON: {e}")
+    else:
+        # Text comparison: line-by-line diff
+        if new_output == existing_output:
+            print("No diff.")
+            return
+
+        diff = difflib.unified_diff(
+            existing_output.splitlines(keepends=True),
+            new_output.splitlines(keepends=True),
+            fromfile=str(output_path),
+            tofile="(generated)",
+        )
+        sys.stdout.writelines(diff)
+
+
+def watch_command(args: argparse.Namespace) -> None:
+    """Watch for changes and auto-rebuild."""
+    import time
+
+    path = Path(args.path)
+    if not path.exists():
+        error_exit(f"Path not found: {path}")
+
+    # Validate it's a package
+    validate_package_path(str(path))
+
+    print(f"Watching {path} for changes...")
+    print("Press Ctrl+C to stop.")
+
+    # Track file modification times
+    def get_mtimes() -> dict[str, float]:
+        mtimes = {}
+        for py_file in path.rglob("*.py"):
+            try:
+                mtimes[str(py_file)] = py_file.stat().st_mtime
+            except OSError:
+                pass
+        return mtimes
+
+    last_mtimes = get_mtimes()
+    debounce_time = 0.5  # seconds
+    last_rebuild = 0.0
+
+    try:
+        while True:
+            time.sleep(0.5)
+            current_mtimes = get_mtimes()
+
+            # Check for changes
+            changed_files = []
+            for filepath, mtime in current_mtimes.items():
+                if filepath not in last_mtimes or last_mtimes[filepath] != mtime:
+                    changed_files.append(filepath)
+
+            if changed_files and (time.time() - last_rebuild) > debounce_time:
+                print(f"\nChange detected: {', '.join(Path(f).name for f in changed_files)}")
+
+                # Run lint if not --lint-only
+                if args.lint_only:
+                    # Just run lint
+                    for filepath in changed_files:
+                        issues = _lint_file(filepath)
+                        if issues:
+                            for issue in issues:
+                                print(f"  {issue}")
+                        else:
+                            print(f"  {Path(filepath).name}: OK")
+                else:
+                    # Lint first
+                    lint_passed = True
+                    for filepath in changed_files:
+                        issues = _lint_file(filepath)
+                        if issues:
+                            lint_passed = False
+                            for issue in issues:
+                                print(f"  {issue}")
+
+                    if lint_passed:
+                        # Rebuild
+                        print("Rebuilding...")
+                        try:
+                            # Clear registry for fresh build
+                            registry = get_aws_registry()
+                            registry.clear()
+
+                            _, module_name = validate_package_path(str(path))
+                            discover_resources(module_name, registry, args.verbose)
+
+                            template = CloudFormationTemplate.from_registry(
+                                scope_package=None,
+                                description="",
+                            )
+                            output = template.to_json(indent=2)
+
+                            # Write to output file if specified
+                            if args.output:
+                                Path(args.output).write_text(output)
+                                print(f"  Written to {args.output}")
+                            else:
+                                print(f"  Generated template with {len(template.resources)} resources")
+                        except Exception as e:
+                            print(f"  Build failed: {e}")
+                    else:
+                        print("  Lint errors, skipping build.")
+
+                last_rebuild = time.time()
+                last_mtimes = current_mtimes
+
+    except KeyboardInterrupt:
+        print("\nStopped watching.")
+
+
 def build_command(args: argparse.Namespace) -> None:
     """Generate CloudFormation template from registered resources."""
     registry = get_aws_registry()
@@ -685,6 +865,62 @@ def main() -> None:
         help="Cluster nodes by AWS service",
     )
     graph_parser.set_defaults(func=graph_command)
+
+    # Diff command
+    diff_parser = subparsers.add_parser(
+        "diff",
+        help="Compare generated output vs existing template",
+    )
+    diff_parser.add_argument(
+        "path",
+        help="Path to package directory",
+    )
+    diff_parser.add_argument(
+        "--output",
+        "-o",
+        required=True,
+        help="Path to existing template file to compare against",
+    )
+    diff_parser.add_argument(
+        "--semantic",
+        "-s",
+        action="store_true",
+        help="Use semantic comparison (ignore formatting)",
+    )
+    diff_parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Verbose output",
+    )
+    diff_parser.set_defaults(func=diff_command)
+
+    # Watch command
+    watch_parser = subparsers.add_parser(
+        "watch",
+        help="Watch for changes and auto-rebuild",
+    )
+    watch_parser.add_argument(
+        "path",
+        help="Path to package directory to watch",
+    )
+    watch_parser.add_argument(
+        "--output",
+        "-o",
+        help="Output file to write template to",
+    )
+    watch_parser.add_argument(
+        "--lint-only",
+        action="store_true",
+        help="Only run lint, skip rebuild",
+    )
+    watch_parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Verbose output",
+    )
+    watch_parser.set_defaults(func=watch_command)
 
     # Design command (AI-assisted)
     design_parser = subparsers.add_parser(

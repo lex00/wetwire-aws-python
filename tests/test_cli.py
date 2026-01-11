@@ -244,3 +244,184 @@ class TestBucket(s3.Bucket):
                 "not a Python package" in result.stderr
                 or "__init__.py" in result.stderr
             )
+
+
+class TestDiffCommand:
+    """Test diff command functionality."""
+
+    @staticmethod
+    def create_test_package(parent_dir: Path, name: str = "test_pkg") -> Path:
+        """Create a minimal valid wetwire-aws package for testing."""
+        pkg_dir = parent_dir / name
+        pkg_dir.mkdir(parents=True, exist_ok=True)
+
+        init_content = '''"""Test package."""
+from wetwire_aws.loader import setup_resources
+
+setup_resources(__file__, __name__, globals())
+'''
+        (pkg_dir / "__init__.py").write_text(init_content)
+
+        resources_content = '''"""Test resources."""
+from . import *
+from wetwire_aws.resources import s3
+
+class TestBucket(s3.Bucket):
+    """A simple S3 bucket for testing."""
+    resource: s3.Bucket
+    bucket_name = "test-bucket-name"
+'''
+        (pkg_dir / "resources.py").write_text(resources_content)
+
+        return pkg_dir
+
+    def test_diff_help(self):
+        """Diff command shows help."""
+        result = subprocess.run(
+            [sys.executable, "-m", "wetwire_aws.cli", "diff", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
+        assert "diff" in result.stdout.lower()
+
+    def test_diff_no_changes(self):
+        """Diff shows no changes when template matches."""
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pkg_path = self.create_test_package(Path(tmpdir))
+
+            # First generate the template
+            build_result = subprocess.run(
+                [sys.executable, "-m", "wetwire_aws.cli", "build", str(pkg_path)],
+                capture_output=True,
+                text=True,
+            )
+            assert build_result.returncode == 0
+
+            # Save it to a file
+            template_file = Path(tmpdir) / "template.json"
+            template_file.write_text(build_result.stdout)
+
+            # Diff should show no changes
+            diff_result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "wetwire_aws.cli",
+                    "diff",
+                    str(pkg_path),
+                    "--output",
+                    str(template_file),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            assert diff_result.returncode == 0
+            assert "no diff" in diff_result.stdout.lower() or diff_result.stdout == ""
+
+    def test_diff_with_changes(self):
+        """Diff shows changes when template differs."""
+        import json
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pkg_path = self.create_test_package(Path(tmpdir))
+
+            # Create a different template
+            template_file = Path(tmpdir) / "template.json"
+            old_template = {
+                "AWSTemplateFormatVersion": "2010-09-09",
+                "Resources": {"OldBucket": {"Type": "AWS::S3::Bucket"}},
+            }
+            template_file.write_text(json.dumps(old_template, indent=2))
+
+            # Diff should show changes
+            diff_result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "wetwire_aws.cli",
+                    "diff",
+                    str(pkg_path),
+                    "--output",
+                    str(template_file),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            # Should show diff output (+ and - lines or similar)
+            assert diff_result.returncode == 0 or diff_result.returncode == 1
+            assert "TestBucket" in diff_result.stdout or "OldBucket" in diff_result.stdout
+
+    def test_diff_semantic_mode(self):
+        """Diff semantic mode ignores formatting differences."""
+        import json
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pkg_path = self.create_test_package(Path(tmpdir))
+
+            # First generate the template
+            build_result = subprocess.run(
+                [sys.executable, "-m", "wetwire_aws.cli", "build", str(pkg_path)],
+                capture_output=True,
+                text=True,
+            )
+            assert build_result.returncode == 0
+
+            # Save it compacted (different formatting)
+            template_file = Path(tmpdir) / "template.json"
+            template = json.loads(build_result.stdout)
+            template_file.write_text(json.dumps(template))  # No indent
+
+            # Semantic diff should show no differences
+            diff_result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "wetwire_aws.cli",
+                    "diff",
+                    str(pkg_path),
+                    "--output",
+                    str(template_file),
+                    "--semantic",
+                ],
+                capture_output=True,
+                text=True,
+            )
+            assert diff_result.returncode == 0
+
+
+class TestWatchCommand:
+    """Test watch command functionality."""
+
+    def test_watch_help(self):
+        """Watch command shows help."""
+        result = subprocess.run(
+            [sys.executable, "-m", "wetwire_aws.cli", "watch", "--help"],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
+        assert "watch" in result.stdout.lower()
+
+    def test_watch_nonexistent_path(self):
+        """Watch fails gracefully with non-existent path."""
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "wetwire_aws.cli",
+                "watch",
+                "/nonexistent/path",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode != 0
+        assert (
+            "not found" in result.stderr.lower()
+            or "does not exist" in result.stderr.lower()
+        )
