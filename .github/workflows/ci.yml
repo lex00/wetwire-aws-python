@@ -27,8 +27,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras
 
-      - name: Run tests
-        run: uv run pytest
+      - name: Run tests with coverage
+        run: uv run pytest --cov=wetwire_aws --cov-report=term-missing --cov-report=xml --cov-fail-under=70
 
       - name: Run linter
         run: uv run ruff check
