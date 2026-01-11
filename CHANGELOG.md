@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Documents source repositories for CloudFormation and SAM templates
   - Includes license information (Apache 2.0)
   - Lists import scripts for regenerating examples
+- CONTRIBUTING.md with contributor guidelines (#117)
+  - Development setup instructions
+  - Code style guidelines (ruff, type checking)
+  - Pull request process
 
 ### Changed
 
