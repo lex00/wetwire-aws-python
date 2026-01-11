@@ -37,6 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Development setup instructions
   - Code style guidelines (ruff, type checking)
   - Pull request process
+- Provider flag tests for test command (#114)
+  - Tests for `--provider` flag showing anthropic/kiro options
+  - Tests for graceful kiro-cli failure handling
+  - Tests for default anthropic provider behavior
 
 ### Changed
 
