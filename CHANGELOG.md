@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- WAW022: Circular dependency detection lint rule (#100)
+  - Detects cycles in resource dependency graphs
+  - Reports all resources involved in the cycle
+  - Uses DFS for efficient cycle detection
 - WAW021: Secret pattern detection lint rule (#101)
   - Detects AWS access keys and secret keys
   - Detects private key headers

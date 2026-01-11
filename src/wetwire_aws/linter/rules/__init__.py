@@ -1,6 +1,6 @@
 """Lint rules for wetwire-aws.
 
-This module provides 20 lint rules (WAW001-WAW021, no WAW009) for detecting
+This module provides 21 lint rules (WAW001-WAW022, no WAW009) for detecting
 anti-patterns in wetwire-aws code and suggesting improvements.
 
 Rules are organized by category:
@@ -13,9 +13,11 @@ Rules are organized by category:
 - file_rules: WAW010, WAW012 (file-level)
 - style_rules: WAW011, WAW013-WAW017 (declarative style)
 - security_rules: WAW021 (hardcoded secrets)
+- dependency_rules: WAW022 (circular dependencies)
 """
 
 from wetwire_aws.linter.rules.base import LintContext, LintIssue, LintRule
+from wetwire_aws.linter.rules.dependency_rules import CircularDependency
 from wetwire_aws.linter.rules.enum_rules import StringShouldBeEnum
 from wetwire_aws.linter.rules.file_rules import DuplicateResource, FileTooLarge
 from wetwire_aws.linter.rules.import_rules import (
@@ -65,6 +67,7 @@ ALL_RULES: list[type[LintRule]] = [
     ExplicitRefIntrinsic,  # WAW019
     ExplicitGetAttIntrinsic,  # WAW020
     HardcodedSecret,  # WAW021
+    CircularDependency,  # WAW022
 ]
 
 
@@ -103,6 +106,7 @@ __all__ = [
     "ExplicitRefIntrinsic",
     "ExplicitGetAttIntrinsic",
     "HardcodedSecret",
+    "CircularDependency",
     # Aggregates
     "ALL_RULES",
     "get_all_rules",
